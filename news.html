@@ -4,6 +4,76 @@
   <meta charset="UTF-8">
   <title>Tin tức</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* === Thêm CSS cho giao diện cơ bản === */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f6f7;
+    }
+
+    header {
+      background: #222;
+      color: white;
+      padding: 10px 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 15px;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    article {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
+    }
+
+    /* === Khung hiển thị video === */
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* tỷ lệ 16:9 */
+      height: 0;
+      overflow: hidden;
+      max-width: 100%;
+      background: #000;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .video-container iframe,
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -19,7 +89,17 @@
     <article>
       <h2>Tin số 1: Việt Nam đạt thành tựu mới</h2>
       <p>Ngày hôm nay, Việt Nam đã ghi nhận một bước tiến lớn trong công nghệ…</p>
+
+      <!-- 🎥 Video tin tức (bạn có thể đổi link video YouTube bên dưới) -->
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+          title="Video Tin tức"
+          allowfullscreen>
+        </iframe>
+      </div>
     </article>
+
     <article>
       <h2>Tin số 2: Kinh tế tăng trưởng mạnh</h2>
       <p>Nhiều chuyên gia dự đoán tốc độ tăng trưởng kinh tế sẽ tiếp tục tăng trong quý tới…</p>
