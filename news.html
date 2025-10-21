@@ -2,77 +2,25 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Tin tức</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Tin tức - Video</title>
   <style>
-    /* === Thêm CSS cho giao diện cơ bản === */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f6f7;
-    }
+    body { font-family: Arial, sans-serif; margin:0; background:#f5f6f7; }
+    header { background:#222; color:#fff; padding:12px 18px; }
+    nav a { color:#fff; margin-right:12px; text-decoration:none; }
+    main { max-width:800px; margin:20px auto; padding:0 16px; }
+    article { background:#fff; padding:16px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.08); }
+    .video-container { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; margin-top:12px; background:#000; }
+    .video-container video { position:absolute; top:0; left:0; width:100%; height:100%; }
+    footer { text-align:center; padding:12px; background:#222; color:#fff; margin-top:18px; }
 
-    header {
-      background: #222;
-      color: white;
-      padding: 10px 20px;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-right: 15px;
-      font-weight: bold;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    main {
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    article {
-      background: white;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-    }
-
-    footer {
-      background: #222;
-      color: white;
-      text-align: center;
-      padding: 10px;
-      margin-top: 20px;
-    }
-
-    /* === Khung hiển thị video === */
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%; /* tỷ lệ 16:9 */
-      height: 0;
-      overflow: hidden;
-      max-width: 100%;
-      background: #000;
-      border-radius: 8px;
-      margin-top: 15px;
-    }
-
-    .video-container iframe,
-    .video-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
+    /* Modal */
+    .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:9999; }
+    .modal { background:#fff; padding:18px; border-radius:8px; max-width:420px; width:90%; box-shadow:0 6px 18px rgba(0,0,0,0.25); text-align:center; }
+    .modal h3 { margin:0 0 8px 0; }
+    .modal p { margin:0 0 16px 0; color:#333; }
+    .btn { display:inline-block; padding:8px 14px; border-radius:6px; text-decoration:none; cursor:pointer; font-weight:600; }
+    .btn-primary { background:#1976d2; color:#fff; border:0; margin-right:8px; }
+    .btn-secondary { background:#e0e0e0; color:#111; border:0; }
   </style>
 </head>
 <body>
@@ -90,13 +38,12 @@
       <h2>Tin số 1: Việt Nam đạt thành tựu mới</h2>
       <p>Ngày hôm nay, Việt Nam đã ghi nhận một bước tiến lớn trong công nghệ…</p>
 
-      <!-- 🎥 Video tin tức (bạn có thể đổi link video YouTube bên dưới) -->
       <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-          title="Video Tin tức"
-          allowfullscreen>
-        </iframe>
+        <!-- Thay src bằng đường dẫn file mp4 của bạn -->
+        <video id="newsVideo" controls preload="metadata" poster="">
+          <source src="video/tintuc.mp4" type="video/mp4">
+          Trình duyệt của bạn không hỗ trợ phát video.
+        </video>
       </div>
     </article>
 
@@ -107,5 +54,59 @@
   </main>
 
   <footer>© 2025 Tin Tức 24h</footer>
+
+  <!-- Modal -->
+  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h3>Mở Gmail?</h3>
+      <p>Bạn vừa bấm phát video. Bạn có muốn mở Gmail (mở trong tab mới)?</p>
+      <div>
+        <button id="openLink" class="btn btn-primary">Mở Gmail</button>
+        <button id="continueWatch" class="btn btn-secondary">Tiếp tục xem</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const video = document.getElementById('newsVideo');
+      const modal = document.getElementById('modalBackdrop');
+      const openBtn = document.getElementById('openLink');
+      const contBtn = document.getElementById('continueWatch');
+      const targetUrl = 'https://mail.google.com/mail/u/0/?hl=en#inbox';
+
+      let modalShownForThisPlay = false;
+
+      // Khi user nhấn play
+      video.addEventListener('play', function() {
+        // Nếu modal đã hiển thị lần đầu, không hiển thị lần nữa cho cùng 1 session (tùy chỉnh)
+        if (modalShownForThisPlay) return;
+        // Pause ngay để người dùng quyết định
+        video.pause();
+        modal.style.display = 'flex';
+        modalShownForThisPlay = true;
+      });
+
+      openBtn.addEventListener('click', function() {
+        // Mở link trong tab mới (do user yêu cầu)
+        window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        modal.style.display = 'none';
+        // Nếu bạn muốn tiếp tục video sau khi mở link, bật resume:
+        video.play().catch(()=>{/* autoplay may be blocked */});
+      });
+
+      contBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+        video.play().catch(()=>{/* autoplay may be blocked */});
+      });
+
+      // Khi người bấm ngoài modal hoặc ESC, đóng modal (tùy chọn)
+      window.addEventListener('keydown', function(e){
+        if(e.key === 'Escape') {
+          if(modal.style.display === 'flex'){ modal.style.display = 'none'; video.play().catch(()=>{}); }
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
