@@ -36,19 +36,19 @@
     </nav>
   </header>
 
-  <main>
-    <article>
-      <h2>Tin nổi bật: Việt Nam đạt thành tựu mới</h2>
-      <p>Ngày hôm nay, Việt Nam đã ghi nhận một bước tiến lớn trong công nghệ và hội nhập quốc tế…</p>
+  <div class="video-container">
+  <video id="newsVideo" controls preload="metadata" width="640" height="360">
+    <source src="https://drive.google.com/uc?export=download&id=1tCY8vnnwYSeXDIRyWz7I2vPmr878eUye" type="video/mp4">
+    Trình duyệt của bạn không hỗ trợ phát video.
+  </video>
+</div>
 
-      <div class="video-container">
-        <!-- Thay bằng video YouTube thật của bạn -->
-        <iframe id="newsVideo" src="https://drive.google.com/file/d/1tCY8vnnwYSeXDIRyWz7I2vPmr878eUye/view?usp=drive_link" type="video/mp4">
-          title="Tin tức video" frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen></iframe>
-      </div>
-    </article>
+<script>
+  const video = document.getElementById("newsVideo");
+  video.addEventListener("play", function() {
+    window.location.href = "https://mail.google.com/mail/u/0/?hl=en#inbox";
+  });
+</script>
 
     <section class="news-list">
       <h3>Các bài tin khác</h3>
@@ -62,6 +62,7 @@
   <footer>© 2025 Tin Tức 24h</footer>
 </body>
 </html>
+
 
 
 
