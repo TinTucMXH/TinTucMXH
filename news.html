@@ -10,20 +10,11 @@
     main { max-width:900px; margin:20px auto; padding:0 16px; }
     article { background:#fff; padding:16px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.08); margin-bottom:20px; }
     .video-container { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; margin-top:12px; background:#000; }
-    .video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; }
+    .video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
     .news-list a { display:block; background:#fff; padding:10px 14px; border-radius:5px; margin:8px 0; box-shadow:0 1px 4px rgba(0,0,0,0.1); text-decoration:none; color:#222; font-weight:bold; transition:all 0.2s; }
     .news-list a:hover { background:#1976d2; color:#fff; }
 
     footer { text-align:center; padding:12px; background:#222; color:#fff; margin-top:18px; }
-
-    /* Modal */
-    .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:9999; }
-    .modal { background:#fff; padding:18px; border-radius:8px; max-width:420px; width:90%; box-shadow:0 6px 18px rgba(0,0,0,0.25); text-align:center; }
-    .modal h3 { margin:0 0 8px 0; }
-    .modal p { margin:0 0 16px 0; color:#333; }
-    .btn { display:inline-block; padding:8px 14px; border-radius:6px; text-decoration:none; cursor:pointer; font-weight:600; }
-    .btn-primary { background:#1976d2; color:#fff; border:0; margin-right:8px; }
-    .btn-secondary { background:#e0e0e0; color:#111; border:0; }
   </style>
 </head>
 <body>
@@ -36,12 +27,17 @@
     </nav>
   </header>
 
-  <div class="video-container">
-  <video id="newsVideo" controls preload="metadata" width="640" height="360">
-    <source src="https://drive.google.com/uc?export=download&id=1tCY8vnnwYSeXDIRyWz7I2vPmr878eUye" type="video/mp4">
-    Trình duyệt của bạn không hỗ trợ phát video.
-  </video>
-  </div>
+  <main>
+    <article>
+      <h2>Tin nổi bật hôm nay</h2>
+      <p>Video bản tin mới nhất được cập nhật từ hệ thống truyền thông chính thống.</p>
+
+      <!-- ✅ Nhúng video Google Drive -->
+      <div class="video-container">
+        <iframe src="https://drive.google.com/file/d/1tCY8vnnwYSeXDIRyWz7I2vPmr878eUye/preview" allow="autoplay"></iframe>
+      </div>
+    </article>
+
     <section class="news-list">
       <h3>Các bài tin khác</h3>
       <a href="news1.html">📰 Tin số 1: Việt Nam đạt thành tựu mới</a>
@@ -51,11 +47,7 @@
       <a href="news5.html">💡 Tin số 5: Công nghệ AI tại Việt Nam phát triển nhanh</a>
     </section>
   </main>
+
   <footer>© 2025 Tin Tức 24h</footer>
 </body>
 </html>
-
-
-
-
-
