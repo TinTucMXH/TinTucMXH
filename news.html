@@ -59,53 +59,7 @@
       <a href="news5.html">💡 Tin số 5: Công nghệ AI tại Việt Nam phát triển nhanh</a>
     </section>
   </main>
-
   <footer>© 2025 Tin Tức 24h</footer>
-
-  <!-- Modal -->
-  <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
-    <div class="modal">
-      <h3>Mở video gốc?</h3>
-      <p>Bạn vừa nhấn phát video. Bạn có muốn mở video này trên YouTube không?</p>
-      <div>
-        <button id="openLink" class="btn btn-primary">Mở YouTube</button>
-        <button id="continueWatch" class="btn btn-secondary">Tiếp tục xem tại đây</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    (function(){
-      const modal = document.getElementById('modalBackdrop');
-      const openBtn = document.getElementById('openLink');
-      const contBtn = document.getElementById('continueWatch');
-      const targetUrl = 'https://www.youtube.com/watch?v=WQr5AxZ2GbY&list=RDWQr5AxZ2GbY&start_radio=1';
-
-      // Hiển thị modal sau vài giây người xem nhấn play (giả lập bằng click vào iframe)
-      const iframe = document.getElementById('newsVideo');
-      let shown = false;
-
-      iframe.addEventListener('click', function(){
-        if (shown) return;
-        shown = true;
-        modal.style.display = 'flex';
-      });
-
-      openBtn.addEventListener('click', function() {
-        window.open(targetUrl, '_blank', 'noopener,noreferrer');
-        modal.style.display = 'none';
-      });
-
-      contBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
-      });
-
-      window.addEventListener('keydown', function(e){
-        if(e.key === 'Escape') {
-          if(modal.style.display === 'flex'){ modal.style.display = 'none'; }
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
+
