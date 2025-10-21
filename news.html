@@ -7,10 +7,13 @@
     body { font-family: Arial, sans-serif; margin:0; background:#f5f6f7; }
     header { background:#222; color:#fff; padding:12px 18px; }
     nav a { color:#fff; margin-right:12px; text-decoration:none; }
-    main { max-width:800px; margin:20px auto; padding:0 16px; }
-    article { background:#fff; padding:16px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.08); }
+    main { max-width:900px; margin:20px auto; padding:0 16px; }
+    article { background:#fff; padding:16px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.08); margin-bottom:20px; }
     .video-container { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; margin-top:12px; background:#000; }
-    .video-container video { position:absolute; top:0; left:0; width:100%; height:100%; }
+    .video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; }
+    .news-list a { display:block; background:#fff; padding:10px 14px; border-radius:5px; margin:8px 0; box-shadow:0 1px 4px rgba(0,0,0,0.1); text-decoration:none; color:#222; font-weight:bold; transition:all 0.2s; }
+    .news-list a:hover { background:#1976d2; color:#fff; }
+
     footer { text-align:center; padding:12px; background:#222; color:#fff; margin-top:18px; }
 
     /* Modal */
@@ -35,22 +38,26 @@
 
   <main>
     <article>
-      <h2>Tin số 1: Việt Nam đạt thành tựu mới</h2>
-      <p>Ngày hôm nay, Việt Nam đã ghi nhận một bước tiến lớn trong công nghệ…</p>
+      <h2>Tin nổi bật: Việt Nam đạt thành tựu mới</h2>
+      <p>Ngày hôm nay, Việt Nam đã ghi nhận một bước tiến lớn trong công nghệ và hội nhập quốc tế…</p>
 
       <div class="video-container">
-        <!-- Thay src bằng đường dẫn file mp4 của bạn -->
-        <video id="newsVideo" controls preload="metadata" poster="">
-          <source src="video/tintuc.mp4" type="video/mp4">
-          Trình duyệt của bạn không hỗ trợ phát video.
-        </video>
+        <!-- Thay bằng video YouTube thật của bạn -->
+        <iframe id="newsVideo" src="https://www.youtube.com/embed/WQr5AxZ2GbY" 
+          title="Tin tức video" frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen></iframe>
       </div>
     </article>
 
-    <article>
-      <h2>Tin số 2: Kinh tế tăng trưởng mạnh</h2>
-      <p>Nhiều chuyên gia dự đoán tốc độ tăng trưởng kinh tế sẽ tiếp tục tăng trong quý tới…</p>
-    </article>
+    <section class="news-list">
+      <h3>Các bài tin khác</h3>
+      <a href="news1.html">📰 Tin số 1: Việt Nam đạt thành tựu mới</a>
+      <a href="news2.html">📈 Tin số 2: Kinh tế tăng trưởng mạnh</a>
+      <a href="news3.html">⚙️ Tin số 3: Doanh nghiệp chuyển đổi số toàn diện</a>
+      <a href="news4.html">🌍 Tin số 4: Hợp tác quốc tế được mở rộng</a>
+      <a href="news5.html">💡 Tin số 5: Công nghệ AI tại Việt Nam phát triển nhanh</a>
+    </section>
   </main>
 
   <footer>© 2025 Tin Tức 24h</footer>
@@ -58,57 +65,47 @@
   <!-- Modal -->
   <div id="modalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true">
     <div class="modal">
-      <h3>Mở Gmail?</h3>
-      <p>Bạn vừa bấm phát video. Bạn có muốn mở Gmail (mở trong tab mới)?</p>
+      <h3>Mở video gốc?</h3>
+      <p>Bạn vừa nhấn phát video. Bạn có muốn mở video này trên YouTube không?</p>
       <div>
-        <button id="openLink" class="btn btn-primary">Mở Gmail</button>
-        <button id="continueWatch" class="btn btn-secondary">Tiếp tục xem</button>
+        <button id="openLink" class="btn btn-primary">Mở YouTube</button>
+        <button id="continueWatch" class="btn btn-secondary">Tiếp tục xem tại đây</button>
       </div>
     </div>
   </div>
 
   <script>
     (function(){
-      const video = document.getElementById('newsVideo');
       const modal = document.getElementById('modalBackdrop');
       const openBtn = document.getElementById('openLink');
       const contBtn = document.getElementById('continueWatch');
       const targetUrl = 'https://www.youtube.com/watch?v=WQr5AxZ2GbY&list=RDWQr5AxZ2GbY&start_radio=1';
 
-      let modalShownForThisPlay = false;
+      // Hiển thị modal sau vài giây người xem nhấn play (giả lập bằng click vào iframe)
+      const iframe = document.getElementById('newsVideo');
+      let shown = false;
 
-      // Khi user nhấn play
-      video.addEventListener('play', function() {
-        // Nếu modal đã hiển thị lần đầu, không hiển thị lần nữa cho cùng 1 session (tùy chỉnh)
-        if (modalShownForThisPlay) return;
-        // Pause ngay để người dùng quyết định
-        video.pause();
+      iframe.addEventListener('click', function(){
+        if (shown) return;
+        shown = true;
         modal.style.display = 'flex';
-        modalShownForThisPlay = true;
       });
 
       openBtn.addEventListener('click', function() {
-        // Mở link trong tab mới (do user yêu cầu)
         window.open(targetUrl, '_blank', 'noopener,noreferrer');
         modal.style.display = 'none';
-        // Nếu bạn muốn tiếp tục video sau khi mở link, bật resume:
-        video.play().catch(()=>{/* autoplay may be blocked */});
       });
 
       contBtn.addEventListener('click', function() {
         modal.style.display = 'none';
-        video.play().catch(()=>{/* autoplay may be blocked */});
       });
 
-      // Khi người bấm ngoài modal hoặc ESC, đóng modal (tùy chọn)
       window.addEventListener('keydown', function(e){
         if(e.key === 'Escape') {
-          if(modal.style.display === 'flex'){ modal.style.display = 'none'; video.play().catch(()=>{}); }
+          if(modal.style.display === 'flex'){ modal.style.display = 'none'; }
         }
       });
     })();
   </script>
 </body>
 </html>
-
-
