@@ -148,6 +148,25 @@
   </div>
 
   <script>
+    const titleInput = document.getElementById("videoTitle");
+    const videoInput = document.getElementById("videoLink");
+    const adInput = document.getElementById("adLink");
+    const redirectInput = document.getElementById("redirectLink");
+    const fileInput = document.getElementById("fileName");
+    const previewBtn = document.getElementById("previewBtn");
+    const generateBtn = document.getElementById("generateBtn");
+    const htmlOutput = document.getElementById("htmlOutput");
+
+    const previewBox = document.getElementById("previewBox");
+    const previewTitle = document.getElementById("previewTitle");
+    const previewVideo = document.getElementById("previewVideo");
+    const previewAd = document.getElementById("previewAd");
+    const adPopup = document.getElementById("adPopup");
+    const adContainer = document.getElementById("adContainer");
+    const closePopup = document.getElementById("closePopup");
+
+    let popupTimer;
+
     previewBtn.onclick = () => {
       const t = titleInput.value.trim();
       const v = videoInput.value.trim();
@@ -163,9 +182,8 @@
       previewVideo.src = v;
       previewAd.src = a;
       previewBox.style.display = "block";
+
       showPopup();
-      closePopup.onclick = hidePopup;
-      adContainer.onclick = () => window.open(r, "_blank");
     };
 
     generateBtn.onclick = () => {
@@ -189,66 +207,70 @@
       document.body.removeChild(aTag);
       window.open(url, "_blank");
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-      
-    const titleInput = document.getElementById("videoTitle");
-    const videoInput = document.getElementById("videoLink");
-    const adInput = document.getElementById("adLink");
-    const redirectInput = document.getElementById("redirectLink");
-    const fileInput = document.getElementById("fileName");
-    const previewBtn = document.getElementById("previewBtn");
-    const generateBtn = document.getElementById("generateBtn");
-    const htmlOutput = document.getElementById("htmlOutput");
+    };
 
-    const previewBox = document.getElementById("previewBox");
-    const previewTitle = document.getElementById("previewTitle");
-    const previewVideo = document.getElementById("previewVideo");
-    const previewAd = document.getElementById("previewAd");
-    const adPopup = document.getElementById("adPopup");
-    const adContainer = document.getElementById("adContainer");
-    const closePopup = document.getElementById("closePopup");
+    closePopup.onclick = () => hidePopup();
 
-    function showPopup() { adPopup.style.display = "block"; }
-    function hidePopup() { adPopup.style.display = "none"; setTimeout(showPopup, 30000); }
+    adContainer.onclick = () => {
+      const r = redirectInput.value.trim();
+      if(r) window.open(r, "_blank");
+    }
 
-    function generateHTML(t, v, a, r) {
+    function showPopup() { 
+      adPopup.style.display = "block"; 
+      clearTimeout(popupTimer);
+      popupTimer = setTimeout(showPopup, 30000); // Hiện lại popup sau 30s
+    }
+
+    function hidePopup() { 
+      adPopup.style.display = "none"; 
+    }
+
+    function generateHTML(title, videoSrc, adSrc, redirectLink) {
       return `<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>${t}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title}</title>
 <style>
-body{font-family:Arial,sans-serif;background:#fafafa;margin:0;}
-header{background:#222;color:#fff;padding:12px;text-align:center;}
-main{max-width:400px;margin:20px auto;padding:0 16px;}
-.video-container{position:relative;width:100%;padding-top:177.78%;background:#000;border-radius:12px;overflow:hidden;}
-.video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
-.popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border:2px solid #1976d2;padding:20px;border-radius:12px;text-align:center;display:none;box-shadow:0 4px 15px rgba(0,0,0,0.2);}
-.close-btn{position:absolute;top:8px;right:10px;background:#f44336;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;}
-.ad-video-container{position:relative;width:270px;padding-top:480px;background:#000;border-radius:10px;overflow:hidden;margin:auto;}
-.ad-video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:10px;cursor:pointer;}
+body { font-family: Arial,sans-serif; text-align:center; background:#f3f4f6; padding:20px;}
+.video-container, .ad-video-container { position:relative; width:100%; padding-top:177.78%; overflow:hidden; border-radius:12px; background:#000; margin:20px auto;}
+iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:12px;}
+.popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; border:2px solid #1976d2; padding:20px; border-radius:12px; display:none; z-index:999;}
+.close-btn { position:absolute; top:8px; right:10px; background:#f44336; color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer;}
 </style>
 </head>
 <body>
-<header><h1>${t}</h1></header>
-<main>
-<div class="video-container"><iframe src="${v}" allow="autoplay" allowfullscreen></iframe></div>
-</main>
-<div class="popup" id="adPopup">
-<button class="close-btn" id="closePopup">×</button>
-<h3>🎥 Quảng cáo</h3>
-<div class="ad-video-container" id="adContainer"><iframe src="${a}" allow="autoplay" allowfullscreen></iframe></div>
+<h1>${title}</h1>
+<div class="video-container">
+<iframe src="${videoSrc}" allow="autoplay" allowfullscreen></iframe>
 </div>
+
+<div class="popup" id="adPopup">
+<button class="close-btn" id="closeBtn">×</button>
+<h3>🎥 Video quảng cáo</h3>
+<div class="ad-video-container" id="adContainer">
+<iframe src="${adSrc}" allow="autoplay" allowfullscreen></iframe>
+</div>
+</div>
+
 <script>
-function showPopup(){document.getElementById("adPopup").style.display="block";}
-function hidePopup(){document.getElementById("adPopup").style.display="none";setTimeout(showPopup,30000);}
-window.onload=function(){
-  showPopup();
-  document.getElementById("closePopup").onclick=hidePopup;
-  document.getElementById("adContainer").onclick=function(){
-    window.open("${r}", "_blank");
-  };
-};
+const adPopup = document.getElementById("adPopup");
+const adContainer = document.getElementById("adContainer");
+const closeBtn = document.getElementById("closeBtn");
+let popupTimer;
+
+function showPopup(){ adPopup.style.display="block"; popupTimer = setTimeout(showPopup,30000);}
+function hidePopup(){ adPopup.style.display="none"; }
+
+closeBtn.onclick = hidePopup;
+adContainer.onclick = () => window.open("${redirectLink}", "_blank");
+showPopup();
 </script>
 </body>
-</html>;
+</html>`;
+    }
+  </script>
+</body>
+</html>
