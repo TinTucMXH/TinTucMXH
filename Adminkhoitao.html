@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>🧩 Tạo Trang Video Mới</title>
+  <title>🧩 Tạo Trang Video Tin Tức</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,7 +14,7 @@
       text-align: center;
       color: #1976d2;
     }
-    form {
+    .form-container {
       background: #fff;
       padding: 20px;
       border-radius: 10px;
@@ -22,11 +22,21 @@
       max-width: 600px;
       margin: 20px auto;
     }
-    label { display:block; margin-top:12px; font-weight:bold; }
-    input[type="text"] {
-      width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;
+    label {
+      display:block;
+      margin-top:12px;
+      font-weight:bold;
     }
-    input[type="text"]:focus { outline:none; border-color:#1976d2; }
+    input[type="text"] {
+      width:100%;
+      padding:10px;
+      border:1px solid #ccc;
+      border-radius:6px;
+    }
+    input[type="text"]:focus {
+      outline:none;
+      border-color:#1976d2;
+    }
     button {
       margin-top:18px;
       background:#1976d2;
@@ -43,7 +53,8 @@
 </head>
 <body>
   <h1>🧩 Tạo Trang Video Tin Tức</h1>
-  <form id="videoForm">
+
+  <div class="form-container">
     <label>📝 Tiêu đề video:</label>
     <input type="text" id="videoTitle" placeholder="Nhập tiêu đề video...">
 
@@ -56,26 +67,23 @@
     <label>💾 Tên file xuất ra (không có .html):</label>
     <input type="text" id="fileName" placeholder="vd: canphongbimat">
 
-    <button type="submit">Tạo file HTML</button>
-  </form>
+    <button id="generateBtn">Tạo file HTML</button>
+  </div>
 
   <script>
-    // Gắn sự kiện xử lý form
-    document.getElementById("videoForm").addEventListener("submit", function(event) {
-      event.preventDefault(); // ✅ Ngăn form reload trang
-
+    document.getElementById("generateBtn").addEventListener("click", function () {
       const title = document.getElementById("videoTitle").value.trim();
       const video = document.getElementById("videoLink").value.trim();
       const ad = document.getElementById("adLink").value.trim();
       const fileName = document.getElementById("fileName").value.trim();
 
-      // 🔍 Kiểm tra thông tin nhập
+      // ✅ Kiểm tra dữ liệu đầu vào
       if (!title || !video || !ad || !fileName) {
         alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
         return;
       }
 
-      // ✅ Nội dung HTML được tạo
+      // ✅ Nội dung HTML được tạo ra
       const content = `
 <!DOCTYPE html>
 <html lang="vi">
@@ -84,6 +92,15 @@
   <title>${title}</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    body { font-family: Arial, sans-serif; background: #f5f6f7; margin:0; }
+    header { background:#222; color:#fff; padding:12px 18px; }
+    nav a { color:#fff; margin-right:12px; text-decoration:none; }
+    main { max-width:900px; margin:20px auto; padding:0 16px; }
+    article { background:#fff; padding:16px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.08); margin-bottom:20px; }
+    .video-container { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; margin-top:12px; background:#000; }
+    .video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+
+    /* Popup */
     .popup {
       position: fixed;
       top: 50%;
@@ -132,7 +149,7 @@
     <article>
       <h2>${title}</h2>
       <div class="video-container">
-        <iframe src="${video}" width="560" height="315" allow="autoplay" allowfullscreen></iframe>
+        <iframe src="${video}" allow="autoplay" allowfullscreen></iframe>
       </div>
     </article>
   </main>
@@ -162,15 +179,17 @@
 </html>
       `;
 
-      // ✅ Tạo file tải về
+      // ✅ Tạo file tải xuống
       const blob = new Blob([content], { type: "text/html" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = fileName + ".html";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = fileName + ".html";
+
+      // Cần thêm vào DOM để đảm bảo hoạt động ổn định trên các trình duyệt
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      URL.revokeObjectURL(downloadLink.href);
     });
   </script>
 </body>
