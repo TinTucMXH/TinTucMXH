@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>🧩 Trình Tạo Video Dọc 9:16</title>
+  <title>📱 Tạo Trang Bài Viết Mới</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -21,8 +21,13 @@
       margin: 20px auto;
     }
     label { display:block; margin-top:12px; font-weight:bold; }
-    input[type="text"] {
+    input[type="text"], textarea {
       width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;
+      font-family: monospace;
+    }
+    textarea {
+      height: 250px;
+      resize: vertical;
     }
     button {
       margin-top:18px; width:100%; padding:12px;
@@ -43,11 +48,10 @@
       padding:20px;
     }
 
-    /* 9:16 video container */
     .video-container {
       position:relative;
       width:100%;
-      padding-top:177.78%; /* 16/9 = 56.25% → 9/16 = 177.78% */
+      padding-top:177.78%; /* 9:16 */
       background:#000;
       border-radius:12px;
       overflow:hidden;
@@ -60,7 +64,6 @@
       border-radius:12px;
     }
 
-    /* Popup quảng cáo */
     .popup {
       position:fixed;
       top:50%; left:50%;
@@ -82,8 +85,8 @@
     }
     .ad-video-container {
       position:relative;
-      width:270px;
-      padding-top:480px; /* 9:16 tỷ lệ */
+      width:100%;
+      padding-top:177.78%; /* 9:16 */
       background:#000;
       border-radius:10px;
       overflow:hidden;
@@ -98,8 +101,8 @@
     }
 
     @media(max-width:480px){
-      .container, .preview{max-width:90%;}
-      .ad-video-container{width:220px;padding-top:390px;}
+      body { padding:15px; }
+      .container, .preview { max-width:100%; }
     }
   </style>
 </head>
@@ -116,14 +119,19 @@
     <label>🎯 Link nhúng video quảng cáo:</label>
     <input type="text" id="adLink" placeholder="Dán link quảng cáo...">
 
+    <label>🔗 Link chuyển hướng khi nhấn quảng cáo:</label>
+    <input type="text" id="redirectLink" placeholder="Dán link chuyển hướng...">
+
     <label>💾 Tên file xuất ra (không có .html):</label>
     <input type="text" id="fileName" placeholder="vd: video_doc_916">
 
     <button id="previewBtn">👀 Xem trước</button>
     <button id="generateBtn">💾 Tải & Xem file HTML</button>
+
+    <label>📄 Mã HTML tạo ra:</label>
+    <textarea id="htmlOutput" readonly placeholder="Mã HTML sẽ hiển thị tại đây sau khi nhấn Xem trước..."></textarea>
   </div>
 
-  <!-- Khu vực xem trước -->
   <div class="preview" id="previewBox">
     <h2 id="previewTitle"></h2>
     <div class="video-container">
@@ -131,60 +139,37 @@
     </div>
   </div>
 
-  <!-- Popup quảng cáo -->
   <div class="popup" id="adPopup">
     <button class="close-btn" id="closePopup">×</button>
     <h3>🎥 Video quảng cáo</h3>
-    <div class="ad-video-container">
+    <div class="ad-video-container" id="adContainer">
       <iframe id="previewAd" allow="autoplay" allowfullscreen></iframe>
     </div>
   </div>
 
   <script>
-    const videoTitle = document.getElementById("videoTitle");
-    const videoLink = document.getElementById("videoLink");
-    const adLink = document.getElementById("adLink");
-    const fileName = document.getElementById("fileName");
+    const titleInput = document.getElementById("videoTitle");
+    const videoInput = document.getElementById("videoLink");
+    const adInput = document.getElementById("adLink");
+    const redirectInput = document.getElementById("redirectLink");
+    const fileInput = document.getElementById("fileName");
     const previewBtn = document.getElementById("previewBtn");
     const generateBtn = document.getElementById("generateBtn");
+    const htmlOutput = document.getElementById("htmlOutput");
+
     const previewBox = document.getElementById("previewBox");
     const previewTitle = document.getElementById("previewTitle");
     const previewVideo = document.getElementById("previewVideo");
     const previewAd = document.getElementById("previewAd");
     const adPopup = document.getElementById("adPopup");
+    const adContainer = document.getElementById("adContainer");
     const closePopup = document.getElementById("closePopup");
 
     function showPopup() { adPopup.style.display = "block"; }
     function hidePopup() { adPopup.style.display = "none"; setTimeout(showPopup, 30000); }
 
-    previewBtn.onclick = () => {
-      const t = videoTitle.value.trim();
-      const v = videoLink.value.trim();
-      const a = adLink.value.trim();
-      if (!t || !v || !a) {
-        alert("⚠️ Hãy điền đầy đủ thông tin trước khi xem trước!");
-        return;
-      }
-      previewTitle.textContent = t;
-      previewVideo.src = v;
-      previewAd.src = a;
-      previewBox.style.display = "block";
-      showPopup();
-      closePopup.onclick = hidePopup;
-    };
-
-    generateBtn.onclick = () => {
-      const t = videoTitle.value.trim();
-      const v = videoLink.value.trim();
-      const a = adLink.value.trim();
-      const f = fileName.value.trim();
-      if (!t || !v || !a || !f) {
-        alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
-        return;
-      }
-
-      const html = `
-<!DOCTYPE html>
+    function generateHTML(t, v, a, r) {
+      return `<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
@@ -199,7 +184,7 @@ main{max-width:400px;margin:20px auto;padding:0 16px;}
 .popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border:2px solid #1976d2;padding:20px;border-radius:12px;text-align:center;display:none;box-shadow:0 4px 15px rgba(0,0,0,0.2);}
 .close-btn{position:absolute;top:8px;right:10px;background:#f44336;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;}
 .ad-video-container{position:relative;width:270px;padding-top:480px;background:#000;border-radius:10px;overflow:hidden;margin:auto;}
-.ad-video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:10px;}
+.ad-video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:10px;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -207,29 +192,65 @@ main{max-width:400px;margin:20px auto;padding:0 16px;}
 <main>
 <div class="video-container"><iframe src="${v}" allow="autoplay" allowfullscreen></iframe></div>
 </main>
-
 <div class="popup" id="adPopup">
 <button class="close-btn" id="closePopup">×</button>
 <h3>🎥 Quảng cáo</h3>
-<div class="ad-video-container"><iframe class="ad-video" src="${a}" allow="autoplay" allowfullscreen></iframe></div>
+<div class="ad-video-container" id="adContainer"><iframe src="${a}" allow="autoplay" allowfullscreen></iframe></div>
 </div>
-
 <script>
 function showPopup(){document.getElementById("adPopup").style.display="block";}
 function hidePopup(){document.getElementById("adPopup").style.display="none";setTimeout(showPopup,30000);}
-window.onload=function(){showPopup();document.getElementById("closePopup").onclick=hidePopup;}
+window.onload=function(){
+  showPopup();
+  document.getElementById("closePopup").onclick=hidePopup;
+  document.getElementById("adContainer").onclick=function(){
+    window.open("${r}", "_blank");
+  };
+};
 </script>
 </body>
 </html>`;
+    }
 
+    previewBtn.onclick = () => {
+      const t = titleInput.value.trim();
+      const v = videoInput.value.trim();
+      const a = adInput.value.trim();
+      const r = redirectInput.value.trim();
+      if (!t || !v || !a || !r) {
+        alert("⚠️ Hãy điền đầy đủ thông tin trước khi xem trước!");
+        return;
+      }
+      const html = generateHTML(t, v, a, r);
+      htmlOutput.value = html;
+      previewTitle.textContent = t;
+      previewVideo.src = v;
+      previewAd.src = a;
+      previewBox.style.display = "block";
+      showPopup();
+      closePopup.onclick = hidePopup;
+      adContainer.onclick = () => window.open(r, "_blank");
+    };
+
+    generateBtn.onclick = () => {
+      const t = titleInput.value.trim();
+      const v = videoInput.value.trim();
+      const a = adInput.value.trim();
+      const r = redirectInput.value.trim();
+      const f = fileInput.value.trim();
+      if (!t || !v || !a || !r || !f) {
+        alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
+        return;
+      }
+      const html = generateHTML(t, v, a, r);
       const blob = new Blob([html], { type: "text/html" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = f + ".html";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const aTag = document.createElement("a");
+      aTag.href = url;
+      aTag.download = f + ".html";
+      document.body.appendChild(aTag);
+      aTag.click();
+      document.body.removeChild(aTag);
       window.open(url, "_blank");
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
