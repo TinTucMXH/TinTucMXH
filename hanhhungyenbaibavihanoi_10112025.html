@@ -14,7 +14,6 @@
     .news-list a { display:block; background:#fff; padding:10px 14px; border-radius:5px; margin:8px 0; box-shadow:0 1px 4px rgba(0,0,0,0.1); text-decoration:none; color:#222; font-weight:bold; transition:all 0.2s; }
     .news-list a:hover { background:#1976d2; color:#fff; }
     footer { text-align:center; padding:12px; background:#222; color:#fff; margin-top:18px; }
-
     /* ✅ Popup quảng cáo luôn giữa màn hình */
     .popup {
       position: fixed;
@@ -31,29 +30,13 @@
       display: none;
       animation: fadeIn 0.6s ease;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translate(-50%, -55%); }
       to { opacity: 1; transform: translate(-50%, -50%); }
     }
-
-    .popup h3 {
-      margin: 0 0 8px 0;
-      color: #222;
-    }
-
-    .popup p {
-      color: #555;
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-
-    .popup img {
-      width: 100%;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
+    .popup h3 { margin: 0 0 8px 0; color: #222; }
+    .popup p { color: #555; font-size: 14px; margin-bottom: 10px; }
+    .popup img { width: 100%; border-radius: 8px; cursor: pointer; }
     .close-btn {
       position: absolute;
       top: 6px;
@@ -85,7 +68,7 @@
       <p>Yên Bài - Ba Vì - Hà Nội  1 ng bị 👊 hiện đang nằm viện đtri ch:ấn thươnq 🧠, h0a m.ắt, chónq m.ặt 😱.</p>
       <!-- ✅ Nhúng video Google Drive -->
       <div class="video-container">
-        <iframe src="https://drive.google.com/file/d/1btsBI4xlhEo5KOgS_RFbw8JQ8LsXXMJS/preview" allow="autoplay"></iframe>
+        <iframe id="mainVideo" allow="autoplay"></iframe>
       </div>
     </article>
   </main>
@@ -97,25 +80,20 @@
     <button class="close-btn" id="closePopup">×</button>
     <h3>🎉 Khuyến mãi đặc biệt!</h3>
     <p>Nhấn vào ảnh để xem chi tiết ưu đãi.</p>
-    <img src="https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai+Lon" id="adImage" alt="Quảng cáo">
+    <img id="adImage" alt="Quảng cáo">
   </div>
 
   <script>
-    // Hiển thị popup
-    function showPopup() {
-      const popup = document.getElementById('adPopup');
-      popup.style.display = 'block';
-    }
+    // --- KHAI BÁO CÁC LINK VIDEO VÀ QUẢNG CÁO Ở ĐÂY ---
+    const mainVideoSrc = "https://drive.google.com/file/d/1btsBI4xlhEo5KOgS_RFbw8JQ8LsXXMJS/preview";
+    const adImgSrc = "https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai+Lon";
+    const adRedirect = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220";
 
-    // Ẩn popup trong 30 giây, rồi hiện lại
-    function hidePopupTemporarily() {
-      const popup = document.getElementById('adPopup');
-      popup.style.display = 'none';
-      setTimeout(showPopup, 30000); // 30 giây sau hiện lại
-    }
-
-    // Khi trang tải
+    // Set src cho iframe/video/quảng cáo khi trang tải
     window.onload = function() {
+      document.getElementById('mainVideo').src = mainVideoSrc;
+      document.getElementById('adImage').src = adImgSrc;
+      // Các xử lý popup như cũ:
       const popup = document.getElementById('adPopup');
       const closeBtn = document.getElementById('closePopup');
       const adImage = document.getElementById('adImage');
@@ -125,19 +103,30 @@
 
       // Click ảnh -> mở trang mới và ẩn popup 30s
       adImage.onclick = function() {
-        window.open("https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220", "_blank");
-       hidePopupTemporarily();
+        window.open(adRedirect, "_blank");
+        hidePopupTemporarily();
       };
       // Click nút đóng -> đóng 2s rồi ẩn 30s
       closeBtn.onclick = function() {
         closeBtn.textContent = "Đang đóng...";
-		window.open("https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220", "_blank");
-		setTimeout(() => {
+        window.open(adRedirect, "_blank");
+        setTimeout(() => {
           hidePopupTemporarily();
           closeBtn.textContent = "×";
         }, 2000);
       };
     };
+
+    // Hiển thị popup
+    function showPopup() {
+      document.getElementById('adPopup').style.display = 'block';
+    }
+
+    // Ẩn popup trong 30 giây, rồi hiện lại
+    function hidePopupTemporarily() {
+      document.getElementById('adPopup').style.display = 'none';
+      setTimeout(showPopup, 30000); // 30 giây sau hiện lại
+    }
   </script>
 </body>
 </html>
