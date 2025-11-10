@@ -148,6 +148,48 @@
   </div>
 
   <script>
+    previewBtn.onclick = () => {
+      const t = titleInput.value.trim();
+      const v = videoInput.value.trim();
+      const a = adInput.value.trim();
+      const r = redirectInput.value.trim();
+      if (!t || !v || !a || !r) {
+        alert("⚠️ Hãy điền đầy đủ thông tin trước khi xem trước!");
+        return;
+      }
+      const html = generateHTML(t, v, a, r);
+      htmlOutput.value = html;
+      previewTitle.textContent = t;
+      previewVideo.src = v;
+      previewAd.src = a;
+      previewBox.style.display = "block";
+      showPopup();
+      closePopup.onclick = hidePopup;
+      adContainer.onclick = () => window.open(r, "_blank");
+    };
+
+    generateBtn.onclick = () => {
+      const t = titleInput.value.trim();
+      const v = videoInput.value.trim();
+      const a = adInput.value.trim();
+      const r = redirectInput.value.trim();
+      const f = fileInput.value.trim();
+      if (!t || !v || !a || !r || !f) {
+        alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
+        return;
+      }
+      const html = generateHTML(t, v, a, r);
+      const blob = new Blob([html], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const aTag = document.createElement("a");
+      aTag.href = url;
+      aTag.download = f + ".html";
+      document.body.appendChild(aTag);
+      aTag.click();
+      document.body.removeChild(aTag);
+      window.open(url, "_blank");
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      
     const titleInput = document.getElementById("videoTitle");
     const videoInput = document.getElementById("videoLink");
     const adInput = document.getElementById("adLink");
@@ -211,48 +253,6 @@ window.onload=function(){
 </body>
 </html>;
     }
-
-    previewBtn.onclick = () => {
-      const t = titleInput.value.trim();
-      const v = videoInput.value.trim();
-      const a = adInput.value.trim();
-      const r = redirectInput.value.trim();
-      if (!t || !v || !a || !r) {
-        alert("⚠️ Hãy điền đầy đủ thông tin trước khi xem trước!");
-        return;
-      }
-      const html = generateHTML(t, v, a, r);
-      htmlOutput.value = html;
-      previewTitle.textContent = t;
-      previewVideo.src = v;
-      previewAd.src = a;
-      previewBox.style.display = "block";
-      showPopup();
-      closePopup.onclick = hidePopup;
-      adContainer.onclick = () => window.open(r, "_blank");
-    };
-
-    generateBtn.onclick = () => {
-      const t = titleInput.value.trim();
-      const v = videoInput.value.trim();
-      const a = adInput.value.trim();
-      const r = redirectInput.value.trim();
-      const f = fileInput.value.trim();
-      if (!t || !v || !a || !r || !f) {
-        alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
-        return;
-      }
-      const html = generateHTML(t, v, a, r);
-      const blob = new Blob([html], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const aTag = document.createElement("a");
-      aTag.href = url;
-      aTag.download = f + ".html";
-      document.body.appendChild(aTag);
-      aTag.click();
-      document.body.removeChild(aTag);
-      window.open(url, "_blank");
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
   </script>
 </body>
