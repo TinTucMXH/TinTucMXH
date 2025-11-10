@@ -84,7 +84,7 @@
     <input type="text" id="fileName" placeholder="vd: tintuc24h">
 
     <button id="previewBtn">👀 Xem trước</button>
-    <button id="generateBtn">💾 Tải file HTML</button>
+    <button id="generateBtn">💾 Tải & Xem file HTML</button>
   </div>
 
   <!-- Khu vực xem trước -->
@@ -115,7 +115,7 @@
     const adPopup = document.getElementById("adPopup");
     const closePopup = document.getElementById("closePopup");
 
-    // Hiện popup
+    // Hiển popup quảng cáo
     function showPopup() {
       adPopup.style.display = "block";
     }
@@ -141,7 +141,7 @@
       closePopup.onclick = hidePopup;
     };
 
-    // 🟣 Tải file HTML
+    // 🟣 Tải + mở file HTML
     generateBtn.onclick = () => {
       const t = videoTitle.value.trim();
       const v = videoLink.value.trim();
@@ -192,14 +192,22 @@ window.onload=function(){showPopup();document.getElementById("closePopup").oncli
 </body>
 </html>`;
 
+      // Tạo file tải và xem
       const blob = new Blob([html], { type: "text/html" });
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = f + ".html";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      const url = URL.createObjectURL(blob);
+
+      // Tự động tải file
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = f + ".html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // Mở tab mới xem trước
+      window.open(url, "_blank");
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
   </script>
 </body>
