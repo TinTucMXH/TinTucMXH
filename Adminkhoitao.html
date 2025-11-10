@@ -37,7 +37,6 @@
     #previewBtn { background:#4caf50; }
     #generateBtn { background:#1976d2; }
     button:hover { opacity:0.9; }
-
     .preview {
       display:none;
       background:#fff;
@@ -46,8 +45,8 @@
       max-width:400px;
       margin:20px auto;
       padding:20px;
+      text-align:center;
     }
-
     .video-container {
       position:relative;
       width:100%;
@@ -63,7 +62,6 @@
       border:none;
       border-radius:12px;
     }
-
     .popup {
       position:fixed;
       top:50%; left:50%;
@@ -76,21 +74,24 @@
       display:none;
       box-shadow:0 4px 15px rgba(0,0,0,0.2);
       z-index:999;
+      max-width: 90%;
+      width: 350px;
     }
     .close-btn {
       position:absolute; top:8px; right:10px;
       background:#f44336; color:white;
       border:none; border-radius:50%; width:24px; height:24px;
-      cursor:pointer;
+      cursor:pointer; font-size:18px; line-height:24px;
     }
     .ad-video-container {
       position:relative;
       width:100%;
-      padding-top:177.78%; /* 9:16 */
+      padding-top:177.78%;
       background:#000;
       border-radius:10px;
       overflow:hidden;
-      margin:auto;
+      margin:15px auto 0;
+      cursor: pointer;
     }
     .ad-video-container iframe {
       position:absolute;
@@ -98,8 +99,8 @@
       width:100%; height:100%;
       border:none;
       border-radius:10px;
+      pointer-events: none; /* Cho phép click xuyên qua iframe */
     }
-
     @media(max-width:480px){
       body { padding:15px; }
       .container, .preview { max-width:100%; }
@@ -108,26 +109,19 @@
 </head>
 <body>
   <h1>📱 Tạo Trang Bài Mới</h1>
-
   <div class="container">
     <label>📝 Tiêu đề video:</label>
     <input type="text" id="videoTitle" placeholder="Nhập tiêu đề video...">
-
     <label>📺 Link nhúng video chính (TikTok / YouTube Shorts):</label>
     <input type="text" id="videoLink" placeholder="Dán link nhúng iframe...">
-
     <label>🎯 Link nhúng video quảng cáo:</label>
     <input type="text" id="adLink" placeholder="Dán link quảng cáo...">
-
     <label>🔗 Link chuyển hướng khi nhấn quảng cáo:</label>
     <input type="text" id="redirectLink" placeholder="Dán link chuyển hướng...">
-
     <label>💾 Tên file xuất ra (không có .html):</label>
     <input type="text" id="fileName" placeholder="vd: video_doc_916">
-
     <button id="previewBtn">👀 Xem trước</button>
     <button id="generateBtn">💾 Tải & Xem file HTML</button>
-
     <label>📄 Mã HTML tạo ra:</label>
     <textarea id="htmlOutput" readonly placeholder="Mã HTML sẽ hiển thị tại đây sau khi nhấn Xem trước..."></textarea>
   </div>
@@ -148,6 +142,7 @@
   </div>
 
   <script>
+    // DOM Elements
     const titleInput = document.getElementById("videoTitle");
     const videoInput = document.getElementById("videoLink");
     const adInput = document.getElementById("adLink");
@@ -156,7 +151,6 @@
     const previewBtn = document.getElementById("previewBtn");
     const generateBtn = document.getElementById("generateBtn");
     const htmlOutput = document.getElementById("htmlOutput");
-
     const previewBox = document.getElementById("previewBox");
     const previewTitle = document.getElementById("previewTitle");
     const previewVideo = document.getElementById("previewVideo");
@@ -165,37 +159,65 @@
     const adContainer = document.getElementById("adContainer");
     const closePopup = document.getElementById("closePopup");
 
-    let popupTimer;
+    let popupTimer = null;
 
+    // Hàm hiển thị popup quảng cáo (lặp lại mỗi 30s)
+    function showPopup() {
+      adPopup.style.display = "block";
+      clearTimeout(popupTimer);
+      popupTimer = setTimeout(showPopup, 30000);
+    }
+
+    // Ẩn popup
+    function hidePopup() {
+      adPopup.style.display = "none";
+      clearTimeout(popupTimer);
+    }
+
+    // Xem trước
     previewBtn.onclick = () => {
       const t = titleInput.value.trim();
       const v = videoInput.value.trim();
       const a = adInput.value.trim();
       const r = redirectInput.value.trim();
+
       if (!t || !v || !a || !r) {
         alert("⚠️ Hãy điền đầy đủ thông tin trước khi xem trước!");
         return;
       }
+
+      // Tạo HTML
       const html = generateHTML(t, v, a, r);
       htmlOutput.value = html;
+
+      // Cập nhật preview
       previewTitle.textContent = t;
       previewVideo.src = v;
       previewAd.src = a;
       previewBox.style.display = "block";
 
+      // Hiển thị popup
       showPopup();
+
+      // Gắn sự kiện click cho quảng cáo (trong preview)
+      adContainer.onclick = () => {
+        if (r) window.open(r, "_blank");
+      };
     };
 
+    // Tạo file HTML
     generateBtn.onclick = () => {
       const t = titleInput.value.trim();
       const v = videoInput.value.trim();
       const a = adInput.value.trim();
       const r = redirectInput.value.trim();
       const f = fileInput.value.trim();
+
       if (!t || !v || !a || !r || !f) {
         alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
         return;
       }
+
       const html = generateHTML(t, v, a, r);
       const blob = new Blob([html], { type: "text/html" });
       const url = URL.createObjectURL(blob);
@@ -205,27 +227,22 @@
       document.body.appendChild(aTag);
       aTag.click();
       document.body.removeChild(aTag);
+      URL.revokeObjectURL(url);
+
+      // Mở file trong tab mới
       window.open(url, "_blank");
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
 
-    closePopup.onclick = () => hidePopup();
+    // Đóng popup
+    closePopup.onclick = hidePopup;
 
+    // Click vào quảng cáo trong popup preview
     adContainer.onclick = () => {
       const r = redirectInput.value.trim();
-      if(r) window.open(r, "_blank");
-    }
+      if (r) window.open(r, "_blank");
+    };
 
-    function showPopup() { 
-      adPopup.style.display = "block"; 
-      clearTimeout(popupTimer);
-      popupTimer = setTimeout(showPopup, 30000); // Hiện lại popup sau 30s
-    }
-
-    function hidePopup() { 
-      adPopup.style.display = "none"; 
-    }
-
+    // Hàm tạo HTML xuất ra
     function generateHTML(title, videoSrc, adSrc, redirectLink) {
       return `<!DOCTYPE html>
 <html lang="vi">
@@ -234,39 +251,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title}</title>
 <style>
-body { font-family: Arial,sans-serif; text-align:center; background:#f3f4f6; padding:20px;}
-.video-container, .ad-video-container { position:relative; width:100%; padding-top:177.78%; overflow:hidden; border-radius:12px; background:#000; margin:20px auto;}
-iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:12px;}
-.popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; border:2px solid #1976d2; padding:20px; border-radius:12px; display:none; z-index:999;}
-.close-btn { position:absolute; top:8px; right:10px; background:#f44336; color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer;}
+  body {font-family: Arial, sans-serif; text-align:center; background:#f3f4f6; padding:20px; margin:0;}
+  h1 {color: #1976d2; margin-bottom: 20px;}
+  .video-container, .ad-video-container {
+    position:relative; width:100%; max-width:400px; margin:20px auto;
+    padding-top:177.78%; background:#000; border-radius:12px; overflow:hidden;
+  }
+  .video-container iframe, .ad-video-container iframe {
+    position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:12px;
+  }
+  .ad-video-container {cursor: pointer;}
+  .ad-video-container iframe {pointer-events: none;}
+  .popup {
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+    background:#fff; border:2px solid #1976d2; padding:20px; border-radius:12px;
+    display:none; z-index:999; max-width:90%; width:350px; box-shadow:0 4px 15px rgba(0,0,0,0.2);
+  }
+  .close-btn {
+    position:absolute; top:8px; right:10px; background:#f44336; color:white;
+    border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; font-size:18px;
+  }
 </style>
 </head>
 <body>
 <h1>${title}</h1>
 <div class="video-container">
-<iframe src="${videoSrc}" allow="autoplay" allowfullscreen></iframe>
+  <iframe src="${videoSrc}" allow="autoplay" allowfullscreen></iframe>
 </div>
 
 <div class="popup" id="adPopup">
-<button class="close-btn" id="closeBtn">×</button>
-<h3>🎥 Video quảng cáo</h3>
-<div class="ad-video-container" id="adContainer">
-<iframe src="${adSrc}" allow="autoplay" allowfullscreen></iframe>
-</div>
+  <button class="close-btn" id="closeBtn">×</button>
+  <h3>🎥 Video quảng cáo</h3>
+  <div class="ad-video-container" id="adContainer">
+    <iframe src="${adSrc}" allow="autoplay" allowfullscreen></iframe>
+  </div>
 </div>
 
 <script>
-const adPopup = document.getElementById("adPopup");
-const adContainer = document.getElementById("adContainer");
-const closeBtn = document.getElementById("closeBtn");
-let popupTimer;
+  const adPopup = document.getElementById("adPopup");
+  const adContainer = document.getElementById("adContainer");
+  const closeBtn = document.getElementById("closeBtn");
+  let timer;
 
-function showPopup(){ adPopup.style.display="block"; popupTimer = setTimeout(showPopup,30000);}
-function hidePopup(){ adPopup.style.display="none"; }
+  function showAd() {
+    adPopup.style.display = "block";
+    clearTimeout(timer);
+    timer = setTimeout(showAd, 30000);
+  }
 
-closeBtn.onclick = hidePopup;
-adContainer.onclick = () => window.open("${redirectLink}", "_blank");
-showPopup();
+  function hideAd() {
+    adPopup.style.display = "none";
+    clearTimeout(timer);
+  }
+
+  closeBtn.onclick = hideAd;
+  adContainer.onclick = () => window.open("${redirectLink}", "_blank");
+  showAd();
 </script>
 </body>
 </html>`;
