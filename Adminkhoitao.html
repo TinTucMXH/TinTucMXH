@@ -207,31 +207,35 @@
 
     // Tạo file HTML
     generateBtn.onclick = () => {
-      const t = titleInput.value.trim();
-      const v = videoInput.value.trim();
-      const a = adInput.value.trim();
-      const r = redirectInput.value.trim();
-      const f = fileInput.value.trim();
+  const t = titleInput.value.trim();
+  const v = videoInput.value.trim();
+  const a = adInput.value.trim();
+  const r = redirectInput.value.trim();
+  const f = fileInput.value.trim();
 
-      if (!t || !v || !a || !r || !f) {
-        alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
-        return;
-      }
+  if (!t || !v || !a || !r || !f) {
+    alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
+    return;
+  }
 
-      const html = generateHTML(t, v, a, r);
-      const blob = new Blob([html], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const aTag = document.createElement("a");
-      aTag.href = url;
-      aTag.download = f + ".html";
-      document.body.appendChild(aTag);
-      aTag.click();
-      document.body.removeChild(aTag);
-      URL.revokeObjectURL(url);
+  const html = generateHTML(t, v, a, r);
+  const blob = new Blob([html], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
 
-      // Mở file trong tab mới
-      window.open(url, "_blank");
-    };
+  // Tải về file
+  const aTag = document.createElement("a");
+  aTag.href = url;
+  aTag.download = f + ".html";
+  document.body.appendChild(aTag);
+  aTag.click();
+  document.body.removeChild(aTag);
+
+  // Mở file ở tab mới
+  setTimeout(() => {
+    window.open(url, "_blank");
+    URL.revokeObjectURL(url); // Giải phóng sau khi mở
+  }, 400); // delay 400ms cho chắc chắn
+};
 
     // Đóng popup
     closePopup.onclick = hidePopup;
