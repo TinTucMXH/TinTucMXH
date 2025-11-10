@@ -2,7 +2,8 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>🧩 Trình Tạo Trang Video Tự Động</title>
+  <title>🧩 Trình Tạo Video Dọc 9:16</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -37,12 +38,29 @@
       background:#fff;
       border-radius:10px;
       box-shadow:0 4px 10px rgba(0,0,0,0.1);
-      max-width:800px;
+      max-width:400px;
       margin:20px auto;
       padding:20px;
     }
-    iframe { width:100%; height:400px; border:none; border-radius:8px; background:#000; }
 
+    /* 9:16 video container */
+    .video-container {
+      position:relative;
+      width:100%;
+      padding-top:177.78%; /* 16/9 = 56.25% → 9/16 = 177.78% */
+      background:#000;
+      border-radius:12px;
+      overflow:hidden;
+    }
+    .video-container iframe {
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      border:none;
+      border-radius:12px;
+    }
+
+    /* Popup quảng cáo */
     .popup {
       position:fixed;
       top:50%; left:50%;
@@ -62,26 +80,44 @@
       border:none; border-radius:50%; width:24px; height:24px;
       cursor:pointer;
     }
-    iframe.ad-video {
-      width:320px; height:180px; border:none; border-radius:8px;
+    .ad-video-container {
+      position:relative;
+      width:270px;
+      padding-top:480px; /* 9:16 tỷ lệ */
+      background:#000;
+      border-radius:10px;
+      overflow:hidden;
+      margin:auto;
+    }
+    .ad-video-container iframe {
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      border:none;
+      border-radius:10px;
+    }
+
+    @media(max-width:480px){
+      .container, .preview{max-width:90%;}
+      .ad-video-container{width:220px;padding-top:390px;}
     }
   </style>
 </head>
 <body>
-  <h1>🧩 Trình tạo trang video tin tức</h1>
+  <h1>📱 Tạo Trang Video Dọc 9:16</h1>
 
   <div class="container">
     <label>📝 Tiêu đề video:</label>
     <input type="text" id="videoTitle" placeholder="Nhập tiêu đề video...">
 
-    <label>📺 Link nhúng video chính (Google Drive / YouTube):</label>
+    <label>📺 Link nhúng video chính (TikTok / YouTube Shorts):</label>
     <input type="text" id="videoLink" placeholder="Dán link nhúng iframe...">
 
     <label>🎯 Link nhúng video quảng cáo:</label>
     <input type="text" id="adLink" placeholder="Dán link quảng cáo...">
 
     <label>💾 Tên file xuất ra (không có .html):</label>
-    <input type="text" id="fileName" placeholder="vd: tintuc24h">
+    <input type="text" id="fileName" placeholder="vd: video_doc_916">
 
     <button id="previewBtn">👀 Xem trước</button>
     <button id="generateBtn">💾 Tải & Xem file HTML</button>
@@ -90,14 +126,18 @@
   <!-- Khu vực xem trước -->
   <div class="preview" id="previewBox">
     <h2 id="previewTitle"></h2>
-    <iframe id="previewVideo" allow="autoplay" allowfullscreen></iframe>
+    <div class="video-container">
+      <iframe id="previewVideo" allow="autoplay" allowfullscreen></iframe>
+    </div>
   </div>
 
   <!-- Popup quảng cáo -->
   <div class="popup" id="adPopup">
     <button class="close-btn" id="closePopup">×</button>
     <h3>🎥 Video quảng cáo</h3>
-    <iframe class="ad-video" id="previewAd" allow="autoplay" allowfullscreen></iframe>
+    <div class="ad-video-container">
+      <iframe id="previewAd" allow="autoplay" allowfullscreen></iframe>
+    </div>
   </div>
 
   <script>
@@ -105,7 +145,6 @@
     const videoLink = document.getElementById("videoLink");
     const adLink = document.getElementById("adLink");
     const fileName = document.getElementById("fileName");
-
     const previewBtn = document.getElementById("previewBtn");
     const generateBtn = document.getElementById("generateBtn");
     const previewBox = document.getElementById("previewBox");
@@ -115,16 +154,9 @@
     const adPopup = document.getElementById("adPopup");
     const closePopup = document.getElementById("closePopup");
 
-    // Hiển popup quảng cáo
-    function showPopup() {
-      adPopup.style.display = "block";
-    }
-    function hidePopup() {
-      adPopup.style.display = "none";
-      setTimeout(showPopup, 30000);
-    }
+    function showPopup() { adPopup.style.display = "block"; }
+    function hidePopup() { adPopup.style.display = "none"; setTimeout(showPopup, 30000); }
 
-    // 🟢 Xem trước
     previewBtn.onclick = () => {
       const t = videoTitle.value.trim();
       const v = videoLink.value.trim();
@@ -141,13 +173,11 @@
       closePopup.onclick = hidePopup;
     };
 
-    // 🟣 Tải + mở file HTML
     generateBtn.onclick = () => {
       const t = videoTitle.value.trim();
       const v = videoLink.value.trim();
       const a = adLink.value.trim();
       const f = fileName.value.trim();
-
       if (!t || !v || !a || !f) {
         alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
         return;
@@ -159,29 +189,29 @@
 <head>
 <meta charset="UTF-8">
 <title>${t}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body{font-family:Arial,sans-serif;background:#f5f6f7;margin:0;}
-header{background:#222;color:#fff;padding:12px 18px;}
-main{max-width:900px;margin:20px auto;padding:0 16px;}
-.video-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;background:#000;}
+body{font-family:Arial,sans-serif;background:#fafafa;margin:0;}
+header{background:#222;color:#fff;padding:12px;text-align:center;}
+main{max-width:400px;margin:20px auto;padding:0 16px;}
+.video-container{position:relative;width:100%;padding-top:177.78%;background:#000;border-radius:12px;overflow:hidden;}
 .video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0;}
 .popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border:2px solid #1976d2;padding:20px;border-radius:12px;text-align:center;display:none;box-shadow:0 4px 15px rgba(0,0,0,0.2);}
 .close-btn{position:absolute;top:8px;right:10px;background:#f44336;color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;}
-iframe.ad-video{width:320px;height:180px;border-radius:8px;border:none;}
+.ad-video-container{position:relative;width:270px;padding-top:480px;background:#000;border-radius:10px;overflow:hidden;margin:auto;}
+.ad-video-container iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;border-radius:10px;}
 </style>
 </head>
 <body>
 <header><h1>${t}</h1></header>
 <main>
-<div class="video-container">
-<iframe src="${v}" allow="autoplay" allowfullscreen></iframe>
-</div>
+<div class="video-container"><iframe src="${v}" allow="autoplay" allowfullscreen></iframe></div>
 </main>
 
 <div class="popup" id="adPopup">
 <button class="close-btn" id="closePopup">×</button>
 <h3>🎥 Quảng cáo</h3>
-<iframe class="ad-video" src="${a}" allow="autoplay" allowfullscreen></iframe>
+<div class="ad-video-container"><iframe class="ad-video" src="${a}" allow="autoplay" allowfullscreen></iframe></div>
 </div>
 
 <script>
@@ -192,21 +222,15 @@ window.onload=function(){showPopup();document.getElementById("closePopup").oncli
 </body>
 </html>`;
 
-      // Tạo file tải và xem
       const blob = new Blob([html], { type: "text/html" });
       const url = URL.createObjectURL(blob);
-
-      // Tự động tải file
       const a = document.createElement("a");
       a.href = url;
       a.download = f + ".html";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-
-      // Mở tab mới xem trước
       window.open(url, "_blank");
-
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     };
   </script>
