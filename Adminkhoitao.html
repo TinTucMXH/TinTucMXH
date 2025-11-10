@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>🧩 Tạo Trang Video Mới</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      padding: 30px;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      color: #1976d2;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    label { display:block; margin-top:12px; font-weight:bold; }
+    input[type="text"] {
+      width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;
+    }
+    input[type="text"]:focus { outline:none; border-color:#1976d2; }
+    button {
+      margin-top:18px;
+      background:#1976d2;
+      color:#fff;
+      border:none;
+      padding:12px 20px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:16px;
+      width:100%;
+    }
+    button:hover { background:#1259a7; }
+  </style>
+</head>
+<body>
+  <h1>🧩 Tạo Trang Video Tin Tức</h1>
+  <form id="videoForm">
+    <label>📝 Tiêu đề video:</label>
+    <input type="text" id="videoTitle" required>
+
+    <label>📺 Link nhúng video (Google Drive / YouTube):</label>
+    <input type="text" id="videoLink" required>
+
+    <label>🎯 Link quảng cáo (popup redirect):</label>
+    <input type="text" id="adLink" required>
+
+    <label>💾 Tên file xuất ra (không có .html):</label>
+    <input type="text" id="fileName" placeholder="vd: canphongbimat" required>
+
+    <button type="button" onclick="generateFile()">Tạo file HTML</button>
+  </form>
+
+  <script>
+    function generateFile() {
+      const title = document.getElementById("videoTitle").value.trim();
+      const video = document.getElementById("videoLink").value.trim();
+      const ad = document.getElementById("adLink").value.trim();
+      const fileName = document.getElementById("fileName").value.trim();
+
+      if(!title || !video || !ad || !fileName){
+        alert("⚠️ Vui lòng nhập đầy đủ thông tin!");
+        return;
+      }
+
+      // ✅ Tạo nội dung file HTML mới dựa theo template gốc
+      const content = `
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>${title}</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Tin Tức Mạng Xã Hội</h1>
+    <nav>
+      <a href="index.html">Trang chủ</a>
+      <a href="news.html">Tin tức</a>
+      <a href="about.html">Giới thiệu</a>
+    </nav>
+  </header>
+
+  <main>
+    <article>
+      <h2>${title}</h2>
+      <div class="video-container">
+        <iframe src="${video}" allow="autoplay"></iframe>
+      </div>
+    </article>
+  </main>
+
+  <footer>© 2025 Tin Tức 24h</footer>
+
+  <div class="popup" id="adPopup">
+    <button class="close-btn" id="closePopup">×</button>
+    <h3>🎉 Khuyến mãi đặc biệt!</h3>
+    <p>Nhấn vào ảnh để xem chi tiết ưu đãi.</p>
+    <img src="https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai" id="adImage" alt="Quảng cáo">
+  </div>
+
+  <script>
+    const adLink = "${ad}";
+    function showPopup(){ document.getElementById('adPopup').style.display='block'; }
+    function hidePopup(){ document.getElementById('adPopup').style.display='none'; setTimeout(showPopup,30000); }
+    window.onload = function(){
+      showPopup();
+      document.getElementById('adImage').onclick=function(){window.open(adLink,'_blank');hidePopup();};
+      document.getElementById('closePopup').onclick=function(){hidePopup();};
+    };
+  </script>
+</body>
+</html>
+      `;
+
+      // ✅ Tạo file tải xuống
+      const blob = new Blob([content], { type: "text/html" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName + ".html";
+      link.click();
+    }
+  </script>
+</body>
+</html>
