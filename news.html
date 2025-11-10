@@ -15,12 +15,12 @@
     .news-list a:hover { background:#1976d2; color:#fff; }
     footer { text-align:center; padding:12px; background:#222; color:#fff; margin-top:18px; }
 
-    /* ✅ Popup quảng cáo */
+    /* ✅ Popup quảng cáo luôn giữa màn hình */
     .popup {
       position: fixed;
-      top: 15%;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
       width: 320px;
       background: #fff;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
@@ -29,12 +29,12 @@
       z-index: 9999;
       padding: 16px;
       display: none;
-      animation: slideDown 0.5s ease;
+      animation: fadeIn 0.6s ease;
     }
 
-    @keyframes slideDown {
-      from { transform: translate(-50%, -30%); opacity: 0; }
-      to { transform: translate(-50%, 0); opacity: 1; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -55%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
     }
 
     .popup h3 {
@@ -105,35 +105,50 @@
   <!-- ✅ Popup quảng cáo -->
   <div class="popup" id="adPopup">
     <button class="close-btn" id="closePopup">×</button>
-    <h3>Khuyến mãi đặc biệt!</h3>
+    <h3>🎉 Khuyến mãi đặc biệt!</h3>
     <p>Nhấn vào ảnh để xem chi tiết ưu đãi.</p>
     <img src="https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai+Lon" id="adImage" alt="Quảng cáo">
   </div>
 
   <script>
-    // Hiển thị popup sau khi trang tải
+    // Hiển thị popup
+    function showPopup() {
+      const popup = document.getElementById('adPopup');
+      popup.style.display = 'block';
+    }
+
+    // Ẩn popup trong 30 giây, rồi hiện lại
+    function hidePopupTemporarily() {
+      const popup = document.getElementById('adPopup');
+      popup.style.display = 'none';
+      setTimeout(showPopup, 30000); // 30 giây sau hiện lại
+    }
+
+    // Khi trang tải
     window.onload = function() {
       const popup = document.getElementById('adPopup');
       const closeBtn = document.getElementById('closePopup');
       const adImage = document.getElementById('adImage');
 
-      popup.style.display = 'block';
+      // Hiện popup khi tải trang
+      showPopup();
 
-      // Click vào ảnh để chuyển trang
+      // Click ảnh -> mở trang mới và ẩn popup 30s
       adImage.onclick = function() {
-        window.location.href = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220";
+        window.open("https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220", "_blank");
+        hidePopupTemporarily();
       };
 
-      // Click nút Close -> ẩn sau 2 giây
+      // Click nút đóng -> đóng 2s rồi ẩn 30s
       closeBtn.onclick = function() {
         closeBtn.textContent = "Đang đóng...";
-        window.location.href = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220";
+		window.open("https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220", "_blank");
         setTimeout(() => {
-          popup.style.display = 'none';
+          hidePopupTemporarily();
+          closeBtn.textContent = "×";
         }, 2000);
       };
     };
   </script>
 </body>
 </html>
-
