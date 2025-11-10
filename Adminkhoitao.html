@@ -45,16 +45,16 @@
   <h1>🧩 Tạo Trang Video Tin Tức</h1>
   <form id="videoForm">
     <label>📝 Tiêu đề video:</label>
-    <input type="text" id="videoTitle" required>
+    <input type="text" id="videoTitle" placeholder="Nhập tiêu đề video...">
 
     <label>📺 Link nhúng video (Google Drive / YouTube):</label>
-    <input type="text" id="videoLink" required>
+    <input type="text" id="videoLink" placeholder="Dán link nhúng iframe...">
 
     <label>🎯 Link quảng cáo (popup redirect):</label>
-    <input type="text" id="adLink" required>
+    <input type="text" id="adLink" placeholder="Dán link quảng cáo...">
 
     <label>💾 Tên file xuất ra (không có .html):</label>
-    <input type="text" id="fileName" placeholder="vd: canphongbimat" required>
+    <input type="text" id="fileName" placeholder="vd: canphongbimat">
 
     <button type="button" onclick="generateFile()">Tạo file HTML</button>
   </form>
@@ -66,12 +66,13 @@
       const ad = document.getElementById("adLink").value.trim();
       const fileName = document.getElementById("fileName").value.trim();
 
-      if(!title || !video || !ad || !fileName){
-        alert("⚠️ Vui lòng nhập đầy đủ thông tin!");
+      // 🔍 Kiểm tra thông tin nhập
+      if (!title || !video || !ad || !fileName) {
+        alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
         return;
       }
 
-      // ✅ Tạo nội dung file HTML mới dựa theo template gốc
+      // ✅ Nội dung HTML được tạo
       const content = `
 <!DOCTYPE html>
 <html lang="vi">
@@ -79,6 +80,40 @@
   <meta charset="UTF-8">
   <title>${title}</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border: 2px solid #1976d2;
+      padding: 20px;
+      z-index: 1000;
+      border-radius: 12px;
+      text-align: center;
+      display: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+    iframe.ad-video {
+      width: 320px;
+      height: 180px;
+      border-radius: 8px;
+      border: none;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -94,7 +129,7 @@
     <article>
       <h2>${title}</h2>
       <div class="video-container">
-        <iframe src="${video}" allow="autoplay"></iframe>
+        <iframe src="${video}" width="560" height="315" allow="autoplay" allowfullscreen></iframe>
       </div>
     </article>
   </main>
@@ -103,31 +138,34 @@
 
   <div class="popup" id="adPopup">
     <button class="close-btn" id="closePopup">×</button>
-    <h3>🎉 Khuyến mãi đặc biệt!</h3>
-    <p>Nhấn vào ảnh để xem chi tiết ưu đãi.</p>
-    <img src="https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai" id="adImage" alt="Quảng cáo">
+    <h3>🎥 Video quảng cáo</h3>
+    <iframe class="ad-video" src="${ad}" allow="autoplay" allowfullscreen></iframe>
   </div>
 
   <script>
-    const adLink = "${ad}";
-    function showPopup(){ document.getElementById('adPopup').style.display='block'; }
-    function hidePopup(){ document.getElementById('adPopup').style.display='none'; setTimeout(showPopup,30000); }
-    window.onload = function(){
+    function showPopup() {
+      document.getElementById("adPopup").style.display = "block";
+    }
+    function hidePopup() {
+      document.getElementById("adPopup").style.display = "none";
+      setTimeout(showPopup, 30000); // Hiện lại sau 30s
+    }
+    window.onload = function() {
       showPopup();
-      document.getElementById('adImage').onclick=function(){window.open(adLink,'_blank');hidePopup();};
-      document.getElementById('closePopup').onclick=function(){hidePopup();};
+      document.getElementById("closePopup").onclick = hidePopup;
     };
   </script>
 </body>
 </html>
       `;
 
-      // ✅ Tạo file tải xuống
+      // ✅ Tạo file tải về
       const blob = new Blob([content], { type: "text/html" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = fileName + ".html";
-      link.click();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName + ".html";
+      a.click();
+      URL.revokeObjectURL(a.href);
     }
   </script>
 </body>
