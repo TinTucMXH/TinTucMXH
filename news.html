@@ -105,7 +105,7 @@
   <!-- ✅ Popup quảng cáo -->
   <div class="popup" id="adPopup">
     <button class="close-btn" id="closePopup">×</button>
-    <h3>🎉 Khuyến mãi đặc biệt!</h3>
+    <h3>Khuyến mãi đặc biệt!</h3>
     <p>Nhấn vào ảnh để xem chi tiết ưu đãi.</p>
     <img src="https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai+Lon" id="adImage" alt="Quảng cáo">
   </div>
@@ -121,12 +121,13 @@
 
       // Click vào ảnh để chuyển trang
       adImage.onclick = function() {
-        window.location.href = "https://abc.com.vn";
+        window.location.href = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220";
       };
 
       // Click nút Close -> ẩn sau 2 giây
       closeBtn.onclick = function() {
         closeBtn.textContent = "Đang đóng...";
+        window.location.href = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220";
         setTimeout(() => {
           popup.style.display = 'none';
         }, 2000);
@@ -135,3 +136,4 @@
   </script>
 </body>
 </html>
+
