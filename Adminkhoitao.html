@@ -56,11 +56,14 @@
     <label>💾 Tên file xuất ra (không có .html):</label>
     <input type="text" id="fileName" placeholder="vd: canphongbimat">
 
-    <button type="button" onclick="generateFile()">Tạo file HTML</button>
+    <button type="submit">Tạo file HTML</button>
   </form>
 
   <script>
-    function generateFile() {
+    // Gắn sự kiện xử lý form
+    document.getElementById("videoForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // ✅ Ngăn form reload trang
+
       const title = document.getElementById("videoTitle").value.trim();
       const video = document.getElementById("videoLink").value.trim();
       const ad = document.getElementById("adLink").value.trim();
@@ -164,9 +167,11 @@
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = fileName + ".html";
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(a.href);
-    }
+    });
   </script>
 </body>
 </html>
