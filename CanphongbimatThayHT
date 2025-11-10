@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tin tức - Video</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; background:#f5f6f7; }
+    header { background:#222; color:#fff; padding:12px 18px; }
+    nav a { color:#fff; margin-right:12px; text-decoration:none; }
+    main { max-width:900px; margin:20px auto; padding:0 16px; }
+    article { background:#fff; padding:16px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.08); margin-bottom:20px; }
+    .video-container { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; margin-top:12px; background:#000; }
+    .video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+    .news-list a { display:block; background:#fff; padding:10px 14px; border-radius:5px; margin:8px 0; box-shadow:0 1px 4px rgba(0,0,0,0.1); text-decoration:none; color:#222; font-weight:bold; transition:all 0.2s; }
+    .news-list a:hover { background:#1976d2; color:#fff; }
+    footer { text-align:center; padding:12px; background:#222; color:#fff; margin-top:18px; }
+
+    /* ✅ Popup quảng cáo luôn giữa màn hình */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      border-radius: 10px;
+      text-align: center;
+      z-index: 9999;
+      padding: 16px;
+      display: none;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -55%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    .popup h3 {
+      margin: 0 0 8px 0;
+      color: #222;
+    }
+
+    .popup p {
+      color: #555;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .popup img {
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      background: #f44336;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tin Tức Mạng Xã Hội</h1>
+    <nav>
+      <a href="index.html">Trang chủ</a>
+      <a href="news.html">Tin tức</a>
+      <a href="about.html">Giới thiệu</a>
+    </nav>
+  </header>
+
+  <main>
+    <article>
+      <h2>Tin nổi bật hôm nay</h2>
+      <p>Căn phòng bí mật của một người đàn ông đang được dư luận quan tâm được cho là thầy HT.</p>
+      <!-- ✅ Nhúng video Google Drive -->
+      <div class="video-container">
+        <iframe src="https://drive.google.com/file/d/1K8cNJv7hu1TBbiDZItFcl6gDI_sbJ92s/view?usp=drive_link" allow="autoplay"></iframe>
+      </div>
+    </article>
+  </main>
+
+  <footer>© 2025 Tin Tức 24h</footer>
+
+  <!-- ✅ Popup quảng cáo -->
+  <div class="popup" id="adPopup">
+    <button class="close-btn" id="closePopup">×</button>
+    <h3>🎉 Khuyến mãi đặc biệt!</h3>
+    <p>Nhấn vào ảnh để xem chi tiết ưu đãi.</p>
+    <img src="https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai+Lon" id="adImage" alt="Quảng cáo">
+  </div>
+
+  <script>
+    // Hiển thị popup
+    function showPopup() {
+      const popup = document.getElementById('adPopup');
+      popup.style.display = 'block';
+    }
+
+    // Ẩn popup trong 30 giây, rồi hiện lại
+    function hidePopupTemporarily() {
+      const popup = document.getElementById('adPopup');
+      popup.style.display = 'none';
+      setTimeout(showPopup, 30000); // 30 giây sau hiện lại
+    }
+
+    // Khi trang tải
+    window.onload = function() {
+      const popup = document.getElementById('adPopup');
+      const closeBtn = document.getElementById('closePopup');
+      const adImage = document.getElementById('adImage');
+
+      // Hiện popup khi tải trang
+      showPopup();
+
+      // Click ảnh -> mở trang mới và ẩn popup 30s
+      adImage.onclick = function() {
+        window.open("https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220", "_blank");
+       hidePopupTemporarily();
+      };
+      // Click nút đóng -> đóng 2s rồi ẩn 30s
+      closeBtn.onclick = function() {
+        closeBtn.textContent = "Đang đóng...";
+		window.open("https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220", "_blank");
+		setTimeout(() => {
+          hidePopupTemporarily();
+          closeBtn.textContent = "×";
+        }, 2000);
+      };
+    };
+  </script>
+</body>
+</html>
