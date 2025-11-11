@@ -7,313 +7,211 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f3f4f6;
+      background-color: #f3f4f6;
       padding: 30px;
-      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    h1 { text-align: center; color: #1976d2; }
+    h2 {
+      color: #333;
+    }
     .container {
-      background: #fff;
+      background: white;
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      max-width: 600px;
-      margin: 20px auto;
+      width: 100%;
+      max-width: 400px;
     }
-    label { display:block; margin-top:12px; font-weight:bold; }
-    input[type="text"], textarea {
-      width:100%; padding:10px; border:1px solid #ccc; border-radius:6px;
-      font-family: monospace;
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
     textarea {
-      height: 250px;
-      resize: vertical;
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-family: Arial, sans-serif;
     }
     button {
-      margin-top:18px; width:100%; padding:12px;
-      border:none; border-radius:8px; cursor:pointer;
-      color:white; font-size:16px;
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
     }
-    #previewBtn { background:#4caf50; }
-    #generateBtn { background:#1976d2; }
-    button:hover { opacity:0.9; }
-    .preview {
-      display:none;
-      background:#fff;
-      border-radius:10px;
-      box-shadow:0 4px 10px rgba(0,0,0,0.1);
-      max-width:400px;
-      margin:20px auto;
-      padding:20px;
-      text-align:center;
+    button:hover {
+      background-color: #0056b3;
     }
-    .video-container {
-      position:relative;
-      width:100%;
-      padding-top:177.78%; /* 9:16 */
-      background:#000;
-      border-radius:12px;
-      overflow:hidden;
-    }
-    .video-container iframe {
-      position:absolute;
-      top:0; left:0;
-      width:100%; height:100%;
-      border:none;
-      border-radius:12px;
-    }
+
+    /* Popup */
     .popup {
-      position:fixed;
-      top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      background:white;
-      border:2px solid #1976d2;
-      padding:20px;
-      border-radius:12px;
-      text-align:center;
-      display:none;
-      box-shadow:0 4px 15px rgba(0,0,0,0.2);
-      z-index:999;
-      max-width: 90%;
-      width: 350px;
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
     }
-    .close-btn {
-      position:absolute; top:8px; right:10px;
-      background:#f44336; color:white;
-      border:none; border-radius:50%; width:24px; height:24px;
-      cursor:pointer; font-size:18px; line-height:24px;
+    .popup-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 350px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-align: center;
+      animation: fadeIn 0.3s ease;
     }
-    .ad-video-container {
-      position:relative;
-      width:100%;
-      padding-top:177.78%;
-      background:#000;
-      border-radius:10px;
-      overflow:hidden;
-      margin:15px auto 0;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .popup input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+    .popup-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    .popup-buttons button {
+      width: 48%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
       cursor: pointer;
     }
-    .ad-video-container iframe {
-      position:absolute;
-      top:0; left:0;
-      width:100%; height:100%;
-      border:none;
-      border-radius:10px;
-      pointer-events: none; /* Cho phép click xuyên qua iframe */
+    .confirm {
+      background-color: #28a745;
+      color: white;
     }
-    @media(max-width:480px){
-      body { padding:15px; }
-      .container, .preview { max-width:100%; }
+    .confirm:hover {
+      background-color: #218838;
+    }
+    .cancel {
+      background-color: #dc3545;
+      color: white;
+    }
+    .cancel:hover {
+      background-color: #c82333;
+    }
+
+    /* Hiệu ứng nhấp nháy đỏ */
+    .error {
+      animation: blink 0.4s linear 2;
+      border-color: red;
+    }
+    @keyframes blink {
+      0%, 100% { background-color: white; }
+      50% { background-color: #ffe6e6; }
     }
   </style>
 </head>
 <body>
-  <h1>📱 Hoài Quản Trị Viên</h1>
+  <h2>📋 Form nhập dữ liệu</h2>
   <div class="container">
-    <label>📝 Tiêu đề video:</label>
-    <input type="text" id="videoTitle" placeholder="Nhập tiêu đề video...">
-    <label>📺 Link nhúng video chính (TikTok / YouTube Shorts):</label>
-    <input type="text" id="videoLink" placeholder="Dán link nhúng iframe...">
-    <label>🎯 Link nhúng video quảng cáo:</label>
-    <input type="text" id="adLink" placeholder="Dán link quảng cáo...">
-    <label>🔗 Link chuyển hướng khi nhấn quảng cáo:</label>
-    <input type="text" id="redirectLink" placeholder="Dán link chuyển hướng...">
-    <label>💾 Tên file xuất ra (không có .html):</label>
-    <input type="text" id="fileName" placeholder="vd: video_doc_916">
-    <button id="previewBtn">👀 Xem trước</button>
-    <button id="generateBtn">💾 Tải & Xem file HTML</button>
-    <label>📄 Mã HTML tạo ra:</label>
-    <textarea id="htmlOutput" readonly placeholder="Mã HTML sẽ hiển thị tại đây sau khi nhấn Xem trước..."></textarea>
+    <label for="a">📝 Tiêu đề video:</label>
+    <input type="text" id="a" placeholder="Nhập giá trị A...">
+
+    <label for="b">📺 Link nhúng video chính (TikTok / YouTube Shorts):</label>
+    <input type="text" id="b" placeholder="Nhập giá trị B...">
+
+    <label for="c">🎯 Link nhúng video quảng cáo:</label>
+    <input type="text" id="c" placeholder="Nhập giá trị C...">
+
+    <label for="d">🔗 Link chuyển hướng khi nhấn quảng cáo:</label>
+    <input type="text" id="d" placeholder="Nhập giá trị D...">
+
+    <button onclick="xuatDuLieu()">📤 Xuất dữ liệu</button>
+    <button onclick="hienPopup()">💾 Lưu file</button>
+
+    <label for="output">Kết quả xuất:</label>
+    <textarea id="output" readonly placeholder="Dữ liệu sẽ hiển thị ở đây..."></textarea>
   </div>
 
-  <div class="preview" id="previewBox">
-    <h2 id="previewTitle"></h2>
-    <div class="video-container">
-      <iframe id="previewVideo" allow="autoplay" allowfullscreen></iframe>
-    </div>
-  </div>
-
-  <div class="popup" id="adPopup">
-    <button class="close-btn" id="closePopup">×</button>
-    <h3>🎥 Video quảng cáo</h3>
-    <div class="ad-video-container" id="adContainer">
-      <iframe id="previewAd" allow="autoplay" allowfullscreen></iframe>
+  <!-- Popup nhập tên file -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h3>Nhập tên file để lưu</h3>
+      <input type="text" id="fileName" placeholder="Tên file (không cần .html)">
+      <div class="popup-buttons">
+        <button class="confirm" onclick="xacNhanLuu()">Xác nhận</button>
+        <button class="cancel" onclick="dongPopup()">Hủy</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // DOM Elements
-    const titleInput = document.getElementById("videoTitle");
-    const videoInput = document.getElementById("videoLink");
-    const adInput = document.getElementById("adLink");
-    const redirectInput = document.getElementById("redirectLink");
-    const fileInput = document.getElementById("fileName");
-    const previewBtn = document.getElementById("previewBtn");
-    const generateBtn = document.getElementById("generateBtn");
-    const htmlOutput = document.getElementById("htmlOutput");
-    const previewBox = document.getElementById("previewBox");
-    const previewTitle = document.getElementById("previewTitle");
-    const previewVideo = document.getElementById("previewVideo");
-    const previewAd = document.getElementById("previewAd");
-    const adPopup = document.getElementById("adPopup");
-    const adContainer = document.getElementById("adContainer");
-    const closePopup = document.getElementById("closePopup");
+    function xuatDuLieu() {
+      const a = document.getElementById("a").value;
+      const b = document.getElementById("b").value;
+      const c = document.getElementById("c").value;
+      const d = document.getElementById("d").value;
 
-    let popupTimer = null;
+      const ketQua = 
+`Giá trị bạn đã nhập:
+A: ${a}
+B: ${b}
+C: ${c}
+D: ${d}`;
 
-    // Hàm hiển thị popup quảng cáo (lặp lại mỗi 30s)
-    function showPopup() {
-      adPopup.style.display = "block";
-      clearTimeout(popupTimer);
-      popupTimer = setTimeout(showPopup, 30000);
+      document.getElementById("output").value = ketQua;
     }
 
-    // Ẩn popup
-    function hidePopup() {
-      adPopup.style.display = "none";
-      clearTimeout(popupTimer);
+    function hienPopup() {
+      document.getElementById("popup").style.display = "flex";
     }
 
-    // Xem trước
-    previewBtn.onclick = () => {
-      const t = titleInput.value.trim();
-      const v = videoInput.value.trim();
-      const a = adInput.value.trim();
-      const r = redirectInput.value.trim();
+    function dongPopup() {
+      document.getElementById("popup").style.display = "none";
+      document.getElementById("fileName").value = "";
+    }
 
-      if (!t || !v || !a || !r) {
-        alert("⚠️ Hãy điền đầy đủ thông tin trước khi xem trước!");
+    function xacNhanLuu() {
+      const tenFileInput = document.getElementById("fileName");
+      const tenFile = tenFileInput.value.trim();
+      const noiDung = document.getElementById("output").value;
+
+      if (tenFile === "") {
+        tenFileInput.classList.add("error");
+        setTimeout(() => tenFileInput.classList.remove("error"), 600);
         return;
       }
 
-      // Tạo HTML
-      const html = generateHTML(t, v, a, r);
-      htmlOutput.value = html;
-
-      // Cập nhật preview
-      previewTitle.textContent = t;
-      previewVideo.src = v;
-      previewAd.src = a;
-      previewBox.style.display = "block";
-
-      // Hiển thị popup
-      showPopup();
-
-      // Gắn sự kiện click cho quảng cáo (trong preview)
-      adContainer.onclick = () => {
-        if (r) window.open(r, "_blank");
-      };
-    };
-
-    // Tạo file HTML
-    generateBtn.onclick = () => {
-  const t = titleInput.value.trim();
-  const v = videoInput.value.trim();
-  const a = adInput.value.trim();
-  const r = redirectInput.value.trim();
-  const f = fileInput.value.trim();
-
-  if (!t || !v || !a || !r || !f) {
-    alert("⚠️ Hãy điền đầy đủ thông tin trước khi tạo file!");
-    return;
-  }
-
-  const html = generateHTML(t, v, a, r);
-  const blob = new Blob([html], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-
-  // Tải về file
-  const aTag = document.createElement("a");
-  aTag.href = url;
-  aTag.download = f + ".html";
-  document.body.appendChild(aTag);
-  aTag.click();
-  document.body.removeChild(aTag);
-
-  // Mở file ở tab mới
-  setTimeout(() => {
-    window.open(url, "_blank");
-    URL.revokeObjectURL(url); // Giải phóng sau khi mở
-  }, 400); // delay 400ms cho chắc chắn
-};
-
-    // Đóng popup
-    closePopup.onclick = hidePopup;
-
-    // Click vào quảng cáo trong popup preview
-    adContainer.onclick = () => {
-      const r = redirectInput.value.trim();
-      if (r) window.open(r, "_blank");
-    };
-
-    // Hàm tạo HTML xuất ra
-    function generateHTML(title, videoSrc, adSrc, redirectLink) {
-      return `<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<style>
-  body {font-family: Arial, sans-serif; text-align:center; background:#f3f4f6; padding:20px; margin:0;}
-  h1 {color: #1976d2; margin-bottom: 20px;}
-  .video-container, .ad-video-container {
-    position:relative; width:100%; max-width:400px; margin:20px auto;
-    padding-top:177.78%; background:#000; border-radius:12px; overflow:hidden;
-  }
-  .video-container iframe, .ad-video-container iframe {
-    position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:12px;
-  }
-  .ad-video-container {cursor: pointer;}
-  .ad-video-container iframe {pointer-events: none;}
-  .popup {
-    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-    background:#fff; border:2px solid #1976d2; padding:20px; border-radius:12px;
-    display:none; z-index:999; max-width:90%; width:350px; box-shadow:0 4px 15px rgba(0,0,0,0.2);
-  }
-  .close-btn {
-    position:absolute; top:8px; right:10px; background:#f44336; color:white;
-    border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; font-size:18px;
-  }
-</style>
-</head>
-<body>
-<h1>${title}</h1>
-<div class="video-container">
-  <iframe src="${videoSrc}" allow="autoplay" allowfullscreen></iframe>
-</div>
-
-<div class="popup" id="adPopup">
-  <button class="close-btn" id="closeBtn">×</button>
-  <h3>🎥 Video quảng cáo</h3>
-  <div class="ad-video-container" id="adContainer">
-    <iframe src="${adSrc}" allow="autoplay" allowfullscreen></iframe>
-  </div>
-</div>
-
-<script>
-  const adPopup = document.getElementById("adPopup");
-  const adContainer = document.getElementById("adContainer");
-  const closeBtn = document.getElementById("closeBtn");
-  let timer;
-
-  function showAd() {
-    adPopup.style.display = "block";
-    clearTimeout(timer);
-    timer = setTimeout(showAd, 30000);
-  }
-
-  function hideAd() {
-    adPopup.style.display = "none";
-    clearTimeout(timer);
-  }
-
-  closeBtn.onclick = hideAd;
-  adContainer.onclick = () => window.open("${redirectLink}", "_blank");
-  showAd();
-</script>
-</body>
-</html>
+      const blob = new Blob(
+        [`<pre>${noiDung}</pre>`],
+        { type: "text/html;charset=utf-8" }
+      );
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = tenFile + ".html";
+      link.click();
+      dongPopup();
+    }
   </script>
 </body>
 </html>
