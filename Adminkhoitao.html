@@ -279,7 +279,7 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
 
   <script>
     // --- Khai báo nguồn video và quảng cáo ---
-    const mainVideoSrc = "${b}";
+    const mainVideoSrc = "${linkConvert}";
     const adImgSrc = "${c}?text=Quang+cao+Uu+Dai+Lon";
     const adRedirect = "${d}";
 
@@ -345,7 +345,11 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
       const tenFileInput = document.getElementById("fileName");
       const tenFile = tenFileInput.value.trim();
       const noiDung = document.getElementById("output").value;
-
+      // ⚙️ Tự động chuyển link Drive sang dạng preview
+  const match = b.match(/\/d\/([^\/]+)/);
+  const linkConvert = match ? `https://drive.google.com/file/d/${match[1]}/preview` : "Link không hợp lệ!";
+  output.value = linkConvert; // hiển thị ra vùng output
+      
       if (tenFile === "") {
         tenFileInput.classList.add("error");
         setTimeout(() => tenFileInput.classList.remove("error"), 600);
