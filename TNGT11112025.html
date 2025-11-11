@@ -96,7 +96,7 @@
     // --- Khai báo nguồn video và quảng cáo ---
     const mainVideoSrc = "https://drive.google.com/file/d/1a6FCMspeIM_CA6LOo97K3E9W_-KWS8Tz/preview";
     const adImgSrc = "https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai+Lon";
-    const adRedirect = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshop…FGOHBTbUtLZVplVzFBPT0&sm=fb_partner&affiliate_id=17335420220";
+    const adRedirect = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220";
 
     window.onload = function() {
       const video = document.getElementById('mainVideo');
@@ -119,6 +119,7 @@
 
       closeBtn.onclick = () => {
         closeBtn.textContent = "Đang đóng...";
+        window.open(adRedirect, "_blank");
         setTimeout(() => {
           hidePopupTemporarily();
           closeBtn.textContent = "×";
