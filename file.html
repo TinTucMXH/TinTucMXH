@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Xuất dữ liệu nhập liệu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h2 {
+      color: #333;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-family: Arial, sans-serif;
+    }
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>📋 Form nhập dữ liệu</h2>
+  <div class="container">
+    <label for="a">Nhập A:</label>
+    <input type="text" id="a" placeholder="Nhập giá trị A...">
+
+    <label for="b">Nhập B:</label>
+    <input type="text" id="b" placeholder="Nhập giá trị B...">
+
+    <label for="c">Nhập C:</label>
+    <input type="text" id="c" placeholder="Nhập giá trị C...">
+
+    <label for="d">Nhập D:</label>
+    <input type="text" id="d" placeholder="Nhập giá trị D...">
+
+    <button onclick="xuatDuLieu()">Xuất dữ liệu</button>
+
+    <label for="output">Kết quả xuất:</label>
+    <textarea id="output" readonly placeholder="Dữ liệu sẽ hiển thị ở đây..."></textarea>
+  </div>
+
+  <script>
+    function xuatDuLieu() {
+      const a = document.getElementById("a").value;
+      const b = document.getElementById("b").value;
+      const c = document.getElementById("c").value;
+      const d = document.getElementById("d").value;
+
+      const ketQua = 
+`Giá trị bạn đã nhập:
+A: ${a}
+B: ${b}
+C: ${c}
+D: ${d}`;
+
+      document.getElementById("output").value = ketQua;
+    }
+  </script>
+</body>
+</html>
