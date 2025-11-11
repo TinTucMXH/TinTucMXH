@@ -5,51 +5,55 @@
   <title>📱 Hoài Quản Trị Viên</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* --- Reset cơ bản --- */
+    * { box-sizing: border-box; margin:0; padding:0; }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #f3f4f6;
-      padding: 30px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
+
     h2 {
       color: #333;
+      margin-bottom: 16px;
+      text-align: center;
     }
+
+    /* --- Container --- */
     .container {
       background: white;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       width: 100%;
-      max-width: 400px;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
+
     label {
-      display: block;
-      margin-top: 10px;
       font-weight: bold;
     }
-    input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    textarea {
-      width: 100%;
-      height: 100px;
-      margin-top: 10px;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      resize: none;
-      font-family: Arial, sans-serif;
-    }
-    button {
-      margin-top: 15px;
+
+    input[type="text"], textarea {
       width: 100%;
       padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+
+    textarea { resize: none; min-height: 80px; }
+
+    button {
+      width: 100%;
+      padding: 12px;
       background-color: #007bff;
       color: white;
       border: none;
@@ -58,11 +62,10 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-    button:hover {
-      background-color: #0056b3;
-    }
 
-    /* Popup */
+    button:hover { background-color: #0056b3; }
+
+    /* --- Popup --- */
     .popup {
       display: none;
       position: fixed;
@@ -72,6 +75,7 @@
       justify-content: center;
       align-items: center;
     }
+
     .popup-content {
       background: #fff;
       padding: 20px;
@@ -82,10 +86,7 @@
       text-align: center;
       animation: fadeIn 0.3s ease;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+
     .popup input {
       width: 100%;
       padding: 8px;
@@ -93,34 +94,28 @@
       border: 1px solid #ccc;
       margin-top: 10px;
     }
+
     .popup-buttons {
       display: flex;
       justify-content: space-between;
       margin-top: 15px;
+      gap: 8px;
     }
+
     .popup-buttons button {
-      width: 48%;
+      flex: 1;
       padding: 10px;
       border-radius: 8px;
       border: none;
       cursor: pointer;
     }
-    .confirm {
-      background-color: #28a745;
-      color: white;
-    }
-    .confirm:hover {
-      background-color: #218838;
-    }
-    .cancel {
-      background-color: #dc3545;
-      color: white;
-    }
-    .cancel:hover {
-      background-color: #c82333;
-    }
 
-    /* Hiệu ứng nhấp nháy đỏ */
+    .confirm { background-color: #28a745; color: white; }
+    .confirm:hover { background-color: #218838; }
+    .cancel { background-color: #dc3545; color: white; }
+    .cancel:hover { background-color: #c82333; }
+
+    /* --- Hiệu ứng nhấp nháy đỏ --- */
     .error {
       animation: blink 0.4s linear 2;
       border-color: red;
@@ -128,6 +123,20 @@
     @keyframes blink {
       0%, 100% { background-color: white; }
       50% { background-color: #ffe6e6; }
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .container { padding: 16px; }
+      input[type="text"], textarea { font-size: 14px; padding: 8px; }
+      button { font-size: 14px; padding: 10px; }
+    }
+
+    @media (max-width: 480px) {
+      h2 { font-size: 18px; }
+      input[type="text"], textarea { font-size: 13px; padding: 6px; }
+      button { font-size: 14px; padding: 10px; }
     }
   </style>
 </head>
