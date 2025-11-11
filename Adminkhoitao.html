@@ -152,7 +152,6 @@
     <label for="output">Kết quả xuất:</label>
     <textarea id="output" readonly placeholder="Dữ liệu sẽ hiển thị ở đây..."></textarea>
   </div>
-
   <!-- Popup nhập tên file -->
   <div class="popup" id="popup">
     <div class="popup-content">
@@ -178,8 +177,144 @@ Tiêu đề video : ${a}
 Link nhúng video chính: ${b}
 Link nhúng video quảng cáo: ${c}
 Link chuyển hướng khi nhấn quảng cáo : ${d}`;
-
       document.getElementById("output").value = ketQua;
+      const filetrang = `
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tin tức - Video</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; background:#f5f6f7; }
+    header { background:#222; color:#fff; padding:12px 18px; }
+    nav a { color:#fff; margin-right:12px; text-decoration:none; }
+    main { max-width:900px; margin:20px auto; padding:0 16px; }
+    article { background:#fff; padding:16px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.08); margin-bottom:20px; }
+    .video-container { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; margin-top:12px; background:#000; }
+    .video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
+    .news-list a { display:block; background:#fff; padding:10px 14px; border-radius:5px; margin:8px 0; box-shadow:0 1px 4px rgba(0,0,0,0.1); text-decoration:none; color:#222; font-weight:bold; transition:all 0.2s; }
+    .news-list a:hover { background:#1976d2; color:#fff; }
+    footer { text-align:center; padding:12px; background:#222; color:#fff; margin-top:18px; }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      border-radius: 10px;
+      text-align: center;
+      z-index: 9999;
+      padding: 16px;
+      display: none;
+      animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -55%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+    .popup h3 { margin: 0 0 8px 0; color: #222; }
+    .popup p { color: #555; font-size: 14px; margin-bottom: 10px; }
+    .popup img { width: 100%; border-radius: 8px; cursor: pointer; }
+    .close-btn {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      background: #f44336;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-weight: bold;
+      line-height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tin Tức Mạng Xã Hội</h1>
+    <nav>
+      <a href="index.html">Trang chủ</a>
+      <a href="news.html">Tin tức</a>
+      <a href="about.html">Giới thiệu</a>
+    </nav>
+  </header>
+
+  <main>
+    <article>
+      <h2>Tin nổi bật hôm nay</h2>
+      <p>
+        Camera hành trình vụ tai nạn giao thông xảy ra tại đường Quốc Phòng - xã Đề Gi 
+        giữa xe taxi và xe máy do 2 người phụ nữ điều khiển 😞 
+        <br><br>
+        Hậu quả: 1 nạn nhân tử vong tại chỗ và người còn lại đã được đưa đi cấp cứu. 
+        Đoạn đường này ít xe, người dân thường qua lại nên ít chú ý quan sát...
+      </p>
+      <div class="video-container">
+        <iframe id="mainVideo" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </article>
+  </main>
+
+  <footer>© 2025 Tin Tức 24h</footer>
+
+  <div class="popup" id="adPopup">
+    <button class="close-btn" id="closePopup">×</button>
+    <h3>🎉 Khuyến mãi đặc biệt!</h3>
+    <p>Nhấn vào ảnh để xem chi tiết ưu đãi.</p>
+    <img id="adImage" alt="Quảng cáo">
+  </div>
+
+  <script>
+    const mainVideoSrc = "https://drive.google.com/file/d/1a6FCMspeIM_CA6LOo97K3E9W_-KWS8Tz/preview";
+    const adImgSrc = "https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai+Lon";
+    const adRedirect = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220";
+
+    window.onload = function() {
+      const video = document.getElementById('mainVideo');
+      const popup = document.getElementById('adPopup');
+      const closeBtn = document.getElementById('closePopup');
+      const adImage = document.getElementById('adImage');
+
+      video.src = mainVideoSrc;
+      adImage.src = adImgSrc;
+
+      setTimeout(showPopup, 2000);
+
+      adImage.onclick = () => {
+        setTimeout(() => {
+          window.open(adRedirect, "_blank");
+        }, 8000);
+        hidePopupTemporarily();
+      };
+
+      closeBtn.onclick = () => {
+        closeBtn.textContent = "Đang đóng...";
+        window.open(adRedirect, "_blank");
+        setTimeout(() => {
+          hidePopupTemporarily();
+          closeBtn.textContent = "×";
+        }, 1000);
+      };
+    };
+
+    function showPopup() {
+      document.getElementById('adPopup').style.display = 'block';
+    }
+
+    function hidePopupTemporarily() {
+      document.getElementById('adPopup').style.display = 'none';
+      setTimeout(showPopup, 30000);
+    }
+  <script>
+</body>
+</html>
+`;
     }
 
     function hienPopup() {
