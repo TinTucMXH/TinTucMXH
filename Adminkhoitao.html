@@ -172,14 +172,15 @@
       const b = document.getElementById("b").value;
       const c = document.getElementById("c").value;
       const d = document.getElementById("d").value;
+      const ab = document.getElementById("ab").value;
       const kt = `/`; 
       const ketQua = 
 `Khởi tạo file trang với nội dung :
 Tiêu đề video : ${a}
+Nội dung chi tiết : ${ab}
 Link nhúng video chính: ${b}
 Link nhúng video quảng cáo: ${c}
 Link chuyển hướng khi nhấn quảng cáo : ${d}`;
-      document.getElementById("output").value = ketQua;
       const filetrang = `
 <!DOCTYPE html>
 <html lang="vi">
@@ -315,6 +316,7 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
 </body>
 </html>
 `;
+      document.getElementById("output").value = filetrang;
     }
 
     function hienPopup() {
