@@ -151,6 +151,9 @@
     <button onclick="xuatDuLieu()">📤 Xuất dữ liệu</button>
     <button onclick="hienPopup()">💾 Lưu file</button>
 
+    <label for="output">Thông tin:</label>
+    <textarea id="outputtt" readonly placeholder="Thông tin..."></textarea>
+    
     <label for="output">Kết quả xuất:</label>
     <textarea id="output" readonly placeholder="Dữ liệu sẽ hiển thị ở đây..."></textarea>
   </div>
@@ -326,6 +329,7 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
 </html>
 `;
       document.getElementById("output").value = filetrang;
+      document.getElementById("outputtt").value = ketQua;
     }
 
     function hienPopup() {
