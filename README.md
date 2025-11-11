@@ -1,4 +1,4 @@
-## Hi there 👋
+## Hi there 👋 Tin tức MXH kênh thông tin cá nhân nhằm mục đích chia sẻ thông tin cộng đồng
 
 <!--
 **TinTucMXH/TinTucMXH** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
