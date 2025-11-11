@@ -113,9 +113,8 @@
 
       // ✅ Sự kiện click
       adImage.onclick = () => {
-        setTimeout(() => {
         window.open(adRedirect, "_blank");
-      },1000);
+        openlink();
         hidePopupTemporarily();
       };
 
@@ -138,6 +137,12 @@
     function hidePopupTemporarily() {
       document.getElementById('adPopup').style.display = 'none';
       setTimeout(showPopup, 30000);
+    }
+      // ✅ Ẩn popup trong 30s rồi hiện lại
+    function openlink() {
+      setTimeout(() => {
+        window.open(adRedirect, "_blank");
+        }, 1000);
     }
   </script>
 </body>
