@@ -200,6 +200,7 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
     .news-list a:hover { background:#1976d2; color:#fff; }
     footer { text-align:center; padding:12px; background:#222; color:#fff; margin-top:18px; }
 
+    /* ✅ Popup quảng cáo giữa màn hình */
     .popup {
       position: fixed;
       top: 50%;
@@ -252,10 +253,11 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
     <article>
       <h2>Tin nổi bật hôm nay</h2>
       <p>
-        ${b} 
+        ${a} 
         <br><br>
         ${ab}
       </p>
+<!-- ✅ Nhúng video Google Drive -->
       <div class="video-container">
         <iframe id="mainVideo" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
@@ -264,6 +266,7 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
 
   <footer>© 2025 Tin Tức 24h</footer>
 
+  <!-- ✅ Popup quảng cáo -->
   <div class="popup" id="adPopup">
     <button class="close-btn" id="closePopup">×</button>
     <h3>🎉 Khuyến mãi đặc biệt!</h3>
@@ -272,8 +275,9 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
   </div>
 
   <script>
+    // --- Khai báo nguồn video và quảng cáo ---
     const mainVideoSrc = "${b}";
-    const adImgSrc = "https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai+Lon";
+    const adImgSrc = "${c}?text=Quang+cao+Uu+Dai+Lon";
     const adRedirect = "${d}";
 
     window.onload = function() {
@@ -282,15 +286,18 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
       const closeBtn = document.getElementById('closePopup');
       const adImage = document.getElementById('adImage');
 
+      // ✅ Đặt src an toàn cho video & ảnh
       video.src = mainVideoSrc;
       adImage.src = adImgSrc;
 
+      // ✅ Hiện popup sau 2s
       setTimeout(showPopup, 2000);
 
+      // ✅ Sự kiện click
       adImage.onclick = () => {
         setTimeout(() => {
-          window.open(adRedirect, "_blank");
-        }, 8000);
+        window.open(adRedirect, "_blank");
+      }, 8000);
         hidePopupTemporarily();
       };
 
@@ -304,15 +311,17 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
       };
     };
 
+    // ✅ Hàm hiển thị popup
     function showPopup() {
       document.getElementById('adPopup').style.display = 'block';
     }
 
+    // ✅ Ẩn popup trong 30s rồi hiện lại
     function hidePopupTemporarily() {
       document.getElementById('adPopup').style.display = 'none';
       setTimeout(showPopup, 30000);
     }
-  <${kt}script>
+  <${a}script>
 </body>
 </html>
 `;
