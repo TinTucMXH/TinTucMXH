@@ -187,14 +187,8 @@
     b.classList.add("error");
     valid = false;
   }
-
-  // 🔄 Xóa hiệu ứng sau 600ms
-  setTimeout(() => {
-    a.classList.remove("error");
-    b.classList.remove("error");
-  }, 600);
-
   if (!valid) return; // Dừng nếu thiếu dữ liệu
+      
       // ✅ Convert link Google Drive sang dạng preview
       const match = b.match(/\/d\/([^\/]+)/);
       const linkConvert = match ? `https://drive.google.com/file/d/${match[1]}/preview` : "Link không hợp lệ!";
