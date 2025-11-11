@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Xuất dữ liệu nhập liệu</title>
+  <title>Xuất & Lưu Dữ Liệu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -61,6 +61,74 @@
     button:hover {
       background-color: #0056b3;
     }
+
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .popup-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 350px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .popup input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+    .popup-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+    .popup-buttons button {
+      width: 48%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .confirm {
+      background-color: #28a745;
+      color: white;
+    }
+    .confirm:hover {
+      background-color: #218838;
+    }
+    .cancel {
+      background-color: #dc3545;
+      color: white;
+    }
+    .cancel:hover {
+      background-color: #c82333;
+    }
+
+    /* Hiệu ứng nhấp nháy đỏ */
+    .error {
+      animation: blink 0.4s linear 2;
+      border-color: red;
+    }
+    @keyframes blink {
+      0%, 100% { background-color: white; }
+      50% { background-color: #ffe6e6; }
+    }
   </style>
 </head>
 <body>
@@ -78,10 +146,23 @@
     <label for="d">Nhập D:</label>
     <input type="text" id="d" placeholder="Nhập giá trị D...">
 
-    <button onclick="xuatDuLieu()">Xuất dữ liệu</button>
+    <button onclick="xuatDuLieu()">📤 Xuất dữ liệu</button>
+    <button onclick="hienPopup()">💾 Lưu file</button>
 
     <label for="output">Kết quả xuất:</label>
     <textarea id="output" readonly placeholder="Dữ liệu sẽ hiển thị ở đây..."></textarea>
+  </div>
+
+  <!-- Popup nhập tên file -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h3>Nhập tên file để lưu</h3>
+      <input type="text" id="fileName" placeholder="Tên file (không cần .html)">
+      <div class="popup-buttons">
+        <button class="confirm" onclick="xacNhanLuu()">Xác nhận</button>
+        <button class="cancel" onclick="dongPopup()">Hủy</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -99,6 +180,37 @@ C: ${c}
 D: ${d}`;
 
       document.getElementById("output").value = ketQua;
+    }
+
+    function hienPopup() {
+      document.getElementById("popup").style.display = "flex";
+    }
+
+    function dongPopup() {
+      document.getElementById("popup").style.display = "none";
+      document.getElementById("fileName").value = "";
+    }
+
+    function xacNhanLuu() {
+      const tenFileInput = document.getElementById("fileName");
+      const tenFile = tenFileInput.value.trim();
+      const noiDung = document.getElementById("output").value;
+
+      if (tenFile === "") {
+        tenFileInput.classList.add("error");
+        setTimeout(() => tenFileInput.classList.remove("error"), 600);
+        return;
+      }
+
+      const blob = new Blob(
+        [`<pre>${noiDung}</pre>`],
+        { type: "text/html;charset=utf-8" }
+      );
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = tenFile + ".html";
+      link.click();
+      dongPopup();
     }
   </script>
 </body>
