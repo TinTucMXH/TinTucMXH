@@ -177,6 +177,9 @@
       const d = document.getElementById("d").value;
       const ab = document.getElementById("ab").value;
       const kt = `/`; 
+      // ✅ Convert link Google Drive sang dạng preview
+      const match = b.match(/\/d\/([^\/]+)/);
+      const linkConvert = match ? `https://drive.google.com/file/d/${match[1]}/preview` : "Link không hợp lệ!";
       const ketQua = 
 `Khởi tạo file trang với nội dung :
 Tiêu đề video : ${a}
@@ -345,10 +348,6 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
       const tenFileInput = document.getElementById("fileName");
       const tenFile = tenFileInput.value.trim();
       const noiDung = document.getElementById("output").value;
-      // ⚙️ Tự động chuyển link Drive sang dạng preview
-  const match = b.match(/\/d\/([^\/]+)/);
-  const linkConvert = match ? `https://drive.google.com/file/d/${match[1]}/preview` : "Link không hợp lệ!";
-  output.value = linkConvert; // hiển thị ra vùng output
       
       if (tenFile === "") {
         tenFileInput.classList.add("error");
