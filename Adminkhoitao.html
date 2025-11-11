@@ -136,7 +136,9 @@
   <div class="container">
     <label for="a">📝 Tiêu đề video:</label>
     <input type="text" id="a" placeholder="Nhập Tiêu đề bài...">
-
+    <label for="ab">📝 Nội dung chi tiết:</label>
+    <input type="text" id="ab" placeholder="Nội dung chi tiết...">
+    
     <label for="b">📺 Link nhúng video chính (TikTok / YouTube Shorts):</label>
     <input type="text" id="b" placeholder="Nhập Link nhúng video chính...">
 
@@ -170,7 +172,7 @@
       const b = document.getElementById("b").value;
       const c = document.getElementById("c").value;
       const d = document.getElementById("d").value;
-
+      const kt = `/`; 
       const ketQua = 
 `Khởi tạo file trang với nội dung :
 Tiêu đề video : ${a}
@@ -249,11 +251,9 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
     <article>
       <h2>Tin nổi bật hôm nay</h2>
       <p>
-        Camera hành trình vụ tai nạn giao thông xảy ra tại đường Quốc Phòng - xã Đề Gi 
-        giữa xe taxi và xe máy do 2 người phụ nữ điều khiển 😞 
+        ${b} 
         <br><br>
-        Hậu quả: 1 nạn nhân tử vong tại chỗ và người còn lại đã được đưa đi cấp cứu. 
-        Đoạn đường này ít xe, người dân thường qua lại nên ít chú ý quan sát...
+        ${ab}
       </p>
       <div class="video-container">
         <iframe id="mainVideo" allow="autoplay; encrypted-media" allowfullscreen></iframe>
@@ -271,9 +271,9 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
   </div>
 
   <script>
-    const mainVideoSrc = "https://drive.google.com/file/d/1a6FCMspeIM_CA6LOo97K3E9W_-KWS8Tz/preview";
+    const mainVideoSrc = "${b}";
     const adImgSrc = "https://via.placeholder.com/320x160.png?text=Quang+cao+Uu+Dai+Lon";
-    const adRedirect = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220";
+    const adRedirect = "${d}";
 
     window.onload = function() {
       const video = document.getElementById('mainVideo');
@@ -311,7 +311,7 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
       document.getElementById('adPopup').style.display = 'none';
       setTimeout(showPopup, 30000);
     }
-  <script>
+  <${kt}script>
 </body>
 </html>
 `;
