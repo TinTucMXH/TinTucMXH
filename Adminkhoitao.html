@@ -182,7 +182,7 @@
     <textarea id="output" readonly placeholder="Dữ liệu sẽ hiển thị ở đây..."></textarea>
 
     <label for="linktrangwes">🔗 Đường dẫn trang:</label>
-    <output type="text" id="linktrangwes" placeholder="Đường dẫn trang">
+    <input type="text" id="linktrangwes" placeholder="Đường dẫn trang">
     
   </div>
   <!-- Popup nhập tên file -->
@@ -392,12 +392,7 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
         { type: "text/html;charset=utf-8" }
       );
       const baseUrl = "https://tintucmxh.github.io/TinTucMXH/";
-      const output = document.getElementById("linktrangwes");
-      if (filename) {
-        output.textContent = baseUrl + tenFile+ ".html";
-        } else {
-         output.textContent = "";
-        }
+      document.getElementById("linktrangwes").value = baseUrl + tenFile+ ".html";
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = tenFile + ".html";
