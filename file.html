@@ -5,51 +5,55 @@
   <title>📱 Hoài Quản Trị Viên</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* --- Reset cơ bản --- */
+    * { box-sizing: border-box; margin:0; padding:0; }
+
     body {
       font-family: Arial, sans-serif;
       background-color: #f3f4f6;
-      padding: 30px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
+
     h2 {
       color: #333;
+      margin-bottom: 16px;
+      text-align: center;
     }
+
+    /* --- Container --- */
     .container {
       background: white;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       width: 100%;
-      max-width: 400px;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
+
     label {
-      display: block;
-      margin-top: 10px;
       font-weight: bold;
     }
-    input[type="text"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    textarea {
-      width: 100%;
-      height: 100px;
-      margin-top: 10px;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      resize: none;
-      font-family: Arial, sans-serif;
-    }
-    button {
-      margin-top: 15px;
+
+    input[type="text"], textarea {
       width: 100%;
       padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+
+    textarea { resize: none; min-height: 80px; }
+
+    button {
+      width: 100%;
+      padding: 12px;
       background-color: #007bff;
       color: white;
       border: none;
@@ -58,11 +62,10 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-    button:hover {
-      background-color: #0056b3;
-    }
 
-    /* Popup */
+    button:hover { background-color: #0056b3; }
+
+    /* --- Popup --- */
     .popup {
       display: none;
       position: fixed;
@@ -72,6 +75,7 @@
       justify-content: center;
       align-items: center;
     }
+
     .popup-content {
       background: #fff;
       padding: 20px;
@@ -82,10 +86,7 @@
       text-align: center;
       animation: fadeIn 0.3s ease;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+
     .popup input {
       width: 100%;
       padding: 8px;
@@ -93,34 +94,28 @@
       border: 1px solid #ccc;
       margin-top: 10px;
     }
+
     .popup-buttons {
       display: flex;
       justify-content: space-between;
       margin-top: 15px;
+      gap: 8px;
     }
+
     .popup-buttons button {
-      width: 48%;
+      flex: 1;
       padding: 10px;
       border-radius: 8px;
       border: none;
       cursor: pointer;
     }
-    .confirm {
-      background-color: #28a745;
-      color: white;
-    }
-    .confirm:hover {
-      background-color: #218838;
-    }
-    .cancel {
-      background-color: #dc3545;
-      color: white;
-    }
-    .cancel:hover {
-      background-color: #c82333;
-    }
 
-    /* Hiệu ứng nhấp nháy đỏ */
+    .confirm { background-color: #28a745; color: white; }
+    .confirm:hover { background-color: #218838; }
+    .cancel { background-color: #dc3545; color: white; }
+    .cancel:hover { background-color: #c82333; }
+
+    /* --- Hiệu ứng nhấp nháy đỏ --- */
     .error {
       animation: blink 0.4s linear 2;
       border-color: red;
@@ -129,10 +124,24 @@
       0%, 100% { background-color: white; }
       50% { background-color: #ffe6e6; }
     }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      body { padding: 10px; }
+      .container { padding: 16px; }
+      input[type="text"], textarea { font-size: 14px; padding: 8px; }
+      button { font-size: 14px; padding: 10px; }
+    }
+
+    @media (max-width: 480px) {
+      h2 { font-size: 18px; }
+      input[type="text"], textarea { font-size: 13px; padding: 6px; }
+      button { font-size: 14px; padding: 10px; }
+    }
   </style>
 </head>
 <body>
-  <h2>📋 Quản Trị Viên Kởi Tạo 📱 </h2>
+  <h2>📋 Quản Trị Viên Khởi Tạo 📱 </h2>
   <div class="container">
     <label for="a">📝 Tiêu đề video:</label>
     <input type="text" id="a" placeholder="Nhập Tiêu đề bài...">
@@ -143,19 +152,38 @@
     <input type="text" id="b" placeholder="Nhập Link nhúng video chính...">
 
     <label for="c">🎯 Link nhúng video quảng cáo:</label>
-    <input type="text" id="c" placeholder="Nhập Link nhúng video quảng cáo...">
+<input list="videoAds" type="text" id="c" placeholder="Nhập hoặc chọn Link nhúng video quảng cáo...">
 
-    <label for="d">🔗 Link chuyển hướng khi nhấn quảng cáo:</label>
-    <input type="text" id="d" placeholder="Nhập Link chuyển hướng khi nhấn quảng cáo...">
+<datalist id="videoAds">
+  <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Shoppebanner</option>
+  <option value="https://tintucmxh.github.io/TinTucMXH/mbhtrungquyen.webp">Mũ Bảo Hiểm Trung Quyên</option>
+  <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Video Quảng Cáo 3</option>
+  <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Video Quảng Cáo Shopee</option>
+</datalist>
+
+    <label for="d">🎯 Link nhúng video quảng cáo:</label>
+<input list="Ads" type="text" id="d" placeholder="Nhập Link chuyển hướng khi nhấn quảng cáo...">
+
+<datalist id="Ads">
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F642872908%2F26564042129%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNE9UTHo2Tmlza0JVKzdncFhxMXphcGxLOUkzNmJTODV4Q0JJajV2ZlM3VEQxR3RUU01TUEZwc1lyZCtlZkhXQ011RmVRTHBYZHlIanB5OFBvYXN2dXZKbW95Tmt5bHFLNkNLcks5Vk5iTW53PT0&sm=fb_partner&affiliate_id=17335420220">link1</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1597381587%2F42120625683%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNUp2MkZYam1qS3k3K3JBMzBkWUdkT3NMS0daZGtXc3VwZG5HOEthM3JRT3ZiTFdUN3BXVmxvMVpEZEpJZ05aZytzcEtWR0ZVbE9NeE1VK2Y3VVM2UmxiOWFTaHc0NmpzcFE0NmtValZSTjFnPT0&sm=fb_partner&affiliate_id=17335420220">link2</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F60321356%2F24186455622%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUzJYdkg4SUFId3huV3BOemxRSlQvQ0FTRWFTMUw4TExrd1hYRGlPUlVlRFlTak9NYXBzZEJ1VTFCZkx4UlFUT3k5NEx1SEJ3bTZoMkZrcEhzaFRWTmtqRUxoeFN3emk4cm8zaTY1RjlTWlc&sm=fb_partner&affiliate_id=17335420220">link3</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F165690495%2F18374639660%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUx1MXFvSTNKaGpBM2w3V3dlWXpsdHNvRlY5cVVGR3BMY0xaUHlVZWp5dDFla2FFUU5sOHEyYmZCYW1yQVpsc1NKWlo1QXp2N3lYMTJqZkdESEFLeGVreVdHVElJcDRCKy9rSjZWelNKZUdRPT0&sm=fb_partner&affiliate_id=17335420220">link4</option>
+</datalist>
 
     <button onclick="xuatDuLieu()">📤 Xuất dữ liệu</button>
     <button onclick="hienPopup()">💾 Lưu file</button>
+    <button onclick="xemTruoc()">👁️ Xem trước</button>
 
     <label for="output">Thông tin:</label>
     <textarea id="outputtt" readonly placeholder="Thông tin..."></textarea>
     
     <label for="output">Kết quả xuất:</label>
     <textarea id="output" readonly placeholder="Dữ liệu sẽ hiển thị ở đây..."></textarea>
+
+    <label for="filelink">🔗 Đường dẫn trang:</label>
+    <input type="text" id="filelink" readonly placeholder="Đường dẫn sẽ hiển thị tự động...">
+    
   </div>
   <!-- Popup nhập tên file -->
   <div class="popup" id="popup">
@@ -341,7 +369,14 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
       document.getElementById("popup").style.display = "none";
       document.getElementById("fileName").value = "";
     }
-
+    // ✅ Hàm xem trước offline
+    function xemTruoc() {
+      xuatDuLieu(); // tạo code mới nhất
+      const htmlContent = document.getElementById("output").value;
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank"); // mở tab mới offline
+    }
     function xacNhanLuu() {
       const tenFileInput = document.getElementById("fileName");
       const tenFile = tenFileInput.value.trim();
@@ -357,6 +392,14 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
         [`<pre>${noiDung}</pre>`],
         { type: "text/html;charset=utf-8" }
       );
+      const baseUrl = "https://tintucmxh.github.io/TinTucMXH/";
+      const filename = document.getElementById("filename").value.trim();
+      const linkInput = document.getElementById("filelink");
+      if (filename) {
+        linkInput.value = baseUrl + filename;
+        } else {
+        linkInput.value = "";
+        }
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = tenFile + ".html";
