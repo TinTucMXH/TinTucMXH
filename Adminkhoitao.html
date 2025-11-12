@@ -173,6 +173,7 @@
 
     <button onclick="xuatDuLieu()">📤 Xuất dữ liệu</button>
     <button onclick="hienPopup()">💾 Lưu file</button>
+    <button onclick="xemTruoc()">👁️ Xem trước</button>
 
     <label for="output">Thông tin:</label>
     <textarea id="outputtt" readonly placeholder="Thông tin..."></textarea>
@@ -364,7 +365,14 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
       document.getElementById("popup").style.display = "none";
       document.getElementById("fileName").value = "";
     }
-
+    // ✅ Hàm xem trước offline
+    function xemTruoc() {
+      xuatDuLieu(); // tạo code mới nhất
+      const htmlContent = document.getElementById("output").value;
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank"); // mở tab mới offline
+    }
     function xacNhanLuu() {
       const tenFileInput = document.getElementById("fileName");
       const tenFile = tenFileInput.value.trim();
