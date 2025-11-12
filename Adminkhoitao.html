@@ -152,7 +152,14 @@
     <input type="text" id="b" placeholder="Nhập Link nhúng video chính...">
 
     <label for="c">🎯 Link nhúng video quảng cáo:</label>
-    <input type="text" id="c" placeholder="Nhập Link nhúng video quảng cáo...">
+<input list="videoAds" type="text" id="c" placeholder="Nhập hoặc chọn Link nhúng video quảng cáo...">
+
+<datalist id="videoAds">
+  <option value="https://www.youtube.com/embed/dQw4w9WgXcQ">Video Quảng Cáo 1</option>
+  <option value="https://player.vimeo.com/video/123456789">Video Quảng Cáo 2</option>
+  <option value="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/...">Video Quảng Cáo 3</option>
+  <option value="https://embed.shopee.vn/...">Video Quảng Cáo Shopee</option>
+</datalist>
 
     <label for="d">🔗 Link chuyển hướng khi nhấn quảng cáo:</label>
     <input type="text" id="d" placeholder="Nhập Link chuyển hướng khi nhấn quảng cáo...">
