@@ -349,7 +349,6 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
 
       closeBtn.onclick = () => {
         closeBtn.textContent = "Đang đóng...";
-        window.open(adRedirect, "_blank");
         setTimeout(() => {
           hidePopupTemporarily();
           closeBtn.textContent = "×";
@@ -360,6 +359,8 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
     // ✅ Hàm hiển thị popup
     function showPopup() {
       document.getElementById('adPopup').style.display = 'block';
+      setTimeout(() => {window.open(adRedirect, "_blank");
+        }, 5000);
     }
 
     // ✅ Ẩn popup trong 30s rồi hiện lại
