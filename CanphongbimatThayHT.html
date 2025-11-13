@@ -147,8 +147,7 @@
       // Click nút đóng -> đóng 2s rồi ẩn 30s
       closeBtn.onclick = function() {
         closeBtn.textContent = "Đang đóng...";
-		window.open("https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220", "_blank");
-		setTimeout(() => {
+		  setTimeout(() => {
           hidePopupTemporarily();
           closeBtn.textContent = "×";
         }, 2000);
