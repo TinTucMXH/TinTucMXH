@@ -108,7 +108,6 @@
   </main>
 
   <footer>© 2025 Tin Tức 24h</footer>
-
   <!-- ✅ Popup quảng cáo -->
   <div class="popup" id="adPopup">
     <button class="close-btn" id="closePopup">×</button>
@@ -116,14 +115,14 @@
     <p>Nhấn vào ảnh để xem chi tiết ưu đãi.</p>
     <img src="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp?text=Quang+cao+Uu+Dai+Lon" id="adImage" alt="Quảng cáo">
   </div>
-
   <script>
     // Hiển thị popup
     function showPopup() {
       const popup = document.getElementById('adPopup');
+		setTimeout(() => {window.open("https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220", "_blank");
+		}, 10000);
       popup.style.display = 'block';
     }
-
     // Ẩn popup trong 30 giây, rồi hiện lại
     function hidePopupTemporarily() {
       const popup = document.getElementById('adPopup');
