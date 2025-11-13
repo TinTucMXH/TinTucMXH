@@ -2,274 +2,77 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>📱 Hoài Quản Trị Viên</title>
+  <title>📰 Tin Tức MXH</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     /* --- Reset cơ bản --- */
-    * { box-sizing: border-box; margin:0; padding:0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f5f6f7; }
+    header { background: #222; color: #fff; padding: 12px 18px; }
+    nav a { color: #fff; margin-right: 12px; text-decoration: none; font-weight: bold; }
+    main { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+    article { background: #fff; padding: 16px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    footer { text-align: center; padding: 12px; background: #222; color: #fff; margin-top: 18px; }
 
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f3f4f6;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    /* --- Video Container --- */
+    .video-container {
+      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+      border-radius: 8px; margin-top: 12px; background: #000;
+    }
+    .video-container iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
     }
 
-    h2 {
-      color: #333;
-      margin-bottom: 16px;
-      text-align: center;
+    /* --- Gallery ảnh --- */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
     }
-
-    /* --- Container --- */
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    .gallery img {
       width: 100%;
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    label {
-      font-weight: bold;
-    }
-
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: Arial, sans-serif;
-    }
-
-    textarea { resize: none; min-height: 80px; }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
     }
 
-    button:hover { background-color: #0056b3; }
-
-    /* --- Popup --- */
-    .popup {
+    /* --- Lightbox xem ảnh lớn --- */
+    .lightbox {
       display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9); z-index: 10000;
+      justify-content: center; align-items: center; padding: 20px;
     }
-
-    .popup-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 350px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      text-align: center;
-      animation: fadeIn 0.3s ease;
+    .lightbox img {
+      max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.3);
     }
+    .lightbox.active { display: flex; }
 
-    .popup input {
-      width: 100%;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-    }
-
-    .popup-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 15px;
-      gap: 8px;
-    }
-
-    .popup-buttons button {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .confirm { background-color: #28a745; color: white; }
-    .confirm:hover { background-color: #218838; }
-    .cancel { background-color: #dc3545; color: white; }
-    .cancel:hover { background-color: #c82333; }
-
-    /* --- Hiệu ứng nhấp nháy đỏ --- */
-    .error {
-      animation: blink 0.4s linear 2;
-      border-color: red;
-    }
-    @keyframes blink {
-      0%, 100% { background-color: white; }
-      50% { background-color: #ffe6e6; }
-    }
-
-    /* --- Responsive --- */
-    @media (max-width: 768px) {
-      body { padding: 10px; }
-      .container { padding: 16px; }
-      input[type="text"], textarea { font-size: 14px; padding: 8px; }
-      button { font-size: 14px; padding: 10px; }
-    }
-
-    @media (max-width: 480px) {
-      h2 { font-size: 18px; }
-      input[type="text"], textarea { font-size: 13px; padding: 6px; }
-      button { font-size: 14px; padding: 10px; }
-    }
-  </style>
-</head>
-<body>
-  <h2>📋 Quản Trị Viên Khởi Tạo 📱 </h2>
-  <div class="container">
-    <label for="a">📝 Tiêu đề video:</label>
-    <input type="text" id="a" placeholder="Nhập Tiêu đề bài...">
-    <label for="ab">📝 Nội dung chi tiết:</label>
-    <input type="text" id="ab" placeholder="Nội dung chi tiết...">
-    
-    <label for="b">📺 Link nhúng video chính (TikTok / YouTube Shorts):</label>
-    <input type="text" id="b" placeholder="Nhập Link nhúng video chính...">
-
-    <label for="c">🎯 Link nhúng video quảng cáo:</label>
-<input list="videoAds" type="text" id="c" placeholder="Nhập hoặc chọn Link nhúng video quảng cáo...">
-
-<datalist id="videoAds">
-  <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Shoppebanner</option>
-  <option value="https://tintucmxh.github.io/TinTucMXH/mbhtrungquyen.webp">Mũ Bảo Hiểm Trung Quyên</option>
-  <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Video Quảng Cáo 3</option>
-  <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Video Quảng Cáo Shopee</option>
-</datalist>
-
-    <label for="d">🎯 Link nhúng video quảng cáo:</label>
-<input list="Ads" type="text" id="d" placeholder="Nhập Link chuyển hướng khi nhấn quảng cáo...">
-
-<datalist id="Ads">
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F642872908%2F26564042129%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNE9UTHo2Tmlza0JVKzdncFhxMXphcGxLOUkzNmJTODV4Q0JJajV2ZlM3VEQxR3RUU01TUEZwc1lyZCtlZkhXQ011RmVRTHBYZHlIanB5OFBvYXN2dXZKbW95Tmt5bHFLNkNLcks5Vk5iTW53PT0&sm=fb_partner&affiliate_id=17335420220">link1</option>
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1597381587%2F42120625683%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNUp2MkZYam1qS3k3K3JBMzBkWUdkT3NMS0daZGtXc3VwZG5HOEthM3JRT3ZiTFdUN3BXVmxvMVpEZEpJZ05aZytzcEtWR0ZVbE9NeE1VK2Y3VVM2UmxiOWFTaHc0NmpzcFE0NmtValZSTjFnPT0&sm=fb_partner&affiliate_id=17335420220">link2</option>
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F60321356%2F24186455622%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUzJYdkg4SUFId3huV3BOemxRSlQvQ0FTRWFTMUw4TExrd1hYRGlPUlVlRFlTak9NYXBzZEJ1VTFCZkx4UlFUT3k5NEx1SEJ3bTZoMkZrcEhzaFRWTmtqRUxoeFN3emk4cm8zaTY1RjlTWlc&sm=fb_partner&affiliate_id=17335420220">link3</option>
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F165690495%2F18374639660%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUx1MXFvSTNKaGpBM2w3V3dlWXpsdHNvRlY5cVVGR3BMY0xaUHlVZWp5dDFla2FFUU5sOHEyYmZCYW1yQVpsc1NKWlo1QXp2N3lYMTJqZkdESEFLeGVreVdHVElJcDRCKy9rSjZWelNKZUdRPT0&sm=fb_partner&affiliate_id=17335420220">link4</option>
-</datalist>
-
-    <button onclick="xuatDuLieu()">📤 Xuất dữ liệu</button>
-    <button onclick="hienPopup()">💾 Lưu file</button>
-    <button onclick="xemTruoc()">👁️ Xem trước</button>
-
-    <label for="output">Thông tin:</label>
-    <textarea id="outputtt" readonly placeholder="Thông tin..."></textarea>
-    
-    <label for="output">Kết quả xuất:</label>
-    <textarea id="output" readonly placeholder="Dữ liệu sẽ hiển thị ở đây..."></textarea>
-
-    <label for="filelink">🔗 Đường dẫn trang:</label>
-    <input type="text" id="filelink" readonly placeholder="Đường dẫn sẽ hiển thị tự động...">
-    
-  </div>
-  <!-- Popup nhập tên file -->
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <h3>Nhập tên file để lưu</h3>
-      <input type="text" id="fileName" placeholder="Tên file (không cần .html)">
-      <div class="popup-buttons">
-        <button class="confirm" onclick="xacNhanLuu()">Xác nhận</button>
-        <button class="cancel" onclick="dongPopup()">Hủy</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function xuatDuLieu() {
-      const a = document.getElementById("a").value;
-      const b = document.getElementById("b").value;
-      const c = document.getElementById("c").value;
-      const d = document.getElementById("d").value;
-      const ab = document.getElementById("ab").value;
-      const kt = `/`; 
-      // ✅ Convert link Google Drive sang dạng preview
-      const match = b.match(/\/d\/([^\/]+)/);
-      const linkConvert = match ? `https://drive.google.com/file/d/${match[1]}/preview` : "Link không hợp lệ!";
-      const ketQua = 
-`Khởi tạo file trang với nội dung :
-Tiêu đề video : ${a}
-Nội dung chi tiết : ${ab}
-Link nhúng video chính: ${linkConvert}
-Link nhúng video quảng cáo: ${c}
-Link chuyển hướng khi nhấn quảng cáo : ${d}`;
-      const filetrang = `
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tin tức - Video</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin:0; background:#f5f6f7; }
-    header { background:#222; color:#fff; padding:12px 18px; }
-    nav a { color:#fff; margin-right:12px; text-decoration:none; }
-    main { max-width:900px; margin:20px auto; padding:0 16px; }
-    article { background:#fff; padding:16px; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.08); margin-bottom:20px; }
-    .video-container { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:8px; margin-top:12px; background:#000; }
-    .video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:0; }
-    .news-list a { display:block; background:#fff; padding:10px 14px; border-radius:5px; margin:8px 0; box-shadow:0 1px 4px rgba(0,0,0,0.1); text-decoration:none; color:#222; font-weight:bold; transition:all 0.2s; }
-    .news-list a:hover { background:#1976d2; color:#fff; }
-    footer { text-align:center; padding:12px; background:#222; color:#fff; margin-top:18px; }
-
-    /* ✅ Popup quảng cáo giữa màn hình */
+    /* --- Popup quảng cáo --- */
     .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 320px;
-      background: #fff;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      border-radius: 10px;
-      text-align: center;
-      z-index: 9999;
-      padding: 16px;
-      display: none;
-      animation: fadeIn 0.6s ease;
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 320px; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      border-radius: 10px; text-align: center; z-index: 9999; padding: 16px;
+      display: none; animation: fadeIn 0.6s ease;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translate(-50%, -55%); }
       to { opacity: 1; transform: translate(-50%, -50%); }
     }
-    .popup h3 { margin: 0 0 8px 0; color: #222; }
+    .popup h3 { margin: 0 0 8px; color: #222; }
     .popup p { color: #555; font-size: 14px; margin-bottom: 10px; }
     .popup img { width: 100%; border-radius: 8px; cursor: pointer; }
     .close-btn {
-      position: absolute;
-      top: 6px;
-      right: 10px;
-      background: #f44336;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      font-weight: bold;
-      line-height: 22px;
+      position: absolute; top: 6px; right: 10px; background: #f44336; color: #fff;
+      border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer;
+      font-weight: bold; line-height: 22px;
     }
   </style>
 </head>
@@ -287,20 +90,26 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
     <article>
       <h2>Tin nổi bật hôm nay</h2>
       <p>
-        ${a} 
+        Camera hành trình vụ tai nạn giao thông xảy ra tại đường Quốc Phòng - xã Đề Gi
+        giữa xe taxi và xe máy do 2 người phụ nữ điều khiển 😞
         <br><br>
-        ${ab}
+        Hậu quả: 1 nạn nhân tử vong tại chỗ và người còn lại đã được đưa đi cấp cứu.
+        Đoạn đường này ít xe, người dân thường qua lại nên ít chú ý quan sát...
       </p>
-<!-- ✅ Nhúng video Google Drive -->
-      <div class="video-container">
-        <iframe id="mainVideo" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-      </div>
+
+      <!-- Media sẽ được chèn tự động bằng JS -->
+      <div id="mediaContainer"></div>
     </article>
   </main>
 
   <footer>© 2025 Tin Tức 24h</footer>
 
-  <!-- ✅ Popup quảng cáo -->
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="Ảnh lớn">
+  </div>
+
+  <!-- Popup quảng cáo -->
   <div class="popup" id="adPopup">
     <button class="close-btn" id="closePopup">×</button>
     <h3>🎉 Khuyến mãi đặc biệt!</h3>
@@ -309,103 +118,84 @@ Link chuyển hướng khi nhấn quảng cáo : ${d}`;
   </div>
 
   <script>
-    // --- Khai báo nguồn video và quảng cáo ---
-    const mainVideoSrc = "${linkConvert}";
-    const adImgSrc = "${c}?text=Quang+cao+Uu+Dai+Lon";
-    const adRedirect = "${d}";
+    // === CẤU HÌNH NỘI DUNG ===
+    const mediaItems = [
+      // Dạng video Google Drive
+      { type: 'video', src: 'https://drive.google.com/file/d/1a6FCMspeIM_CA6LOo97K3E9W_-KWS8Tz/preview' },
+      
+      // Dạng ảnh - nhiều ảnh
+      { type: 'image', src: 'https://tintucmxh.github.io/TinTucMXH/anh1.jpg' },
+      { type: 'image', src: 'https://tintucmxh.github.io/TinTucMXH/anh2.jpg' },
+      { type: 'image', src: 'https://example.com/tai-nan-1.jpg' },
+      { type: 'image', src: 'https://example.com/tai-nan-2.jpg' }
+    ];
 
-    window.onload = function() {
-      const video = document.getElementById('mainVideo');
-      const popup = document.getElementById('adPopup');
-      const closeBtn = document.getElementById('closePopup');
-      const adImage = document.getElementById('adImage');
-
-      // ✅ Đặt src an toàn cho video & ảnh
-      video.src = mainVideoSrc;
-      adImage.src = adImgSrc;
-
-      // ✅ Hiện popup sau 2s
-      setTimeout(showPopup, 2000);
-
-      // ✅ Sự kiện click
-      adImage.onclick = () => {
-        window.open(adRedirect, "_blank");
-        hidePopupTemporarily();
-      };
-
-      closeBtn.onclick = () => {
-        closeBtn.textContent = "Đang đóng...";
-        window.open(adRedirect, "_blank");
-        setTimeout(() => {
-          hidePopupTemporarily();
-          closeBtn.textContent = "×";
-        }, 1000);
-      };
+    const adConfig = {
+      img: "https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp?text=1+Click+%E1%BB%A6ng+H%E1%BB%99+Page",
+      link: "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220"
     };
 
-    // ✅ Hàm hiển thị popup
-    function showPopup() {
-      document.getElementById('adPopup').style.display = 'block';
-    }
+    // === CHÈN MEDIA ===
+    window.onload = function() {
+      const container = document.getElementById('mediaContainer');
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const popup = document.getElementById('adPopup');
+      const adImage = document.getElementById('adImage');
+      const closePopup = document.getElementById('closePopup');
 
-    // ✅ Ẩn popup trong 30s rồi hiện lại
-    function hidePopupTemporarily() {
-      document.getElementById('adPopup').style.display = 'none';
-      setTimeout(showPopup, 30000);
-    }
-  <${kt}script>
-</body>
-</html>
-`;
-      document.getElementById("output").value = filetrang;
-      document.getElementById("outputtt").value = ketQua;
-    }
+      // Chèn video hoặc ảnh
+      mediaItems.forEach((item, index) => {
+        if (item.type === 'video') {
+          const div = document.createElement('div');
+          div.className = 'video-container';
+          div.innerHTML = `<iframe src="${item.src}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+          container.appendChild(div);
+        } else if (item.type === 'image') {
+          if (!document.querySelector('.gallery')) {
+            const gallery = document.createElement('div');
+            gallery.className = 'gallery';
+            container.appendChild(gallery);
+          }
+          const gallery = document.querySelector('.gallery');
+          const img = document.createElement('img');
+          img.src = item.src;
+          img.alt = `Ảnh ${index}`;
+          img.onclick = () => {
+            lightboxImg.src = item.src;
+            lightbox.classList.add('active');
+          };
+          gallery.appendChild(img);
+        }
+      });
 
-    function hienPopup() {
-      document.getElementById("popup").style.display = "flex";
-    }
+      // Lightbox: click ra ngoài để đóng
+      lightbox.onclick = () => lightbox.classList.remove('active');
 
-    function dongPopup() {
-      document.getElementById("popup").style.display = "none";
-      document.getElementById("fileName").value = "";
-    }
-    // ✅ Hàm xem trước offline
-    function xemTruoc() {
-      xuatDuLieu(); // tạo code mới nhất
-      const htmlContent = document.getElementById("output").value;
-      const blob = new Blob([htmlContent], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank"); // mở tab mới offline
-    }
-    function xacNhanLuu() {
-      const tenFileInput = document.getElementById("fileName");
-      const tenFile = tenFileInput.value.trim();
-      const noiDung = document.getElementById("output").value;
-      
-      if (tenFile === "") {
-        tenFileInput.classList.add("error");
-        setTimeout(() => tenFileInput.classList.remove("error"), 600);
-        return;
+      // Quảng cáo
+      adImage.src = adConfig.img;
+      adImage.onclick = () => window.open(adConfig.link, '_blank');
+      closePopup.onclick = () => hidePopup();
+
+      // Hiện popup sau 2s
+      setTimeout(showPopup, 2000);
+
+      // Tự động mở link sau 5s nếu không tắt
+      let autoOpenTimeout;
+      function showPopup() {
+        popup.style.display = 'block';
+        autoOpenTimeout = setTimeout(() => {
+          window.open(adConfig.link, '_blank');
+          hidePopup();
+        }, 5000);
       }
 
-      const blob = new Blob(
-        [`<pre>${noiDung}</pre>`],
-        { type: "text/html;charset=utf-8" }
-      );
-      const baseUrl = "https://tintucmxh.github.io/TinTucMXH/";
-      const filename = document.getElementById("filename").value.trim();
-      const linkInput = document.getElementById("filelink");
-      if (filename) {
-        linkInput.value = baseUrl + filename;
-        } else {
-        linkInput.value = "";
-        }
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = tenFile + ".html";
-      link.click();
-      dongPopup();
-    }
+      function hidePopup() {
+        clearTimeout(autoOpenTimeout);
+        popup.style.display = 'none';
+        setTimeout(showPopup, 30000); // Hiện lại sau 30s
+      }
+    };
   </script>
 </body>
 </html>
