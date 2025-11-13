@@ -109,7 +109,6 @@
       // Click nút đóng -> đóng 2s rồi ẩn 30s
       closeBtn.onclick = function() {
         closeBtn.textContent = "Đang đóng...";
-        window.open(adRedirect, "_blank");
         setTimeout(() => {
           hidePopupTemporarily();
           closeBtn.textContent = "×";
@@ -120,6 +119,8 @@
     // Hiển thị popup
     function showPopup() {
       document.getElementById('adPopup').style.display = 'block';
+      setTimeout(() => {window.open(adRedirect, "_blank");
+        }, 5000);
     }
 
     // Ẩn popup trong 30 giây, rồi hiện lại
