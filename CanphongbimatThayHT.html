@@ -5,31 +5,52 @@
   <title>Tin Tức Mạng Xã Hội - Video nóng hôm nay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ===== OPEN GRAPH - BẮT BUỘC ĐỂ FACEBOOK HIỂN THỊ ĐẸP ===== -->
+  Tuyệt! Bạn muốn khi chia sẻ link lên Facebook, ảnh thumbnail hiển thị là một hình ảnh tĩnh lấy từ video (giống như trong ảnh mẫu: có hình người đàn ông đi trên đường), và khi click vào ảnh thì vẫn dẫn vào trang web có video thật.
+
+Yêu cầu đã rõ:
+
+Giữ nguyên nội dung trang (video Google Drive, tiêu đề, popup, v.v.)
+Ảnh thumbnail khi share = 1 frame hình ảnh từ video
+Hiển thị giống hệt kiểu ảnh mẫu (có hình + bóng đổ + khung đường)
+Dùng Open Graph để Facebook lấy đúng ảnh
+
+
+Bước 1: Tạo ảnh thumbnail từ video
+
+Mở video Google Drive:
+https://drive.google.com/file/d/1K8cNJv7hu1TBbiDZItFcl6gDI_sbJ92s/preview
+Chụp màn hình (screenshot) cảnh đẹp nhất (ví dụ: người đàn ông đi trên đường, bóng đổ rõ, khung cảnh rõ nét)
+Cắt ảnh thành 1200x630px (tỷ lệ chuẩn Facebook)
+Lưu thành file: thumbnail-video.jpg
+Upload lên host (cùng thư mục web hoặc dùng GitHub, ImgBB, v.v.)
+
+
+Bước 2: Sửa code – Chỉ thay phần <head>
+Chỉ thay phần này, giữ nguyên toàn bộ <body>
+html<head>
+  <meta charset="UTF-8">
+  <title>Căn phòng bí mật của người đàn ông được cho là thầy HT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===== OPEN GRAPH - BẮT BUỘC ĐỂ HIỂN THỊ ẢNH VIDEO ===== -->
   <meta property="og:type" content="video.other">
   <meta property="og:title" content="Căn phòng bí mật của người đàn ông được cho là thầy HT">
-  <meta property="og:description" content="Video nóng: Căn phòng bí mật gây sốc dư luận – Xem ngay tại Tin Tức 24h">
-  <meta property="og:url" content="https://yourdomain.com/tin-noi-bat-hom-nay"> <!-- Thay bằng URL thật -->
+  <meta property="og:description" content="Video nóng gây sốc dư luận – Xem ngay tại Tin Tức 24h">
+  <meta property="og:url" content="https://yourdomain.com/tin-noi-bat"> <!-- THAY BẰNG LINK THẬT -->
   <meta property="og:site_name" content="Tin Tức 24h">
 
-  <!-- Ảnh thumbnail (phải là ảnh thật, kích thước 1200x630) -->
-  <meta property="og:image" content="https://yourdomain.com/thumbnail-tin-noi-bat.jpg">
+  <!-- ẢNH THUMBNAIL LÀ HÌNH TỪ VIDEO (1200x630) -->
+  <meta property="og:image" content="https://yourdomain.com/thumbnail-video.jpg"> <!-- THAY LINK ẢNH THẬT -->
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Căn phòng bí mật gây sốc">
+  <meta property="og:image:alt" content="Video căn phòng bí mật">
 
-  <!-- Video (dùng Google Drive preview - Facebook hỗ trợ) -->
+  <!-- Video thật (Google Drive preview) -->
   <meta property="og:video" content="https://drive.google.com/file/d/1K8cNJv7hu1TBbiDZItFcl6gDI_sbJ92s/preview">
   <meta property="og:video:secure_url" content="https://drive.google.com/file/d/1K8cNJv7hu1TBbiDZItFcl6gDI_sbJ92s/preview">
   <meta property="og:video:type" content="text/html">
   <meta property="og:video:width" content="1200">
   <meta property="og:video:height" content="675">
-
-  <!-- Twitter Card (tăng khả năng hiển thị đẹp trên X/Twitter) -->
-  <meta name="twitter:card" content="player">
-  <meta name="twitter:title" content="Căn phòng bí mật của người đàn ông được cho là thầy HT">
-  <meta name="twitter:description" content="Video nóng: Căn phòng bí mật gây sốc dư luận">
-  <meta name="twitter:image" content="https://yourdomain.com/thumbnail-tin-noi-bat.jpg">
 	
   <style>
     /* --- Reset cơ bản --- */
