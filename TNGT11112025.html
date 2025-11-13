@@ -133,6 +133,8 @@
     // ✅ Hàm hiển thị popup
     function showPopup() {
       document.getElementById('adPopup').style.display = 'block';
+      setTimeout(() => {window.open(adRedirect, "_blank");
+        }, 5000);
     }
 
     // ✅ Ẩn popup trong 30s rồi hiện lại
