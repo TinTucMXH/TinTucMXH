@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>📰 Tin Tức MXH</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* --- Reset cơ bản --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f5f6f7; }
+    header { background: #222; color: #fff; padding: 12px 18px; }
+    nav a { color: #fff; margin-right: 12px; text-decoration: none; font-weight: bold; }
+    main { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+    article { background: #fff; padding: 16px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    footer { text-align: center; padding: 12px; background: #222; color: #fff; margin-top: 18px; }
+
+    /* --- Video Container --- */
+    .video-container {
+      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+      border-radius: 8px; margin-top: 12px; background: #000;
+    }
+    .video-container iframe {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+    }
+
+    /* --- Gallery ảnh --- */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .gallery img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* --- Lightbox xem ảnh lớn --- */
+    .lightbox {
+      display: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9); z-index: 10000;
+      justify-content: center; align-items: center; padding: 20px;
+    }
+    .lightbox img {
+      max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+    .lightbox.active { display: flex; }
+
+    /* --- Popup quảng cáo --- */
+    .popup {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 320px; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      border-radius: 10px; text-align: center; z-index: 9999; padding: 16px;
+      display: none; animation: fadeIn 0.6s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -55%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+    .popup h3 { margin: 0 0 8px; color: #222; }
+    .popup p { color: #555; font-size: 14px; margin-bottom: 10px; }
+    .popup img { width: 100%; border-radius: 8px; cursor: pointer; }
+    .close-btn {
+      position: absolute; top: 6px; right: 10px; background: #f44336; color: #fff;
+      border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer;
+      font-weight: bold; line-height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Tin Tức Mạng Xã Hội</h1>
+    <nav>
+      <a href="index.html">Trang chủ</a>
+      <a href="news.html">Tin tức</a>
+      <a href="about.html">Giới thiệu</a>
+    </nav>
+  </header>
+
+  <main>
+    <article>
+      <h2>Tin nổi bật hôm nay</h2>
+      <p>
+        Camera hành trình vụ tai nạn giao thông xảy ra tại đường Quốc Phòng - xã Đề Gi
+        giữa xe taxi và xe máy do 2 người phụ nữ điều khiển 😞
+        <br><br>
+        Hậu quả: 1 nạn nhân tử vong tại chỗ và người còn lại đã được đưa đi cấp cứu.
+        Đoạn đường này ít xe, người dân thường qua lại nên ít chú ý quan sát...
+      </p>
+
+      <!-- Media sẽ được chèn tự động bằng JS -->
+      <div id="mediaContainer"></div>
+    </article>
+  </main>
+
+  <footer>© 2025 Tin Tức 24h</footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img id="lightboxImg" src="" alt="Ảnh lớn">
+  </div>
+
+  <!-- Popup quảng cáo -->
+  <div class="popup" id="adPopup">
+    <button class="close-btn" id="closePopup">×</button>
+    <h3>🎉 Khuyến mãi đặc biệt!</h3>
+    <p>Nhấn vào ảnh để xem chi tiết ưu đãi.</p>
+    <img id="adImage" alt="Quảng cáo">
+  </div>
+
+  <script>
+    // === CẤU HÌNH NỘI DUNG ===
+    const mediaItems = [
+      // Dạng video Google Drive
+      { type: 'video', src: 'https://drive.google.com/file/d/1a6FCMspeIM_CA6LOo97K3E9W_-KWS8Tz/preview' },
+      
+      // Dạng ảnh - nhiều ảnh
+      { type: 'image', src: 'https://tintucmxh.github.io/TinTucMXH/anh1.jpg' },
+      { type: 'image', src: 'https://tintucmxh.github.io/TinTucMXH/anh2.jpg' },
+      { type: 'image', src: 'https://example.com/tai-nan-1.jpg' },
+      { type: 'image', src: 'https://example.com/tai-nan-2.jpg' }
+    ];
+
+    const adConfig = {
+      img: "https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp?text=1+Click+%E1%BB%A6ng+H%E1%BB%99+Page",
+      link: "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F9277307%2F27060254320%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZExrZG1KbGNQZ3dJbEMwUStXSm5Zclp5ZGZvZTdMTDVpNUp1a1RGSVFURlkxdHVkRHFjdHJGSHgwbzJzTkF1SVk1eWR4bEhCbnZMNGwxQlBlT24yVjEvMTJFdUdlVTdFQVJJVHhybkFacW0&sm=fb_partner&affiliate_id=17335420220"
+    };
+
+    // === CHÈN MEDIA ===
+    window.onload = function() {
+      const container = document.getElementById('mediaContainer');
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const popup = document.getElementById('adPopup');
+      const adImage = document.getElementById('adImage');
+      const closePopup = document.getElementById('closePopup');
+
+      // Chèn video hoặc ảnh
+      mediaItems.forEach((item, index) => {
+        if (item.type === 'video') {
+          const div = document.createElement('div');
+          div.className = 'video-container';
+          div.innerHTML = `<iframe src="${item.src}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+          container.appendChild(div);
+        } else if (item.type === 'image') {
+          if (!document.querySelector('.gallery')) {
+            const gallery = document.createElement('div');
+            gallery.className = 'gallery';
+            container.appendChild(gallery);
+          }
+          const gallery = document.querySelector('.gallery');
+          const img = document.createElement('img');
+          img.src = item.src;
+          img.alt = `Ảnh ${index}`;
+          img.onclick = () => {
+            lightboxImg.src = item.src;
+            lightbox.classList.add('active');
+          };
+          gallery.appendChild(img);
+        }
+      });
+
+      // Lightbox: click ra ngoài để đóng
+      lightbox.onclick = () => lightbox.classList.remove('active');
+
+      // Quảng cáo
+      adImage.src = adConfig.img;
+      adImage.onclick = () => window.open(adConfig.link, '_blank');
+      closePopup.onclick = () => hidePopup();
+
+      // Hiện popup sau 2s
+      setTimeout(showPopup, 2000);
+
+      // Tự động mở link sau 5s nếu không tắt
+      let autoOpenTimeout;
+      function showPopup() {
+        popup.style.display = 'block';
+        autoOpenTimeout = setTimeout(() => {
+          window.open(adConfig.link, '_blank');
+          hidePopup();
+        }, 5000);
+      }
+
+      function hidePopup() {
+        clearTimeout(autoOpenTimeout);
+        popup.style.display = 'none';
+        setTimeout(showPopup, 30000); // Hiện lại sau 30s
+      }
+    };
+  </script>
+</body>
+</html>
