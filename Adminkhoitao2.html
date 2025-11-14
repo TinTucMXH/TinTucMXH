@@ -56,16 +56,12 @@
       box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.2);
     }
     textarea { min-height: 90px; resize: vertical; }
-
-    /* Input + Button Group */
     .input-group {
       display: flex;
       gap: 8px;
       align-items: center;
     }
-    .input-group input {
-      flex: 1;
-    }
+    .input-group input { flex: 1; }
     .btn-small {
       padding: 8px 10px;
       border: none;
@@ -80,18 +76,10 @@
       align-items: center;
       justify-content: center;
     }
-    .btn-add {
-      background: #42a5f5;
-      color: white;
-    }
+    .btn-add { background: #42a5f5; color: white; }
     .btn-add:hover { background: #1e88e5; }
-    .btn-remove {
-      background: #ef5350;
-      color: white;
-    }
+    .btn-remove { background: #ef5350; color: white; }
     .btn-remove:hover { background: #e53935; }
-
-    /* Image List */
     .image-list {
       display: flex;
       flex-direction: column;
@@ -114,8 +102,6 @@
       font-size: 13px;
       word-break: break-all;
     }
-
-    /* Buttons */
     .btn {
       width: 100%;
       padding: 13px;
@@ -135,8 +121,6 @@
     .btn:hover { background: #1565c0; }
     .btn-secondary { background: #42a5f5; }
     .btn-secondary:hover { background: #1e88e5; }
-
-    /* Output */
     #output, #outputtt {
       background: #f8fbff;
       font-family: monospace;
@@ -150,8 +134,6 @@
       margin-top: 4px;
       font-style: italic;
     }
-
-    /* Popup */
     .popup {
       display: none;
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -168,9 +150,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       text-align: center;
     }
-    .popup input {
-      margin-top: 12px;
-    }
+    .popup input { margin-top: 12px; }
     .popup-buttons {
       display: flex;
       gap: 10px;
@@ -188,7 +168,6 @@
     .confirm:hover { background: #1e88e5; }
     .cancel { background: #ef5350; color: white; }
     .cancel:hover { background: #e53935; }
-
     @media (max-width: 480px) {
       .container { padding: 16px; }
       h2 { font-size: 20px; }
@@ -198,20 +177,15 @@
 <body>
   <h2>Quản Trị Viên Tin Tức MXH</h2>
   <div class="container">
-
-    <!-- Tiêu đề -->
     <label for="a">Tiêu đề bài viết</label>
     <input type="text" id="a" placeholder="VD: Tai nạn giao thông tại Đề Gi">
 
-    <!-- Nội dung -->
     <label for="ab">Nội dung chi tiết</label>
     <textarea id="ab" placeholder="Mô tả chi tiết sự kiện..."></textarea>
 
-    <!-- Video -->
     <label for="b">Link Google Drive video</label>
     <input type="text" id="b" placeholder="Dán link chia sẻ từ Google Drive">
 
-    <!-- Ảnh quảng cáo -->
     <label for="c">Link ảnh quảng cáo</label>
     <input list="videoAds" type="text" id="c" placeholder="Chọn hoặc nhập link ảnh">
     <datalist id="videoAds">
@@ -219,36 +193,23 @@
       <option value="https://tintucmxh.github.io/TinTucMXH/mbhtrungquyen.webp">Mũ Bảo Hiểm</option>
     </datalist>
 
-    <!-- Link chuyển hướng -->
     <label for="d">Link chuyển hướng quảng cáo</label>
     <input list="Ads" type="text" id="d" placeholder="Link Shopee, Tiki...">
     <datalist id="Ads">
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F642872908%2F26564042129%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNE9UTHo2Tmlza0JVKzdncFhxMXphcGxLOUkzNmJTODV4Q0JJajV2ZlM3VEQxR3RUU01TUEZwc1lyZCtlZkhXQ011RmVRTHBYZHlIanB5OFBvYXN2dXZKbW95Tmt5bHFLNkNLcks5Vk5iTW53PT0&sm=fb_partner&affiliate_id=17335420220">Link 1</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1597381587%2F42120625683%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNUp2MkZYam1qS3k3K3JBMzBkWUdkT3NMS0daZGtXc3VwZG5HOEthM3JRT3ZiTFdUN3BXVmxvMVpEZEpJZ05aZytzcEtWR0ZVbE9NeE1VK2Y3VVM2UmxiOWFTaHc0NmpzcFE0NmtValZSTjFnPT0&sm=fb_partner&affiliate_id=17335420220">Link 2</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F60321356%2F24186455622%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUzJYdkg4SUFId3huV3BOemxRSlQvQ0FTRWFTMUw4TExrd1hYRGlPUlVlRFlTak9NYXBzZEJ1VTFCZkx4UlFUT3k5NEx1SEJ3bTZoMkZrcEhzaFRWTmtqRUxoeFN3emk4cm8zaTY1RjlTWlc&sm=fb_partner&affiliate_id=17335420220">Link 3</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F134371556%2F42423910759%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNVVDbzlwcVRBVDZ3dDl1dlZ5dlpHVU9rTkFDY2RVZ0UvMkgxNHRJRktEa2xqVER6SDRwT3FQUGFXQ3YrTDhCNWFoNHZSN3BWL3c4K21FUkdUckd6a2x6d2V1MlJaUSt2UjV3WnR4UGRRT3hBPT0&sm=fb_partner&affiliate_id=17335420220">Link 4</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1362679168%2F42725093098%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNU5xQVdFa0NHWU9WRTU1RHdLSWo0ZXhIWHJ4M0lsYmpSdSs5WmdlMGwxYjBNQnd6ZXc0RUR1UGpqWVJXbDhPb04yam9MNVpueWpFa3pJUUE5ditLdTJ0TkU4U1BmUmUzSW9ncC9kTnA3UXpBPT0&sm=fb_partner&affiliate_id=17335420220">Link 5</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1116012986%2F28111763195%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNDFUcWFjSXJ2THR4K3RtYnBENjR2Qk1BdVY0b3M2WnN0VTEvcjhUaXp0YmROU2o1ZmxIWkFGVG9LSFMwd2FCelRhbVpIL3lTZkd3Z3g5Z2tnWFFrNkVtV3VYUTBoSDhuT1JsZHBJSVpKOGJ3PT0&sm=fb_partner&affiliate_id=17335420220">Link 6</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F457209160%2F23750569400%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNEx3RU1NWVR6VVpZaFBSSTVaV20wVk9HWVJ3QVM2SzhIT1lqYWhwZlRUWVVrWGU3d2l6RlhkTFl5UlluT0h2eEY3RTExWjUyUmlhd09uQ3NDMEFKRzU5b1ZHYmhOQmlqWDFSRjgxZllLMEx3PT0&sm=fb_partner&affiliate_id=17335420220">Link 7</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1587552560%2F25496198743%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNVNLYXFGcEMwcTI1MVhwVUZGY20rSGlQZnhFVDlCb3p6SXdweVQ1WUhDck9mYmRUTWVLOXhrZ3FVUTVqWmpldmdud0drazBCRWp2YkZ3eVhwaXNxeTBsVzBrYTJXWUN6MTIxODlkdm82ZW5BPT0&sm=fb_partner&affiliate_id=17335420220">Link 8</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F388618830%2F28618025544%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwN2VaREV1aU9GcHJRZXlHVkhuQ2cyT2JmbFdUaEFveEFNaWQzR2VCOUQ1VU1lcEJBcWdEL0lNOU13VmhYeW1zVkJEd2YxeWhPd2EwVmg5YThRUXMyM3FpOEVSVjUya3ZycDF5VmFXSnJqd1l3PT0&sm=fb_partner&affiliate_id=17335420220">Link 9</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F435368915%2F18892985217%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUxENGRGUUlmbWdraFVieUZTQzNPRDl1VVpRQzRJeDRyeGg4V2FBTnNiSnFKMllMa0cxNGY3Y3dINnVkYzlTRDRWMGhoRG9VU3VULzJjTG5RVXp6MHlEek5CTU96dC9aNk16NUVFWFRqdWF3PT0&sm=fb_partner&affiliate_id=17335420220">Link 10</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F952306790%2F17793921989%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwN2xMUzY0dFRLQU1OcWc1ZGFra1pTVHEzdEt5K2dqZmVOMHVKaWt2b0NjbkVDL3A3TFBpalJzRXdRdStJVEY4Q040ZGVVNDF0SWNyZ1Q3bHRVVzlwT20rRkoxbzdkVEFTRlBZRFBsS3A0NHN3PT0&sm=fb_partner&affiliate_id=17335420220">Link 11</option>
-  
-  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F165690495%2F18374639660%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUx1MXFvSTNKaGpBM2w3V3dlWXpsdHNvRlY5cVVGR3BMY0xaUHlVZWp5dDFla2FFUU5sOHEyYmZCYW1yQVpsc1NKWlo1QXp2N3lYMTJqZkdESEFLeGVreVdHVElJcDRCKy9rSjZWelNKZUdRPT0&sm=fb_partner&affiliate_id=17335420220">Link 12</option>
-</datalist>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F642872908%2F26564042129%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNE9UTHo2Tmlza0JVKzdncFhxMXphcGxLOUkzNmJTODV4Q0JJajV2ZlM3VEQxR3RUU01TUEZwc1lyZCtlZkhXQ011RmVRTHBYZHlIanB5OFBvYXN2dXZKbW95Tmt5bHFLNkNLcks5Vk5iTW53PT0&sm=fb_partner&affiliate_id=17335420220">Link 1</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1597381587%2F42120625683%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNUp2MkZYam1qS3k3K3JBMzBkWUdkT3NMS0daZGtXc3VwZG5HOEthM3JRT3ZiTFdUN3BXVmxvMVpEZEpJZ05aZytzcEtWR0ZVbE9NeE1VK2Y3VVM2UmxiOWFTaHc0NmpzcFE0NmtValZSTjFnPT0&sm=fb_partner&affiliate_id=17335420220">Link 2</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F60321356%2F24186455622%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUzJYdkg4SUFId3huV3BOemxRSlQvQ0FTRWFTMUw4TExrd1hYRGlPUlVlRFlTak9NYXBzZEJ1VTFCZkx4UlFUT3k5NEx1SEJ3bTZoMkZrcEhzaFRWTmtqRUxoeFN3emk4cm8zaTY1RjlTWlc&sm=fb_partner&affiliate_id=17335420220">Link 3</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F134371556%2F42423910759%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNVVDbzlwcVRBVDZ3dDl1dlZ5dlpHVU9rTkFDY2RVZ0UvMkgxNHRJRktEa2xqVER6SDRwT3FQUGFXQ3YrTDhCNWFoNHZSN3BWL3c4K21FUkdUckd6a2x6d2V1MlJaUSt2UjV3WnR4UGRRT3hBPT0&sm=fb_partner&affiliate_id=17335420220">Link 4</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1362679168%2F42725093098%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNU5xQVdFa0NHWU9WRTU1RHdLSWo0ZXhIWHJ4M0lsYmpSdSs5WmdlMGwxYjBNQnd6ZXc0RUR1UGpqWVJXbDhPb04yam9MNVpueWpFa3pJUUE5ditLdTJ0TkU4U1BmUmUzSW9ncC9kTnA3UXpBPT0&sm=fb_partner&affiliate_id=17335420220">Link 5</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1116012986%2F28111763195%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNDFUcWFjSXJ2THR4K3RtYnBENjR2Qk1BdVY0b3M2WnN0VTEvcjhUaXp0YmROU2o1ZmxIWkFGVG9LSFMwd2FCelRhbVpIL3lTZkd3Z3g5Z2tnWFFrNkVtV3VYUTBoSDhuT1JsZHBJSVpKOGJ3PT0&sm=fb_partner&affiliate_id=17335420220">Link 6</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F457209160%2F23750569400%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNEx3RU1NWVR6VVpZaFBSSTVaV20wVk9HWVJ3QVM2SzhIT1lqYWhwZlRUWVVrWGU3d2l6RlhkTFl5UlluT0h2eEY3RTExWjUyUmlhd09uQ3NDMEFKRzU5b1ZHYmhOQmlqWDFSRjgxZllLMEx3PT0&sm=fb_partner&affiliate_id=17335420220">Link 7</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1587552560%2F25496198743%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNVNLYXFGcEMwcTI1MVhwVUZGY20rSGlQZnhFVDlCb3p6SXdweVQ1WUhDck9mYmRUTWVLOXhrZ3FVUTVqWmpldmdud0drazBCRWp2YkZ3eVhwaXNxeTBsVzBrYTJXWUN6MTIxODlkdm82ZW5BPT0&sm=fb_partner&affiliate_id=17335420220">Link 8</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F388618830%2F28618025544%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwN2VaREV1aU9GcHJRZXlHVkhuQ2cyT2JmbFdUaEFveEFNaWQzR2VCOUQ1VU1lcEJBcWdEL0lNOU13VmhYeW1zVkJEd2YxeWhPd2EwVmg5YThRUXMyM3FpOEVSVjUya3ZycDF5VmFXSnJqd1l3PT0&sm=fb_partner&affiliate_id=17335420220">Link 9</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F435368915%2F18892985217%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUxENGRGUUlmbWdraFVieUZTQzNPRDl1VVpRQzRJeDRyeGg4V2FBTnNiSnFKMllMa0cxNGY3Y3dINnVkYzlTRDRWMGhoRG9VU3VULzJjTG5RVXp6MHlEek5CTU96dC9aNk16NUVFWFRqdWF3PT0&sm=fb_partner&affiliate_id=17335420220">Link 10</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F952306790%2F17793921989%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwN2xMUzY0dFRLQU1OcWc1ZGFra1pTVHEzdEt5K2dqZmVOMHVKaWt2b0NjbkVDL3A3TFBpalJzRXdRdStJVEY4Q040ZGVVNDF0SWNyZ1Q3bHRVVzlwT20rRkoxbzdkVEFTRlBZRFBsS3A0NHN3PT0&sm=fb_partner&affiliate_id=17335420220">Link 11</option>
+      <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F165690495%2F18374639660%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUx1MXFvSTNKaGpBM2w3V3dlWXpsdHNvRlY5cVVGR3BMY0xaUHlVZWp5dDFla2FFUU5sOHEyYmZCYW1yQVpsc1NKWlo1QXp2N3lYMTJqZkdESEFLeGVreVdHVElJcDRCKy9rSjZWelNKZUdRPT0&sm=fb_partner&affiliate_id=17335420220">Link 12</option>
+    </datalist>
 
-    <!-- Thêm ảnh chi tiết -->
     <label>Ảnh chi tiết (nhiều ảnh)</label>
     <div class="input-group">
       <input type="text" id="imageInput" placeholder="Nhập link ảnh...">
@@ -258,26 +219,22 @@
     </div>
     <div class="image-list" id="imageList"></div>
 
-    <!-- Buttons -->
     <button class="btn" onclick="xuatDuLieu()">Xuất Dữ Liệu</button>
     <button class="btn btn-secondary" onclick="hienPopup()">Lưu File HTML</button>
     <button class="btn btn-secondary" onclick="xemTruoc()">Xem Trước</button>
 
-    <!-- Output Thông tin -->
-    <label>Thông tin tóm tắt</label>
+    <label>Thông tin tóm tắt (Click đúp để sao chép)</label>
     <textarea id="outputtt" readonly placeholder="Thông tin sẽ hiện ở đây..."></textarea>
+    <div class="copy-hint">Click đúp để sao chép</div>
 
-    <!-- Output HTML -->
     <label>Mã HTML hoàn chỉnh (Click đúp để sao chép)</label>
     <textarea id="output" readonly placeholder="File HTML sẽ hiện ở đây..."></textarea>
     <div class="copy-hint">Click đúp để sao chép</div>
 
-    <!-- Link trang -->
     <label>Đường dẫn trang web</label>
     <input type="text" id="linktrangwes" readonly placeholder="Sẽ hiển thị sau khi lưu">
   </div>
 
-  <!-- Popup lưu file -->
   <div class="popup" id="popup">
     <div class="popup-content">
       <h3>Nhập tên file</h3>
@@ -291,27 +248,24 @@
 
   <script>
     let danhSachAnh = [];
+    let tenFile = "";
 
-    // Thêm ảnh
     function themAnh() {
       const input = document.getElementById("imageInput");
       const url = input.value.trim();
-      if (!url) return alert("Vui lòng nhập link ảnh!");
-
+      if (!url) return; // Không báo lỗi
       danhSachAnh.push(url);
       input.value = "";
       capNhatDanhSachAnh();
-      xuatDuLieu(); // Tự động cập nhật output
+      xuatDuLieu();
     }
 
-    // Xóa ảnh
     function xoaAnh(index) {
       danhSachAnh.splice(index, 1);
       capNhatDanhSachAnh();
       xuatDuLieu();
     }
 
-    // Cập nhật danh sách ảnh
     function capNhatDanhSachAnh() {
       const list = document.getElementById("imageList");
       list.innerHTML = "";
@@ -328,25 +282,21 @@
       });
     }
 
-    // Chuyển Google Drive link
     function convertDriveLink(url) {
       const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
       return match ? `https://drive.google.com/file/d/${match[1]}/preview` : url;
     }
 
-    // Tạo HTML bằng mảng + join
-    function taoFileHTML(tieude, noidung, videoUrl, adImg, adLink) {
+    function taoFileHTML(tieude, noidung, videoUrl, adImg, adLink, tenFile) {
       const videoSrc = convertDriveLink(videoUrl);
-      const mediaJS = danhSachAnh.length > 0
-        ? danhSachAnh.map(src => `      { type: "image", src: "${src}" },`).join('\n')
-        : '';
+      const mediaJS = danhSachAnh.map(src => `      { type: "image", src: "${src}" },`).join('\n');
 
       const html = [
         '<!DOCTYPE html>',
         '<html lang="vi">',
         '<head>',
         '  <meta charset="UTF-8">',
-        '  <title>📰 Tin Tức MXH</title>',
+        `  <title>${tenFile || 'Tin Tức MXH'}</title>`,
         '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
         '  <style>',
         '    * { box-sizing: border-box; margin: 0; padding: 0; }',
@@ -401,9 +351,7 @@
         '  </div>',
         '  <script>',
         '    const adLink = "' + adLink + '";',
-        '    const mediaItems = [',
-        '      { type: "video", src: "' + videoSrc + '" },' + (mediaJS ? '\n' + mediaJS : ''),
-        '    ];',
+        '    const mediaItems = [' + (danhSachAnh.length > 0 ? '\n' + mediaJS : '') + '];',
         '    window.onload = function() {',
         '      const container = document.getElementById("mediaContainer");',
         '      const lightbox = document.getElementById("lightbox");',
@@ -411,22 +359,15 @@
         '      const popup = document.getElementById("adPopup");',
         '      const adImage = document.getElementById("adImage");',
         '      const closePopup = document.getElementById("closePopup");',
-        '      mediaItems.forEach((item, i) => {',
-        '        if (item.type === "video") {',
-        '          const div = document.createElement("div"); div.className = "video-container";',
-        '          div.innerHTML = `<iframe src="${item.src}" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;',
-        '          container.appendChild(div);',
-        '        } else if (item.type === "image") {',
-        '          if (!document.querySelector(".gallery")) {',
-        '            const g = document.createElement("div"); g.className = "gallery"; container.appendChild(g);',
-        '          }',
-        '          const gallery = document.querySelector(".gallery");',
+        '      if (mediaItems.length > 0) {',
+        '        const gallery = document.createElement("div"); gallery.className = "gallery"; container.appendChild(gallery);',
+        '        mediaItems.forEach((item, i) => {',
         '          const img = document.createElement("img");',
-        '          img.src = item.src; img.alt = `Ảnh ${i}`;',
+        '          img.src = item.src; img.alt = `Ảnh ${i+1}`;',
         '          img.onclick = () => { lightboxImg.src = item.src; lightbox.classList.add("active"); };',
         '          gallery.appendChild(img);',
-        '        }',
-        '      });',
+        '        });',
+        '      }',
         '      lightbox.onclick = () => lightbox.classList.remove("active");',
         '      adImage.src = "' + adImg + '";',
         '      adImage.onclick = () => { window.open(adLink, "_blank"); hidePopup(); };',
@@ -439,11 +380,9 @@
         '</body>',
         '</html>'
       ];
-
       return html.join('\n');
     }
 
-    // Xuất dữ liệu
     function xuatDuLieu() {
       const a = document.getElementById("a").value.trim();
       const ab = document.getElementById("ab").value.trim();
@@ -456,56 +395,46 @@
         return;
       }
 
-      const html = taoFileHTML(a, ab, b, c, d);
-      const info = `Tiêu đề: ${a}\nNội dung: ${ab}\nVideo: ${convertDriveLink(b)}\nQC: ${c}\nLink: ${d}\nẢnh chi tiết: ${danhSachAnh.length} ảnh`;
+      tenFile = document.getElementById("fileName").value.trim() || a.replace(/[^a-zA-Z0-9]/g, '-');
+      const html = taoFileHTML(a, ab, b, c, d, tenFile);
+      const info = `Tiêu đề: ${a}\nNội dung: ${ab}\nVideo: ${convertDriveLink(b)}\nQC: ${c}\nLink: ${d}\nẢnh: ${danhSachAnh.length} ảnh`;
 
       document.getElementById("output").value = html;
       document.getElementById("outputtt").value = info;
     }
 
     // Click đúp sao chép
-    document.getElementById("output").ondblclick = function() {
-      this.select();
-      document.execCommand("copy");
-      alert("Đã sao chép thông tin!");
-    };
+    document.getElementById("outputtt").ondblclick = function() { this.select(); document.execCommand("copy"); alert("Đã sao chép!"); };
+    document.getElementById("output").ondblclick = function() { this.select(); document.execCommand("copy"); alert("Đã sao chép HTML!"); };
 
-    // Xem trước
     function xemTruoc() {
       xuatDuLieu();
       const blob = new Blob([document.getElementById("output").value], { type: "text/html" });
-      window.open(URL.createObjectURL(blob), "_blank");
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, "_blank");
+      win.document.title = tenFile || "Tin Tức MXH";
     }
 
-    // Popup
     function hienPopup() { document.getElementById("popup").style.display = "flex"; }
     function dongPopup() {
       document.getElementById("popup").style.display = "none";
       document.getElementById("fileName").value = "";
     }
 
-    // Lưu file
     function xacNhanLuu() {
-      const ten = document.getElementById("fileName").value.trim();
+      const ten = document.getElementById("fileName").value.trim() || document.getElementById("a").value.trim().replace(/[^a-zA-Z0-9]/g, '-');
       if (!ten) return alert("Vui lòng nhập tên file!");
-
       xuatDuLieu();
       const blob = new Blob([document.getElementById("output").value], { type: "text/html;charset=utf-8" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = ten + ".html";
       link.click();
-
-      document.getElementById("linktrangwes").value = 
-        "https://tintucmxh.github.io/TinTucMXH/" + ten + ".html";
-
+      document.getElementById("linktrangwes").value = "https://tintucmxh.github.io/TinTucMXH/" + ten + ".html";
       dongPopup();
     }
 
-    // Enter để thêm ảnh
-    document.getElementById("imageInput").addEventListener("keypress", e => {
-      if (e.key === "Enter") themAnh();
-    });
+    document.getElementById("imageInput").addEventListener("keypress", e => { if (e.key === "Enter") themAnh(); });
   </script>
 </body>
 </html>
