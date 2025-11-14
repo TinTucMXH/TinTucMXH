@@ -258,12 +258,24 @@
     let danhSachAnh = [];
     let tenFile = "";
 
+    // === TỰ ĐỘNG CHUYỂN ĐỔI LINK ===
+    function convertVideoLink(url) {
+      const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      return match ? `https://drive.google.com/file/d/${match[1]}/preview` : url;
+    }
+
+    function convertImageLink(url) {
+      const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      return match ? `https://drive.google.com/uc?export=view&id=${match[1]}` : url;
+    }
+
     // === VIDEO ===
     function themVideo() {
       const input = document.getElementById("videoInput");
       const url = input.value.trim();
       if (!url) return;
-      danhSachVideo.push(url);
+      const finalUrl = convertVideoLink(url);
+      danhSachVideo.push(finalUrl);
       input.value = "";
       capNhatDanhSachVideo();
       xuatDuLieu();
@@ -281,8 +293,12 @@
       danhSachVideo.forEach((url, i) => {
         const div = document.createElement("div");
         div.className = "media-item";
-        div.innerHTML = `<span>${i+1}. Video: ${url}</span>
-          <button class="btn-small btn-remove" onclick="xoaVideo(${i})" title="Xóa"><i class="fas fa-trash"></i></button>`;
+        div.innerHTML = `
+          <span>${i+1}. <i class="fas fa-video"></i> Video</span>
+          <button class="btn-small btn-remove" onclick="xoaVideo(${i})" title="Xóa">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
         list.appendChild(div);
       });
     }
@@ -292,7 +308,8 @@
       const input = document.getElementById("imageInput");
       const url = input.value.trim();
       if (!url) return;
-      danhSachAnh.push(url);
+      const finalUrl = convertImageLink(url);
+      danhSachAnh.push(finalUrl);
       input.value = "";
       capNhatDanhSachAnh();
       xuatDuLieu();
@@ -310,34 +327,25 @@
       danhSachAnh.forEach((url, i) => {
         const div = document.createElement("div");
         div.className = "media-item";
-        div.innerHTML = `<span>${i+1}. Ảnh: ${url}</span>
-          <button class="btn-small btn-remove" onclick="xoaAnh(${i})" title="Xóa"><i class="fas fa-trash"></i></button>`;
+        div.innerHTML = `
+          <span>${i+1}. <i class="fas fa-image"></i> Ảnh</span>
+          <button class="btn-small btn-remove" onclick="xoaAnh(${i})" title="Xóa">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
         list.appendChild(div);
       });
     }
 
-    // === CHUYỂN ĐỔI LINK ===
-    function convertVideoLink(url) {
-      const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-      return match ? `https://drive.google.com/file/d/${match[1]}/preview` : url;
-    }
-
-    function convertImageLink(url) {
-      const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-      return match ? `https://drive.google.com/uc?export=view&id=${match[1]}` : url;
-    }
-
     // === TẠO HTML ===
     function taoFileHTML(tieude, noidung, adImg, adLink, tenFile) {
-      const videoHTML = danhSachVideo.map(url => {
-        const src = convertVideoLink(url);
-        return `<div class="video-container"><iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
-      }).join('');
+      const videoHTML = danhSachVideo.map(src => `
+        <div class="video-container">
+          <iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      `).join('');
 
-      const imageJS = danhSachAnh.map(src => {
-        const imgSrc = convertImageLink(src);
-        return `      { type: "image", src: "${imgSrc}" },`;
-      }).join('\n');
+      const imageJS = danhSachAnh.map(src => `      { type: "image", src: "${src}" },`).join('\n');
 
       const html = [
         '<!DOCTYPE html>',
@@ -467,7 +475,9 @@
 
     // Enter để thêm
     ["videoInput", "imageInput"].forEach(id => {
-      document.getElementById(id).addEventListener("keypress", e => { if (e.key === "Enter") e.target.nextElementSibling.onclick(); });
+      document.getElementById(id).addEventListener("keypress", e => {
+        if (e.key === "Enter") e.target.nextElementSibling.onclick();
+      });
     });
   </script>
 </body>
