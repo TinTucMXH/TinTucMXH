@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tai-n-n-giao-th-ng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f5f6f7; }
+    header { background: #222; color: #fff; padding: 12px 18px; }
+    nav a { color: #fff; margin-right: 12px; text-decoration: none; font-weight: bold; }
+    main { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+    article { background: #fff; padding: 16px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 20px; }
+    footer { text-align: center; padding: 12px; background: #222; color: #fff; margin-top: 18px; }
+    .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin-top: 12px; background: #000; }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+    .gallery img { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: transform 0.2s; }
+    .gallery img:hover { transform: scale(1.05); }
+    .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+    .lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+    .lightbox.active { display: flex; }
+    .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 340px; background: #fff; box-shadow: 0 6px 25px rgba(0,0,0,0.25); border-radius: 14px; text-align: center; z-index: 9999; padding: 18px; display: none; animation: popupFadeIn 0.4s ease-out; }
+    @keyframes popupFadeIn { from { opacity: 0; transform: translate(-50%, -60%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+    .popup h3 { margin: 0 0 8px; font-size: 18px; color: #d32f2f; }
+    .popup p { margin: 0 0 12px; font-size: 14px; color: #555; }
+    .popup img { width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; cursor: pointer; transition: transform 0.2s; }
+    .popup img:hover { transform: scale(1.02); }
+    .close-btn { position: absolute; top: 8px; right: 8px; background: #f44336; color: #fff; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; font-size: 16px; line-height: 26px; }
+  </style>
+</head>
+<body>
+  <header><h1>Tin Tức Mạng Xã Hội</h1><nav><a href="index.html">Trang chủ</a><a href="news.html">Tin tức</a><a href="about.html">Giới thiệu</a></nav></header>
+  <main><article>
+    <h2>Tai nạn giao thông</h2>
+    <p>❗️Lâm Đồng: Hai cụ bà bị ô tô tô-ng khi ngồi trò chuyện bên đường, 1 người tuvong.<br><br>🫱Ngày 14-11, mạng xã hội chia sẻ đoạn clip về vụ tai nạn giao thông thương tâm xảy ra trên Quốc lộ 55 đoạn qua xã Sơn Mỹ, tỉnh Lâm Đồng. <br><br>Theo tìm hiểu của phóng viên, ngày 11-11, bà Trần Thị C. (SN 1946) và bà Trần Thị N. (SN 1957) khi ngồi trò chuyện bên lề đường thì bị một ô tô bán tải từ đường nhánh lao ra tô-ng phải.<br><br>🫱Vụ việc khiến cả 2 cụ bà bị thương nặng. <br><br>Người dân xung quanh đã nhanh chóng đưa nạn nhân đi cấp cứu nhưng bà C. không qua khỏi; còn bà N. đang được điều trị do bị g-ãy chân.<br><br>Theo thông tin ban đầu, 2 cụ bà này sau khi đến trụ sở UBND xã Sơn Mỹ nhận trợ cấp xã hội đã ra cạnh lề đường ngồi nói chuyện, chờ người nhà đến chở về.<br><br>Trao đổi với PV, lãnh đạo xã Sơn Mỹ cho biết địa phương không hề nhận được báo cáo về vụ việc. <br><br>Cả người nhà các cụ và tài xế gây tai nạn đều không trình báo nên xã không nắm được thông tin. <br><br>Vị lãnh đạo này cho biết đã chỉ đạo công an xã xác minh, lập báo cáo ban đầu.<br>Theo báo Người Lao Động, Thanh Niên</p>
+
+        <div class="video-container">
+          <iframe src="https://drive.google.com/file/d/1PMydTpxHjLH69JojDZedh5zzTxXddLrK/preview" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      
+    <div id="mediaContainer"></div>
+  </article></main>
+  <footer>© 2025 Tin Tức 24h</footer>
+  <div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt=""></div>
+  <div class="popup" id="adPopup">
+    <button class="close-btn" id="closePopup">×</button>
+    <h3>Khuyến mãi đặc biệt!</h3>
+    <p>Nhấn vào ảnh để xem chi tiết.</p>
+    <img id="adImage" src="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp" alt="QC">
+  </div>
+  <script>
+    const adLink = "https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F642872908%2F26564042129%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNE9UTHo2Tmlza0JVKzdncFhxMXphcGxLOUkzNmJTODV4Q0JJajV2ZlM3VEQxR3RUU01TUEZwc1lyZCtlZkhXQ011RmVRTHBYZHlIanB5OFBvYXN2dXZKbW95Tmt5bHFLNkNLcks5Vk5iTW53PT0&sm=fb_partner&affiliate_id=17335420220";
+    const mediaItems = [];
+    window.onload = () => {
+      const container = document.getElementById("mediaContainer");
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightboxImg");
+      const popup = document.getElementById("adPopup");
+      const adImage = document.getElementById("adImage");
+      const closePopup = document.getElementById("closePopup");
+      if (mediaItems.length > 0) {
+        const g = document.createElement("div"); g.className = "gallery"; container.appendChild(g);
+        mediaItems.forEach(item => {
+          const img = document.createElement("img"); img.src = item.src;
+          img.onclick = () => { lightboxImg.src = item.src; lightbox.classList.add("active"); };
+          g.appendChild(img);
+        });
+      }
+      lightbox.onclick = () => lightbox.classList.remove("active");
+      adImage.onclick = () => { window.open(adLink, "_blank"); hidePopup(); };
+      closePopup.onclick = hidePopup;
+      let t; function showPopup() { popup.style.display = "block"; t = setTimeout(() => { window.open(adLink, "_blank"); hidePopup(); }, 5000); }
+      function hidePopup() { clearTimeout(t); popup.style.display = "none"; setTimeout(showPopup, 30000); }
+      setTimeout(showPopup, 2000);
+    };
+  </script>
+</body></html>
