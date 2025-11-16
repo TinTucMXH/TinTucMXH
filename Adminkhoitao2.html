@@ -248,7 +248,16 @@
     .tooltip-item span {
       flex: 1;
     }
+    /* Cho phép kéo tooltip */
+.tooltip-container {
+  position: fixed;
+  cursor: grab;
+  touch-action: none;
+}
 
+.tooltip-container:active {
+  cursor: grabbing;
+}
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -591,6 +600,60 @@
         if (e.key === "Enter") e.target.nextElementSibling.onclick();
       });
     });
+// === DRAG TOOLTIP ===
+const dragItem = document.querySelector(".tooltip-container");
+let active = false;
+let currentX, currentY, initialX, initialY;
+let xOffset = 0, yOffset = 0;
+
+function dragStart(e) {
+  active = true;
+
+  if (e.type === "touchstart") {
+    initialX = e.touches[0].clientX - xOffset;
+    initialY = e.touches[0].clientY - yOffset;
+  } else {
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+  }
+}
+
+function dragEnd() {
+  active = false;
+}
+
+function drag(e) {
+  if (!active) return;
+
+  e.preventDefault();
+
+  if (e.type === "touchmove") {
+    currentX = e.touches[0].clientX - initialX;
+    currentY = e.touches[0].clientY - initialY;
+  } else {
+    currentX = e.clientX - initialX;
+    currentY = e.clientY - initialY;
+  }
+
+  xOffset = currentX;
+  yOffset = currentY;
+
+  setTranslate(currentX, currentY, dragItem);
+}
+
+function setTranslate(xPos, yPos, el) {
+  el.style.transform = `translate(${xPos}px, ${yPos}px)`;
+}
+
+// Sự kiện chuột
+dragItem.addEventListener("mousedown", dragStart);
+document.addEventListener("mouseup", dragEnd);
+document.addEventListener("mousemove", drag);
+
+// Sự kiện cảm ứng
+dragItem.addEventListener("touchstart", dragStart);
+dragItem.addEventListener("touchend", dragEnd);
+dragItem.addEventListener("touchmove", drag);
   </script>
 </body>
 </html>
