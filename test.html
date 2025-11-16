@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grok Chat → Facebook Post</title>
+  <title>Grok → Facebook Post</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     :root {
@@ -52,7 +52,7 @@
       gap: 6px;
       font-size: 15px;
     }
-    input[type="password"], textarea, #output {
+    textarea, #output {
       width: 100%;
       padding: 14px;
       border: 2px solid var(--border);
@@ -63,7 +63,7 @@
       resize: vertical;
       min-height: 120px;
     }
-    input[type="password"]:focus, textarea:focus, #output:focus {
+    textarea:focus, #output:focus {
       outline: none;
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(30, 137, 229, 0.2);
@@ -92,17 +92,6 @@
       background: #1565c0;
       transform: translateY(-2px);
     }
-    .btn-success {
-      background: var(--success);
-    }
-    .btn-success:hover {
-      background: #2e7d32;
-    }
-    .btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      transform: none;
-    }
     .copy-hint {
       font-size: 13px;
       color: #42a5f5;
@@ -119,44 +108,6 @@
       margin-top: 8px;
       display: inline-block;
     }
-    .chat-container {
-      border: 2px solid var(--border);
-      border-radius: 12px;
-      height: 300px;
-      overflow-y: auto;
-      padding: 10px;
-      background: #f9fcff;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .chat-message {
-      padding: 8px 12px;
-      border-radius: 10px;
-      max-width: 80%;
-      word-wrap: break-word;
-    }
-    .user-message {
-      background: var(--primary);
-      color: white;
-      align-self: flex-end;
-      margin-left: auto;
-    }
-    .grok-message {
-      background: white;
-      border: 1px solid #e0e0e0;
-      color: #333;
-    }
-    .chat-input-group {
-      display: flex;
-      gap: 10px;
-    }
-    .chat-input-group input {
-      flex: 1;
-      padding: 12px;
-      border: 2px solid var(--border);
-      border-radius: 10px;
-    }
     footer {
       text-align: center;
       padding: 16px;
@@ -167,37 +118,22 @@
     @media (max-width: 480px) {
       .main { padding: 16px; }
       header { font-size: 18px; }
-      .chat-input-group { flex-direction: column; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <i class="fas fa-robot"></i> Grok Chat → Bài Đăng Facebook
+      <i class="fas fa-robot"></i> Grok → Bài Đăng Facebook
     </header>
     <div class="main">
-      <!-- API Key -->
       <div>
-        <label for="apiKey"><i class="fas fa-key"></i> API Key Grok (xAI)</label>
-        <input type="password" id="apiKey" placeholder="Dán API key từ x.ai/api..." />
+        <label for="input"><i class="fas fa-paste"></i> Dán nội dung từ Grok</label>
+        <textarea id="input" placeholder="Dán toàn bộ nội dung trả lời từ Grok vào đây..."></textarea>
       </div>
 
-      <!-- Chat với Grok -->
-      <div>
-        <label>Chat với Grok (Nhập câu hỏi để nhận trả lời tự động)</label>
-        <div class="chat-container" id="chatContainer"></div>
-        <div class="chat-input-group">
-          <input type="text" id="chatInput" placeholder="Hỏi Grok: 'Viết bài về tai nạn giao thông...'" />
-          <button class="btn" onclick="sendToGrok()">
-            <i class="fas fa-paper-plane"></i> Gửi
-          </button>
-        </div>
-      </div>
-
-      <!-- Chuyển đổi thành Post FB -->
       <button class="btn" onclick="convertContent()">
-        <i class="fas fa-arrow-down"></i> Chuyển Đổi Thành Bài Đăng FB
+        <i class="fas fa-arrow-down"></i> Chuyển Đổi Ngay
       </button>
 
       <div>
@@ -206,15 +142,10 @@
         <div class="copy-hint">Click đúp để sao chép toàn bộ</div>
       </div>
 
-      <!-- Nút Đăng FB -->
-      <button class="btn btn-success" id="postBtn" onclick="postToFacebook()" style="display:none;">
-        <i class="fas fa-share-alt"></i> Đăng Tự Động Lên Facebook
-      </button>
-
       <div id="hashtagBox" class="hashtags" style="display:none;"></div>
     </div>
     <footer>
-      Được tạo bởi <b>Chuyên gia Code</b> • An toàn 100% với Facebook | API: x.ai
+      Được tạo bởi <b>Chuyên gia Code</b> • An toàn 100% với Facebook
     </footer>
   </div>
 
@@ -232,85 +163,14 @@
       '#DuLich', '#TheThao', '#KhoaHoc', '#MoiTruong', '#VanHoa'
     ];
 
-    let finalPostContent = '';
-    let chatHistory = [];
-
-    // === CHAT VỚI GROK ===
-    async function sendToGrok() {
-      const apiKey = document.getElementById('apiKey').value.trim();
-      const input = document.getElementById('chatInput');
-      const message = input.value.trim();
-      if (!message || !apiKey) {
-        alert('Vui lòng nhập API key và câu hỏi!');
-        return;
-      }
-
-      // Thêm tin nhắn user vào chat
-      addToChat('user', message);
-      input.value = '';
-      input.disabled = true;
-      document.querySelector('.btn[onclick="sendToGrok()"]').disabled = true;
-
-      try {
-        const response = await fetch('https://api.x.ai/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'grok-3',  // Hoặc 'grok-4' nếu có quyền
-            messages: chatHistory.length > 0 ? chatHistory : [
-              { role: 'system', content: 'Bạn là Grok, trợ lý AI hữu ích, trả lời ngắn gọn và chính xác bằng tiếng Việt.' },
-              { role: 'user', content: message }
-            ],
-            temperature: 0.7,
-            max_tokens: 500
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`Lỗi: ${response.status} - Kiểm tra API key!`);
-        }
-
-        const data = await response.json();
-        const grokReply = data.choices[0].message.content;
-
-        // Lưu lịch sử chat
-        chatHistory.push({ role: 'user', content: message });
-        chatHistory.push({ role: 'assistant', content: grokReply });
-
-        // Thêm tin nhắn Grok vào chat
-        addToChat('grok', grokReply);
-        document.getElementById('input').value = grokReply;  // Tự động dán vào ô chuyển đổi
-
-      } catch (error) {
-        addToChat('error', `Lỗi: ${error.message}. Kiểm tra API key tại x.ai/api.`);
-      } finally {
-        input.disabled = false;
-        document.querySelector('.btn[onclick="sendToGrok()"]').disabled = false;
-        input.focus();
-      }
-    }
-
-    function addToChat(type, content) {
-      const container = document.getElementById('chatContainer');
-      const div = document.createElement('div');
-      div.className = `chat-message ${type}-message`;
-      div.innerHTML = `<strong>${type === 'user' ? 'Bạn' : type === 'grok' ? 'Grok' : 'Lỗi'}:</strong> ${content.replace(/\n/g, '<br>')}`;
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    // === CHUYỂN ĐỔI NỘI DUNG (TỪ GROK) ===
     function convertContent() {
       const raw = document.getElementById('input').value.trim();
       if (!raw) {
-        alert('Vui lòng chat với Grok trước!');
+        alert('Vui lòng dán nội dung từ Grok!');
         return;
       }
 
-      // Bước 1: Trích xuất tiêu đề
+      // Bước 1: Trích xuất tiêu đề (dòng đầu tiên in đậm hoặc có dấu #)
       let title = '';
       const lines = raw.split('\n').map(l => l.trim());
       for (let line of lines) {
@@ -323,36 +183,39 @@
 
       // Bước 2: Làm sạch nội dung
       let content = raw
-        .replace(/(\*\*|__|\#|\`)/g, '')
-        .replace(/\n{3,}/g, '\n\n')
-        .replace(/https?:\/\/[^\s]+/g, '[Link]')
+        .replace(/(\*\*|__|\#|\`)/g, '') // Xóa markdown
+        .replace(/\n{3,}/g, '\n\n')     // Xóa dòng trống thừa
+        .replace(/https?:\/\/[^\s]+/g, '[Link]') // Xóa link
         .trim();
 
       // Bước 3: Loại bỏ từ cấm
       let cleanContent = content;
+      let removed = [];
       bannedWords.forEach(word => {
         const regex = new RegExp(word, 'gi');
-        cleanContent = cleanContent.replace(regex, '***');
+        if (regex.test(cleanContent)) {
+          cleanContent = cleanContent.replace(regex, '***');
+          removed.push(word);
+        }
       });
 
-      // Bước 4: Ngắn gọn
+      // Bước 4: Tạo đoạn văn ngắn gọn (dưới 3 dòng)
       const shortContent = cleanContent.split('\n').slice(0, 3).join('\n').trim();
       const finalContent = shortContent || cleanContent.slice(0, 300) + '...';
 
-      // Bước 5: Hashtag
+      // Bước 5: Tạo hashtag thông minh
       const keywords = extractKeywords(finalContent);
       const smartTags = keywords.slice(0, 3).map(k => '#' + k);
       const hashtags = [...new Set([...smartTags, ...commonHashtags.slice(0, 2)])].join(' ');
 
       // Bước 6: Output
-      finalPostContent = `${title}\n\n${finalContent}\n\n${hashtags}`;
-      document.getElementById('output').textContent = finalPostContent;
+      const output = `${title}\n\n${finalContent}\n\n${hashtags}`;
+      document.getElementById('output').textContent = output;
       document.getElementById('output').contentEditable = false;
 
+      // Hiển thị hashtag riêng
       document.getElementById('hashtagBox').textContent = hashtags;
       document.getElementById('hashtagBox').style.display = 'block';
-
-      document.getElementById('postBtn').style.display = 'flex';
 
       // Click đúp copy
       document.getElementById('output').ondblclick = function() {
@@ -366,6 +229,7 @@
       };
     }
 
+    // Trích xuất từ khóa
     function extractKeywords(text) {
       const stopWords = ['là', 'và', 'của', 'trong', 'với', 'tại', 'đã', 'có', 'được', 'không', 'để', 'một', 'nhiều'];
       return text
@@ -376,22 +240,7 @@
         .slice(0, 5);
     }
 
-    // Đăng FB
-    function postToFacebook() {
-      if (!finalPostContent) {
-        alert('Vui lòng chuyển đổi nội dung trước!');
-        return;
-      }
-      const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(finalPostContent)}`;
-      window.open(shareUrl, 'facebook-share-dialog', 'width=600,height=400,scrollbars=yes,resizable=yes');
-    }
-
-    // Enter gửi chat
-    document.getElementById('chatInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') sendToGrok();
-    });
-
-    // Enter Ctrl + Enter chuyển đổi
+    // Enter để chuyển đổi
     document.getElementById('input').addEventListener('keydown', e => {
       if (e.key === 'Enter' && e.ctrlKey) convertContent();
     });
