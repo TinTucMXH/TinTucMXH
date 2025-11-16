@@ -92,12 +92,6 @@
       background: #1565c0;
       transform: translateY(-2px);
     }
-    .btn-success {
-      background: var(--success);
-    }
-    .btn-success:hover {
-      background: #2e7d32;
-    }
     .copy-hint {
       font-size: 13px;
       color: #42a5f5;
@@ -148,11 +142,6 @@
         <div class="copy-hint">Click đúp để sao chép toàn bộ</div>
       </div>
 
-      <!-- NÚT ĐĂNG TỰ ĐỘNG MỚI -->
-      <button class="btn btn-success" id="postBtn" onclick="postToFacebook()" style="display:none;">
-        <i class="fas fa-share-alt"></i> Đăng Tự Động Lên Facebook
-      </button>
-
       <div id="hashtagBox" class="hashtags" style="display:none;"></div>
     </div>
     <footer>
@@ -173,8 +162,6 @@
       '#TinTuc', '#SucKhoe', '#GiaoDuc', '#CongNghe', '#AmThuc',
       '#DuLich', '#TheThao', '#KhoaHoc', '#MoiTruong', '#VanHoa'
     ];
-
-    let finalPostContent = '';
 
     function convertContent() {
       const raw = document.getElementById('input').value.trim();
@@ -222,16 +209,13 @@
       const hashtags = [...new Set([...smartTags, ...commonHashtags.slice(0, 2)])].join(' ');
 
       // Bước 6: Output
-      finalPostContent = `${title}\n\n${finalContent}\n\n${hashtags}`;
-      document.getElementById('output').textContent = finalPostContent;
+      const output = `${title}\n\n${finalContent}\n\n${hashtags}`;
+      document.getElementById('output').textContent = output;
       document.getElementById('output').contentEditable = false;
 
       // Hiển thị hashtag riêng
       document.getElementById('hashtagBox').textContent = hashtags;
       document.getElementById('hashtagBox').style.display = 'block';
-
-      // Hiển thị nút đăng tự động
-      document.getElementById('postBtn').style.display = 'flex';
 
       // Click đúp copy
       document.getElementById('output').ondblclick = function() {
@@ -254,18 +238,6 @@
         .split(/\s+/)
         .filter(word => word.length > 3 && !stopWords.includes(word))
         .slice(0, 5);
-    }
-
-    // THÊM TÍNH NĂNG ĐĂNG TỰ ĐỘNG
-    function postToFacebook() {
-      if (!finalPostContent) {
-        alert('Vui lòng chuyển đổi nội dung trước!');
-        return;
-      }
-
-      // Sử dụng Facebook Share Dialog (an toàn, không vi phạm)
-      const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(finalPostContent)}`;
-      window.open(shareUrl, 'facebook-share-dialog', 'width=600,height=400,scrollbars=yes,resizable=yes');
     }
 
     // Enter để chuyển đổi
