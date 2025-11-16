@@ -167,6 +167,78 @@
       font-weight: bold;
       cursor: pointer;
     }
+    /* === TOOLTIP GÓC PHẢI DƯỚI === */
+    .tooltip-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    .tooltip-btn {
+      width: 56px;
+      height: 56px;
+      background: #1e88e5;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(30, 137, 229, 0.3);
+      transition: all 0.3s ease;
+    }
+    .tooltip-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(30, 137, 229, 0.4);
+    }
+    .tooltip-menu {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 220px;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .tooltip-menu.active {
+      display: flex;
+    }
+    .tooltip-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: #1e3a8a;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .tooltip-item:hover {
+      background: #e3f2fd;
+      transform: translateX(4px);
+    }
+    .tooltip-item i {
+      width: 36px;
+      height: 36px;
+      background: #42a5f5;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .tooltip-item span {
+      flex: 1;
+    }
     .confirm { background: #42a5f5; color: white; }
     .confirm:hover { background: #1e88e5; }
     .cancel { background: #ef5350; color: white; }
