@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <!-- FAVICON: Hiển thị icon H bên cạnh link, tab, shortcut -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="favicon.svg">
@@ -15,6 +17,8 @@
       background: linear-gradient(135deg, #e3f2fd, #bbdefb);
       padding: 20px;
       color: #1e3a8a;
+      position: relative;
+      min-height: 100vh;
     }
     h2 {
       text-align: center;
@@ -45,7 +49,7 @@
       gap: 6px;
       font-size: 15px;
     }
-   input[type="text"], textarea {
+    input[type="text"], textarea {
       width: 100%;
       padding: 11px;
       border: 1.5px solid #90caf9;
@@ -167,12 +171,11 @@
       font-weight: bold;
       cursor: pointer;
     }
-    
     .confirm { background: #42a5f5; color: white; }
     .confirm:hover { background: #1e88e5; }
     .cancel { background: #ef5350; color: white; }
     .cancel:hover { background: #e53935; }
-    
+
     /* === TOOLTIP GÓC PHẢI DƯỚI === */
     .tooltip-container {
       position: fixed;
@@ -245,6 +248,7 @@
     .tooltip-item span {
       flex: 1;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -256,6 +260,7 @@
       .tooltip-container { bottom: 15px; right: 15px; }
       .tooltip-btn { width: 50px; height: 50px; font-size: 20px; }
       .tooltip-menu { min-width: 200px; bottom: 65px; }
+    }
   </style>
 </head>
 <body>
