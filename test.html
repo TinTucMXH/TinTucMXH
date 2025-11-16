@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grok → Facebook Post</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #1e88e5;
+      --success: #43a047;
+      --bg: #f8fbff;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --border: #90caf9;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+      color: var(--text);
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(30, 64, 175, 0.15);
+      overflow: hidden;
+    }
+    header {
+      background: var(--primary);
+      color: white;
+      padding: 18px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .main {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    label {
+      font-weight: 600;
+      color: #1565c0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+    }
+    textarea, #output {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s;
+      resize: vertical;
+      min-height: 120px;
+    }
+    textarea:focus, #output:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(30, 137, 229, 0.2);
+    }
+    #output {
+      background: #f0f8ff;
+      cursor: text;
+      white-space: pre-wrap;
+    }
+    .btn {
+      padding: 12px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: 0.3s;
+      align-self: flex-start;
+    }
+    .btn:hover {
+      background: #1565c0;
+      transform: translateY(-2px);
+    }
+    .btn-success {
+      background: var(--success);
+    }
+    .btn-success:hover {
+      background: #2e7d32;
+    }
+    .copy-hint {
+      font-size: 13px;
+      color: #42a5f5;
+      text-align: center;
+      font-style: italic;
+      margin-top: 4px;
+    }
+    .hashtags {
+      font-size: 13px;
+      color: #2e7d32;
+      background: #e8f5e8;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: inline-block;
+    }
+    footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 13px;
+      color: #666;
+      border-top: 1px solid #eee;
+    }
+    @media (max-width: 480px) {
+      .main { padding: 16px; }
+      header { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <i class="fas fa-robot"></i> Grok → Bài Đăng Facebook
+    </header>
+    <div class="main">
+      <div>
+        <label for="input"><i class="fas fa-paste"></i> Dán nội dung từ Grok</label>
+        <textarea id="input" placeholder="Dán toàn bộ nội dung trả lời từ Grok vào đây..."></textarea>
+      </div>
+
+      <button class="btn" onclick="convertContent()">
+        <i class="fas fa-arrow-down"></i> Chuyển Đổi Ngay
+      </button>
+
+      <div>
+        <label for="output"><i class="fas fa-check-circle"></i> Bài đăng Facebook (Sẵn sàng đăng)</label>
+        <div id="output" contenteditable="false" onclick="this.contentEditable=true">Kết quả sẽ hiện ở đây...</div>
+        <div class="copy-hint">Click đúp để sao chép toàn bộ</div>
+      </div>
+
+      <!-- NÚT ĐĂNG TỰ ĐỘNG MỚI -->
+      <button class="btn btn-success" id="postBtn" onclick="postToFacebook()" style="display:none;">
+        <i class="fas fa-share-alt"></i> Đăng Tự Động Lên Facebook
+      </button>
+
+      <div id="hashtagBox" class="hashtags" style="display:none;"></div>
+    </div>
+    <footer>
+      Được tạo bởi <b>Chuyên gia Code</b> • An toàn 100% với Facebook
+    </footer>
+  </div>
+
+  <script>
+    // Danh sách từ cấm (Facebook không cho phép)
+    const bannedWords = [
+      'kiếm tiền online', 'làm giàu nhanh', 'kiếm tiền tại nhà', 'bí quyết kiếm tiền',
+      'đầu tư sinh lời', 'kiếm tiền miễn phí', 'bot tự động', 'hack', 'crack',
+      'sex', 'gái xinh', '18+', 'xxx', 'viagra', 'thuốc lắc', 'cờ bạc', 'casino'
+    ];
+
+    // Hashtag phổ biến, an toàn
+    const commonHashtags = [
+      '#TinTuc', '#SucKhoe', '#GiaoDuc', '#CongNghe', '#AmThuc',
+      '#DuLich', '#TheThao', '#KhoaHoc', '#MoiTruong', '#VanHoa'
+    ];
+
+    let finalPostContent = '';
+
+    function convertContent() {
+      const raw = document.getElementById('input').value.trim();
+      if (!raw) {
+        alert('Vui lòng dán nội dung từ Grok!');
+        return;
+      }
+
+      // Bước 1: Trích xuất tiêu đề (dòng đầu tiên in đậm hoặc có dấu #)
+      let title = '';
+      const lines = raw.split('\n').map(l => l.trim());
+      for (let line of lines) {
+        if (line && (line.startsWith('**') || line.includes('#') || line.length > 20)) {
+          title = line.replace(/\*\*/g, '').replace(/#/g, '').trim();
+          break;
+        }
+      }
+      if (!title && lines[0]) title = lines[0].slice(0, 80);
+
+      // Bước 2: Làm sạch nội dung
+      let content = raw
+        .replace(/(\*\*|__|\#|\`)/g, '') // Xóa markdown
+        .replace(/\n{3,}/g, '\n\n')     // Xóa dòng trống thừa
+        .replace(/https?:\/\/[^\s]+/g, '[Link]') // Xóa link
+        .trim();
+
+      // Bước 3: Loại bỏ từ cấm
+      let cleanContent = content;
+      let removed = [];
+      bannedWords.forEach(word => {
+        const regex = new RegExp(word, 'gi');
+        if (regex.test(cleanContent)) {
+          cleanContent = cleanContent.replace(regex, '***');
+          removed.push(word);
+        }
+      });
+
+      // Bước 4: Tạo đoạn văn ngắn gọn (dưới 3 dòng)
+      const shortContent = cleanContent.split('\n').slice(0, 3).join('\n').trim();
+      const finalContent = shortContent || cleanContent.slice(0, 300) + '...';
+
+      // Bước 5: Tạo hashtag thông minh
+      const keywords = extractKeywords(finalContent);
+      const smartTags = keywords.slice(0, 3).map(k => '#' + k);
+      const hashtags = [...new Set([...smartTags, ...commonHashtags.slice(0, 2)])].join(' ');
+
+      // Bước 6: Output
+      finalPostContent = `${title}\n\n${finalContent}\n\n${hashtags}`;
+      document.getElementById('output').textContent = finalPostContent;
+      document.getElementById('output').contentEditable = false;
+
+      // Hiển thị hashtag riêng
+      document.getElementById('hashtagBox').textContent = hashtags;
+      document.getElementById('hashtagBox').style.display = 'block';
+
+      // Hiển thị nút đăng tự động
+      document.getElementById('postBtn').style.display = 'flex';
+
+      // Click đúp copy
+      document.getElementById('output').ondblclick = function() {
+        const range = document.createRange();
+        range.selectNode(this);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        alert('Đã sao chép bài đăng!');
+      };
+    }
+
+    // Trích xuất từ khóa
+    function extractKeywords(text) {
+      const stopWords = ['là', 'và', 'của', 'trong', 'với', 'tại', 'đã', 'có', 'được', 'không', 'để', 'một', 'nhiều'];
+      return text
+        .toLowerCase()
+        .replace(/[^\p{L}\s]/gu, '')
+        .split(/\s+/)
+        .filter(word => word.length > 3 && !stopWords.includes(word))
+        .slice(0, 5);
+    }
+
+    // THÊM TÍNH NĂNG ĐĂNG TỰ ĐỘNG
+    function postToFacebook() {
+      if (!finalPostContent) {
+        alert('Vui lòng chuyển đổi nội dung trước!');
+        return;
+      }
+
+      // Sử dụng Facebook Share Dialog (an toàn, không vi phạm)
+      const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(finalPostContent)}`;
+      window.open(shareUrl, 'facebook-share-dialog', 'width=600,height=400,scrollbars=yes,resizable=yes');
+    }
+
+    // Enter để chuyển đổi
+    document.getElementById('input').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.ctrlKey) convertContent();
+    });
+  </script>
+</body>
+</html>
