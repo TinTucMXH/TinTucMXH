@@ -167,6 +167,12 @@
       font-weight: bold;
       cursor: pointer;
     }
+    
+    .confirm { background: #42a5f5; color: white; }
+    .confirm:hover { background: #1e88e5; }
+    .cancel { background: #ef5350; color: white; }
+    .cancel:hover { background: #e53935; }
+    
     /* === TOOLTIP GÓC PHẢI DƯỚI === */
     .tooltip-container {
       position: fixed;
@@ -239,10 +245,10 @@
     .tooltip-item span {
       flex: 1;
     }
-    .confirm { background: #42a5f5; color: white; }
-    .confirm:hover { background: #1e88e5; }
-    .cancel { background: #ef5350; color: white; }
-    .cancel:hover { background: #e53935; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     @media (max-width: 480px) {
       .container { padding: 16px; }
       h2 { font-size: 20px; }
