@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grok → Facebook Post + Đọc To</title>
+  <title>Grok → Facebook + Đọc To (Tiếng Việt)</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     :root {
@@ -105,6 +105,12 @@
     .btn-stop:hover {
       background: #e53935;
     }
+    .btn-download {
+      background: #7b1fa2;
+    }
+    .btn-download:hover {
+      background: #4a0072;
+    }
     .copy-hint {
       font-size: 13px;
       color: #42a5f5;
@@ -121,7 +127,6 @@
       margin-top: 8px;
       display: inline-block;
     }
-    /* Tính năng Đọc To */
     .tts-controls {
       display: flex;
       flex-wrap: wrap;
@@ -147,9 +152,13 @@
     }
     .tts-status {
       font-size: 13px;
-      color: #1565c0;
+      color: #d32f2f;
       font-style: italic;
       margin-top: 4px;
+      font-weight: 600;
+    }
+    .tts-status.success {
+      color: #43a047;
     }
     footer {
       text-align: center;
@@ -168,7 +177,7 @@
 <body>
   <div class="container">
     <header>
-      <i class="fas fa-robot"></i> Grok → Bài Đăng Facebook + Đọc To
+      <i class="fas fa-robot"></i> Grok → Facebook + Đọc To (Tiếng Việt)
     </header>
     <div class="main">
       <div>
@@ -186,16 +195,19 @@
         <div class="copy-hint">Click đúp để sao chép toàn bộ</div>
       </div>
 
-      <!-- TÍNH NĂNG ĐỌC TO MỚI -->
+      <!-- TÍNH NĂNG ĐỌC TO (CHỈ TIẾNG VIỆT) -->
       <div class="tts-controls" id="ttsControls" style="display:none;">
         <select id="voiceSelect"></select>
         <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
         <span id="rateValue">1x</span>
         <button class="btn" onclick="speak()" id="playBtn">
-          <i class="fas fa-play"></i> Đọc
+          <i class="fas fa-play"></i> Đọc To
         </button>
         <button class="btn btn-stop" onclick="stopSpeaking()" id="stopBtn" style="display:none;">
           <i class="fas fa-stop"></i> Dừng
+        </button>
+        <button class="btn btn-download" onclick="downloadAudio()" id="downloadBtn" style="display:none;">
+          <i class="fas fa-download"></i> Tải MP3
         </button>
       </div>
       <div class="tts-status" id="ttsStatus"></div>
@@ -203,7 +215,7 @@
       <div id="hashtagBox" class="hashtags" style="display:none;"></div>
     </div>
     <footer>
-      Được tạo bởi <b>Chuyên gia Code</b> • An toàn 100% với Facebook
+      Được tạo bởi <b>Chuyên gia Code</b> • Chỉ dùng giọng Tiếng Việt
     </footer>
   </div>
 
@@ -220,9 +232,13 @@
     ];
 
     let finalPostContent = '';
-    let voices = [];
+    let vietnameseVoices = [];
+    let selectedVoiceIndex = -1;
     let synth = window.speechSynthesis;
     let utterance = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let audioBlob = null;
 
     // === CHUYỂN ĐỔI NỘI DUNG ===
     function convertContent() {
@@ -267,9 +283,9 @@
       document.getElementById('hashtagBox').textContent = hashtags;
       document.getElementById('hashtagBox').style.display = 'block';
 
-      // HIỂN THỊ TÍNH NĂNG ĐỌC TO
+      // HIỂN THỊ ĐỌC TO + TẢI
       document.getElementById('ttsControls').style.display = 'flex';
-      loadVoices();
+      loadVietnameseVoices();
 
       // Click đúp copy
       document.getElementById('output').ondblclick = function() {
@@ -293,54 +309,86 @@
         .slice(0, 5);
     }
 
-    // === TÍNH NĂNG ĐỌC TO ===
-    function loadVoices() {
-      voices = synth.getVoices();
+    // === CHỈ DÙNG GIỌNG TIẾNG VIỆT ===
+    function loadVietnameseVoices() {
+      const allVoices = synth.getVoices();
+      vietnameseVoices = allVoices.filter(v => v.lang.includes('vi'));
+
       const voiceSelect = document.getElementById('voiceSelect');
       voiceSelect.innerHTML = '';
 
-      // Ưu tiên giọng Việt Nam
-      const viVoices = voices.filter(v => v.lang.includes('vi'));
-      const preferred = viVoices.find(v => v.name.includes('Google') || v.name.includes('Microsoft')) || viVoices[0];
+      if (vietnameseVoices.length === 0) {
+        voiceSelect.innerHTML = '<option>Không có giọng tiếng Việt</option>';
+        voiceSelect.disabled = true;
+        document.getElementById('ttsStatus').textContent = 'Cảnh báo: Không tìm thấy giọng tiếng Việt. Vui lòng dùng Chrome/Edge.';
+        document.getElementById('ttsStatus').className = 'tts-status';
+        return;
+      }
 
-      voices.forEach((voice, i) => {
+      // Ưu tiên giọng hay nhất
+      const priority = ['Google', 'Microsoft', 'Apple'];
+      let bestVoice = null;
+      for (let p of priority) {
+        bestVoice = vietnameseVoices.find(v => v.name.includes(p));
+        if (bestVoice) break;
+      }
+      if (!bestVoice) bestVoice = vietnameseVoices[0];
+
+      vietnameseVoices.forEach((voice, i) => {
         const option = document.createElement('option');
         option.value = i;
-        option.textContent = `${voice.name} (${voice.lang})`;
-        if (voice === preferred) option.selected = true;
+        option.textContent = voice.name;
+        if (voice === bestVoice) {
+          option.selected = true;
+          selectedVoiceIndex = i;
+        }
         voiceSelect.appendChild(option);
       });
 
-      if (viVoices.length === 0) {
-        document.getElementById('ttsStatus').textContent = 'Không tìm thấy giọng tiếng Việt. Dùng giọng mặc định.';
-      }
+      document.getElementById('ttsStatus').textContent = `Đã chọn: ${bestVoice.name}`;
+      document.getElementById('ttsStatus').className = 'tts-status success';
     }
 
+    // === ĐỌC TO ===
     function speak() {
       if (!finalPostContent) return alert('Chưa có nội dung để đọc!');
+      if (vietnameseVoices.length === 0) return alert('Không có giọng tiếng Việt!');
 
       stopSpeaking();
       utterance = new SpeechSynthesisUtterance(finalPostContent);
 
       const voiceIndex = document.getElementById('voiceSelect').value;
-      utterance.voice = voices[voiceIndex];
+      utterance.voice = vietnameseVoices[voiceIndex];
       utterance.rate = parseFloat(document.getElementById('rate').value);
       utterance.pitch = 1;
+
+      // GHI ÂM
+      audioChunks = [];
+      try {
+        const audioContext = new AudioContext();
+        const dest = audioContext.createMediaStreamDestination();
+        mediaRecorder = new MediaRecorder(dest.stream);
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+          audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+          document.getElementById('downloadBtn').style.display = 'flex';
+        };
+        mediaRecorder.start();
+      } catch (e) {
+        console.warn('Không hỗ trợ ghi âm', e);
+      }
 
       utterance.onstart = () => {
         document.getElementById('playBtn').style.display = 'none';
         document.getElementById('stopBtn').style.display = 'flex';
-        document.getElementById('ttsStatus').textContent = 'Đang đọc...';
+        document.getElementById('ttsStatus').textContent = 'Đang đọc bằng tiếng Việt...';
+        document.getElementById('ttsStatus').className = 'tts-status success';
       };
 
       utterance.onend = () => {
-        document.getElementById('playBtn').style.display = 'flex';
-        document.getElementById('stopBtn').style.display = 'none';
-        document.getElementById('ttsStatus').textContent = 'Đã đọc xong!';
-      };
-
-      utterance.onerror = () => {
-        document.getElementById('ttsStatus').textContent = 'Lỗi phát âm thanh.';
+        stopSpeaking();
+        if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+        document.getElementById('ttsStatus').textContent = 'Đã đọc xong! Nhấn Tải MP3.';
       };
 
       synth.speak(utterance);
@@ -348,9 +396,29 @@
 
     function stopSpeaking() {
       synth.cancel();
+      if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
       document.getElementById('playBtn').style.display = 'flex';
       document.getElementById('stopBtn').style.display = 'none';
-      document.getElementById('ttsStatus').textContent = '';
+      document.getElementById('downloadBtn').style.display = 'none';
+    }
+
+    // === TẢI ÂM THANH ===
+    function downloadAudio() {
+      if (!audioBlob) return alert('Chưa có âm thanh để tải!');
+
+      const now = new Date();
+      const dateStr = now.toISOString().slice(0,10);
+      const filename = `tin-tuc-tieng-viet-${dateStr}.mp3`;
+
+      const url = URL.createObjectURL(audioBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      document.getElementById('ttsStatus').textContent = `Đã tải: ${filename}`;
+      document.getElementById('ttsStatus').className = 'tts-status success';
     }
 
     // Cập nhật tốc độ
@@ -360,7 +428,10 @@
 
     // Tải giọng khi sẵn sàng
     if (synth.onvoiceschanged !== undefined) {
-      synth.onvoiceschanged = loadVoices;
+      synth.onvoiceschanged = loadVietnameseVoices;
+    } else {
+      // Fallback
+      setTimeout(loadVietnameseVoices, 500);
     }
 
     // Enter để chuyển đổi
