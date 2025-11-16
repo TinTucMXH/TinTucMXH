@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grok → Facebook Post</title>
+  <title>Grok → Facebook Post + Đọc To</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     :root {
@@ -72,6 +72,7 @@
       background: #f0f8ff;
       cursor: text;
       white-space: pre-wrap;
+      line-height: 1.7;
     }
     .btn {
       padding: 12px 20px;
@@ -92,6 +93,18 @@
       background: #1565c0;
       transform: translateY(-2px);
     }
+    .btn-success {
+      background: var(--success);
+    }
+    .btn-success:hover {
+      background: #2e7d32;
+    }
+    .btn-stop {
+      background: #ef5350;
+    }
+    .btn-stop:hover {
+      background: #e53935;
+    }
     .copy-hint {
       font-size: 13px;
       color: #42a5f5;
@@ -108,6 +121,36 @@
       margin-top: 8px;
       display: inline-block;
     }
+    /* Tính năng Đọc To */
+    .tts-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      background: #f0f8ff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .tts-controls select, .tts-controls input {
+      padding: 8px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .tts-controls select {
+      flex: 1;
+      min-width: 180px;
+    }
+    .tts-controls input[type="range"] {
+      flex: 1;
+    }
+    .tts-status {
+      font-size: 13px;
+      color: #1565c0;
+      font-style: italic;
+      margin-top: 4px;
+    }
     footer {
       text-align: center;
       padding: 16px;
@@ -118,13 +161,14 @@
     @media (max-width: 480px) {
       .main { padding: 16px; }
       header { font-size: 18px; }
+      .tts-controls { flex-direction: column; align-items: stretch; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <i class="fas fa-robot"></i> Grok → Bài Đăng Facebook
+      <i class="fas fa-robot"></i> Grok → Bài Đăng Facebook + Đọc To
     </header>
     <div class="main">
       <div>
@@ -138,9 +182,23 @@
 
       <div>
         <label for="output"><i class="fas fa-check-circle"></i> Bài đăng Facebook (Sẵn sàng đăng)</label>
-        <div id="output" contenteditable="false" onclick="this.contentEditable=true">Kết quả sẽ hiện ở đây...</div>
+        <div id="output" contenteditable="false">Kết quả sẽ hiện ở đây...</div>
         <div class="copy-hint">Click đúp để sao chép toàn bộ</div>
       </div>
+
+      <!-- TÍNH NĂNG ĐỌC TO MỚI -->
+      <div class="tts-controls" id="ttsControls" style="display:none;">
+        <select id="voiceSelect"></select>
+        <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+        <span id="rateValue">1x</span>
+        <button class="btn" onclick="speak()" id="playBtn">
+          <i class="fas fa-play"></i> Đọc
+        </button>
+        <button class="btn btn-stop" onclick="stopSpeaking()" id="stopBtn" style="display:none;">
+          <i class="fas fa-stop"></i> Dừng
+        </button>
+      </div>
+      <div class="tts-status" id="ttsStatus"></div>
 
       <div id="hashtagBox" class="hashtags" style="display:none;"></div>
     </div>
@@ -150,19 +208,23 @@
   </div>
 
   <script>
-    // Danh sách từ cấm (Facebook không cho phép)
+    // Danh sách từ cấm
     const bannedWords = [
       'kiếm tiền online', 'làm giàu nhanh', 'kiếm tiền tại nhà', 'bí quyết kiếm tiền',
       'đầu tư sinh lời', 'kiếm tiền miễn phí', 'bot tự động', 'hack', 'crack',
       'sex', 'gái xinh', '18+', 'xxx', 'viagra', 'thuốc lắc', 'cờ bạc', 'casino'
     ];
-
-    // Hashtag phổ biến, an toàn
     const commonHashtags = [
       '#TinTuc', '#SucKhoe', '#GiaoDuc', '#CongNghe', '#AmThuc',
       '#DuLich', '#TheThao', '#KhoaHoc', '#MoiTruong', '#VanHoa'
     ];
 
+    let finalPostContent = '';
+    let voices = [];
+    let synth = window.speechSynthesis;
+    let utterance = null;
+
+    // === CHUYỂN ĐỔI NỘI DUNG ===
     function convertContent() {
       const raw = document.getElementById('input').value.trim();
       if (!raw) {
@@ -170,7 +232,6 @@
         return;
       }
 
-      // Bước 1: Trích xuất tiêu đề (dòng đầu tiên in đậm hoặc có dấu #)
       let title = '';
       const lines = raw.split('\n').map(l => l.trim());
       for (let line of lines) {
@@ -181,41 +242,34 @@
       }
       if (!title && lines[0]) title = lines[0].slice(0, 80);
 
-      // Bước 2: Làm sạch nội dung
       let content = raw
-        .replace(/(\*\*|__|\#|\`)/g, '') // Xóa markdown
-        .replace(/\n{3,}/g, '\n\n')     // Xóa dòng trống thừa
-        .replace(/https?:\/\/[^\s]+/g, '[Link]') // Xóa link
+        .replace(/(\*\*|__|\#|\`)/g, '')
+        .replace(/\n{3,}/g, '\n\n')
+        .replace(/https?:\/\/[^\s]+/g, '[Link]')
         .trim();
 
-      // Bước 3: Loại bỏ từ cấm
-      let cleanContent = content;
-      let removed = [];
       bannedWords.forEach(word => {
         const regex = new RegExp(word, 'gi');
-        if (regex.test(cleanContent)) {
-          cleanContent = cleanContent.replace(regex, '***');
-          removed.push(word);
-        }
+        content = content.replace(regex, '***');
       });
 
-      // Bước 4: Tạo đoạn văn ngắn gọn (dưới 3 dòng)
-      const shortContent = cleanContent.split('\n').slice(0, 3).join('\n').trim();
-      const finalContent = shortContent || cleanContent.slice(0, 300) + '...';
+      const shortContent = content.split('\n').slice(0, 3).join('\n').trim();
+      const finalContent = shortContent || content.slice(0, 300) + '...';
 
-      // Bước 5: Tạo hashtag thông minh
       const keywords = extractKeywords(finalContent);
       const smartTags = keywords.slice(0, 3).map(k => '#' + k);
       const hashtags = [...new Set([...smartTags, ...commonHashtags.slice(0, 2)])].join(' ');
 
-      // Bước 6: Output
-      const output = `${title}\n\n${finalContent}\n\n${hashtags}`;
-      document.getElementById('output').textContent = output;
+      finalPostContent = `${title}\n\n${finalContent}\n\n${hashtags}`;
+      document.getElementById('output').textContent = finalPostContent;
       document.getElementById('output').contentEditable = false;
 
-      // Hiển thị hashtag riêng
       document.getElementById('hashtagBox').textContent = hashtags;
       document.getElementById('hashtagBox').style.display = 'block';
+
+      // HIỂN THỊ TÍNH NĂNG ĐỌC TO
+      document.getElementById('ttsControls').style.display = 'flex';
+      loadVoices();
 
       // Click đúp copy
       document.getElementById('output').ondblclick = function() {
@@ -229,7 +283,6 @@
       };
     }
 
-    // Trích xuất từ khóa
     function extractKeywords(text) {
       const stopWords = ['là', 'và', 'của', 'trong', 'với', 'tại', 'đã', 'có', 'được', 'không', 'để', 'một', 'nhiều'];
       return text
@@ -238,6 +291,76 @@
         .split(/\s+/)
         .filter(word => word.length > 3 && !stopWords.includes(word))
         .slice(0, 5);
+    }
+
+    // === TÍNH NĂNG ĐỌC TO ===
+    function loadVoices() {
+      voices = synth.getVoices();
+      const voiceSelect = document.getElementById('voiceSelect');
+      voiceSelect.innerHTML = '';
+
+      // Ưu tiên giọng Việt Nam
+      const viVoices = voices.filter(v => v.lang.includes('vi'));
+      const preferred = viVoices.find(v => v.name.includes('Google') || v.name.includes('Microsoft')) || viVoices[0];
+
+      voices.forEach((voice, i) => {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        if (voice === preferred) option.selected = true;
+        voiceSelect.appendChild(option);
+      });
+
+      if (viVoices.length === 0) {
+        document.getElementById('ttsStatus').textContent = 'Không tìm thấy giọng tiếng Việt. Dùng giọng mặc định.';
+      }
+    }
+
+    function speak() {
+      if (!finalPostContent) return alert('Chưa có nội dung để đọc!');
+
+      stopSpeaking();
+      utterance = new SpeechSynthesisUtterance(finalPostContent);
+
+      const voiceIndex = document.getElementById('voiceSelect').value;
+      utterance.voice = voices[voiceIndex];
+      utterance.rate = parseFloat(document.getElementById('rate').value);
+      utterance.pitch = 1;
+
+      utterance.onstart = () => {
+        document.getElementById('playBtn').style.display = 'none';
+        document.getElementById('stopBtn').style.display = 'flex';
+        document.getElementById('ttsStatus').textContent = 'Đang đọc...';
+      };
+
+      utterance.onend = () => {
+        document.getElementById('playBtn').style.display = 'flex';
+        document.getElementById('stopBtn').style.display = 'none';
+        document.getElementById('ttsStatus').textContent = 'Đã đọc xong!';
+      };
+
+      utterance.onerror = () => {
+        document.getElementById('ttsStatus').textContent = 'Lỗi phát âm thanh.';
+      };
+
+      synth.speak(utterance);
+    }
+
+    function stopSpeaking() {
+      synth.cancel();
+      document.getElementById('playBtn').style.display = 'flex';
+      document.getElementById('stopBtn').style.display = 'none';
+      document.getElementById('ttsStatus').textContent = '';
+    }
+
+    // Cập nhật tốc độ
+    document.getElementById('rate').addEventListener('input', function() {
+      document.getElementById('rateValue').textContent = this.value + 'x';
+    });
+
+    // Tải giọng khi sẵn sàng
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = loadVoices;
     }
 
     // Enter để chuyển đổi
