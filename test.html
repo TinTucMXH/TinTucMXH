@@ -410,8 +410,36 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
       return match ? `https://drive.google.com/uc?export=view&id=${match[1]}` : url;
     }
-    function themVideo() { /* ... giữ nguyên ... */ }
-    function themAnh() { /* ... giữ nguyên ... */ }
+    function themVideo() {
+      const input = document.getElementById("videoInput");
+      const url = input.value.trim();
+      if (!url) return;
+      const finalUrl = convertVideoLink(url);
+      danhSachVideo.push(finalUrl);
+      input.value = "";
+      capNhatDanhSachVideo();
+      xuatDuLieu();
+    }
+    function xoaVideo(index) {
+      danhSachVideo.splice(index, 1);
+      capNhatDanhSachVideo();
+      xuatDuLieu();
+    }
+    function themAnh() {
+      const input = document.getElementById("imageInput");
+      const url = input.value.trim();
+      if (!url) return;
+      const finalUrl = convertImageLink(url);
+      danhSachAnh.push(finalUrl);
+      input.value = "";
+      capNhatDanhSachAnh();
+      xuatDuLieu();
+    }
+    function xoaAnh(index) {
+      danhSachAnh.splice(index, 1);
+      capNhatDanhSachAnh();
+      xuatDuLieu();
+    }
     function capNhatDanhSachAnh() {
       const list = document.getElementById("imageList");
       list.innerHTML = "";
@@ -424,7 +452,98 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       });
     }
     // ... các hàm xuatDuLieu(), taoFileHTML(), xemTruoc(), lưu file ... (giữ nguyên như cũ)
-
+    function xemTruoc() {
+      xuatDuLieu();
+      const blob = new Blob([document.getElementById("output").value], { type: "text/html" });
+      const win = window.open(URL.createObjectURL(blob), "_blank");
+      win.document.title = tenFile;
+    }
+    function taoFileHTML(tieude, noidung, adImg, adLink, tenFile) {
+      const videoHTML = danhSachVideo.map(src => `
+        <div class="video-container">
+          <iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      `).join('');
+    const imageJS = danhSachAnh.map(src => ` { type: "image", src: "${src}" },`).join('\n');
+    const html = [
+        '<!DOCTYPE html>',
+        '<html lang="vi">',
+        '<head>',
+        ' <meta charset="UTF-8">',
+        ` <title>${tenFile}</title>`,
+        ' <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+        ' <style>',
+        ' * { box-sizing: border-box; margin: 0; padding: 0; }',
+        ' body { font-family: Arial, sans-serif; background: #f5f6f7; }',
+        ' header { background: #222; color: #fff; padding: 12px 18px; }',
+        ' nav a { color: #fff; margin-right: 12px; text-decoration: none; font-weight: bold; }',
+        ' main { max-width: 900px; margin: 20px auto; padding: 0 16px; }',
+        ' article { background: #fff; padding: 16px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 20px; }',
+        ' footer { text-align: center; padding: 12px; background: #222; color: #fff; margin-top: 18px; }',
+        ' .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin-top: 12px; background: #000; }',
+        ' .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }',
+        ' .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }',
+        ' .gallery img { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: transform 0.2s; }',
+        ' .gallery img:hover { transform: scale(1.05); }',
+        ' .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }',
+        ' .lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; }',
+        ' .lightbox.active { display: flex; }',
+        ' .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 340px; background: #fff; box-shadow: 0 6px 25px rgba(0,0,0,0.25); border-radius: 14px; text-align: center; z-index: 9999; padding: 18px; display: none; animation: popupFadeIn 0.4s ease-out; }',
+        ' @keyframes popupFadeIn { from { opacity: 0; transform: translate(-50%, -60%); } to { opacity: 1; transform: translate(-50%, -50%); } }',
+        ' .popup h3 { margin: 0 0 8px; font-size: 18px; color: #d32f2f; }',
+        ' .popup p { margin: 0 0 12px; font-size: 14px; color: #555; }',
+        ' .popup img { width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; cursor: pointer; transition: transform 0.2s; }',
+        ' .popup img:hover { transform: scale(1.02); }',
+        ' .close-btn { position: absolute; top: 8px; right: 8px; background: #f44336; color: #fff; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; font-size: 16px; line-height: 26px; }',
+        ' </style>',
+        '</head>',
+        '<body>',
+        ' <header><h1>Tin Tức Mạng Xã Hội</h1><nav><a href="index.html">Trang chủ</a><a href="news.html">Tin tức</a><a href="about.html">Giới thiệu</a></nav></header>',
+        ' <main><article>',
+        ' <h2>' + tieude + '</h2>',
+        ' <p>' + noidung.replace(/\n/g, '<br>') + '</p>',
+        videoHTML,
+        ' <div id="mediaContainer"></div>',
+        ' </article></main>',
+        ' <footer>© 2025 Tin Tức 24h</footer>',
+        ' <div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt=""></div>',
+        ' <div class="popup" id="adPopup">',
+        ' <button class="close-btn" id="closePopup">×</button>',
+        ' <h3>Khuyến mãi đặc biệt!</h3>',
+        ' <p>Nhấn vào ảnh để xem chi tiết.</p>',
+        ' <img id="adImage" src="' + adImg + '" alt="QC">',
+        ' </div>',
+        ' <script>',
+        ' const adLink = "' + adLink + '";',
+        ' const mediaItems = [' + (imageJS ? '\n' + imageJS : '') + '];',
+        ' window.onload = () => {',
+        ' const container = document.getElementById("mediaContainer");',
+        ' const lightbox = document.getElementById("lightbox");',
+        ' const lightboxImg = document.getElementById("lightboxImg");',
+        ' const popup = document.getElementById("adPopup");',
+        ' const adImage = document.getElementById("adImage");',
+        ' const closePopup = document.getElementById("closePopup");',
+        ' if (mediaItems.length > 0) {',
+        ' const g = document.createElement("div"); g.className = "gallery"; container.appendChild(g);',
+        ' mediaItems.forEach(item => {',
+        ' const img = document.createElement("img"); img.src = item.src;',
+        ' img.onclick = () => { lightboxImg.src = item.src; lightbox.classList.add("active"); };',
+        ' g.appendChild(img);',
+        ' });',
+        ' }',
+        ' lightbox.onclick = () => lightbox.classList.remove("active");',
+        ' adImage.onclick = () => { window.open(adLink, "_blank"); hidePopup(); };',
+        ' closePopup.onclick = hidePopup;',
+        ' let t; function showPopup() { popup.style.display = "block"; t = setTimeout(() => { window.open(adLink, "_blank"); hidePopup(); }, 5000); }',
+        ' function hidePopup() { clearTimeout(t); popup.style.display = "none"; setTimeout(showPopup, 30000); }',
+        ' setTimeout(showPopup, 2000);',
+        ' };',
+        ' <\/script>',
+        '</body></html>'
+      ];
+      return html.join('\n');
+    }
+    
     // === MXH TOOL ===
     function taoOutput() {
       const mxh_idtt = document.getElementById("mxh_tt").value;
