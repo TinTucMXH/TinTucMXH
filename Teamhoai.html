@@ -308,18 +308,97 @@
 
   <!-- ============================= TAB 1: AFFILIATE ============================== -->
   <div class="tab-content active" id="aff">
-    <div class="container">
-      <h2 style="text-align:center; color:#1e40af">📘 Hướng dẫn Affiliate</h2>
+  <div class="container">
+    <h2 style="text-align:center; color:#1e40af">📘 Hướng dẫn Affiliate</h2>
 
-      <p style="line-height:1.6; font-size:15px;">
-        • Vào trang Affiliate Shopee → tạo link rút gọn  
-        • Gắn link vào quảng cáo trong trang web  
-        • Tối ưu CTA để tăng tỷ lệ chuyển đổi  
-        • Theo dõi số click / chuyển đổi / hoa hồng…
-      </p>
+    <p style="line-height:1.6; font-size:15px;">
+      • Vào trang Affiliate Shopee → tạo link rút gọn<br>
+      • Gắn link vào quảng cáo trong trang web<br>
+      • Tối ưu CTA để tăng tỷ lệ chuyển đổi<br>
+      • Theo dõi số click / chuyển đổi / hoa hồng…
+    </p>
+
+    <!-- ==== DANH SÁCH ẢNH ==== -->
+    <h3 style="margin-top:20px; color:#1e40af;">📷 Danh sách ảnh</h3>
+    <div class="affiliate-images-list">
+      <div class="affiliate-img-item" data-index="0"><img src="https://via.placeholder.com/120x80?text=Link+1" alt="Link 1">Link 1</div>
+      <div class="affiliate-img-item" data-index="1"><img src="https://via.placeholder.com/120x80?text=Link+2" alt="Link 2">Link 2</div>
+      <div class="affiliate-img-item" data-index="2"><img src="https://via.placeholder.com/120x80?text=Link+3" alt="Link 3">Link 3</div>
+      <div class="affiliate-img-item" data-index="3"><img src="https://via.placeholder.com/120x80?text=Link+4" alt="Link 4">Link 4</div>
+    </div>
+
+    <!-- ==== LIGHTBOX ==== -->
+    <div class="lightbox-aff" id="lightboxAff">
+      <button class="close-btn" id="closeLightboxAff">×</button>
+      <button class="prev-btn" id="prevLightboxAff">&#10094;</button>
+      <img id="lightboxAffImg" src="" alt="">
+      <button class="next-btn" id="nextLightboxAff">&#10095;</button>
     </div>
   </div>
+</div>
 
+<style>
+  .affiliate-images-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .affiliate-img-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #1e40af;
+    transition: transform 0.2s;
+  }
+  .affiliate-img-item img {
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 4px;
+  }
+  .affiliate-img-item:hover { transform: scale(1.05); }
+
+  /* LIGHTBOX */
+  .lightbox-aff {
+    display: none;
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.9);
+    justify-content:center;
+    align-items:center;
+    z-index: 10000;
+  }
+  .lightbox-aff img {
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 8px;
+  }
+  .lightbox-aff .close-btn,
+  .lightbox-aff .prev-btn,
+  .lightbox-aff .next-btn {
+    position: absolute;
+    background: rgba(255,255,255,0.7);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    color: #222;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .lightbox-aff .close-btn:hover,
+  .lightbox-aff .prev-btn:hover,
+  .lightbox-aff .next-btn:hover { background: rgba(255,255,255,1); }
+
+  .lightbox-aff .close-btn { top: 20px; right: 20px; }
+  .lightbox-aff .prev-btn { left: 20px; top:50%; transform: translateY(-50%); }
+  .lightbox-aff .next-btn { right: 20px; top:50%; transform: translateY(-50%); }
+</style>
   <!-- ============================= TAB 2: WEB TOOL ============================== -->
   <div class="tab-content" id="web">
 
@@ -715,6 +794,43 @@ dragItem.addEventListener("touchmove", drag);
         tooltipMenu.classList.remove('active');
       }
     });
-  </script>
+  <script>
+  const imagesAff = document.querySelectorAll(".affiliate-img-item");
+  const lightboxAff = document.getElementById("lightboxAff");
+  const lightboxAffImg = document.getElementById("lightboxAffImg");
+  const closeLightboxAff = document.getElementById("closeLightboxAff");
+  const prevBtn = document.getElementById("prevLightboxAff");
+  const nextBtn = document.getElementById("nextLightboxAff");
+  let currentIndex = 0;
+
+  const imgSources = Array.from(imagesAff).map(item => item.querySelector("img").src);
+
+  imagesAff.forEach(item => {
+    item.addEventListener("click", () => {
+      currentIndex = parseInt(item.dataset.index);
+      lightboxAffImg.src = imgSources[currentIndex];
+      lightboxAff.style.display = "flex";
+    });
+  });
+
+  closeLightboxAff.addEventListener("click", () => {
+    lightboxAff.style.display = "none";
+  });
+
+  prevBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + imgSources.length) % imgSources.length;
+    lightboxAffImg.src = imgSources[currentIndex];
+  });
+
+  nextBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % imgSources.length;
+    lightboxAffImg.src = imgSources[currentIndex];
+  });
+
+  // đóng khi click ngoài ảnh
+  lightboxAff.addEventListener("click", e => {
+    if (e.target === lightboxAff) lightboxAff.style.display = "none";
+  });
+    </script>
 </body>
 </html>
