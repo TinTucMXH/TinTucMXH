@@ -299,13 +299,11 @@
 <body>
 
   <h1>Công cụ Tạo Web & Affiliate MXH</h1>
-
-  <!-- ==== TAB MENU ==== -->
-  <div class="tabs">
-    <button class="tab-btn active" onclick="openTab('aff')">📘 Hướng dẫn Affiliate</button>
-    <button class="tab-btn" onclick="openTab('web')">🛠 Công cụ tạo Web</button>
-  </div>
-
+  <!-- TAB MENU -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="openTab('aff')">📘 Hướng dẫn Affiliate</button>
+  <button class="tab-btn" onclick="openTab('web')">🛠 Công cụ tạo Web</button>
+</div>
   <!-- ============================= TAB 1: AFFILIATE ============================== -->
   <div class="tab-content active" id="aff">
   <div class="container">
@@ -512,30 +510,24 @@
     <input type="text" id="linktrangwes" readonly placeholder="Sẽ hiển thị sau khi lưu">
   </div>
 
-  <!-- === TOOLTIP GÓC PHẢI DƯỚI === -->
-  <div class="tooltip-container">
-    <div class="tooltip-btn" id="tooltipToggle">
-      <i class="fas fa-tools"></i>
-    </div>
-    <div class="tooltip-menu" id="tooltipMenu">
-      <a href="https://x2download.com" target="_blank" class="tooltip-item">
-        <i class="fab fa-facebook"></i>
-        <span>Download facebook</span>
-      </a>
-      <a href="https://snaptik.vn" target="_blank" class="tooltip-item">
-        <i class="fab fa-tiktok"></i>
-        <span>Download Tiktok</span>
-      </a>
-      <a href="https://y2mate.lol" target="_blank" class="tooltip-item">
-        <i class="fab fa-youtube"></i>
-        <span>Download Youtobe</span>
-      </a>
-      <a href="https://help.shopee.vn/portal/10" target="_blank" class="tooltip-item">
-        <i class=""fas fa-shopping-bag""></i>
-        <span>Shopee Affiliate</span>
-      </a>
-    </div>
+  <!-- Tooltip -->
+<div class="tooltip-container" id="tooltipContainer">
+  <div class="tooltip-btn" id="tooltipToggle"><i class="fas fa-tools"></i></div>
+  <div class="tooltip-menu" id="tooltipMenu">
+    <a href="https://x2download.com" target="_blank" class="tooltip-item">
+      <i class="fab fa-facebook"></i><span>Download Facebook</span>
+    </a>
+    <a href="https://snaptik.vn" target="_blank" class="tooltip-item">
+      <i class="fab fa-tiktok"></i><span>Download Tiktok</span>
+    </a>
+    <a href="https://y2mate.lol" target="_blank" class="tooltip-item">
+      <i class="fab fa-youtube"></i><span>Download Youtube</span>
+    </a>
+    <a href="https://help.shopee.vn/portal/10" target="_blank" class="tooltip-item">
+      <i class="fas fa-shopping-bag"></i><span>Shopee Affiliate</span>
+    </a>
   </div>
+</div>
 
  <!-- Popup -->
   <div class="popup" id="popup">
@@ -551,14 +543,45 @@
     
   <script>
     /* ================= TAB FUNCTION ================ */
-    function openTab(tabId){
-      document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-      document.querySelector(`[onclick="openTab('${tabId}')"]`).classList.add("active");
+    // TAB FUNCTION
+  function openTab(tabId) {
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    document.querySelector(`.tab-btn[onclick="openTab('${tabId}')"]`).classList.add("active");
 
-      document.querySelectorAll(".tab-content").forEach(c=>c.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-    }
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+  }
 
+  // TOOLTIP TOGGLE
+  const tooltipBtn = document.getElementById("tooltipToggle");
+  const tooltipMenu = document.getElementById("tooltipMenu");
+  tooltipBtn.addEventListener("click", () => {
+    tooltipMenu.classList.toggle("active");
+  });
+
+  // DRAG TOOLTIP
+  const container = document.getElementById("tooltipContainer");
+  let isDragging = false, startX, startY, origX, origY;
+
+  container.addEventListener("mousedown", e => {
+    if (e.target !== tooltipBtn) return; // chỉ kéo nút
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = container.getBoundingClientRect();
+    origX = rect.left;
+    origY = rect.top;
+    e.preventDefault();
+  });
+  document.addEventListener("mousemove", e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    container.style.left = (origX + dx) + "px";
+    container.style.top = (origY + dy) + "px";
+  });
+  document.addEventListener("mouseup", () => { isDragging = false; });
+    
     // === CÁC HÀM CŨ (giữ nguyên) ===
     let danhSachVideo = [];
     let danhSachAnh = [];
@@ -772,60 +795,6 @@
         if (e.key === "Enter") e.target.nextElementSibling.onclick();
       });
     });
-/ === DRAG TOOLTIP ===
-const dragItem = document.querySelector(".tooltip-container");
-let active = false;
-let currentX, currentY, initialX, initialY;
-let xOffset = 0, yOffset = 0;
-
-function dragStart(e) {
-  active = true;
-
-  if (e.type === "touchstart") {
-    initialX = e.touches[0].clientX - xOffset;
-    initialY = e.touches[0].clientY - yOffset;
-  } else {
-    initialX = e.clientX - xOffset;
-    initialY = e.clientY - yOffset;
-  }
-}
-
-function dragEnd() {
-  active = false;
-}
-
-function drag(e) {
-  if (!active) return;
-
-  e.preventDefault();
-
-  if (e.type === "touchmove") {
-    currentX = e.touches[0].clientX - initialX;
-    currentY = e.touches[0].clientY - initialY;
-  } else {
-    currentX = e.clientX - initialX;
-    currentY = e.clientY - initialY;
-  }
-
-  xOffset = currentX;
-  yOffset = currentY;
-
-  setTranslate(currentX, currentY, dragItem);
-}
-
-function setTranslate(xPos, yPos, el) {
-  el.style.transform = `translate(${xPos}px, ${yPos}px)`;
-}
-
-// Sự kiện chuột
-dragItem.addEventListener("mousedown", dragStart);
-document.addEventListener("mouseup", dragEnd);
-document.addEventListener("mousemove", drag);
-
-// Sự kiện cảm ứng
-dragItem.addEventListener("touchstart", dragStart);
-dragItem.addEventListener("touchend", dragEnd);
-dragItem.addEventListener("touchmove", drag);
   </script>
 </body>
 </html>
