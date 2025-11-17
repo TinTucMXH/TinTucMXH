@@ -293,6 +293,24 @@
       .tooltip-btn { width: 50px; height: 50px; font-size: 20px; }
       .tooltip-menu { min-width: 200px; bottom: 65px; }
     }
+    /* Cải thiện tab MXH */
+#mxh .container h2 { font-size:24px; }
+#mxh input, #mxh select, #mxh textarea {
+  margin-bottom:14px;
+  font-size:15px !important;
+}
+#mxh_output {
+  background:#f8fbff;
+  resize:vertical;
+}
+
+/* Responsive tốt hơn */
+@media (max-width: 768px) {
+  #mxh .container > div > div {
+    flex-direction: column !important;
+  }
+  #qrImage { width:240px !important; height:240px !important; }
+}
   </style>
 </head>
 
@@ -574,42 +592,55 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       </div>
     </div>
   </div>
-  <!-- ====================== TAB 3: CHẠY TƯƠNG TÁC MXH ======================== -->
+ html<!-- ====================== TAB 3: CHẠY TƯƠNG TÁC MXH ======================== -->
 <div class="tab-content" id="mxh">
-  <div class="container" style="max-width: 800px; flex-direction: row; gap: 20px;">
+  <div class="container" style="max-width: 900px;">
+    <h2 style="text-align:center; color:#1e40af; margin-bottom:20px;">
+      🚀 Công cụ Tăng Tương Tác MXH (Facebook/TikTok)
+    </h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start;">
+      <!-- Cột trái: QR Momo -->
+      <div style="flex: 1; min-width: 280px; text-align:center;">
+        <h3 style="color:#e91e63; margin-bottom:12px;">📱 QR Chuyển Khoản Momo</h3>
+        <img id="qrImage"
+             src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=MOMO-0338899530"
+             style="width:280px; height:280px; border-radius:16px; border:4px solid #ff4081; box-shadow:0 6px 20px rgba(255,64,130,0.3);">
+        <div style="margin-top:14px; padding:10px; background:#fff0f5; border-radius:12px; font-size:14px;">
+          <p style="margin:4px 0; color:#1e40af;"><strong>SĐT:</strong> <span style="color:#e91e63;">0338899530</span></p>
+          <p style="margin:4px 0; color:#1e40af;"><strong>Nội dung CK:</strong></p>
+          <p id="qrNote" style="background:#fff; padding:8px; border-radius:8px; word-break:break-all; font-family:monospace; font-size:13px; color:#d81b60;">
+            Chưa có nội dung
+          </p>
+        </div>
+      </div>
 
-    <!-- CỘT TRÁI: QR MOMO -->
-    <div style="flex:1; text-align:center;">
-      <h3 style="color:#1e40af;">QR Chuyển tiền MOMO</h3>
-      <img id="qrImage" 
-           src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=MOMO-0338899530"
-           style="width:260px;height:260px;border-radius:12px;border:2px solid #90caf9;"
-      >
-      <p style="margin-top:10px;color:#1e40af;font-size:14px;">
-        SĐT: <b>0338899530</b><br>
-        Nội dung: <span id="qrNote">Chưa có nội dung</span>
-      </p>
-    </div>
-    <!-- CỘT PHẢI: FORM -->
-    <div style="flex:1;">
-      <label>ID kênh</label>
-      <input type="text" id="mxh_id" placeholder="Nhập ID kênh...">
-      <label>Số lượng</label>
-      <input type="text" id="mxh_sl" placeholder="Nhập số lượng...">
-      <label>Loại tương tác</label>
-      <select id="mxh_loai"
-              style="width:100%;padding:11px;border-radius:10px;border:1.5px solid #90caf9;">
-        <option value="follow">Follow</option>
-        <option value="tim">Tim (Like)</option>
-        <option value="share">Share</option>
-        <option value="cmt">Bình luận</option>
-        <option value="view">View</option>
-      </select>
-      <button class="btn" style="margin-top:15px;" onclick="taoOutput()">
-        Tạo Output
-      </button>
-      <label style="margin-top:12px;">Output</label>
-      <textarea id="mxh_output" readonly></textarea>
+      <!-- Cột phải: Form nhập liệu -->
+      <div style="flex: 2; min-width: 300px;">
+        <label for="mxh_id"><i class="fas fa-id-card"></i> ID Bài viết / Kênh</label>
+        <input type="text" id="mxh_id" placeholder="Ví dụ: 123456789 hoặc link bài viết">
+
+        <label for="mxh_sl"><i class="fas fa-hashtag"></i> Số lượng tương tác</label>
+        <input type="number" id="mxh_sl" placeholder="Ví dụ: 1000" min="1">
+
+        <label for="mxh_loai"><i class="fas fa-heart"></i> Loại tương tác</label>
+        <select id="mxh_loai">
+          <option value="follow">👥 Follow / Theo dõi</option>
+          <option value="tim">❤️ Tim / Like / Thả tim</option>
+          <option value="share">🔄 Share / Chia sẻ</option>
+          <option value="cmt">💬 Comment / Bình luận</option>
+          <option value="view">👁️ View / Xem video</option>
+          <option value="viewlive">📡 View Livestream</option>
+        </select>
+
+        <button class="btn" style="margin-top:18px; font-size:17px;" onclick="taoOutput()">
+          <i class="fas fa-paper-plane"></i> Tạo Output & Cập nhật QR
+        </button>
+
+        <label style="margin-top:20px;"><i class="fas fa-clipboard-list"></i> Output (double-click để copy)</label>
+        <textarea id="mxh_output" readonly placeholder="Output sẽ hiện ở đây sau khi nhấn nút..." 
+                  style="height:120px; font-family:monospace; font-size:14px;"></textarea>
+        <div class="copy-hint">Double-click vào ô trên để sao chép nhanh</div>
+      </div>
     </div>
   </div>
 </div>
@@ -860,32 +891,37 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       document.getElementById("linktrangwes").value = "https://tintucmxh.github.io/TinTucMXH/" + ten + ".html";
       dongPopup();
     }
-
-    ["videoInput", "imageInput"].forEach(id => {
-      document.getElementById(id).addEventListener("keypress", e => {
-        if (e.key === "Enter") e.target.nextElementSibling.onclick();
-      });
-    });
-      function taoOutput() {
+function taoOutput() {
   const id = document.getElementById("mxh_id").value.trim();
   const sl = document.getElementById("mxh_sl").value.trim();
-  const loai = document.getElementById("mxh_loai").value;
+  const loaiSelect = document.getElementById("mxh_loai");
+  const loaiText = loaiSelect.options[loaiSelect.selectedIndex].text;
+  const loaiValue = loaiSelect.value;
 
-  if (!id || !sl) {
-    alert("Vui lòng nhập đầy đủ ID và số lượng!");
+  if (!id || !sl || sl < 1) {
+    alert("⚠️ Vui lòng nhập đầy đủ ID và số lượng hợp lệ!");
     return;
   }
 
-  const text = `${id} | ${sl} | ${loai}`;
+  const text = `${id} | ${sl} | ${loaiValue}`;
   document.getElementById("mxh_output").value = text;
 
-  // Update QR MOMO auto
-  const momoQR = 
-    `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=MOMO-0338899530-${encodeURIComponent(text)}`;
-
-  document.getElementById("qrImage").src = momoQR;
+  // Cập nhật QR + nội dung chuyển khoản
+  const momoData = `MOMO-0338899530-${encodeURIComponent(text)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${momoData}`;
+  document.getElementById("qrImage").src = qrUrl;
   document.getElementById("qrNote").innerText = text;
+
+  // Thông báo thành công
+  alert("✅ Đã tạo output thành công!\nQR Momo đã được cập nhật tự động.");
 }
+
+// Double-click để copy output MXH
+document.getElementById("mxh_output").ondblclick = function() {
+  this.select();
+  document.execCommand("copy");
+  alert("Đã sao chép output!");
+};
   </script>
 </body>
 </html>
