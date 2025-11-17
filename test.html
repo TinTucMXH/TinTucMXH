@@ -1,327 +1,891 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thiết bị 2FA – Bộ đếm thời gian (Bản tối ưu cuối)</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@700&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- FAVICON: Hiển thị icon H bên cạnh link, tab, shortcut -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <title>Công cụ MXH – Affiliate & Tạo Web</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <style>
-        /* Giữ nguyên toàn bộ CSS */
-        :root {
-            --bg-color: #3d352a; --container-bg: rgba(20, 15, 10, 0.85);
-            --text-color: #e8e6e3; --primary-color: #d32f2f; --primary-hover: #f44336;
-            --border-color: rgba(211, 47, 47, 0.4); --input-bg: rgba(0,0,0, 0.2);
-            --fuse-color: #6b4f3b; --dynamite-red: #b71c1c; --dynamite-dark-red: #8a1111;
-            --timer-glow: #ff1744;
-        }
-        body {
-            font-family: 'Changa', 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
-            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
-            color: var(--text-color); margin: 0; padding: 20px;
-            display: flex; justify-content: center; align-items: flex-start; min-height: 100vh;
-        }
-        .container { width: 100%; max-width: 600px; background-color: var(--container-bg); border-radius: 4px; border: 1px solid var(--border-color); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); overflow: hidden; backdrop-filter: blur(4px);}
-        .header { padding: 16px 24px; background-color: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border-color); text-align: center;}
-        .header h1 { margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
-        .content { padding: 24px; }
-        .account-list { display: flex; flex-direction: column; gap: 20px; min-height: 50px; }
-        /* Các phần CSS khác giữ nguyên */
-    </style>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg,#e3f2fd,#bbdefb);
+      padding: 20px;
+      color: #1e3a8a;
+      min-height: 100vh;
+    }
+
+    /* ==== HEADER + TAB ==== */
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 15px;
+      color: #0d47a1;
+      font-weight: 700;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 10px 18px;
+      background: #90caf9;
+      border-radius: 10px;
+      border: none;
+      color: #0d47a1;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+    .tab-btn.active {
+      background: #1e88e5;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .container {
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(30, 64, 175, 0.1);
+      max-width: 560px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    label {
+      font-weight: 600;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 11px;
+      border: 1.5px solid #90caf9;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: border 0.3s;
+    }
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: #42a5f5;
+      box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.2);
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .input-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .input-group input { flex: 1; }
+    .btn-small {
+      padding: 8px 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      transition: all 0.2s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-add { background: #42a5f5; color: white; }
+    .btn-add:hover { background: #1e88e5; }
+    .btn-remove { background: #ef5350; color: white; }
+    .btn-remove:hover { background: #e53935; }
+    .media-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 8px;
+      background: #f8fbff;
+      border-radius: 10px;
+      border: 1px dashed #90caf9;
+    }
+    .media-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      font-size: 13px;
+      word-break: break-all;
+    }
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: #1e88e5;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn:hover { background: #1565c0; }
+    .btn-secondary { background: #42a5f5; }
+    .btn-secondary:hover { background: #1e88e5; }
+    #output, #outputtt {
+      background: #f8fbff;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .copy-hint {
+      font-size: 12px;
+      color: #42a5f5;
+      text-align: center;
+      margin-top: 4px;
+      font-style: italic;
+    }
+    .popup {
+      display: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center; align-items: center;
+      z-index: 1000;
+    }
+    .popup-content {
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .popup input { margin-top: 12px; }
+    .popup-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .popup-buttons button {
+      flex: 1;
+      padding: 11px;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .confirm { background: #42a5f5; color: white; }
+    .confirm:hover { background: #1e88e5; }
+    .cancel { background: #ef5350; color: white; }
+    .cancel:hover { background: #e53935; }
+
+    /* === TOOLTIP GÓC PHẢI DƯỚI === */
+    .tooltip-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    .tooltip-btn {
+      width: 56px;
+      height: 56px;
+      background: #1e88e5;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(30, 137, 229, 0.3);
+      transition: all 0.3s ease;
+    }
+    .tooltip-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(30, 137, 229, 0.4);
+    }
+    .tooltip-menu {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 220px;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .tooltip-menu.active {
+      display: flex;
+    }
+    .tooltip-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: #1e3a8a;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .tooltip-item:hover {
+      background: #e3f2fd;
+      transform: translateX(4px);
+    }
+    .tooltip-item i {
+      width: 36px;
+      height: 36px;
+      background: #42a5f5;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .tooltip-item span {
+      flex: 1;
+    }
+    /* Cho phép kéo tooltip */
+.tooltip-container {
+  position: fixed;
+  cursor: grab;
+  touch-action: none;
+}
+
+.tooltip-container:active {
+  cursor: grabbing;
+}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 16px; }
+      h2 { font-size: 20px; }
+      .tooltip-container { bottom: 15px; right: 15px; }
+      .tooltip-btn { width: 50px; height: 50px; font-size: 20px; }
+      .tooltip-menu { min-width: 200px; bottom: 65px; }
+    }
+  </style>
 </head>
 
 <body>
+ <!-- Tooltip -->
+<div class="tooltip-container" id="tooltipContainer">
+  <div class="tooltip-btn" id="tooltipToggle"><i class="fas fa-tools"></i></div>
+  <div class="tooltip-menu" id="tooltipMenu">
+    <a href="https://x2download.com" target="_blank" class="tooltip-item">
+      <i class="fab fa-facebook"></i><span>Download Facebook</span>
+    </a>
+    <a href="https://snaptik.vn" target="_blank" class="tooltip-item">
+      <i class="fab fa-tiktok"></i><span>Download Tiktok</span>
+    </a>
+    <a href="https://y2mate.lol" target="_blank" class="tooltip-item">
+      <i class="fab fa-youtube"></i><span>Download Youtube</span>
+    </a>
+    <a href="https://help.shopee.vn/portal/10" target="_blank" class="tooltip-item">
+      <i class="fas fa-shopping-bag"></i><span>Shopee Affiliate</span>
+    </a>
+  </div>
+</div>
+  <h1>Affiliate MXH & Công cụ Tạo Web</h1>
+  <!-- TAB MENU -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="openTab('aff')">📘 Hướng dẫn Affiliate</button>
+  <button class="tab-btn" onclick="openTab('web')">🛠 Công cụ tạo Web</button>
+    <button class="tab-btn" onclick="openTab('mxh')">🚀 Chạy tương tác MXH</button>
+</div>
+  <!-- ============================= TAB 1: AFFILIATE ============================== -->
+  <div class="tab-content active" id="aff">
+  <div class="container">
+    <h2 style="text-align:center; color:#1e40af">📘 Hướng dẫn Affiliate</h2>
+
+    <p style="line-height:1.6; font-size:15px;">
+      • Vào trang Shopee → 
+  <a href="https://s.shopee.vn/3LJ54lThCc" target="_blank" style="text-decoration:none; color:#1a73e8;">
+    👉 Đăng ký Affiliate Shopee
+  </a><br>
+      • Bật chế độ chuyên nghiệp Facebook <br>
+      • Gắn link vào video <br>
+      • Tối ưu CTA để tăng tỷ lệ chuyển đổi<br>
+      • Theo dõi số click / chuyển đổi / hoa hồng…
+    </p>
+    <h3 style="margin-top:20px; color:#1e40af; display:flex; align-items:center; gap:5px;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#1877F2" viewBox="0 0 24 24">
+    <path d="M22.675 0h-21.35C.596 0 0 .595 0 1.326v21.348C0 23.405.596 24 1.326 24H12.82v-9.294H9.692V11.01h3.128V8.414c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.464.099 2.794.143v3.24h-1.918c-1.504 0-1.794.715-1.794 1.763v2.31h3.587l-.467 3.696h-3.12V24h6.116c.73 0 1.326-.595 1.326-1.326V1.326C24 .595 23.404 0 22.675 0z"/>
+  </svg>
+  Hướng dẫn chế độ chuyên nghiệp Facebook
+</h3>
+    <div class="affiliate-images-list" id="affiliateImagesList"></div>
+    <!-- LIGHTBOX -->
+    <div class="lightbox-aff" id="lightboxAff">
+      <button class="close-btn" id="closeLightboxAff">×</button>
+      <button class="prev-btn" id="prevLightboxAff">&#10094;</button>
+      <img id="lightboxAffImg" src="" alt="">
+      <button class="next-btn" id="nextLightboxAff">&#10095;</button>
+    </div>
+    <h4 style="text-align:center; color:#1e40af">📘 LÀM SAO KHI THÔNG TIN THANH TOÁN BỊ TỪ CHỐI???</h4>
+    <p style="line-height:1.6; font-size:15px;">
+      • LÀM SAO KHI THÔNG TIN THANH TOÁN BỊ TỪ CHỐI???<br>
+      Có rất nhiều bạn làm tiếp thị liên kết Shopee ra đơn có thu nhập nhưng phần thiết lập thông tin thanh toán lại bị từ chối liên tục.
+Khi các bạn bị từ chối, hãy kéo xuống dưới cùng của phần thông tin thanh toán nhấn vào "Chỉnh sửa".<br>
+Lưu ý: nhiều bạn thấy lý do từ chối sai địa chỉ, hoặc sai mã số thuế là các bạn chỉ chỉnh mỗi địa chỉ và mã số thuế. Nếu như làm như vậy thì các bạn sẽ không bao giờ được duyệt thông tin thanh toán. Cần phải chỉnh sửa hết, xoá đi làm lại tất cả mọi thông tin từ bước 1 đến bước 3 CÙNG 1 THỜI ĐIỂM.<br>
+1. Thông tin người thụ hưởng.<br>
+- Loại tài khoản: Cá nhân trong nước.<br>
+- Họ tên: NGUYỄN THỊ THU (viết hoa có dấu).<br>
+- Số điện thoại: ********<br>
+- Địa chỉ: là địa chỉ nơi thường trú trên căn cước công dân. Chính xác đến từng dấu phẩy. VD: Tổ 6, Tân Thịnh, Tp Thái Nguyên, Thái Nguyên.<br>
+2. Thông tin tài khoản thanh toán.<br>
+- Tên ngân hàng: lựa chọn đúng tên ngân hàng bạn đang dùng. VD: NH viettin bank-công thương<br>
+- Chi nhánh: chi nhánh mở tài khoản. VD: CN Thai Nguyen<br>
+- Họ và tên chủ tài khoản ngân hàng: NGUYEN THI THU (viết hoa không dấu)<br>
+- Số tài khoản: Điền STK, không phải số thẻ cũng không phải là số điện thoại - trừ trường hợp bạn đăng ký số điện thoại là số tài khoản luôn thì dùng được còn nếu như đã có số tài khoản mà chuyển đổi thành số điện thoại thì bắt buộc phải ghi số tài khoản)<br>
+3. Thông tin thuế<br>
+- Số CMND/CCCD: điền chính xác<br>
+- Ảnh mặt trước và mặt sau chụp rõ không bị cắt góc, không bị loá sáng. Các bạn có thể chụp sẵn ở album ảnh, cắt zin cho khớp còn mỗi hình ảnh CCCD, rồi lúc đưa ảnh lên.<br>
+- Giai đoạn hiệu lực: cứ thế chọn giai đoạn bắt đầu và kết thúc liên tục không cần nhấn xong.<br>
+- Mã số thuế: là số CCCD<br>
+- Giấy tờ chứng minh: hãy điền số căn cước công dân, họ tên và địa chỉ cũng giống y như trên CCCD <a href="https://tracuunnt.gdt.gov.vn/tcnnt/mstcn.jsp" target="_blank" style="text-decoration:none; color:#1a73e8;">
+    👉 Tra cứu thuế 
+  </a><br><br>
+<a href="https://ketoananpha.vn/cach-dang-ky-ma-so-thue-ca-nhan-kinh-doanh-duoi-888.html?" target="_blank" style="text-decoration:none; color:#1a73e8;">
+    👉 Trường hợp ai chưa có mã số thuế thì nhấn tạo tại đây:
+  </a><br>
+Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã bắt tay với nhau rồi, công việc này ai cũng có thể làm được kể cả mẹ bỉm hay chị em công nhân, nhân viên văn phòng. Và sau 6 tháng nếu như bạn không cung cấp được tài khoản khoản thanh toán thì tiền mới không về. Còn trong quá trình bạn làm cứ có thu nhập, đến khi thông tin thanh toán của bạn được duyệt thì chắc chắn tiền sẽ về. Vậy nên việc của chúng ta không phải là nản không làm nữa mà là làm sao cho có càng nhiều thu nhập càng tốt.
+    </p>
+  </div>
+</div>
+<style>
+  .affiliate-images-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .affiliate-img-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #1e40af;
+    transition: transform 0.2s;
+  }
+  .affiliate-img-item img {
+    width: 100%;
+    border-radius: 6px;
+    margin-bottom: 4px;
+  }
+  .affiliate-img-item:hover { transform: scale(1.05); }
+
+  .lightbox-aff {
+    display: none;
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.9);
+    justify-content:center;
+    align-items:center;
+    z-index: 10000;
+  }
+  .lightbox-aff img {
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 8px;
+  }
+  .lightbox-aff .close-btn,
+  .lightbox-aff .prev-btn,
+  .lightbox-aff .next-btn {
+    position: absolute;
+    background: rgba(255,255,255,0.7);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    color: #222;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .lightbox-aff .close-btn:hover,
+  .lightbox-aff .prev-btn:hover,
+  .lightbox-aff .next-btn:hover { background: rgba(255,255,255,1); }
+
+  .lightbox-aff .close-btn { top: 20px; right: 20px; }
+  .lightbox-aff .prev-btn { left: 20px; top:50%; transform: translateY(-50%); }
+  .lightbox-aff .next-btn { right: 20px; top:50%; transform: translateY(-50%); }
+</style>
+  <script>
+  const n = 11; // số lượng ảnh, có thể thay đổi thành bao nhiêu ảnh tùy ý
+  const baseURL = "https://tintucmxh.github.io/TinTucMXH/image/Kiemtien/facebook/";
+  
+  const affiliateImagesList = document.getElementById("affiliateImagesList");
+  const lightboxAff = document.getElementById("lightboxAff");
+  const lightboxAffImg = document.getElementById("lightboxAffImg");
+  const closeLightboxAff = document.getElementById("closeLightboxAff");
+  const prevBtn = document.getElementById("prevLightboxAff");
+  const nextBtn = document.getElementById("nextLightboxAff");
+
+  let currentIndex = 0;
+  const imgSources = [];
+
+  // Tạo danh sách ảnh tự động
+  for(let i=1; i<=n; i++){
+    const imgSrc = `${baseURL}${i}.jpg`;
+    imgSources.push(imgSrc);
+
+    const div = document.createElement("div");
+    div.className = "affiliate-img-item";
+    div.dataset.index = i-1;
+    div.innerHTML = `<img src="${imgSrc}" alt="Link ${i}">Link ${i}`;
+    affiliateImagesList.appendChild(div);
+  }
+
+  // Click mở lightbox
+  const imagesAff = document.querySelectorAll(".affiliate-img-item");
+  imagesAff.forEach(item => {
+    item.addEventListener("click", () => {
+      currentIndex = parseInt(item.dataset.index);
+      lightboxAffImg.src = imgSources[currentIndex];
+      lightboxAff.style.display = "flex";
+    });
+  });
+
+  closeLightboxAff.addEventListener("click", () => {
+    lightboxAff.style.display = "none";
+  });
+
+  prevBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + imgSources.length) % imgSources.length;
+    lightboxAffImg.src = imgSources[currentIndex];
+  });
+
+  nextBtn.addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % imgSources.length;
+    lightboxAffImg.src = imgSources[currentIndex];
+  });
+
+  // đóng khi click ngoài ảnh
+  lightboxAff.addEventListener("click", e => {
+    if (e.target === lightboxAff) lightboxAff.style.display = "none";
+  });
+</script>
+  <!-- ============================= TAB 2: WEB TOOL ============================== -->
+  <div class="tab-content" id="web">
+
     <div class="container">
-        <div class="header"><h1>Bảng điều khiển thiết bị</h1></div>
-        <div class="content">
+      <!-- Tiêu đề -->
+    <label for="a">Tiêu đề bài viết</label>
+    <input type="text" id="a" placeholder="VD: Tai nạn giao thông tại Đề Gi">
+    <!-- Nội dung -->
+    <label for="ab">Nội dung chi tiết</label>
+    <textarea id="ab" placeholder="Mô tả chi tiết sự kiện..."></textarea>
+    <!-- Video (nhiều) -->
+    <label>Link Google Drive video (nhiều)</label>
+    <div class="input-group">
+      <input type="text" id="videoInput" placeholder="Dán link chia sẻ từ Google Drive">
+      <button class="btn-small btn-add" onclick="themVideo()" title="Thêm video">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+    <div class="media-list" id="videoList"></div>
+    <!-- Ảnh chi tiết (nhiều) -->
+    <label>Ảnh chi tiết (nhiều ảnh)</label>
+    <div class="input-group">
+      <input type="text" id="imageInput" placeholder="Dán link ảnh (Google Drive dùng uc?export=view)">
+      <button class="btn-small btn-add" onclick="themAnh()" title="Thêm ảnh">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+    <div class="media-list" id="imageList"></div>
+    <!-- Quảng cáo -->
+    <label for="c">Link ảnh quảng cáo</label>
+    <input list="videoAds" type="text" id="c" placeholder="Chọn hoặc nhập link ảnh">
+    <datalist id="videoAds">
+      <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Shopee Banner</option>
+      <option value="https://tintucmxh.github.io/TinTucMXH/mbhtrungquyen.webp">Mũ Bảo Hiểm</option>
+    </datalist>
+    <label for="d">Link chuyển hướng quảng cáo</label>
+    <input list="Ads" type="text" id="d" placeholder="Link Shopee, Tiki...">
+    <datalist id="Ads">
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F642872908%2F26564042129%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNE9UTHo2Tmlza0JVKzdncFhxMXphcGxLOUkzNmJTODV4Q0JJajV2ZlM3VEQxR3RUU01TUEZwc1lyZCtlZkhXQ011RmVRTHBYZHlIanB5OFBvYXN2dXZKbW95Tmt5bHFLNkNLcks5Vk5iTW53PT0&sm=fb_partner&affiliate_id=17335420220">Link 1</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1597381587%2F42120625683%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNUp2MkZYam1qS3k3K3JBMzBkWUdkT3NMS0daZGtXc3VwZG5HOEthM3JRT3ZiTFdUN3BXVmxvMVpEZEpJZ05aZytzcEtWR0ZVbE9NeE1VK2Y3VVM2UmxiOWFTaHc0NmpzcFE0NmtValZSTjFnPT0&sm=fb_partner&affiliate_id=17335420220">Link 2</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F60321356%2F24186455622%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUzJYdkg4SUFId3huV3BOemxRSlQvQ0FTRWFTMUw4TExrd1hYRGlPUlVlRFlTak9NYXBzZEJ1VTFCZkx4UlFUT3k5NEx1SEJ3bTZoMkZrcEhzaFRWTmtqRUxoeFN3emk4cm8zaTY1RjlTWlc&sm=fb_partner&affiliate_id=17335420220">Link 3</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F134371556%2F42423910759%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNVVDbzlwcVRBVDZ3dDl1dlZ5dlpHVU9rTkFDY2RVZ0UvMkgxNHRJRktEa2xqVER6SDRwT3FQUGFXQ3YrTDhCNWFoNHZSN3BWL3c4K21FUkdUckd6a2x6d2V1MlJaUSt2UjV3WnR4UGRRT3hBPT0&sm=fb_partner&affiliate_id=17335420220">Link 4</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1362679168%2F42725093098%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNU5xQVdFa0NHWU9WRTU1RHdLSWo0ZXhIWHJ4M0lsYmpSdSs5WmdlMGwxYjBNQnd6ZXc0RUR1UGpqWVJXbDhPb04yam9MNVpueWpFa3pJUUE5ditLdTJ0TkU4U1BmUmUzSW9ncC9kTnA3UXpBPT0&sm=fb_partner&affiliate_id=17335420220">Link 5</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1116012986%2F28111763195%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNDFUcWFjSXJ2THR4K3RtYnBENjR2Qk1BdVY0b3M2WnN0VTEvcjhUaXp0YmROU2o1ZmxIWkFGVG9LSFMwd2FCelRhbVpIL3lTZkd3Z3g5Z2tnWFFrNkVtV3VYUTBoSDhuT1JsZHBJSVpKOGJ3PT0&sm=fb_partner&affiliate_id=17335420220">Link 6</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F457209160%2F23750569400%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNEx3RU1NWVR6VVpZaFBSSTVaV20wVk9HWVJ3QVM2SzhIT1lqYWhwZlRUWVVrWGU3d2l6RlhkTFl5UlluT0h2eEY3RTExWjUyUmlhd09uQ3NDMEFKRzU5b1ZHYmhOQmlqWDFSRjgxZllLMEx3PT0&sm=fb_partner&affiliate_id=17335420220">Link 7</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1587552560%2F25496198743%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNVNLYXFGcEMwcTI1MVhwVUZGY20rSGlQZnhFVDlCb3p6SXdweVQ1WUhDck9mYmRUTWVLOXhrZ3FVUTVqWmpldmdud0drazBCRWp2YkZ3eVhwaXNxeTBsVzBrYTJXWUN6MTIxODlkdm82ZW5BPT0&sm=fb_partner&affiliate_id=17335420220">Link 8</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F388618830%2F28618025544%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwN2VaREV1aU9GcHJRZXlHVkhuQ2cyT2JmbFdUaEFveEFNaWQzR2VCOUQ1VU1lcEJBcWdEL0lNOU13VmhYeW1zVkJEd2YxeWhPd2EwVmg5YThRUXMyM3FpOEVSVjUya3ZycDF5VmFXSnJqd1l3PT0&sm=fb_partner&affiliate_id=17335420220">Link 9</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F435368915%2F18892985217%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUxENGRGUUlmbWdraFVieUZTQzNPRDl1VVpRQzRJeDRyeGg4V2FBTnNiSnFKMllMa0cxNGY3Y3dINnVkYzlTRDRWMGhoRG9VU3VULzJjTG5RVXp6MHlEek5CTU96dC9aNk16NUVFWFRqdWF3PT0&sm=fb_partner&affiliate_id=17335420220">Link 10</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F952306790%2F17793921989%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwN2xMUzY0dFRLQU1OcWc1ZGFra1pTVHEzdEt5K2dqZmVOMHVKaWt2b0NjbkVDL3A3TFBpalJzRXdRdStJVEY4Q040ZGVVNDF0SWNyZ1Q3bHRVVzlwT20rRkoxbzdkVEFTRlBZRFBsS3A0NHN3PT0&sm=fb_partner&affiliate_id=17335420220">Link 11</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F165690495%2F18374639660%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUx1MXFvSTNKaGpBM2w3V3dlWXpsdHNvRlY5cVVGR3BMY0xaUHlVZWp5dDFla2FFUU5sOHEyYmZCYW1yQVpsc1NKWlo1QXp2N3lYMTJqZkdESEFLeGVreVdHVElJcDRCKy9rSjZWelNKZUdRPT0&sm=fb_partner&affiliate_id=17335420220">Link 12</option>
+</datalist>
+    <!-- Buttons -->
+    <button class="btn" onclick="xuatDuLieu()">Xuất Dữ Liệu</button>
+    <button class="btn btn-secondary" onclick="hienPopup()">Lưu File HTML</button>
+    <button class="btn btn-secondary" onclick="xemTruoc()">Xem Trước</button>
+    <!-- Output -->
+    <label>Thông tin tóm tắt (Click đúp để sao chép)</label>
+    <textarea id="outputtt" readonly placeholder="Thông tin sẽ hiện ở đây..."></textarea>
+    <div class="copy-hint">Click đúp để sao chép</div>
+    <label>Mã HTML hoàn chỉnh (Click đúp để sao chép)</label>
+    <textarea id="output" readonly placeholder="File HTML sẽ hiện ở đây..."></textarea>
+    <div class="copy-hint">Click đúp để sao chép</div>
+    <label>Đường dẫn trang web</label>
+    <input type="text" id="linktrangwes" readonly placeholder="Sẽ hiển thị sau khi lưu">
+  </div>
+ <!-- Popup -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h3>Nhập tên file</h3>
+      <input type="text" id="fileName" placeholder="Tên file (không cần .html)">
+      <div class="popup-buttons">
+        <button class="confirm" onclick="xacNhanLuu()">Xác nhận</button>
+        <button class="cancel" onclick="dongPopup()">Hủy</button>
+      </div>
+    </div>
+  </div>
+  <!-- ====================== TAB 3: CHẠY TƯƠNG TÁC MXH ======================== -->
+<div class="tab-content" id="mxh">
+  <div class="container" style="max-width: 800px; flex-direction: row; gap: 20px;">
 
-            <p id="empty-state" style="text-align: center; color: #eee; padding: 20px 0;">
-                Không có thiết bị nào. Vui lòng thêm hoặc nhập dữ liệu.
-            </p>
+    <!-- CỘT TRÁI: QR MOMO -->
+    <div style="flex:1; text-align:center;">
+      <h3 style="color:#1e40af;">QR Chuyển tiền MOMO</h3>
+      <img id="qrImage" 
+           src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=MOMO-0338899530"
+           style="width:260px;height:260px;border-radius:12px;border:2px solid #90caf9;"
+      >
+      <p style="margin-top:10px;color:#1e40af;font-size:14px;">
+        SĐT: <b>0338899530</b><br>
+        Nội dung: <span id="qrNote">Chưa có nội dung</span>
+      </p>
+    </div>
+    <!-- CỘT PHẢI: FORM -->
+    <div style="flex:1;">
+      <label>ID kênh</label>
+      <input type="text" id="mxh_id" placeholder="Nhập ID kênh...">
+      <label>Số lượng</label>
+      <input type="text" id="mxh_sl" placeholder="Nhập số lượng...">
+      <label>Loại tương tác</label>
+      <select id="mxh_loai"
+              style="width:100%;padding:11px;border-radius:10px;border:1.5px solid #90caf9;">
+        <option value="follow">Follow</option>
+        <option value="tim">Tim (Like)</option>
+        <option value="share">Share</option>
+        <option value="cmt">Bình luận</option>
+        <option value="view">View</option>
+      </select>
+      <button class="btn" style="margin-top:15px;" onclick="taoOutput()">
+        Tạo Output
+      </button>
+      <label style="margin-top:12px;">Output</label>
+      <textarea id="mxh_output" readonly></textarea>
+    </div>
+  </div>
+</div>
 
-            <div id="account-list"></div>
+  <script>
+    /* ================= TAB FUNCTION ================ */
+  function openTab(tabId) {
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    document.querySelector(`.tab-btn[onclick="openTab('${tabId}')"]`).classList.add("active");
 
-            <div id="add-account-form">
-                <h2>Đăng ký thiết bị mới</h2>
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+  }
+  // TOOLTIP TOGGLE
+  const tooltipBtn = document.getElementById("tooltipToggle");
+  const tooltipMenu = document.getElementById("tooltipMenu");
+  tooltipBtn.addEventListener("click", () => {
+    tooltipMenu.classList.toggle("active");
+  });
 
-                <form id="add-form">
-                    <div class="form-group">
-                        <label for="account-name-input">Tên thiết bị</label>
-                        <input type="text" id="account-name-input" required>
-                    </div>
+  // DRAG TOOLTIP
+  const container = document.getElementById("tooltipContainer");
+  let isDragging = false, startX, startY, origX, origY;
 
-                    <div class="form-group">
-                        <label for="account-secret-input">Khóa kích hoạt</label>
-                        <input type="text" id="account-secret-input" required>
-                    </div>
+  container.addEventListener("mousedown", e => {
+    if (e.target !== tooltipBtn) return; // chỉ kéo nút
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = container.getBoundingClientRect();
+    origX = rect.left;
+    origY = rect.top;
+    e.preventDefault();
+  });
+  document.addEventListener("mousemove", e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    container.style.left = (origX + dx) + "px";
+    container.style.top = (origY + dy) + "px";
+  });
+  document.addEventListener("mouseup", () => { isDragging = false; });
+    
+    // === CÁC HÀM CŨ (giữ nguyên) ===
+    let danhSachVideo = [];
+    let danhSachAnh = [];
+    let tenFile = "";
 
-                    <button type="submit" class="btn-submit">Xác nhận kích hoạt</button>
-                </form>
-            </div>
+    function convertVideoLink(url) {
+      const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      return match ? `https://drive.google.com/file/d/${match[1]}/preview` : url;
+    }
+    function convertImageLink(url) {
+      const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      return match ? `https://drive.google.com/uc?export=view&id=${match[1]}` : url;
+    }
 
-            <div class="control-panel">
-                <div class="warning-box">
-                    <strong>Cảnh báo!</strong> Tuyệt đối không tải lại trang, nếu không toàn bộ dữ liệu chưa xuất sẽ bị mất.
-                </div>
+    function themVideo() {
+      const input = document.getElementById("videoInput");
+      const url = input.value.trim();
+      if (!url) return;
+      const finalUrl = convertVideoLink(url);
+      danhSachVideo.push(finalUrl);
+      input.value = "";
+      capNhatDanhSachVideo();
+      xuatDuLieu();
+    }
+    function xoaVideo(index) {
+      danhSachVideo.splice(index, 1);
+      capNhatDanhSachVideo();
+      xuatDuLieu();
+    }
+    function capNhatDanhSachVideo() {
+      const list = document.getElementById("videoList");
+      list.innerHTML = "";
+      danhSachVideo.forEach((url, i) => {
+        const div = document.createElement("div");
+        div.className = "media-item";
+        div.innerHTML = `
+          <span>${i+1}. <i class="fas fa-video"></i> Video</span>
+          <button class="btn-small btn-remove" onclick="xoaVideo(${i})" title="Xóa">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-                <div class="panel-buttons">
-                    <button id="import-btn">Nhập dữ liệu</button>
-                    <input type="file" id="file-input" accept=".json" style="display:none;">
-                    <button id="export-btn">Xuất dữ liệu</button>
-                </div>
-            </div>
+    function themAnh() {
+      const input = document.getElementById("imageInput");
+      const url = input.value.trim();
+      if (!url) return;
+      const finalUrl = convertImageLink(url);
+      danhSachAnh.push(finalUrl);
+      input.value = "";
+      capNhatDanhSachAnh();
+      xuatDuLieu();
+    }
+    function xoaAnh(index) {
+      danhSachAnh.splice(index, 1);
+      capNhatDanhSachAnh();
+      xuatDuLieu();
+    }
+    function capNhatDanhSachAnh() {
+      const list = document.getElementById("imageList");
+      list.innerHTML = "";
+      danhSachAnh.forEach((url, i) => {
+        const div = document.createElement("div");
+        div.className = "media-item";
+        div.innerHTML = `
+          <span>${i+1}. <i class, class="fas fa-image"></i> Ảnh</span>
+          <button class="btn-small btn-remove" onclick="xoaAnh(${i})" title="Xóa">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function taoFileHTML(tieude, noidung, adImg, adLink, tenFile) {
+      const videoHTML = danhSachVideo.map(src => `
+        <div class="video-container">
+          <iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
-    </div>
+      `).join('');
+      const imageJS = danhSachAnh.map(src => ` { type: "image", src: "${src}" },`).join('\n');
+      const html = [
+        '<!DOCTYPE html>',
+        '<html lang="vi">',
+        '<head>',
+        ' <meta charset="UTF-8">',
+        ` <title>${tenFile}</title>`,
+        ' <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+        ' <style>',
+        ' * { box-sizing: border-box; margin: 0; padding: 0; }',
+        ' body { font-family: Arial, sans-serif; background: #f5f6f7; }',
+        ' header { background: #222; color: #fff; padding: 12px 18px; }',
+        ' nav a { color: #fff; margin-right: 12px; text-decoration: none; font-weight: bold; }',
+        ' main { max-width: 900px; margin: 20px auto; padding: 0 16px; }',
+        ' article { background: #fff; padding: 16px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 20px; }',
+        ' footer { text-align: center; padding: 12px; background: #222; color: #fff; margin-top: 18px; }',
+        ' .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin-top: 12px; background: #000; }',
+        ' .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }',
+        ' .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }',
+        ' .gallery img { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: transform 0.2s; }',
+        ' .gallery img:hover { transform: scale(1.05); }',
+        ' .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }',
+        ' .lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; }',
+        ' .lightbox.active { display: flex; }',
+        ' .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 340px; background: #fff; box-shadow: 0 6px 25px rgba(0,0,0,0.25); border-radius: 14px; text-align: center; z-index: 9999; padding: 18px; display: none; animation: popupFadeIn 0.4s ease-out; }',
+        ' @keyframes popupFadeIn { from { opacity: 0; transform: translate(-50%, -60%); } to { opacity: 1; transform: translate(-50%, -50%); } }',
+        ' .popup h3 { margin: 0 0 8px; font-size: 18px; color: #d32f2f; }',
+        ' .popup p { margin: 0 0 12px; font-size: 14px; color: #555; }',
+        ' .popup img { width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; cursor: pointer; transition: transform 0.2s; }',
+        ' .popup img:hover { transform: scale(1.02); }',
+        ' .close-btn { position: absolute; top: 8px; right: 8px; background: #f44336; color: #fff; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; font-size: 16px; line-height: 26px; }',
+        ' </style>',
+        '</head>',
+        '<body>',
+        ' <header><h1>Tin Tức Mạng Xã Hội</h1><nav><a href="index.html">Trang chủ</a><a href="news.html">Tin tức</a><a href="about.html">Giới thiệu</a></nav></header>',
+        ' <main><article>',
+        ' <h2>' + tieude + '</h2>',
+        ' <p>' + noidung.replace(/\n/g, '<br>') + '</p>',
+        videoHTML,
+        ' <div id="mediaContainer"></div>',
+        ' </article></main>',
+        ' <footer>© 2025 Tin Tức 24h</footer>',
+        ' <div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt=""></div>',
+        ' <div class="popup" id="adPopup">',
+        ' <button class="close-btn" id="closePopup">×</button>',
+        ' <h3>Khuyến mãi đặc biệt!</h3>',
+        ' <p>Nhấn vào ảnh để xem chi tiết.</p>',
+        ' <img id="adImage" src="' + adImg + '" alt="QC">',
+        ' </div>',
+        ' <script>',
+        ' const adLink = "' + adLink + '";',
+        ' const mediaItems = [' + (imageJS ? '\n' + imageJS : '') + '];',
+        ' window.onload = () => {',
+        ' const container = document.getElementById("mediaContainer");',
+        ' const lightbox = document.getElementById("lightbox");',
+        ' const lightboxImg = document.getElementById("lightboxImg");',
+        ' const popup = document.getElementById("adPopup");',
+        ' const adImage = document.getElementById("adImage");',
+        ' const closePopup = document.getElementById("closePopup");',
+        ' if (mediaItems.length > 0) {',
+        ' const g = document.createElement("div"); g.className = "gallery"; container.appendChild(g);',
+        ' mediaItems.forEach(item => {',
+        ' const img = document.createElement("img"); img.src = item.src;',
+        ' img.onclick = () => { lightboxImg.src = item.src; lightbox.classList.add("active"); };',
+        ' g.appendChild(img);',
+        ' });',
+        ' }',
+        ' lightbox.onclick = () => lightbox.classList.remove("active");',
+        ' adImage.onclick = () => { window.open(adLink, "_blank"); hidePopup(); };',
+        ' closePopup.onclick = hidePopup;',
+        ' let t; function showPopup() { popup.style.display = "block"; t = setTimeout(() => { window.open(adLink, "_blank"); hidePopup(); }, 5000); }',
+        ' function hidePopup() { clearTimeout(t); popup.style.display = "none"; setTimeout(showPopup, 30000); }',
+        ' setTimeout(showPopup, 2000);',
+        ' };',
+        ' <\/script>',
+        '</body></html>'
+      ];
+      return html.join('\n');
+    }
 
-    <div id="toast"
-        style="position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%);
-        background-color: rgba(0,0,0,0.8); border: 1px solid #f3ca39; color: #f3ca39;
-        padding: 10px 20px; border-radius: 2px; opacity: 0;
-        transition: opacity 0.3s, bottom 0.3s; z-index: 1000;">
-    </div>
+    function xuatDuLieu() {
+      const a = document.getElementById("a").value.trim();
+      const ab = document.getElementById("ab").value.trim();
+      const c = document.getElementById("c").value.trim() || "https://via.placeholder.com/300x200?text=QC";
+      const d = document.getElementById("d").value.trim() || "#";
+      if (!a || !ab || danhSachVideo.length === 0) {
+        alert("Vui lòng nhập tiêu đề, nội dung và ít nhất 1 video!");
+        return;
+      }
+      tenFile = document.getElementById("fileName").value.trim() || a.replace(/[^a-zA-Z0-9]/g, '-');
+      const html = taoFileHTML(a, ab, c, d, tenFile);
+      const info = `Tiêu đề: ${a}\nVideo: ${danhSachVideo.length}\nẢnh: ${danhSachAnh.length}\nQC: ${c}`;
+      document.getElementById("output").value = html;
+      document.getElementById("outputtt").value = info;
+    }
 
+    ["outputtt", "output","linktrangwes"].forEach(id => {
+      document.getElementById(id).ondblclick = function() {
+        this.select();
+        document.execCommand("copy");
+        alert("Đã sao chép!");
+      };
+    });
 
-    <script>
-        // --- Giữ nguyên toàn bộ logic, chỉ dịch text ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const DOM = {
-                accountList: document.getElementById('account-list'),
-                emptyState: document.getElementById('empty-state'),
-                addForm: document.getElementById('add-form'),
-                importBtn: document.getElementById('import-btn'),
-                fileInput: document.getElementById('file-input'),
-                exportBtn: document.getElementById('export-btn'),
-                toast: document.getElementById('toast'),
-                accountNameInput: document.getElementById('account-name-input'),
-                accountSecretInput: document.getElementById('account-secret-input')
-            };
+    function xemTruoc() {
+      xuatDuLieu();
+      const blob = new Blob([document.getElementById("output").value], { type: "text/html" });
+      const win = window.open(URL.createObjectURL(blob), "_blank");
+      win.document.title = tenFile;
+    }
 
-            let accounts = [];
-            let updateInterval = null;
-            let accountDOMElements = [];
+    function hienPopup() { document.getElementById("popup").style.display = "flex"; }
+    function dongPopup() { document.getElementById("popup").style.display = "none"; document.getElementById("fileName").value = ""; }
+    function xacNhanLuu() {
+      const ten = document.getElementById("fileName").value.trim() || document.getElementById("a").value.trim().replace(/[^a-zA-Z0-9]/g, '-');
+      if (!ten) return alert("Vui lòng nhập tên file!");
+      xuatDuLieu();
+      const blob = new Blob([document.getElementById("output").value], { type: "text/html;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = ten + ".html";
+      link.click();
+      document.getElementById("linktrangwes").value = "https://tintucmxh.github.io/TinTucMXH/" + ten + ".html";
+      dongPopup();
+    }
 
-            function base32Decode(base32Str) {
-                const b="ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-                const s=String(base32Str).replace(/[\s=]/g,"").toUpperCase();
-                let t="";
-                for(let i=0;i<s.length;i++){
-                    const c=s.charAt(i);
-                    const v=b.indexOf(c);
-                    if(v===-1)throw new Error(`Khóa chứa ký tự không hợp lệ: "${c}"`);
-                    t+=v.toString(2).padStart(5,'0')
-                }
-                let r="";
-                for(let i=0;i+8<=t.length;i+=8){
-                    r+=parseInt(t.substr(i,8),2).toString(16).padStart(2,'0')
-                }
-                if(!r)throw new Error("Khóa quá ngắn hoặc sai định dạng");
-                return r;
-            }
+    ["videoInput", "imageInput"].forEach(id => {
+      document.getElementById(id).addEventListener("keypress", e => {
+        if (e.key === "Enter") e.target.nextElementSibling.onclick();
+      });
+    });
+      function taoOutput() {
+  const id = document.getElementById("mxh_id").value.trim();
+  const sl = document.getElementById("mxh_sl").value.trim();
+  const loai = document.getElementById("mxh_loai").value;
 
-            async function generateTOTP(secret, crypto) {
-                const h=base32Decode(secret);
-                const b=h.match(/[\da-f]{2}/gi);
-                if(!b)throw new Error("Byte không hợp lệ");
-                const k=new Uint8Array(b.map(h=>parseInt(h,16)));
+  if (!id || !sl) {
+    alert("Vui lòng nhập đầy đủ ID và số lượng!");
+    return;
+  }
 
-                const e=Math.floor(Date.now()/1000.0);
-                let t=Math.floor(e/30);
-                const y=new Uint8Array(8);
-                for(let i=7;i>=0;i--){y[i]=t&0xff;t>>=8}
+  const text = `${id} | ${sl} | ${loai}`;
+  document.getElementById("mxh_output").value = text;
 
-                const i=await crypto.subtle.importKey('raw',k,{name:'HMAC',hash:'SHA-1'},!1,['sign']);
-                const m=await crypto.subtle.sign('HMAC',i,y);
-                const a=new Uint8Array(m);
-                const o=a[a.length-1]&0x0f;
+  // Update QR MOMO auto
+  const momoQR = 
+    `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=MOMO-0338899530-${encodeURIComponent(text)}`;
 
-                const c=(((a[o]&0x7f)<<24)|((a[o+1]&0xff)<<16)|((a[o+2]&0xff)<<8)|(a[o+3]&0xff))%1000000;
-                return c.toString().padStart(6,'0');
-            }
-
-            function showToast(message) {
-                DOM.toast.textContent=message;
-                DOM.toast.style.bottom='20px';
-                DOM.toast.style.opacity='1';
-                setTimeout(() => {
-                    DOM.toast.style.bottom='-50px';
-                    DOM.toast.style.opacity='0';
-                }, 2000);
-            }
-
-            function escapeHTML(str) {
-                const p=document.createElement('p');
-                p.textContent=str;
-                return p.innerHTML;
-            }
-
-            async function updateDisplay() {
-                if(accounts.length===0)return;
-
-                const s=new Date().getSeconds()%30;
-                const p=((30-s)/30)*100;
-                const t=s===0?'none':'width 1s linear';
-
-                for(let i=0;i<accounts.length;i++) {
-                    const e=accountDOMElements[i];
-                    if(!e)continue;
-
-                    if(s===0){
-                        e.itemEl.classList.add('exploding');
-                        setTimeout(() => {e.itemEl.classList.remove('exploding');}, 1000);
-                    }
-
-                    const c=await generateTOTP(accounts[i].secret,window.crypto);
-                    if(e.codeEl.textContent!==c){e.codeEl.textContent=c;}
-
-                    e.progressEl.style.transition=t;
-                    e.progressEl.style.width=`${p}%`;
-                }
-            }
-
-            function fullRender() {
-                DOM.accountList.innerHTML='';
-                accountDOMElements=[];
-
-                if(accounts.length===0){
-                    DOM.emptyState.style.display='block';
-                    return;
-                } 
-                DOM.emptyState.style.display='none';
-
-                accounts.forEach((a, i) => {
-                    const t=document.createElement('div');
-                    t.className='account-item';
-
-                    t.innerHTML=`
-                        <div class="account-info">
-                            <div class="account-name">${escapeHTML(a.name)}</div>
-                            <div class="timer-display"><span class="account-code">......</span></div>
-                            <div class="fuse-container">
-                                <div class="lit-fuse-icon">🔥</div>
-                                <div class="progress-bar">
-                                    <div class="progress-bar-inner"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="account-actions">
-                            <button class="action-button copy-btn" title="Sao chép">📋</button>
-                            <button class="action-button delete-btn" title="Xóa">🗑️</button>
-                        </div>
-                    `;
-
-                    t.querySelector('.copy-btn').addEventListener('click', () => {
-                        navigator.clipboard.writeText(t.querySelector('.account-code').textContent);
-                        showToast('Đã sao chép mã!');
-                    });
-
-                    t.querySelector('.delete-btn').addEventListener('click', () => {
-                        if(confirm(`Xác nhận xóa thiết bị "${escapeHTML(a.name)}"?`)){
-                            accounts.splice(i,1);
-                            fullRender();
-                        }
-                    });
-
-                    DOM.accountList.appendChild(t);
-
-                    accountDOMElements.push({
-                        itemEl: t,
-                        codeEl: t.querySelector('.account-code'),
-                        progressEl: t.querySelector('.progress-bar-inner')
-                    });
-                });
-
-                updateDisplay();
-            }
-
-            function startUpdater() {
-                if(updateInterval)clearInterval(updateInterval);
-                fullRender();
-                updateInterval=setInterval(updateDisplay,1000);
-            }
-
-            DOM.addForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const n=DOM.accountNameInput.value.trim();
-                const s=DOM.accountSecretInput.value.trim();
-
-                if(!n||!s){
-                    alert('Tên thiết bị và khóa kích hoạt không được để trống.');
-                    return;
-                }
-
-                try {
-                    await generateTOTP(s,window.crypto);
-                    accounts.push({name:n,secret:s});
-                    DOM.accountNameInput.value='';
-                    DOM.accountSecretInput.value='';
-                    fullRender();
-                } catch(err) {
-                    alert(`Kích hoạt thất bại: Khóa không hợp lệ.\n\nChi tiết: ${err.message}`);
-                }
-            });
-
-            DOM.importBtn.addEventListener('click', ()=>DOM.fileInput.click());
-
-            DOM.fileInput.addEventListener('change', (e) => {
-                const f=e.target.files[0];
-                if(!f)return;
-
-                const r=new FileReader();
-                r.onload=async(e)=>{
-                    try{
-                        const d=JSON.parse(e.target.result);
-                        if(!Array.isArray(d))throw new Error();
-
-                        const v=[];
-                        for(const i of d){
-                            if(i.name && i.secret){
-                                try{
-                                    await generateTOTP(i.secret,window.crypto);
-                                    v.push(i);
-                                }catch(e){
-                                    console.warn("Bỏ qua khóa không hợp lệ:", i.name);
-                                }
-                            }
-                        }
-
-                        accounts=v;
-                        fullRender();
-                        showToast(`Đã nhập thành công ${v.length} thiết bị.`);
-                    }catch(err){
-                        alert('Nhập dữ liệu thất bại: File sai định dạng.');
-                    }
-                };
-
-                r.readAsText(f);
-                e.target.value='';
-            });
-
-            DOM.exportBtn.addEventListener('click', () => {
-                if(accounts.length===0){
-                    alert('Không có dữ liệu để xuất.');
-                    return;
-                }
-
-                const d=JSON.stringify(accounts,null,2);
-                const b=new Blob([d],{type:'application/json'});
-                const u=URL.createObjectURL(b);
-
-                const l=document.createElement('a');
-                l.href=u;
-                l.download=`2fa-backup-${new Date().toISOString().slice(0,10)}.json`;
-                l.click();
-
-                URL.revokeObjectURL(u);
-                showToast('Đã xuất dữ liệu.');
-            });
-
-            startUpdater();
-        });
-    </script>
+  document.getElementById("qrImage").src = momoQR;
+  document.getElementById("qrNote").innerText = text;
+}
+  </script>
 </body>
 </html>
