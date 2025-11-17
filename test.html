@@ -563,7 +563,21 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       ];
       return html.join('\n');
     }
-    
+    function xuatDuLieu() {
+      const a = document.getElementById("a").value.trim();
+      const ab = document.getElementById("ab").value.trim();
+      const c = document.getElementById("c").value.trim() || "https://via.placeholder.com/300x200?text=QC";
+      const d = document.getElementById("d").value.trim() || "#";
+      if (!a || !ab || danhSachVideo.length === 0) {
+        alert("Vui lòng nhập tiêu đề, nội dung và ít nhất 1 video!");
+        return;
+      }
+      tenFile = document.getElementById("fileName").value.trim() || a.replace(/[^a-zA-Z0-9]/g, '-');
+      const html = taoFileHTML(a, ab, c, d, tenFile);
+      const info = `Tiêu đề: ${a}\nVideo: ${danhSachVideo.length}\nẢnh: ${danhSachAnh.length}\nQC: ${c}`;
+      document.getElementById("output").value = html;
+      document.getElementById("outputtt").value = info;
+    }
     // === MXH TOOL ===
     function taoOutput() {
       const mxh_idtt = document.getElementById("mxh_tt").value;
