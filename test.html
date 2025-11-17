@@ -212,26 +212,31 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
   <!-- TAB 2: WEB TOOL -->
   <div class="tab-content" id="web">
     <div class="container">
-      <label for="a">Tiêu đề bài viết</label>
-      <input type="text" id="a" placeholder="VD: Tai nạn giao thông tại Đề Gi">
-
-      <label for="ab">Nội dung chi tiết</label>
-      <textarea id="ab" placeholder="Mô tả chi tiết sự kiện..."></textarea>
-
-      <label>Link Google Drive video (nhiều)</label>
-      <div class="input-group">
-        <input type="text" id="videoInput" placeholder="Dán link chia sẻ từ Google Drive">
-        <button class="btn-small btn-add" onclick="themVideo()" title="Thêm video"><i class="fas fa-plus"></i></button>
-      </div>
-      <div class="media-list" id="videoList"></div>
-
-      <label>Ảnh chi tiết (nhiều ảnh)</label>
-      <div class="input-group">
-        <input type="text" id="imageInput" placeholder="Dán link ảnh (Google Drive dùng uc?export=view)">
-        <button class="btn-small btn-add" onclick="themAnh()" title="Thêm ảnh"><i class="fas fa-plus"></i></button>
-      </div>
-      <div class="media-list" id="imageList"></div>
-
+      <!-- Tiêu đề -->
+    <label for="a">Tiêu đề bài viết</label>
+    <input type="text" id="a" placeholder="VD: Tai nạn giao thông tại Đề Gi">
+    <!-- Nội dung -->
+    <label for="ab">Nội dung chi tiết</label>
+    <textarea id="ab" placeholder="Mô tả chi tiết sự kiện..."></textarea>
+    <!-- Video (nhiều) -->
+    <label>Link Google Drive video (nhiều)</label>
+    <div class="input-group">
+      <input type="text" id="videoInput" placeholder="Dán link chia sẻ từ Google Drive">
+      <button class="btn-small btn-add" onclick="themVideo()" title="Thêm video">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+    <div class="media-list" id="videoList"></div>
+    <!-- Ảnh chi tiết (nhiều) -->
+    <label>Ảnh chi tiết (nhiều ảnh)</label>
+    <div class="input-group">
+      <input type="text" id="imageInput" placeholder="Dán link ảnh (Google Drive dùng uc?export=view)">
+      <button class="btn-small btn-add" onclick="themAnh()" title="Thêm ảnh">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+    <div class="media-list" id="imageList"></div>
+        
       <label for="c">Link ảnh quảng cáo</label>
       <input list="videoAds" type="text" id="c" placeholder="Chọn hoặc nhập link ảnh">
       <datalist id="videoAds">
