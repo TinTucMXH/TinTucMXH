@@ -700,6 +700,21 @@ document.addEventListener("mousemove", drag);
 dragItem.addEventListener("touchstart", dragStart);
 dragItem.addEventListener("touchend", dragEnd);
 dragItem.addEventListener("touchmove", drag);
+ // === TOOLTIP TOGGLE ===
+    const tooltipToggle = document.getElementById('tooltipToggle');
+    const tooltipMenu = document.getElementById('tooltipMenu');
+
+    tooltipToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      tooltipMenu.classList.toggle('active');
+    });
+
+    // Đóng khi click ngoài
+    document.addEventListener('click', (e) => {
+      if (!tooltipToggle.contains(e.target) && !tooltipMenu.contains(e.target)) {
+        tooltipMenu.classList.remove('active');
+      }
+    });
   </script>
 </body>
 </html>
