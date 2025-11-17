@@ -442,14 +442,33 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       capNhatDanhSachAnh();
       xuatDuLieu();
     }
+    function capNhatDanhSachVideo() {
+      const list = document.getElementById("videoList");
+      list.innerHTML = "";
+      danhSachVideo.forEach((url, i) => {
+        const div = document.createElement("div");
+        div.className = "media-item";
+        div.innerHTML = `
+          <span>${i+1}. <i class="fas fa-video"></i> Video</span>
+          <button class="btn-small btn-remove" onclick="xoaVideo(${i})" title="Xóa">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
+        list.appendChild(div);
+      });
+    }
     function capNhatDanhSachAnh() {
       const list = document.getElementById("imageList");
       list.innerHTML = "";
       danhSachAnh.forEach((url, i) => {
         const div = document.createElement("div");
         div.className = "media-item";
-        div.innerHTML = `<span>${i+1}. <i class="fas fa-image"></i> Ảnh</span>
-          <button class="btn-small btn-remove" onclick="xoaAnh(${i})"><i class="fas fa-trash"></i></button>`;
+        div.innerHTML = `
+          <span>${i+1}. <i class, class="fas fa-image"></i> Ảnh</span>
+          <button class="btn-small btn-remove" onclick="xoaAnh(${i})" title="Xóa">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
         list.appendChild(div);
       });
     }
