@@ -324,46 +324,66 @@
   <div class="tab-content" id="web">
 
     <div class="container">
-
-      <h2 style="text-align:center; color:#1e40af;">🛠 Công cụ Tạo Trang Web MXH</h2>
-
       <!-- Tiêu đề -->
-      <label for="a">Tiêu đề bài viết</label>
-      <input type="text" id="a" placeholder="VD: Tai nạn giao thông tại Đề Gi">
-
-      <!-- Nội dung -->
-      <label for="ab">Nội dung chi tiết</label>
-      <textarea id="ab" placeholder="Mô tả chi tiết sự kiện..."></textarea>
-
-      <!-- Video -->
-      <label>Video Google Drive</label>
-      <input type="text" id="videoInput" placeholder="Link Drive dạng /d/...">
-      <button class="btn-secondary" onclick="themVideo()">Thêm Video</button>
-      <div class="media-list" id="videoList"></div>
-
-      <!-- Ảnh -->
-      <label>Ảnh chi tiết</label>
-      <input type="text" id="imageInput" placeholder="Link ảnh Drive hoặc trực tiếp">
-      <button class="btn-secondary" onclick="themAnh()">Thêm Ảnh</button>
-      <div class="media-list" id="imageList"></div>
-
-      <!-- Ads -->
-      <label>Ảnh quảng cáo</label>
-      <input type="text" id="c">
-
-      <label>Link chuyển hướng quảng cáo</label>
-      <input type="text" id="d">
-
-      <button class="btn" onclick="xuatDuLieu()">Xuất Dữ Liệu</button>
-      <button class="btn btn-secondary" onclick="xemTruoc()">Xem Trước</button>
-      <button class="btn btn-secondary" onclick="hienPopup()">Lưu File HTML</button>
-
-      <textarea id="outputtt" readonly></textarea>
-      <textarea id="output" readonly></textarea>
-
-      <input type="text" id="linktrangwes" readonly placeholder="Đường dẫn sau khi lưu">
-
+    <label for="a">Tiêu đề bài viết</label>
+    <input type="text" id="a" placeholder="VD: Tai nạn giao thông tại Đề Gi">
+    <!-- Nội dung -->
+    <label for="ab">Nội dung chi tiết</label>
+    <textarea id="ab" placeholder="Mô tả chi tiết sự kiện..."></textarea>
+    <!-- Video (nhiều) -->
+    <label>Link Google Drive video (nhiều)</label>
+    <div class="input-group">
+      <input type="text" id="videoInput" placeholder="Dán link chia sẻ từ Google Drive">
+      <button class="btn-small btn-add" onclick="themVideo()" title="Thêm video">
+        <i class="fas fa-plus"></i>
+      </button>
     </div>
+    <div class="media-list" id="videoList"></div>
+    <!-- Ảnh chi tiết (nhiều) -->
+    <label>Ảnh chi tiết (nhiều ảnh)</label>
+    <div class="input-group">
+      <input type="text" id="imageInput" placeholder="Dán link ảnh (Google Drive dùng uc?export=view)">
+      <button class="btn-small btn-add" onclick="themAnh()" title="Thêm ảnh">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+    <div class="media-list" id="imageList"></div>
+    <!-- Quảng cáo -->
+    <label for="c">Link ảnh quảng cáo</label>
+    <input list="videoAds" type="text" id="c" placeholder="Chọn hoặc nhập link ảnh">
+    <datalist id="videoAds">
+      <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Shopee Banner</option>
+      <option value="https://tintucmxh.github.io/TinTucMXH/mbhtrungquyen.webp">Mũ Bảo Hiểm</option>
+    </datalist>
+    <label for="d">Link chuyển hướng quảng cáo</label>
+    <input list="Ads" type="text" id="d" placeholder="Link Shopee, Tiki...">
+    <datalist id="Ads">
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F642872908%2F26564042129%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNE9UTHo2Tmlza0JVKzdncFhxMXphcGxLOUkzNmJTODV4Q0JJajV2ZlM3VEQxR3RUU01TUEZwc1lyZCtlZkhXQ011RmVRTHBYZHlIanB5OFBvYXN2dXZKbW95Tmt5bHFLNkNLcks5Vk5iTW53PT0&sm=fb_partner&affiliate_id=17335420220">Link 1</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1597381587%2F42120625683%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNUp2MkZYam1qS3k3K3JBMzBkWUdkT3NMS0daZGtXc3VwZG5HOEthM3JRT3ZiTFdUN3BXVmxvMVpEZEpJZ05aZytzcEtWR0ZVbE9NeE1VK2Y3VVM2UmxiOWFTaHc0NmpzcFE0NmtValZSTjFnPT0&sm=fb_partner&affiliate_id=17335420220">Link 2</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F60321356%2F24186455622%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUzJYdkg4SUFId3huV3BOemxRSlQvQ0FTRWFTMUw4TExrd1hYRGlPUlVlRFlTak9NYXBzZEJ1VTFCZkx4UlFUT3k5NEx1SEJ3bTZoMkZrcEhzaFRWTmtqRUxoeFN3emk4cm8zaTY1RjlTWlc&sm=fb_partner&affiliate_id=17335420220">Link 3</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F134371556%2F42423910759%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNVVDbzlwcVRBVDZ3dDl1dlZ5dlpHVU9rTkFDY2RVZ0UvMkgxNHRJRktEa2xqVER6SDRwT3FQUGFXQ3YrTDhCNWFoNHZSN3BWL3c4K21FUkdUckd6a2x6d2V1MlJaUSt2UjV3WnR4UGRRT3hBPT0&sm=fb_partner&affiliate_id=17335420220">Link 4</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1362679168%2F42725093098%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNU5xQVdFa0NHWU9WRTU1RHdLSWo0ZXhIWHJ4M0lsYmpSdSs5WmdlMGwxYjBNQnd6ZXc0RUR1UGpqWVJXbDhPb04yam9MNVpueWpFa3pJUUE5ditLdTJ0TkU4U1BmUmUzSW9ncC9kTnA3UXpBPT0&sm=fb_partner&affiliate_id=17335420220">Link 5</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1116012986%2F28111763195%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNDFUcWFjSXJ2THR4K3RtYnBENjR2Qk1BdVY0b3M2WnN0VTEvcjhUaXp0YmROU2o1ZmxIWkFGVG9LSFMwd2FCelRhbVpIL3lTZkd3Z3g5Z2tnWFFrNkVtV3VYUTBoSDhuT1JsZHBJSVpKOGJ3PT0&sm=fb_partner&affiliate_id=17335420220">Link 6</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F457209160%2F23750569400%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNEx3RU1NWVR6VVpZaFBSSTVaV20wVk9HWVJ3QVM2SzhIT1lqYWhwZlRUWVVrWGU3d2l6RlhkTFl5UlluT0h2eEY3RTExWjUyUmlhd09uQ3NDMEFKRzU5b1ZHYmhOQmlqWDFSRjgxZllLMEx3PT0&sm=fb_partner&affiliate_id=17335420220">Link 7</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1587552560%2F25496198743%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNVNLYXFGcEMwcTI1MVhwVUZGY20rSGlQZnhFVDlCb3p6SXdweVQ1WUhDck9mYmRUTWVLOXhrZ3FVUTVqWmpldmdud0drazBCRWp2YkZ3eVhwaXNxeTBsVzBrYTJXWUN6MTIxODlkdm82ZW5BPT0&sm=fb_partner&affiliate_id=17335420220">Link 8</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F388618830%2F28618025544%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwN2VaREV1aU9GcHJRZXlHVkhuQ2cyT2JmbFdUaEFveEFNaWQzR2VCOUQ1VU1lcEJBcWdEL0lNOU13VmhYeW1zVkJEd2YxeWhPd2EwVmg5YThRUXMyM3FpOEVSVjUya3ZycDF5VmFXSnJqd1l3PT0&sm=fb_partner&affiliate_id=17335420220">Link 9</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F435368915%2F18892985217%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUxENGRGUUlmbWdraFVieUZTQzNPRDl1VVpRQzRJeDRyeGg4V2FBTnNiSnFKMllMa0cxNGY3Y3dINnVkYzlTRDRWMGhoRG9VU3VULzJjTG5RVXp6MHlEek5CTU96dC9aNk16NUVFWFRqdWF3PT0&sm=fb_partner&affiliate_id=17335420220">Link 10</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F952306790%2F17793921989%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwN2xMUzY0dFRLQU1OcWc1ZGFra1pTVHEzdEt5K2dqZmVOMHVKaWt2b0NjbkVDL3A3TFBpalJzRXdRdStJVEY4Q040ZGVVNDF0SWNyZ1Q3bHRVVzlwT20rRkoxbzdkVEFTRlBZRFBsS3A0NHN3PT0&sm=fb_partner&affiliate_id=17335420220">Link 11</option>
+  <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F165690495%2F18374639660%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUx1MXFvSTNKaGpBM2w3V3dlWXpsdHNvRlY5cVVGR3BMY0xaUHlVZWp5dDFla2FFUU5sOHEyYmZCYW1yQVpsc1NKWlo1QXp2N3lYMTJqZkdESEFLeGVreVdHVElJcDRCKy9rSjZWelNKZUdRPT0&sm=fb_partner&affiliate_id=17335420220">Link 12</option>
+</datalist>
+    <!-- Buttons -->
+    <button class="btn" onclick="xuatDuLieu()">Xuất Dữ Liệu</button>
+    <button class="btn btn-secondary" onclick="hienPopup()">Lưu File HTML</button>
+    <button class="btn btn-secondary" onclick="xemTruoc()">Xem Trước</button>
+    <!-- Output -->
+    <label>Thông tin tóm tắt (Click đúp để sao chép)</label>
+    <textarea id="outputtt" readonly placeholder="Thông tin sẽ hiện ở đây..."></textarea>
+    <div class="copy-hint">Click đúp để sao chép</div>
+    <label>Mã HTML hoàn chỉnh (Click đúp để sao chép)</label>
+    <textarea id="output" readonly placeholder="File HTML sẽ hiện ở đây..."></textarea>
+    <div class="copy-hint">Click đúp để sao chép</div>
+    <label>Đường dẫn trang web</label>
+    <input type="text" id="linktrangwes" readonly placeholder="Sẽ hiển thị sau khi lưu">
   </div>
 
   <!-- ==== TOOLTIP ==== -->
