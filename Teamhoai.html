@@ -318,16 +318,10 @@
       • Theo dõi số click / chuyển đổi / hoa hồng…
     </p>
 
-    <!-- ==== DANH SÁCH ẢNH ==== -->
     <h3 style="margin-top:20px; color:#1e40af;">📷 Danh sách ảnh</h3>
-    <div class="affiliate-images-list">
-      <div class="affiliate-img-item" data-index="0"><img src="https://tintucmxh.github.io/TinTucMXH/image/Kiemtien/facebook/1.jpg" alt="Link 1">Link 1</div>
-      <div class="affiliate-img-item" data-index="1"><img src="https://tintucmxh.github.io/TinTucMXH/image/Kiemtien/facebook/2.jpg" alt="Link 2">Link 2</div>
-      <div class="affiliate-img-item" data-index="2"><img src="https://tintucmxh.github.io/TinTucMXH/image/Kiemtien/facebook/3.jpg" alt="Link 3">Link 3</div>
-      <div class="affiliate-img-item" data-index="3"><img src="https://tintucmxh.github.io/TinTucMXH/image/Kiemtien/facebook/4.jpg" alt="Link 4">Link 4</div>
-    </div>
+    <div class="affiliate-images-list" id="affiliateImagesList"></div>
 
-    <!-- ==== LIGHTBOX ==== -->
+    <!-- LIGHTBOX -->
     <div class="lightbox-aff" id="lightboxAff">
       <button class="close-btn" id="closeLightboxAff">×</button>
       <button class="prev-btn" id="prevLightboxAff">&#10094;</button>
@@ -336,7 +330,6 @@
     </div>
   </div>
 </div>
-
 <style>
   .affiliate-images-list {
     display: flex;
@@ -361,7 +354,6 @@
   }
   .affiliate-img-item:hover { transform: scale(1.05); }
 
-  /* LIGHTBOX */
   .lightbox-aff {
     display: none;
     position: fixed;
@@ -400,16 +392,33 @@
   .lightbox-aff .next-btn { right: 20px; top:50%; transform: translateY(-50%); }
 </style>
   <script>
-  const imagesAff = document.querySelectorAll(".affiliate-img-item");
+  const n = 10; // số lượng ảnh, có thể thay đổi thành bao nhiêu ảnh tùy ý
+  const baseURL = "https://tintucmxh.github.io/TinTucMXH/image/Kiemtien/facebook/";
+  
+  const affiliateImagesList = document.getElementById("affiliateImagesList");
   const lightboxAff = document.getElementById("lightboxAff");
   const lightboxAffImg = document.getElementById("lightboxAffImg");
   const closeLightboxAff = document.getElementById("closeLightboxAff");
   const prevBtn = document.getElementById("prevLightboxAff");
   const nextBtn = document.getElementById("nextLightboxAff");
+
   let currentIndex = 0;
+  const imgSources = [];
 
-  const imgSources = Array.from(imagesAff).map(item => item.querySelector("img").src);
+  // Tạo danh sách ảnh tự động
+  for(let i=1; i<=n; i++){
+    const imgSrc = `${baseURL}${i}.jpg`;
+    imgSources.push(imgSrc);
 
+    const div = document.createElement("div");
+    div.className = "affiliate-img-item";
+    div.dataset.index = i-1;
+    div.innerHTML = `<img src="${imgSrc}" alt="Link ${i}">Link ${i}`;
+    affiliateImagesList.appendChild(div);
+  }
+
+  // Click mở lightbox
+  const imagesAff = document.querySelectorAll(".affiliate-img-item");
   imagesAff.forEach(item => {
     item.addEventListener("click", () => {
       currentIndex = parseInt(item.dataset.index);
