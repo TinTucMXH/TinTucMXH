@@ -725,7 +725,7 @@
         if (e.key === "Enter") e.target.nextElementSibling.onclick();
       });
     });
-// === DRAG TOOLTIP ===
+/ === DRAG TOOLTIP ===
 const dragItem = document.querySelector(".tooltip-container");
 let active = false;
 let currentX, currentY, initialX, initialY;
@@ -779,57 +779,6 @@ document.addEventListener("mousemove", drag);
 dragItem.addEventListener("touchstart", dragStart);
 dragItem.addEventListener("touchend", dragEnd);
 dragItem.addEventListener("touchmove", drag);
- // === TOOLTIP TOGGLE ===
-    const tooltipToggle = document.getElementById('tooltipToggle');
-    const tooltipMenu = document.getElementById('tooltipMenu');
-
-    tooltipToggle.addEventListener('click', (e) => {
-      e.stopPropagation();
-      tooltipMenu.classList.toggle('active');
-    });
-
-    // Đóng khi click ngoài
-    document.addEventListener('click', (e) => {
-      if (!tooltipToggle.contains(e.target) && !tooltipMenu.contains(e.target)) {
-        tooltipMenu.classList.remove('active');
-      }
-    });
-  const imagesAff = document.querySelectorAll(".affiliate-img-item");
-  const lightboxAff = document.getElementById("lightboxAff");
-  const lightboxAffImg = document.getElementById("lightboxAffImg");
-  const closeLightboxAff = document.getElementById("closeLightboxAff");
-  const prevBtn = document.getElementById("prevLightboxAff");
-  const nextBtn = document.getElementById("nextLightboxAff");
-  let currentIndex = 0;
-
-  const imgSources = Array.from(imagesAff).map(item => item.querySelector("img").src);
-
-  imagesAff.forEach(item => {
-    item.addEventListener("click", () => {
-      currentIndex = parseInt(item.dataset.index);
-      lightboxAffImg.src = imgSources[currentIndex];
-      lightboxAff.style.display = "flex";
-    });
-  });
-
-  closeLightboxAff.addEventListener("click", () => {
-    lightboxAff.style.display = "none";
-  });
-
-  prevBtn.addEventListener("click", () => {
-    currentIndex = (currentIndex - 1 + imgSources.length) % imgSources.length;
-    lightboxAffImg.src = imgSources[currentIndex];
-  });
-
-  nextBtn.addEventListener("click", () => {
-    currentIndex = (currentIndex + 1) % imgSources.length;
-    lightboxAffImg.src = imgSources[currentIndex];
-  });
-
-  // đóng khi click ngoài ảnh
-  lightboxAff.addEventListener("click", e => {
-    if (e.target === lightboxAff) lightboxAff.style.display = "none";
-  });
-    </script>
+  </script>
 </body>
 </html>
