@@ -478,6 +478,7 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       const win = window.open(URL.createObjectURL(blob), "_blank");
       win.document.title = tenFile;
     }
+    
     function taoFileHTML(tieude, noidung, adImg, adLink, tenFile) {
       const videoHTML = danhSachVideo.map(src => `
         <div class="video-container">
@@ -578,6 +579,26 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       document.getElementById("output").value = html;
       document.getElementById("outputtt").value = info;
     }
+    function hienPopup() { document.getElementById("popup").style.display = "flex"; }
+    function dongPopup() { document.getElementById("popup").style.display = "none"; document.getElementById("fileName").value = ""; }
+    function xacNhanLuu() {
+      const ten = document.getElementById("fileName").value.trim() || document.getElementById("a").value.trim().replace(/[^a-zA-Z0-9]/g, '-');
+      if (!ten) return alert("Vui lòng nhập tên file!");
+      xuatDuLieu();
+      const blob = new Blob([document.getElementById("output").value], { type: "text/html;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = ten + ".html";
+      link.click();
+      document.getElementById("linktrangwes").value = "https://tintucmxh.github.io/TinTucMXH/" + ten + ".html";
+      dongPopup();
+    }
+
+    ["videoInput", "imageInput"].forEach(id => {
+      document.getElementById(id).addEventListener("keypress", e => {
+        if (e.key === "Enter") e.target.nextElementSibling.onclick();
+      });
+    });
     // === MXH TOOL ===
     function taoOutput() {
       const mxh_idtt = document.getElementById("mxh_tt").value;
