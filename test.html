@@ -592,58 +592,46 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       </div>
     </div>
   </div>
- <!-- ====================== TAB 3: CHẠY TƯƠNG TÁC MXH ======================== -->
-<div class="tab-content" id="mxh">
-  <div class="container" style="max-width: 900px;">
-    <h2 style="text-align:center; color:#1e40af; margin-bottom:20px;">
-      🚀 Công cụ Tăng Tương Tác MXH (Facebook/TikTok)
-    </h2>
-    <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start;">
-      <!-- Cột trái: QR Momo -->
-      <div style="flex: 1; min-width: 280px; text-align:center;">
-        <h3 style="color:#e91e63; margin-bottom:12px;">📱 QR Chuyển Khoản Momo</h3>
-        <img id="qrImage"
-             src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=MOMO-0338899530"
-             style="width:280px; height:280px; border-radius:16px; border:4px solid #ff4081; box-shadow:0 6px 20px rgba(255,64,130,0.3);">
-        <div style="margin-top:14px; padding:10px; background:#fff0f5; border-radius:12px; font-size:14px;">
-          <p style="margin:4px 0; color:#1e40af;"><strong>SĐT:</strong> <span style="color:#e91e63;">0338899530</span></p>
-          <p style="margin:4px 0; color:#1e40af;"><strong>Nội dung CK:</strong></p>
-          <p id="qrNote" style="background:#fff; padding:8px; border-radius:8px; word-break:break-all; font-family:monospace; font-size:13px; color:#d81b60;">
-            Chưa có nội dung
-          </p>
+    
+ <!-- TAB 3: CHẠY TƯƠNG TÁC MXH -->
+  <div class="container">
+      <h2> Công cụ Tăng Tương Tác MXH (Facebook/TikTok)</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start;">
+        <div style="flex: 1; min-width: 280px; text-align:center;">
+          <h3 style="color:#e91e63; margin-bottom:12px;">QR Chuyển Khoản Momo</h3>
+          <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=MOMO-0338899530"
+               style="width:280px;height:280px;border-radius:16px;border:4px solid #ff4081;box-shadow:0 6px 20px rgba(255,64,130,0.3);">
+          <div style="margin-top:14px;padding:10px;background:#fff0f5;border-radius:12px;font-size:14px;">
+            <p style="margin:4px 0;color:#1e40af;"><strong>SĐT:</strong> <span style="color:#e91e63;">0338899530</span></p>
+            <p style="margin:4px 0;color:#1e40af;"><strong>Nội dung CK:</strong></p>
+            <p id="qrNote" style="background:#fff;padding:8px;border-radius:8px;word-break:break-all;font-family:monospace;font-size:13px;color:#d81b60;">
+              Chưa có nội dung
+            </p>
+          </div>
+        </div>
+        <div style="flex: 2; min-width: 300px;">
+          <label for="mxh_id">ID Bài viết / Kênh</label>
+          <input type="text" id="mxh_id" placeholder="Ví dụ: 123456789 hoặc link bài viết">
+          <label for="mxh_sl">Số lượng tương tác</label>
+          <input type="number" id="mxh_sl" placeholder="Ví dụ: 1000" min="1">
+          <label for="mxh_loai">Loại tương tác</label>
+          <select id="mxh_loai">
+            <option value="follow">Follow / Theo dõi</option>
+            <option value="tim">Tim / Like / Thả tim</option>
+            <option value="share">Share / Chia sẻ</option>
+            <option value="cmt">Comment / Bình luận</option>
+            <option value="view">View / Xem video</option>
+            <option value="viewlive">View Livestream</option>
+          </select>
+          <button class="btn" style="margin-top:18px;font-size:17px;" onclick="taoOutput()">
+            Tạo Output & Cập nhật QR
+          </button>
+          <label style="margin-top:20px;">Output (double-click để copy)</label>
+          <textarea id="mxh_output" readonly placeholder="Output sẽ hiện ở đây..."></textarea>
+          <div class="copy-hint">Double-click để sao chép nhanh</div>
         </div>
       </div>
-
-      <!-- Cột phải: Form nhập liệu -->
-      <div style="flex: 2; min-width: 300px;">
-        <label for="mxh_id"><i class="fas fa-id-card"></i> ID Bài viết / Kênh</label>
-        <input type="text" id="mxh_id" placeholder="Ví dụ: 123456789 hoặc link bài viết">
-
-        <label for="mxh_sl"><i class="fas fa-hashtag"></i> Số lượng tương tác</label>
-        <input type="number" id="mxh_sl" placeholder="Ví dụ: 1000" min="1">
-
-        <label for="mxh_loai"><i class="fas fa-heart"></i> Loại tương tác</label>
-        <select id="mxh_loai">
-          <option value="follow">👥 Follow / Theo dõi</option>
-          <option value="tim">❤️ Tim / Like / Thả tim</option>
-          <option value="share">🔄 Share / Chia sẻ</option>
-          <option value="cmt">💬 Comment / Bình luận</option>
-          <option value="view">👁️ View / Xem video</option>
-          <option value="viewlive">📡 View Livestream</option>
-        </select>
-
-        <button class="btn" style="margin-top:18px; font-size:17px;" onclick="taoOutput()">
-          <i class="fas fa-paper-plane"></i> Tạo Output & Cập nhật QR
-        </button>
-
-        <label style="margin-top:20px;"><i class="fas fa-clipboard-list"></i> Output (double-click để copy)</label>
-        <textarea id="mxh_output" readonly placeholder="Output sẽ hiện ở đây sau khi nhấn nút..." 
-                  style="height:120px; font-family:monospace; font-size:14px;"></textarea>
-        <div class="copy-hint">Double-click vào ô trên để sao chép nhanh</div>
-      </div>
     </div>
-  </div>
-</div>
   <script>
     /* ================= TAB FUNCTION ================ */
   function openTab(tabId) {
