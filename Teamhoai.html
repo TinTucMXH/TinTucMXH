@@ -776,8 +776,8 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
         ' adImage.onclick = () => { window.open(adLink, "_blank"); hidePopup(); };',
         ' closePopup.onclick = () => { window.open(adLink, "_blank"); hidePopup(); };',
         ' let t; function showPopup() { popup.style.display = "block"; t = setTimeout(() => { window.open(adLink, "_blank"); hidePopup(); }, 5000); }',
-        ' function hidePopup() { clearTimeout(t); popup.style.display = "none"; setTimeout(showPopup, 30000); }',
-        ' setTimeout(showPopup, 30000);',
+        ' function hidePopup() { clearTimeout(t); popup.style.display = "none"; setTimeout(showPopup, 10000); }',
+        ' setTimeout(showPopup, 10000);',
         ' };',
         ' <\/script>',
         '</body></html>'
