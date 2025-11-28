@@ -70,9 +70,32 @@
  lightbox.onclick = () => lightbox.classList.remove("active");
  adImage.onclick = () => { window.open(adLink, "_blank"); hidePopup(); };
  closePopup.onclick = hidePopup;
- let t; function showPopup() { popup.style.display = "block"; t = setTimeout(() => { window.open(adLink, "_blank"); hidePopup(); }, 5000); }
- function hidePopup() { clearTimeout(t); popup.style.display = "none"; setTimeout(showPopup, 30000); }
- setTimeout(showPopup, 30000);
- };
+ let t;
+
+// Hàm mở link trước khi hiện popup
+function showPopup() {
+    // Mở link trước khi popup xuất hiện
+    window.open(adLink, "_blank");
+
+    // Hiện popup
+    popup.style.display = "block";
+
+    // Sau 5s tự tắt popup
+    t = setTimeout(() => {
+        hidePopup();
+    }, 5000);
+}
+
+function hidePopup() {
+    clearTimeout(t);
+    popup.style.display = "none";
+
+    // 30s sau sẽ hiện lại popup + mở link
+    setTimeout(showPopup, 30000);
+}
+
+// Lần đầu tiên: đợi 30s rồi chạy showPopup()
+setTimeout(showPopup, 30000);
+
  </script>
 </body></html>
