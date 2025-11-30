@@ -79,7 +79,7 @@
         text-shadow: 0 0 8px #8a2be2;
     }
 
-    textarea, input {
+    textarea, input, select {
         width: 100%;
         padding: 10px;
         border-radius: 6px;
@@ -130,9 +130,7 @@
 <div class="tab active" id="convert">
     <div class="groupbox">
         <div class="group-title">Nhập chuỗi bất kỳ</div>
-        <textarea id="inputText" rows="4" placeholder="Dán đoạn text bất kỳ có chứa link như: 
-确认过眼神，是我的流萤痛盔！！💗💓
-http://xhslink.com/o/2RWsODZspS6"></textarea>
+        <textarea id="inputText" rows="4" placeholder="Dán đoạn text bất kỳ có chứa link"></textarea>
         
         <button onclick="convertLink()">Convert</button>
 
@@ -144,6 +142,24 @@ http://xhslink.com/o/2RWsODZspS6"></textarea>
             <button onclick="goLink()">Go</button>
         </div>
     </div>
+
+    <!-- NEW BOX: HASHTAG -->
+    <div class="groupbox">
+        <div class="group-title">Chọn chủ đề → Tự sinh Hashtag xu hướng</div>
+
+        <select id="hashtagSelect" onchange="genHashtag()">
+            <option value="">-- chọn chủ đề --</option>
+            <option value="tintuc">Tin tức</option>
+            <option value="mubahiem">Mũ bảo hiểm</option>
+            <option value="giaitri">Giải trí</option>
+            <option value="xuhuong">Trend MXH</option>
+        </select>
+
+        <input id="hashtagOut" placeholder="#hashtag sẽ hiển thị tại đây..." readonly>
+
+        <button onclick="copyHashtag()">Copy Hashtag</button>
+    </div>
+
 </div>
 
 <!-- TAB 2 -->
@@ -158,17 +174,13 @@ http://xhslink.com/o/2RWsODZspS6"></textarea>
 function openTab(id) {
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-
     document.getElementById(id).classList.add("active");
     event.target.classList.add("active");
 }
 
 function convertLink() {
     let text = document.getElementById("inputText").value;
-
-    // Regex tách URL
     let url = text.match(/https?:\/\/[^\s]+/);
-
     document.getElementById("outputText").value = url ? url[0] : "Không tìm thấy link!";
 }
 
@@ -183,6 +195,28 @@ function goLink() {
     let link = document.getElementById("outputText").value;
     if (link.startsWith("http")) window.open(link, "_blank");
     else alert("Link không hợp lệ!");
+}
+
+/* HASHTAG GENERATOR */
+function genHashtag() {
+    let type = document.getElementById("hashtagSelect").value;
+    let out = document.getElementById("hashtagOut");
+
+    let hashtags = {
+        tintuc: "#tintuc #tintucmxh #tintuc24h #newsVN #hotnews #trend2025",
+        mubahiem: "#mubahiem #mubahiemchat #antoangiaothong #baohiem #trend",
+        giaitri: "#giaitri #showbiz #hottrend #mxh #viral",
+        xuhuong: "#trend #trendmxh #hot2025 #viralclip #foru"
+    };
+
+    out.value = hashtags[type] || "";
+}
+
+function copyHashtag() {
+    let out = document.getElementById("hashtagOut");
+    out.select();
+    document.execCommand("copy");
+    alert("Đã copy hashtag!");
 }
 </script>
 
