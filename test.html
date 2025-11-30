@@ -180,8 +180,14 @@ function openTab(id) {
 
 function convertLink() {
     let text = document.getElementById("inputText").value;
+
+    // Regex tách URL
     let url = text.match(/https?:\/\/[^\s]+/);
+
     document.getElementById("outputText").value = url ? url[0] : "Không tìm thấy link!";
+
+    // Xóa ô nhập sau khi convert
+    document.getElementById("inputText").value = "";
 }
 
 function copyText() {
@@ -219,6 +225,5 @@ function copyHashtag() {
     alert("Đã copy hashtag!");
 }
 </script>
-
 </body>
 </html>
