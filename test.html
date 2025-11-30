@@ -683,6 +683,24 @@ document.addEventListener("mousemove", drag);
 dragItem.addEventListener("touchstart", dragStart);
 dragItem.addEventListener("touchend", dragEnd);
 dragItem.addEventListener("touchmove", drag);
+function openTab(tabId) {
+  // Ẩn tất cả tab-content
+  document.querySelectorAll(".tab-content").forEach(tab => {
+    tab.classList.remove("active");
+  });
+
+  // Bỏ active tất cả nút
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  // Hiển thị tab được chọn
+  document.getElementById(tabId).classList.add("active");
+
+  // Active nút đã bấm
+  event.target.classList.add("active");
+}
+
   </script>
 </body>
 </html>
