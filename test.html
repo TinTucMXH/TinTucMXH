@@ -3,216 +3,280 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
   <!-- FAVICON: Hiển thị icon H bên cạnh link, tab, shortcut -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="favicon.svg">
-  <title>Công cụ MXH – Affiliate & Tạo Web</title>
+  <title>Admin Hoài</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: linear-gradient(135deg,#e3f2fd,#bbdefb);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
       padding: 20px;
       color: #1e3a8a;
+      position: relative;
       min-height: 100vh;
     }
-    h1 { text-align: center; font-size: 28px; margin-bottom: 15px; color: #0d47a1; font-weight: 700; }
-    .tabs {
-      display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+    h2 {
+      text-align: center;
+      color: #1e40af;
+      margin-bottom: 20px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
-    .tab-btn {
-      padding: 10px 18px; background: #90caf9; border-radius: 10px; border: none;
-      color: #0d47a1; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.25s;
-    }
-    .tab-btn.active { background: #1e88e5; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
     .container {
-      background: #fff; padding: 24px; border-radius: 16px;
-      box-shadow: 0 8px 25px rgba(30, 64, 175, 0.1); max-width: 560px; margin: 0 auto;
-      display: flex; flex-direction: column; gap: 14px;
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(30, 64, 175, 0.1);
+      max-width: 560px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
-    label { font-weight: 600; color: #1e40af; display: flex; align-items: center; gap: 6px; font-size: 15px; }
-    input[type="text"], textarea, select {
-      width: 100%; padding: 11px; border: 1.5px solid #90caf9; border-radius: 10px;
-      font-size: 14px; transition: border 0.3s;
+    label {
+      font-weight: 600;
+      color: #1e40af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
     }
-    input[type="text"]:focus, textarea:focus, select:focus {
-      outline: none; border-color: #42a5f5; box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.2);
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 11px;
+      border: 1.5px solid #90caf9;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: border 0.3s;
+    }
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: #42a5f5;
+      box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.2);
     }
     textarea { min-height: 90px; resize: vertical; }
-    .input-group { display: flex; gap: 8px; align-items: center; }
+    .input-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
     .input-group input { flex: 1; }
     .btn-small {
-      padding: 8px 10px; border: none; border-radius: 8px; cursor: pointer;
-      font-size: 13px; font-weight: bold; width: 36px; height: 36px;
-      display: flex; align-items: center; justify-content: center;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      transition: all 0.2s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .btn-add { background: #42a5f5; color: white; }
     .btn-add:hover { background: #1e88e5; }
     .btn-remove { background: #ef5350; color: white; }
     .btn-remove:hover { background: #e53935; }
     .media-list {
-      display: flex; flex-direction: column; gap: 8px; margin-top: 8px;
-      max-height: 180px; overflow-y: auto; padding: 8px; background: #f8fbff;
-      border-radius: 10px; border: 1px dashed #90caf9;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 8px;
+      background: #f8fbff;
+      border-radius: 10px;
+      border: 1px dashed #90caf9;
     }
     .media-item {
-      display: flex; align-items: center; gap: 8px; padding: 6px;
-      background: #e3f2fd; border-radius: 8px; font-size: 13px; word-break: break-all;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      font-size: 13px;
+      word-break: break-all;
     }
     .btn {
-      width: 100%; padding: 13px; background: #1e88e5; color: white; border: none;
-      border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer;
-      transition: background 0.3s; display: flex; align-items: center;
-      justify-content: center; gap: 8px;
+      width: 100%;
+      padding: 13px;
+      background: #1e88e5;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
     .btn:hover { background: #1565c0; }
     .btn-secondary { background: #42a5f5; }
     .btn-secondary:hover { background: #1e88e5; }
-    #output, #outputtt, #mxh_output {
-      background: #f8fbff; font-family: monospace; font-size: 13px; line-height: 1.5;
+    #output, #outputtt {
+      background: #f8fbff;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.5;
     }
-    .copy-hint { font-size: 12px; color: #42a5f5; text-align: center; margin-top: 4px; font-style: italic; }
-
-    /* Popup */
-    .popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;
+    .copy-hint {
+      font-size: 12px;
+      color: #42a5f5;
+      text-align: center;
+      margin-top: 4px;
+      font-style: italic;
+    }
+    .popup {
+      display: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center; align-items: center;
+      z-index: 1000;
     }
     .popup-content {
-      background: #fff; padding: 24px; border-radius: 16px; width: 90%; max-width: 360px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center;
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 360px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
     }
-    .popup-buttons { display: flex; gap: 10px; margin-top: 16px; }
-    .popup-buttons button { flex: 1; padding: 11px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; }
+    .popup input { margin-top: 12px; }
+    .popup-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .popup-buttons button {
+      flex: 1;
+      padding: 11px;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
     .confirm { background: #42a5f5; color: white; }
     .confirm:hover { background: #1e88e5; }
     .cancel { background: #ef5350; color: white; }
     .cancel:hover { background: #e53935; }
 
-    /* Tooltip */
-    .tooltip-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; cursor: grab; }
-    .tooltip-btn { width: 56px; height: 56px; background: #1e88e5; color: white; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-size: 24px;
-      box-shadow: 0 4px 15px rgba(30, 137, 229, 0.3); transition: all 0.3s ease;
+    /* === TOOLTIP GÓC PHẢI DƯỚI === */
+    .tooltip-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
     }
-    .tooltip-btn:hover { transform: scale(1.1); }
-    .tooltip-menu { position: absolute; bottom: 70px; right: 0; background: white; border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 12px; display: none; flex-direction: column;
-      gap: 8px; min-width: 220px; animation: fadeIn 0.3s ease-out;
+    .tooltip-btn {
+      width: 56px;
+      height: 56px;
+      background: #1e88e5;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(30, 137, 229, 0.3);
+      transition: all 0.3s ease;
     }
-    .tooltip-menu.active { display: flex; }
-    .tooltip-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px;
-      border-radius: 10px; color: #1e3a8a; font-size: 14px; font-weight: 500; text-decoration: none;
+    .tooltip-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(30, 137, 229, 0.4);
+    }
+    .tooltip-menu {
+      position: absolute;
+      bottom: 70px;
+      right: 0;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 220px;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .tooltip-menu.active {
+      display: flex;
+    }
+    .tooltip-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: #1e3a8a;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
       transition: all 0.2s;
     }
-    .tooltip-item:hover { background: #e3f2fd; transform: translateX(4px); }
-    .tooltip-item i { width: 36px; height: 36px; background: #42a5f5; color: white;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;
+    .tooltip-item:hover {
+      background: #e3f2fd;
+      transform: translateX(4px);
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .tooltip-item i {
+      width: 36px;
+      height: 36px;
+      background: #42a5f5;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .tooltip-item span {
+      flex: 1;
+    }
 
-    /* Lightbox Affiliate */
-    .affiliate-images-list { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-    .affiliate-img-item { width: 120px; cursor: pointer; font-size: 13px; color: #1e40af; transition: transform 0.2s; }
-    .affiliate-img-item img { width: 100%; border-radius: 6px; margin-bottom: 4px; }
-    .affiliate-img-item:hover { transform: scale(1.05); }
-    .lightbox-aff { display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index: 10000;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .lightbox-aff img { max-width: 90%; max-height: 80%; border-radius: 8px; }
-    .lightbox-aff button { position: absolute; background: rgba(255,255,255,0.7); border: none;
-      padding: 8px 12px; border-radius: 50%; cursor: pointer; font-size: 24px; color: #222;
-    }
-    .lightbox-aff .close-btn { top: 20px; right: 20px; }
-    .lightbox-aff .prev-btn { left: 20px; top:50%; transform: translateY(-50%); }
-    .lightbox-aff .next-btn { right: 20px; top:50%; transform: translateY(-50%); }
 
     @media (max-width: 480px) {
       .container { padding: 16px; }
+      h2 { font-size: 20px; }
       .tooltip-container { bottom: 15px; right: 15px; }
       .tooltip-btn { width: 50px; height: 50px; font-size: 20px; }
+      .tooltip-menu { min-width: 200px; bottom: 65px; }
     }
+    /* Cho phép kéo tooltip */
+.tooltip-container {
+  position: fixed;
+  cursor: grab;
+  touch-action: none;
+}
+
+.tooltip-container:active {
+  cursor: grabbing;
+}
   </style>
 </head>
 <body>
-
-  <!-- Tooltip -->
-  <div class="tooltip-container" id="tooltipContainer">
-    <div class="tooltip-btn" id="tooltipToggle"><i class="fas fa-tools"></i></div>
-    <div class="tooltip-menu" id="tooltipMenu">
-      <a href="https://x2download.com" target="_blank" class="tooltip-item"><i class="fab fa-facebook"></i><span>Download Facebook</span></a>
-      <a href="https://snaptik.vn" target="_blank" class="tooltip-item"><i class="fab fa-tiktok"></i><span>Download Tiktok</span></a>
-      <a href="https://y2mate.lol" target="_blank" class="tooltip-item"><i class="fab fa-youtube"></i><span>Download Youtube</span></a>
-      <a href="https://help.shopee.vn/portal/10" target="_blank" class="tooltip-item"><i class="fas fa-shopping-bag"></i><span>Shopee Affiliate</span></a>
-    </div>
-  </div>
-
-  <h1>Affiliate MXH & Công cụ Tạo Web</h1>
-  <!-- TAB MENU -->
-  <div class="tabs">
-    <button class="tab-btn active" onclick="openTab('aff')">📘 Hướng dẫn Affiliate</button>
-    <button class="tab-btn" onclick="openTab('web')">🛠 Công cụ tạo Web</button>
-    <button class="tab-btn" onclick="openTab('mxh')">🚀 Chạy tương tác MXH</button>
-  </div>
-
-  <!-- TAB 1: AFFILIATE -->
-  <div class="tab-content active" id="aff">
-    <div class="container">
-      <h2 style="text-align:center; color:#1e40af">Hướng dẫn Affiliate</h2>
-      <p style="line-height:1.6; font-size:15px;">
-        • Vào trang Shopee → <a href="https://s.shopee.vn/3LJ54lThCc" target="_blank" style="color:#1a73e8;">Đăng ký Affiliate Shopee</a><br>
-        • Bật chế độ chuyên nghiệp Facebook <br>
-        • Gắn link vào video <br>
-        • Tối ưu CTA để tăng tỷ lệ chuyển đổi<br>
-        • Theo dõi số click / chuyển đổi / hoa hồng…
-      </p>
-      <div class="affiliate-images-list" id="affiliateImagesList"></div>
-      <div class="lightbox-aff" id="lightboxAff">
-        <button class="close-btn" id="closeLightboxAff">×</button>
-        <button class="prev-btn" id="prevLightboxAff">❮</button>
-        <img id="lightboxAffImg" src="" alt="">
-        <button class="next-btn" id="nextLightboxAff">❯</button>
-      </div>
-      <h4 style="text-align:center; color:#1e40af">📘 LÀM SAO KHI THÔNG TIN THANH TOÁN BỊ TỪ CHỐI???</h4>
-      <p style="line-height:1.6; font-size:15px;">
-      Có rất nhiều bạn làm tiếp thị liên kết Shopee ra đơn có thu nhập nhưng phần thiết lập thông tin thanh toán lại bị từ chối liên tục.
-Khi các bạn bị từ chối, hãy kéo xuống dưới cùng của phần thông tin thanh toán nhấn vào "Chỉnh sửa".<br>
-Lưu ý: nhiều bạn thấy lý do từ chối sai địa chỉ, hoặc sai mã số thuế là các bạn chỉ chỉnh mỗi địa chỉ và mã số thuế. Nếu như làm như vậy thì các bạn sẽ không bao giờ được duyệt thông tin thanh toán. Cần phải chỉnh sửa hết, xoá đi làm lại tất cả mọi thông tin từ bước 1 đến bước 3 CÙNG 1 THỜI ĐIỂM.<br>
-1. Thông tin người thụ hưởng.<br>
-- Loại tài khoản: Cá nhân trong nước.<br>
-- Họ tên: NGUYỄN THỊ THU (viết hoa có dấu).<br>
-- Số điện thoại: ********<br>
-- Địa chỉ: là địa chỉ nơi thường trú trên căn cước công dân. Chính xác đến từng dấu phẩy. VD: Tổ 6, Tân Thịnh, Tp Thái Nguyên, Thái Nguyên.<br>
-2. Thông tin tài khoản thanh toán.<br>
-- Tên ngân hàng: lựa chọn đúng tên ngân hàng bạn đang dùng. VD: NH viettin bank-công thương<br>
-- Chi nhánh: chi nhánh mở tài khoản. VD: CN Thai Nguyen<br>
-- Họ và tên chủ tài khoản ngân hàng: NGUYEN THI THU (viết hoa không dấu)<br>
-- Số tài khoản: Điền STK, không phải số thẻ cũng không phải là số điện thoại - trừ trường hợp bạn đăng ký số điện thoại là số tài khoản luôn thì dùng được còn nếu như đã có số tài khoản mà chuyển đổi thành số điện thoại thì bắt buộc phải ghi số tài khoản)<br>
-3. Thông tin thuế<br>
-- Số CMND/CCCD: điền chính xác<br>
-- Ảnh mặt trước và mặt sau chụp rõ không bị cắt góc, không bị loá sáng. Các bạn có thể chụp sẵn ở album ảnh, cắt zin cho khớp còn mỗi hình ảnh CCCD, rồi lúc đưa ảnh lên.<br>
-- Giai đoạn hiệu lực: cứ thế chọn giai đoạn bắt đầu và kết thúc liên tục không cần nhấn xong.<br>
-- Mã số thuế: là số CCCD<br>
-- Giấy tờ chứng minh: hãy điền số căn cước công dân, họ tên và địa chỉ cũng giống y như trên CCCD <a href="https://tracuunnt.gdt.gov.vn/tcnnt/mstcn.jsp" target="_blank" style="text-decoration:none; color:#1a73e8;">
-    👉 Tra cứu thuế 
-  </a><br><br>
-<a href="https://ketoananpha.vn/cach-dang-ky-ma-so-thue-ca-nhan-kinh-doanh-duoi-888.html?" target="_blank" style="text-decoration:none; color:#1a73e8;">
-    👉 Trường hợp ai chưa có mã số thuế thì nhấn tạo tại đây:
-  </a><br>
-Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã bắt tay với nhau rồi, công việc này ai cũng có thể làm được kể cả mẹ bỉm hay chị em công nhân, nhân viên văn phòng. Và sau 6 tháng nếu như bạn không cung cấp được tài khoản khoản thanh toán thì tiền mới không về. Còn trong quá trình bạn làm cứ có thu nhập, đến khi thông tin thanh toán của bạn được duyệt thì chắc chắn tiền sẽ về. Vậy nên việc của chúng ta không phải là nản không làm nữa mà là làm sao cho có càng nhiều thu nhập càng tốt.
-    </p>
-    </div>
-  </div>
-
-  <!-- TAB 2: WEB TOOL -->
-  <div class="tab-content" id="web">
-    <div class="container">
-      <!-- Tiêu đề -->
+  <h2>Quản Trị Viên Tin Tức MXH</h2>
+  <div class="container">
+    <!-- Tiêu đề -->
     <label for="a">Tiêu đề bài viết</label>
     <input type="text" id="a" placeholder="VD: Tai nạn giao thông tại Đề Gi">
     <!-- Nội dung -->
@@ -236,17 +300,16 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       </button>
     </div>
     <div class="media-list" id="imageList"></div>
-        
-      <label for="c">Link ảnh quảng cáo</label>
-      <input list="videoAds" type="text" id="c" placeholder="Chọn hoặc nhập link ảnh">
-      <datalist id="videoAds">
-        <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Shopee Banner</option>
-        <option value="https://tintucmxh.github.io/TinTucMXH/mbhtrungquyen.webp">Mũ Bảo Hiểm</option>
-      </datalist>
-
-      <label for="d">Link chuyển hướng quảng cáo</label>
-      <input list="Ads" type="text" id="d" placeholder="Link Shopee, Tiki...">
-     <datalist id="Ads">
+    <!-- Quảng cáo -->
+    <label for="c">Link ảnh quảng cáo</label>
+    <input list="videoAds" type="text" id="c" placeholder="Chọn hoặc nhập link ảnh">
+    <datalist id="videoAds">
+      <option value="https://tintucmxh.github.io/TinTucMXH/vn-11134258-820l4-mgug0poszr4b79.webp">Shopee Banner</option>
+      <option value="https://tintucmxh.github.io/TinTucMXH/mbhtrungquyen.webp">Mũ Bảo Hiểm</option>
+    </datalist>
+    <label for="d">Link chuyển hướng quảng cáo</label>
+    <input list="Ads" type="text" id="d" placeholder="Link Shopee, Tiki...">
+    <datalist id="Ads">
   <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F642872908%2F26564042129%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNE9UTHo2Tmlza0JVKzdncFhxMXphcGxLOUkzNmJTODV4Q0JJajV2ZlM3VEQxR3RUU01TUEZwc1lyZCtlZkhXQ011RmVRTHBYZHlIanB5OFBvYXN2dXZKbW95Tmt5bHFLNkNLcks5Vk5iTW53PT0&sm=fb_partner&affiliate_id=17335420220">Link 1</option>
   <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F1597381587%2F42120625683%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkZmdTUmpMeSszRElEdm91eXFrOVhzNUp2MkZYam1qS3k3K3JBMzBkWUdkT3NMS0daZGtXc3VwZG5HOEthM3JRT3ZiTFdUN3BXVmxvMVpEZEpJZ05aZytzcEtWR0ZVbE9NeE1VK2Y3VVM2UmxiOWFTaHc0NmpzcFE0NmtValZSTjFnPT0&sm=fb_partner&affiliate_id=17335420220">Link 2</option>
   <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F60321356%2F24186455622%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUzJYdkg4SUFId3huV3BOemxRSlQvQ0FTRWFTMUw4TExrd1hYRGlPUlVlRFlTak9NYXBzZEJ1VTFCZkx4UlFUT3k5NEx1SEJ3bTZoMkZrcEhzaFRWTmtqRUxoeFN3emk4cm8zaTY1RjlTWlc&sm=fb_partner&affiliate_id=17335420220">Link 3</option>
@@ -260,7 +323,7 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
   <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F952306790%2F17793921989%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwN2xMUzY0dFRLQU1OcWc1ZGFra1pTVHEzdEt5K2dqZmVOMHVKaWt2b0NjbkVDL3A3TFBpalJzRXdRdStJVEY4Q040ZGVVNDF0SWNyZ1Q3bHRVVzlwT20rRkoxbzdkVEFTRlBZRFBsS3A0NHN3PT0&sm=fb_partner&affiliate_id=17335420220">Link 11</option>
   <option value="https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F165690495%2F18374639660%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNUx1MXFvSTNKaGpBM2w3V3dlWXpsdHNvRlY5cVVGR3BMY0xaUHlVZWp5dDFla2FFUU5sOHEyYmZCYW1yQVpsc1NKWlo1QXp2N3lYMTJqZkdESEFLeGVreVdHVElJcDRCKy9rSjZWelNKZUdRPT0&sm=fb_partner&affiliate_id=17335420220">Link 12</option>
 </datalist>
-     <!-- Buttons -->
+    <!-- Buttons -->
     <button class="btn" onclick="xuatDuLieu()">Xuất Dữ Liệu</button>
     <button class="btn btn-secondary" onclick="hienPopup()">Lưu File HTML</button>
     <button class="btn btn-secondary" onclick="xemTruoc()">Xem Trước</button>
@@ -273,60 +336,59 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
     <div class="copy-hint">Click đúp để sao chép</div>
     <label>Đường dẫn trang web</label>
     <input type="text" id="linktrangwes" readonly placeholder="Sẽ hiển thị sau khi lưu">
+  </div>
+
+  <!-- === TOOLTIP GÓC PHẢI DƯỚI === -->
+  <div class="tooltip-container">
+    <div class="tooltip-btn" id="tooltipToggle">
+      <i class="fas fa-tools"></i>
+    </div>
+    <div class="tooltip-menu" id="tooltipMenu">
+      <a href="https://x2download.com" target="_blank" class="tooltip-item">
+        <i class="fab fa-facebook"></i>
+        <span>Download facebook</span>
+      </a>
+      <a href="https://snaptik.vn" target="_blank" class="tooltip-item">
+        <i class="fab fa-tiktok"></i>
+        <span>Download Tiktok</span>
+      </a>
+       <a href="https://y2mate.lol" target="_blank" class="tooltip-item">
+        <i class="fab fa-youtube"></i>
+        <span>Download Youtobe</span>
+      </a>
+      <a href="https://2fa.live" target="_blank" class="tooltip-item">
+        <i class="fab fa-facebook"></i>
+        <span>2FA Facebook</span>
+      </a>
+      <a href="https://www.tuongtaccheo.com/" target="_blank" class="tooltip-item">
+        <i class="fas fa-bolt"></i>
+        <span>TTC</span>
+      </a>
+      <a href="https://traodoisub.com" target="_blank" class="tooltip-item">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Trao đổi Sub</span>
+      </a>
+      <a href="https://shopmmo.vn" target="_blank" class="tooltip-item">
+        <i class="fas fa-gamepad"></i>
+        <span>Shop MMO</span>
+      </a>
+      <a href="https://taphoammo.net" target="_blank" class="tooltip-item">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Shop MMO</span>
+      </a>
+       <a href="https://sellxu.vn" target="_blank" class="tooltip-item">
+        <i class="fas fa-gem"></i>
+        <span>Shop Xu Sell</span>
+      </a>
+      <a href="https://www.shopxulaohac.vn/" target="_blank" class="tooltip-item">
+        <i class="fas fa-coins"></i>
+        <span>Shop Xu LH</span>
+      </a>
     </div>
   </div>
 
-  <!-- TAB 3: CHẠY TƯƠNG TÁC MXH -->
-  <div class="tab-content" id="mxh">
-    <div class="container">
-     <div style="display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start;">
-        <div style="flex: 1; min-width: 280px; text-align:center;">
-          <h3 style="color:#e91e63; margin-bottom:12px;">📱 QR Chuyển Khoản Momo</h3>
-          <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=MOMO-0338899530"
-               style="width:280px;height:280px;border-radius:16px;border:4px solid #ff4081;box-shadow:0 6px 20px rgba(255,64,130,0.3);">
-          <div style="margin-top:14px;padding:10px;background:#fff0f5;border-radius:12px;font-size:14px;">
-            <p style="margin:4px 0;color:#1e40af;"><strong>SĐT:</strong> <span style="color:#e91e63;">0338899530</span></p>
-            <p style="margin:4px 0;color:#1e40af;"><strong>Nội dung CK:</strong></p>
-            <p id="qrNote" style="background:#fff;padding:8px;border-radius:8px;word-break:break-all;font-family:monospace;font-size:13px;color:#d81b60;">
-              Chưa có nội dung
-            </p>
-          </div>
-        </div>
-        <div style="flex: 2; min-width: 400px;">
-          <select id="mxh_tt">
-            <option value="TikTok">TikTok</option>
-            <option value="Facbook">Facebook</option>
-          </select>
-          
-          <label for="mxh_id">ID Tài Khoản / Kênh</label>
-          <input type="text" id="mxh_id" placeholder="Ví dụ: @KOC_Matcha">
-
-          <label for="mxh_sl">Số lượng tương tác</label>
-          <input type="number" id="mxh_sl" placeholder="Ví dụ: 1000" min="1000">
-
-          <label for="mxh_loai">Loại tương tác</label>
-          <select id="mxh_loai">
-            <option value="follow">👥 Follow / Theo dõi</option>
-          <option value="tim">❤️ Tim / Like / Thả tim</option>
-          <option value="share">🔄 Share / Chia sẻ</option>
-          <option value="cmt">💬 Comment / Bình luận</option>
-          <option value="view">👁️ View / Xem video</option>
-          <option value="viewlive">📡 View Livestream</option>
-          </select>
-
-          <button class="btn" style="margin-top:18px;font-size:17px;" onclick="taoOutput()">
-            Tạo mã chuyển tiền & Cập nhật QR
-          </button>
-
-          <label style="margin-top:20px;">Output (double-click để copy)</label>
-          <textarea id="mxh_output" readonly placeholder="Output sẽ hiện ở đây..."></textarea>
-          <div class="copy-hint">Double-click để sao chép nhanh</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
- <div class="popup" id="popup">
+  <!-- Popup -->
+  <div class="popup" id="popup">
     <div class="popup-content">
       <h3>Nhập tên file</h3>
       <input type="text" id="fileName" placeholder="Tên file (không cần .html)">
@@ -338,72 +400,27 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
   </div>
 
   <script>
-    // === TAB SWITCH ===
-    function openTab(tabId) {
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      document.querySelector(`.tab-btn[onclick="openTab('${tabId}')"]`).classList.add("active");
-      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-    }
+    // === TOOLTIP TOGGLE ===
+    const tooltipToggle = document.getElementById('tooltipToggle');
+    const tooltipMenu = document.getElementById('tooltipMenu');
 
-    // === TOOLTIP ===
-    document.getElementById("tooltipToggle").addEventListener("click", () => {
-      document.getElementById("tooltipMenu").classList.toggle("active");
+    tooltipToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      tooltipMenu.classList.toggle('active');
     });
 
-    // === DRAG TOOLTIP ===
-    const container = document.getElementById("tooltipContainer");
-    let isDragging = false, startX, startY, origX, origY;
-    container.addEventListener("mousedown", e => {
-      if (e.target !== document.getElementById("tooltipToggle")) return;
-      isDragging = true; startX = e.clientX; startY = e.clientY;
-      const rect = container.getBoundingClientRect();
-      origX = rect.left; origY = rect.top; e.preventDefault();
+    // Đóng khi click ngoài
+    document.addEventListener('click', (e) => {
+      if (!tooltipToggle.contains(e.target) && !tooltipMenu.contains(e.target)) {
+        tooltipMenu.classList.remove('active');
+      }
     });
-    document.addEventListener("mousemove", e => {
-      if (!isDragging) return;
-      container.style.left = (origX + e.clientX - startX) + "px";
-      container.style.top = (origY + e.clientY - startY) + "px";
-    });
-    document.addEventListener("mouseup", () => { isDragging = false; });
 
-    // === LIGHTBOX AFFILIATE ===
-    const n = 11;
-    const baseURL = "https://tintucmxh.github.io/TinTucMXH/image/Kiemtien/facebook/";
-    const affiliateImagesList = document.getElementById("affiliateImagesList");
-    const lightboxAff = document.getElementById("lightboxAff");
-    const lightboxAffImg = document.getElementById("lightboxAffImg");
-    let currentIndex = 0;
-    const imgSources = [];
-    for(let i=1; i<=n; i++){
-      const imgSrc = `${baseURL}${i}.jpg`;
-      imgSources.push(imgSrc);
-      const div = document.createElement("div");
-      div.className = "affiliate-img-item";
-      div.dataset.index = i-1;
-      div.innerHTML = `<img src="${imgSrc}" alt="Hướng dẫn ${i}"><br>Hướng dẫn ${i}`;
-      affiliateImagesList.appendChild(div);
-    }
-    document.querySelectorAll(".affiliate-img-item").forEach(item => {
-      item.addEventListener("click", () => {
-        currentIndex = parseInt(item.dataset.index);
-        lightboxAffImg.src = imgSources[currentIndex];
-        lightboxAff.style.display = "flex";
-      });
-    });
-    document.getElementById("closeLightboxAff").onclick = () => lightboxAff.style.display = "none";
-    document.getElementById("prevLightboxAff").onclick = () => {
-      currentIndex = (currentIndex - 1 + imgSources.length) % imgSources.length;
-      lightboxAffImg.src = imgSources[currentIndex];
-    };
-    document.getElementById("nextLightboxAff").onclick = () => {
-      currentIndex = (currentIndex + 1) % imgSources.length;
-      lightboxAffImg.src = imgSources[currentIndex];
-    };
-    lightboxAff.onclick = e => { if (e.target === lightboxAff) lightboxAff.style.display = "none"; };
+    // === CÁC HÀM CŨ (giữ nguyên) ===
+    let danhSachVideo = [];
+    let danhSachAnh = [];
+    let tenFile = "";
 
-    // === WEB TOOL FUNCTIONS (giữ nguyên, đã sửa lỗi nhỏ) ===
-    let danhSachVideo = [], danhSachAnh = [];
     function convertVideoLink(url) {
       const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
       return match ? `https://drive.google.com/file/d/${match[1]}/preview` : url;
@@ -412,6 +429,7 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
       return match ? `https://drive.google.com/uc?export=view&id=${match[1]}` : url;
     }
+
     function themVideo() {
       const input = document.getElementById("videoInput");
       const url = input.value.trim();
@@ -425,21 +443,6 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
     function xoaVideo(index) {
       danhSachVideo.splice(index, 1);
       capNhatDanhSachVideo();
-      xuatDuLieu();
-    }
-    function themAnh() {
-      const input = document.getElementById("imageInput");
-      const url = input.value.trim();
-      if (!url) return;
-      const finalUrl = convertImageLink(url);
-      danhSachAnh.push(finalUrl);
-      input.value = "";
-      capNhatDanhSachAnh();
-      xuatDuLieu();
-    }
-    function xoaAnh(index) {
-      danhSachAnh.splice(index, 1);
-      capNhatDanhSachAnh();
       xuatDuLieu();
     }
     function capNhatDanhSachVideo() {
@@ -457,6 +460,22 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
         list.appendChild(div);
       });
     }
+
+    function themAnh() {
+      const input = document.getElementById("imageInput");
+      const url = input.value.trim();
+      if (!url) return;
+      const finalUrl = convertImageLink(url);
+      danhSachAnh.push(finalUrl);
+      input.value = "";
+      capNhatDanhSachAnh();
+      xuatDuLieu();
+    }
+    function xoaAnh(index) {
+      danhSachAnh.splice(index, 1);
+      capNhatDanhSachAnh();
+      xuatDuLieu();
+    }
     function capNhatDanhSachAnh() {
       const list = document.getElementById("imageList");
       list.innerHTML = "";
@@ -472,21 +491,15 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
         list.appendChild(div);
       });
     }
-    function xemTruoc() {
-      xuatDuLieu();
-      const blob = new Blob([document.getElementById("output").value], { type: "text/html" });
-      const win = window.open(URL.createObjectURL(blob), "_blank");
-      win.document.title = tenFile;
-    }
-    
+
     function taoFileHTML(tieude, noidung, adImg, adLink, tenFile) {
       const videoHTML = danhSachVideo.map(src => `
         <div class="video-container">
           <iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
       `).join('');
-    const imageJS = danhSachAnh.map(src => ` { type: "image", src: "${src}" },`).join('\n');
-    const html = [
+      const imageJS = danhSachAnh.map(src => ` { type: "image", src: "${src}" },`).join('\n');
+      const html = [
         '<!DOCTYPE html>',
         '<html lang="vi">',
         '<head>',
@@ -564,6 +577,7 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       ];
       return html.join('\n');
     }
+
     function xuatDuLieu() {
       const a = document.getElementById("a").value.trim();
       const ab = document.getElementById("ab").value.trim();
@@ -579,6 +593,22 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
       document.getElementById("output").value = html;
       document.getElementById("outputtt").value = info;
     }
+
+    ["outputtt", "output" ,"linktrangwes"].forEach(id => {
+      document.getElementById(id).ondblclick = function() {
+        this.select();
+        document.execCommand("copy");
+        alert("Đã sao chép!");
+      };
+    });
+
+    function xemTruoc() {
+      xuatDuLieu();
+      const blob = new Blob([document.getElementById("output").value], { type: "text/html" });
+      const win = window.open(URL.createObjectURL(blob), "_blank");
+      win.document.title = tenFile;
+    }
+
     function hienPopup() { document.getElementById("popup").style.display = "flex"; }
     function dongPopup() { document.getElementById("popup").style.display = "none"; document.getElementById("fileName").value = ""; }
     function xacNhanLuu() {
@@ -599,30 +629,60 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
         if (e.key === "Enter") e.target.nextElementSibling.onclick();
       });
     });
-    // === MXH TOOL ===
-    function taoOutput() {
-      const mxh_idtt = document.getElementById("mxh_tt").value;
-      const id = document.getElementById("mxh_id").value.trim();
-      const sl = document.getElementById("mxh_sl").value.trim();
-      const loai = document.getElementById("mxh_loai").value;
-      if (!id || !sl || sl < 1) return alert("Vui lòng nhập đầy đủ và hợp lệ!");
-      const text = `${mxh_idtt} | ${id} | ${sl} | ${loai}`;
-      document.getElementById("mxh_output").value = text;
-      const momoData = `MOMO-0338899530-${encodeURIComponent(text)}`;
-      document.getElementById("qrImage").src = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${momoData}`;
-      document.getElementById("qrNote").innerText = text;
-      alert("Đã tạo output & cập nhật QR thành công!");
-    }
-    document.getElementById("mxh_output").ondblclick = function() {
-      this.select(); document.execCommand("copy"); alert("Đã copy!");
-    };
+    // === DRAG TOOLTIP ===
+const dragItem = document.querySelector(".tooltip-container");
+let active = false;
+let currentX, currentY, initialX, initialY;
+let xOffset = 0, yOffset = 0;
 
-    // Copy nhanh các textarea
-    ["outputtt", "output", "linktrangwes"].forEach(id => {
-      document.getElementById(id).ondblclick = function() {
-        this.select(); document.execCommand("copy"); alert("Đã sao chép!");
-      };
-    });
+function dragStart(e) {
+  active = true;
+
+  if (e.type === "touchstart") {
+    initialX = e.touches[0].clientX - xOffset;
+    initialY = e.touches[0].clientY - yOffset;
+  } else {
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+  }
+}
+
+function dragEnd() {
+  active = false;
+}
+
+function drag(e) {
+  if (!active) return;
+
+  e.preventDefault();
+
+  if (e.type === "touchmove") {
+    currentX = e.touches[0].clientX - initialX;
+    currentY = e.touches[0].clientY - initialY;
+  } else {
+    currentX = e.clientX - initialX;
+    currentY = e.clientY - initialY;
+  }
+
+  xOffset = currentX;
+  yOffset = currentY;
+
+  setTranslate(currentX, currentY, dragItem);
+}
+
+function setTranslate(xPos, yPos, el) {
+  el.style.transform = `translate(${xPos}px, ${yPos}px)`;
+}
+
+// Sự kiện chuột
+dragItem.addEventListener("mousedown", dragStart);
+document.addEventListener("mouseup", dragEnd);
+document.addEventListener("mousemove", drag);
+
+// Sự kiện cảm ứng
+dragItem.addEventListener("touchstart", dragStart);
+dragItem.addEventListener("touchend", dragEnd);
+dragItem.addEventListener("touchmove", drag);
   </script>
 </body>
 </html>
