@@ -454,9 +454,10 @@ function convertDouyin() {
 
    // Khi rời tab thì reset ô nhập
 document.getElementById("douyinLink").value = "";
+  document.getElementById("douyinLink").addEventListener("blur", () => {
+    document.getElementById("douyinLink").value = "";
   });
 }
-
 /* ========================= TIẾN HÀNH TẢI ========================== */
 function copyResult() {
   let link = document.getElementById("convertResult").value;
