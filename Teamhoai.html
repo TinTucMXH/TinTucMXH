@@ -320,6 +320,7 @@
 <div class="tabs">
   <button class="tab-btn active" onclick="openTab('aff')">📘 Hướng dẫn Affiliate</button>
   <button class="tab-btn" onclick="openTab('web')">🛠 Công cụ tạo Web</button>
+<button class="tab-btn" onclick="openTab('convert')">📥 Tải Douyin</button>
 </div>
   <!-- ============================= TAB 1: AFFILIATE ============================== -->
   <div class="tab-content active" id="aff">
@@ -391,6 +392,74 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
     </p>
   </div>
 </div>
+
+<!-- ============================= TAB 3: CONVERT (TẢI DOUYIN) ============================== -->
+<div class="tab-content" id="convert">
+
+  <div class="container">
+    <h2 style="text-align:center;color:#1e40af">📥 Công cụ Convert – Tải Douyin </h2>
+
+    <!-- Ô nhập link -->
+    <label>Nhập link Douyin:</label>
+    <div class="input-group">
+      <input type="text" id="douyinLink" placeholder="Dán link video Douyin tại đây...">
+      <button class="btn-small btn-add" onclick="convertDouyin()">
+        <i class="fa-solid fa-check"></i>
+      </button>
+    </div>
+
+    <!-- Hiển thị kết quả -->
+    <label>Kết quả:</label>
+    <textarea id="convertResult" readonly placeholder="Link tải sẽ hiển thị tại đây..."></textarea>
+
+    <button class="btn" onclick="copyResult()">
+      <i class="fas fa-copy"></i> Sao chép kết quả
+    </button>
+
+    <p class="copy-hint">Nếu dán sai link, hãy thử lại bằng link khác.</p>
+  </div>
+
+</div>
+
+<script>
+/* ========================= TAB SWITCH ========================== */
+function openTab(tabId) {
+  document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+
+  event.target.classList.add("active");
+  document.getElementById(tabId).classList.add("active");
+}
+
+/* ========================= CONVERT DOUYIN ========================== */
+function convertDouyin() {
+  let link = document.getElementById("douyinLink").value.trim();
+  let out = document.getElementById("convertResult");
+
+  if (!link) {
+    out.value = "⚠️ Bạn chưa nhập link Douyin!";
+    return;
+  }
+
+  // Auto reset link khi rời tab
+  document.getElementById("douyinLink").addEventListener("blur", () => {
+    document.getElementById("douyinLink").value = "";
+  });
+
+  // API convert demo (bạn thay bằng API thật)
+  const finalLink = "https://douyin.ai/download?url=" + encodeURIComponent(link);
+
+  out.value = finalLink;
+}
+
+/* ========================= COPY RESULT ========================== */
+function copyResult() {
+  let text = document.getElementById("convertResult");
+  text.select();
+  document.execCommand("copy");
+}
+</script>
+
 <style>
   .affiliate-images-list {
     display: flex;
