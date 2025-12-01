@@ -9,18 +9,19 @@
     body {
         margin: 0;
         font-family: 'Segoe UI', sans-serif;
-        background: #0a0f1e;
-        color: #c3e6ff;
+        background: #021017; /* Xanh đen đậm */
+        color: #b7ffea;
         overflow-x: hidden;
     }
 
     h1 {
         text-align: center;
         padding: 20px;
-        color: #00eaff;
-        text-shadow: 0 0 10px #00eaff;
+        color: #00ffa6;
+        text-shadow: 0 0 12px #00ffa6;
         letter-spacing: 2px;
-        font-size: 28px;
+        font-size: 30px;
+        font-weight: 700;
     }
 
     /* TAB BUTTON */
@@ -33,21 +34,21 @@
 
     .tab-btn {
         padding: 10px 22px;
-        border: 1px solid #00eaff;
-        background: #101523;
-        color: #00eaff;
+        border: 1px solid #00ffbf;
+        background: #031c23;
+        color: #00ffbf;
         cursor: pointer;
         border-radius: 6px;
         font-size: 16px;
         transition: 0.25s;
-        text-shadow: 0 0 5px #00eaff;
+        text-shadow: 0 0 6px #00ffbf;
     }
 
-    .tab-btn.active, 
+    .tab-btn.active,
     .tab-btn:hover {
-        background: #00eaff;
+        background: #00ffbf;
         color: #000;
-        box-shadow: 0 0 15px #00eaff;
+        box-shadow: 0 0 20px #00ffbf;
     }
 
     /* TAB CONTENT */
@@ -64,32 +65,32 @@
 
     /* CYBER GROUPBOX */
     .groupbox {
-        border: 1px solid #8a2be2;
+        border: 1px solid #00ffbf;
         padding: 18px;
         border-radius: 10px;
-        background: rgba(20, 0, 60, 0.35);
-        box-shadow: 0 0 15px #8a2be2;
+        background: rgba(0, 255, 180, 0.07);
+        box-shadow: 0 0 20px rgba(0, 255, 180, 0.3);
         margin-bottom: 25px;
     }
 
     .group-title {
         font-size: 18px;
         margin-bottom: 10px;
-        color: #d08bff;
-        text-shadow: 0 0 8px #8a2be2;
+        color: #64ffd8;
+        text-shadow: 0 0 10px #00ffbf;
     }
 
     textarea, input, select {
         width: 100%;
         padding: 10px;
         border-radius: 6px;
-        border: none;
+        border: 1px solid #00ffbf;
         margin-top: 8px;
         outline: none;
-        background: #0f0a26;
-        color: #fff;
+        background: #021c24;
+        color: #b7ffea;
         font-size: 15px;
-        box-shadow: inset 0 0 10px #3a1ea1;
+        box-shadow: 0 0 8px #00ffbf inset;
     }
 
     button {
@@ -100,13 +101,15 @@
         cursor: pointer;
         border: none;
         color: #000;
-        background: #9d4bff;
-        box-shadow: 0 0 12px #9d4bff;
+        background: #00ffbf;
+        font-weight: 600;
+        box-shadow: 0 0 15px #00ffbf;
         transition: 0.25s;
     }
+
     button:hover {
-        background: #d69bff;
-        box-shadow: 0 0 18px #d69bff;
+        background: #6fffe0;
+        box-shadow: 0 0 22px #6fffe0;
     }
 
     .btn-row {
@@ -114,7 +117,6 @@
         gap: 10px;
         margin-top: 10px;
     }
-
 </style>
 </head>
 <body>
@@ -181,12 +183,9 @@ function openTab(id) {
 function convertLink() {
     let text = document.getElementById("inputText").value;
 
-    // Regex tách URL
     let url = text.match(/https?:\/\/[^\s]+/);
-
     document.getElementById("outputText").value = url ? url[0] : "Không tìm thấy link!";
 
-    // Xóa ô nhập sau khi convert
     document.getElementById("inputText").value = "";
 }
 
@@ -203,7 +202,6 @@ function goLink() {
     else alert("Link không hợp lệ!");
 }
 
-/* HASHTAG GENERATOR */
 function genHashtag() {
     let type = document.getElementById("hashtagSelect").value;
     let out = document.getElementById("hashtagOut");
@@ -225,5 +223,6 @@ function copyHashtag() {
     alert("Đã copy hashtag!");
 }
 </script>
+
 </body>
 </html>
