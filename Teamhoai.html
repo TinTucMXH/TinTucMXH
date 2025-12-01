@@ -452,11 +452,8 @@ function convertDouyin() {
   let finalLink = link[0]; // Link đã tách
   out.value = finalLink;
 
-  document.addEventListener("DOMContentLoaded", () => {
-  let input = document.getElementById("douyinLink");
-
-  input.addEventListener("blur", () => {
-    input.value = "";
+   // Khi rời tab thì reset ô nhập
+document.getElementById("douyinLink").value = "";
   });
 }
 
