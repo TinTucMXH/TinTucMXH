@@ -433,28 +433,10 @@ function openTab(tabId) {
 
 /* ========================= CONVERT (XHS / DOUYIN / ANY LINK) ========================== */
 function convertDouyin() {
-  let text = document.getElementById("douyinLink").value.trim();
-  let out = document.getElementById("convertResult");
-
-  if (!text) {
-    out.value = "⚠️ Bạn chưa nhập nội dung!";
-    return;
-  }
-
-  // Tách link từ chuỗi bất kỳ
-  let link = text.match(/https?:\/\/[^\s]+/);
-
-  if (!link) {
-    out.value = "⚠️ Không tìm thấy link!";
-    return;
-  }
-
-  let finalLink = link[0]; // Link đã tách
-  out.value = finalLink;
-
-   // Khi rời tab thì reset ô nhập
-document.getElementById("douyinLink").addEventListener("blur", () => {
-    document.getElementById("douyinLink").value = "";
+  let text = document.getElementById("douyinLink").value;
+    let url = text.match(/https?:\/\/[^\s]+/);
+document.getElementById("convertResult").value = url ? url[0] : "Không tìm thấy link!";
+document.getElementById("douyinLink").value = "";
   });
 }
 /* ========================= TIẾN HÀNH TẢI ========================== */
