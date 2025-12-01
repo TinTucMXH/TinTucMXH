@@ -433,12 +433,28 @@ function openTab(tabId) {
 
 /* ========================= CONVERT (XHS / DOUYIN / ANY LINK) ========================== */
 function convertDouyin() {
-  let text = document.getElementById("douyinLink").value;
-    let url = text.match(/https?:\/\/[^\s]+/);
-document.getElementById("convertResult").value = url ? url[0] : "Không tìm thấy link!";
-document.getElementById("douyinLink").value = "";
-  });
+  let text = document.getElementById("douyinLink").value.trim();
+  let output = document.getElementById("convertResult");
+
+  if (!text) {
+    output.value = "⚠️ Bạn chưa nhập link!";
+    return;
+  }
+
+  let url = text.match(/https?:\/\/[^\s]+/);
+
+  if (!url) {
+    output.value = "⚠️ Không tìm thấy link hợp lệ!";
+    return;
+  }
+
+  // Gán kết quả
+  output.value = url[0];
+
+  // Xoá ô nhập sau khi convert
+  document.getElementById("douyinLink").value = "";
 }
+
 /* ========================= TIẾN HÀNH TẢI ========================== */
 function copyResult() {
   let link = document.getElementById("convertResult").value;
