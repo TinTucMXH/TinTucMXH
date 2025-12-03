@@ -411,7 +411,11 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
     <!-- Hiển thị kết quả -->
     <label>Kết quả:</label>
     <textarea id="convertResult" readonly placeholder="Link tải sẽ hiển thị tại đây..."></textarea>
-
+<style>
+  #convertResult.hide-text {
+    -webkit-text-security: disc;
+  }
+</style>
     <button class="btn" onclick="copyResult()">
       <i class="fas fa-copy"></i>⬇️Tiến hành tải
     </button>
@@ -422,6 +426,15 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
 </div>
 
 <script>
+const output = document.getElementById("convertResult");
+
+  output.addEventListener("input", () => {
+    if (output.value.trim() !== "") {
+      output.classList.add("hide-text");
+    } else {
+      output.classList.remove("hide-text");
+    }
+  });
 /* ========================= TAB SWITCH ========================== */
 function openTab(tabId) {
   document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
