@@ -395,7 +395,6 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
 
 <!-- ============================= TAB 3: CONVERT (TẢI DOUYIN) ============================== -->
 <div class="tab-content" id="convert">
-
   <div class="container">
     <h2 style="text-align:center;color:#1e40af">📥 Công cụ Convert – Tải Douyin </h2>
 
@@ -411,30 +410,21 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
     <!-- Hiển thị kết quả -->
     <label>Kết quả:</label>
     <textarea id="convertResult" readonly placeholder="Link tải sẽ hiển thị tại đây..."></textarea>
-<style>
-  #convertResult.hide-text {
-    -webkit-text-security: disc;
-  }
-</style>
     <button class="btn" onclick="copyResult()">
       <i class="fas fa-copy"></i>⬇️Tiến hành tải
     </button>
-
     <p class="copy-hint">Nếu dán sai link, hãy thử lại bằng link khác⚡.</p>
   </div>
-
 </div>
+<style>
+  /* Ẩn chữ trong ô kết quả (giống input password) */
+  #convertResult {
+    -webkit-text-security: disc;   /* hoặc circle, square */
+    text-security: disc;
+  }
+</style>
 
 <script>
-const output = document.getElementById("convertResult");
-
-  output.addEventListener("input", () => {
-    if (output.value.trim() !== "") {
-      output.classList.add("hide-text");
-    } else {
-      output.classList.remove("hide-text");
-    }
-  });
 /* ========================= TAB SWITCH ========================== */
 function openTab(tabId) {
   document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
