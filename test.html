@@ -133,15 +133,14 @@
     <div class="groupbox">
         <div class="group-title">Nhập chuỗi bất kỳ</div>
         <textarea id="inputText" rows="4" placeholder="Dán đoạn text bất kỳ có chứa link"></textarea>
-        
+        <button onclick="pasteText()">Paste</button>
         <button onclick="convertLink()">Convert</button>
 
         <div class="group-title" style="margin-top:20px;">Kết quả</div>
         <input id="outputText" placeholder="Link sau khi tách..." readonly>
 
         <div class="btn-row">
-            <button onclick="pasteText()">Paste</button>
-            <button onclick="copyText()">Copy</button>
+             <button onclick="copyText()">Copy</button>
             <button onclick="goLink()">Go</button>
         </div>
     </div>
