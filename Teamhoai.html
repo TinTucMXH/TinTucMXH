@@ -416,23 +416,14 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
     <p class="copy-hint">Nếu dán sai link, hãy thử lại bằng link khác⚡.</p>
   </div>
 </div>
-<style>
-
-  /* Ẩn chữ trong ô kết quả (giống input password) */
-  #convertResult {
-    -webkit-text-security: disc;   /* hoặc circle, square */
-    text-security: disc;
-  }
-</style>
 
 <script>
 /* ========================= TAB SWITCH ========================== */
 function openTab(tabId) {
   document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
   document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
-
   event.target.classList.add("active");
-  document.getElementById(tabId).classList.add("active");
+document.getElementById(tabId).classList.add("active");
 }
 
 /* ========================= CONVERT (XHS / DOUYIN / ANY LINK) ========================== */
@@ -444,7 +435,7 @@ function convertDouyin() {
         return;
     }
     let link = url[0];
-  document.getElementById("convertResult").value = link;
+document.getElementById("convertResult").value = link;
   document.getElementById("douyinLink").value = "";
     window.open(link, "_blank");
 }
