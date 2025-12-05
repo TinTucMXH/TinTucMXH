@@ -180,19 +180,37 @@ function openTab(id) {
     event.target.classList.add("active");
 }
 
+/* ---- NEW FIX: PASTE TEXT ---- */
+async function pasteText() {
+    try {
+        let text = await navigator.clipboard.readText();
+        document.getElementById("inputText").value = text;
+    } catch (e) {
+        alert("Trình duyệt không cho phép dán tự động!");
+    }
+}
+
 function convertLink() {
-    let text = document.getElementById("inputText").value;
+    let text = document.getElementById("inputText").value.trim();
 
-    let url = text.match(/https?:\/\/[^\s]+/);
-    document.getElementById("outputText").value = url ? url[0] : "Không tìm thấy link!";
+    // FIX REGEX KHÔNG LỖI – BẮT MỌI LINK
+    let url = text.match(/https?:\/\/[^\s"'<>]+/i);
 
-    document.getElementById("inputText").value = "";
+    if (!url) {
+        document.getElementById("outputText").value = "Không tìm thấy link!";
+        return;
+    }
+
+    let link = url[0];
+    document.getElementById("outputText").value = link;
+
+    // NEW: Convert xong tự vào link luôn
+    window.open(link, "_blank");
 }
 
 function copyText() {
-    let out = document.getElementById("outputText");
-    out.select();
-    document.execCommand("copy");
+    let out = document.getElementById("outputText").value;
+    navigator.clipboard.writeText(out);
     alert("Đã copy!");
 }
 
@@ -218,8 +236,7 @@ function genHashtag() {
 
 function copyHashtag() {
     let out = document.getElementById("hashtagOut");
-    out.select();
-    document.execCommand("copy");
+    navigator.clipboard.writeText(out.value);
     alert("Đã copy hashtag!");
 }
 </script>
