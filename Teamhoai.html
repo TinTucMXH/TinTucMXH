@@ -437,37 +437,16 @@ function openTab(tabId) {
 
 /* ========================= CONVERT (XHS / DOUYIN / ANY LINK) ========================== */
 function convertDouyin() {
-  let input = document.getElementById("douyinLink");
-  let output = document.getElementById("convertResult");
-  let text = input.value.trim();
-
-  if (!text) {
-    output.value = "⚠️ Bạn chưa nhập link!";
-    return;
-  }
-
-  // Lấy đúng link Douyin / URL hợp lệ
-  let url = text.match(/https?:\/\/[^\s]+/);
-  if (!url) {
-    output.value = "⚠️ Không tìm thấy link hợp lệ!";
-    return;
-  }
-
-  let link = url[0];
-
-  // Hiển thị kết quả
-  output.value = link;
-  document.getElementById("outputText").value = link;
-
-  // Reset ô nhập
-  input.value = "";
-
-  // Mở link sau khi convert thành công
-  setTimeout(() => {
+    let text = document.getElementById("douyinLink").value.trim();
+    let url = text.match(/https?:\/\/[^\s"'<>]+/i);
+    if (!url) {
+  document.getElementById("convertResult").value = "⚠️Không tìm thấy link!";
+        return;
+    }
+    let link = url[0];
+  document.getElementById("convertResult").value = link;
     window.open(link, "_blank");
-  }, 300); // delay nhẹ tránh giật UI
 }
-
 /* ========================= TIẾN HÀNH TẢI ========================== */
 function copyResult() {
   let link = document.getElementById("convertResult").value;
