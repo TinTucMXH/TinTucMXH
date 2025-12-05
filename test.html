@@ -151,7 +151,7 @@ async function pasteText() {
         let text = await navigator.clipboard.readText();
         document.getElementById("inputText").value = text;
     } catch (e) {
-        alert("Trình duyệt không cho phép dán tự động!");
+        alert("Lỗi thông tin đường dẫn!");
     }
 }
 
