@@ -437,25 +437,35 @@ function openTab(tabId) {
 
 /* ========================= CONVERT (XHS / DOUYIN / ANY LINK) ========================== */
 function convertDouyin() {
-  let text = document.getElementById("douyinLink").value.trim();
+  let input = document.getElementById("douyinLink");
   let output = document.getElementById("convertResult");
+  let text = input.value.trim();
 
   if (!text) {
     output.value = "⚠️ Bạn chưa nhập link!";
     return;
   }
+
+  // Lấy đúng link Douyin / URL hợp lệ
   let url = text.match(/https?:\/\/[^\s]+/);
   if (!url) {
     output.value = "⚠️ Không tìm thấy link hợp lệ!";
     return;
   }
-  // Gán kết quả
-  output.value = url[0];
-  // Xoá ô nhập sau khi convert
-  document.getElementById("douyinLink").value = "";
+
   let link = url[0];
-    document.getElementById("outputText").value = link;
+
+  // Hiển thị kết quả
+  output.value = link;
+  document.getElementById("outputText").value = link;
+
+  // Reset ô nhập
+  input.value = "";
+
+  // Mở link sau khi convert thành công
+  setTimeout(() => {
     window.open(link, "_blank");
+  }, 300); // delay nhẹ tránh giật UI
 }
 
 /* ========================= TIẾN HÀNH TẢI ========================== */
