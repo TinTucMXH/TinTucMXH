@@ -397,7 +397,7 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
 <div class="tab-content" id="convert">
   <div class="container">
     <h2 style="text-align:center;color:#1e40af">📥 Công cụ Convert – Tải Douyin </h2>
-
+    
     <!-- Ô nhập link -->
     <label>Nhập link Douyin:</label>
     <div class="input-group">
@@ -406,17 +406,18 @@ Thật sự thì hiện tại Shopee tiếp thị liên kết và Facebook đã 
         <i class="fa-solid fa-check"></i>
       </button>
     </div>
-
+    
     <!-- Hiển thị kết quả -->
     <label>Kết quả:</label>
     <textarea id="convertResult" readonly placeholder="Link tải sẽ hiển thị tại đây..."></textarea>
     <button class="btn" onclick="copyResult()">
-      <i class="fas fa-copy"></i>⬇️Tiến hành tải
+      <i class="fas fa-copy"></i>Tiến hành tải⬇️
     </button>
     <p class="copy-hint">Nếu dán sai link, hãy thử lại bằng link khác⚡.</p>
   </div>
 </div>
 <style>
+
   /* Ẩn chữ trong ô kết quả (giống input password) */
   #convertResult {
     -webkit-text-security: disc;   /* hoặc circle, square */
@@ -443,30 +444,27 @@ function convertDouyin() {
     output.value = "⚠️ Bạn chưa nhập link!";
     return;
   }
-
   let url = text.match(/https?:\/\/[^\s]+/);
-
   if (!url) {
     output.value = "⚠️ Không tìm thấy link hợp lệ!";
     return;
   }
-
   // Gán kết quả
   output.value = url[0];
-
   // Xoá ô nhập sau khi convert
   document.getElementById("douyinLink").value = "";
+  let link = url[0];
+    document.getElementById("outputText").value = link;
+    window.open(link, "_blank");
 }
 
 /* ========================= TIẾN HÀNH TẢI ========================== */
 function copyResult() {
   let link = document.getElementById("convertResult").value;
-
   if (!link.startsWith("http")) {
     alert("Link không hợp lệ!");
     return;
   }
-
   // Mở tab mới truy cập link đã tách
   window.open(link, "_blank");
 }
