@@ -1,211 +1,209 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grok Imagine Try-On Video - Thử Đồ Bằng AI xAI</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 20px; max-width: 900px; margin: auto; }
-    h1 { text-align: center; color: #1a73e8; }
-    .container { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-    .upload-box {
-      border: 3px dashed #ccc;
-      padding: 20px;
-      text-align: center;
-      border-radius: 12px;
-      margin: 20px 0;
-      transition: all 0.3s;
-    }
-    .upload-box:hover { border-color: #1a73e8; }
-    .upload-box img.preview { max-width: 100%; max-height: 400px; margin-top: 10px; border-radius: 8px; }
-    button {
-      background: #1a73e8;
-      color: white;
-      border: none;
-      padding: 14px 30px;
-      font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    button:hover { background: #0d47a1; }
-    button:disabled { background: #999; cursor: not-allowed; }
-    #result { margin-top: 30px; text-align: center; }
-    #result video { max-width: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-    .loader {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #1a73e8;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-      display: none;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    #promptDisplay { background: #e8f4fd; padding: 10px; border-radius: 8px; margin: 10px 0; font-style: italic; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Hỗ Trợ Content Thời Trang</title>
+    <style>
+        :root {
+            --primary-blue: #0056b3;
+            --light-blue: #e7f1ff;
+            --border-blue: #b3d7ff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 8px solid var(--primary-blue);
+        }
+
+        h2 {
+            color: var(--primary-blue);
+            text-align: center;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--primary-blue);
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-blue);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: var(--light-blue);
+        }
+
+        textarea {
+            height: 150px;
+            resize: vertical;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        textarea:hover {
+            background-color: #fff;
+            border-color: var(--primary-blue);
+        }
+
+        .copy-hint {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
 
+<div id="copyAlert" class="alert">Đã sao chép vào bộ nhớ tạm!</div>
+
 <div class="container">
-  <h1>Grok Imagine Try-On Video</h1>
-  <p style="text-align:center;color:#555;">Upload ảnh bạn + ảnh quần áo → Grok Imagine tạo video bạn mặc thử chỉ trong vài giây! (Dùng API xAI grok-2-image-1212 + video extension)</p>
+    <h2>Trình Tạo Hashtag & Prompt Thời Trang</h2>
 
-  <!-- Upload ảnh nhân vật -->
-  <div class="upload-box" id="personBox">
-    <p><strong>Bước 1:</strong> Ảnh nhân vật (toàn thân, đứng thẳng)</p>
-    <input type="file" id="personImage" accept="image/*" />
-    <img id="personPreview" class="preview" src="" alt=""/>
-  </div>
+    <div class="section">
+        <label for="hashtagCombo">Lựa chọn chủ đề Hashtag:</label>
+        <select id="hashtagCombo" onchange="updateHashtags()">
+            <option value="">-- Chọn chủ đề --</option>
+            <option value="tintuc">Tin tức</option>
+            <option value="mubaohiem">Mũ bảo hiểm</option>
+            <option value="dolot">Đồ lót</option>
+            <option value="quanao">Quần áo</option>
+            <option value="giadung">Gia dụng</option>
+        </select>
+        <p class="copy-hint">* Click vào ô dưới để copy hashtag</p>
+        <textarea id="hashtagOutput" readonly onclick="copyToClipboard('hashtagOutput')" placeholder="Các hashtag sẽ hiện ở đây..."></textarea>
+    </div>
 
-  <!-- Upload ảnh trang phục -->
-  <div class="upload-box" id="clothBox">
-    <p><strong>Bước 2:</strong> Ảnh trang phục (chụp thẳng)</p>
-    <input type="file" id="clothImage" accept="image/*" />
-    <img id="clothPreview" class="preview" src="" alt=""/>
-  </div>
+    <hr style="border: 1px solid var(--light-blue);">
 
-  <div style="text-align:center;">
-    <button id="generateBtn" disabled> Tạo Video Với Grok Imagine</button>
-  </div>
-
-  <div class="loader" id="loader"></div>
-
-  <div id="result"></div>
+    <div class="section">
+        <label for="promptCombo">Lựa chọn mẫu Prompt AI (Review):</label>
+        <select id="promptCombo" onchange="updatePrompt()">
+            <option value="">-- Chọn mẫu Prompt --</option>
+            <option value="0">Cô gái trẻ review áo khoác bomber oversize</option>
+            <option value="1">Chàng trai review áo sơ mi linen mùa hè</option>
+            <option value="2">Review váy maxi boho</option>
+            <option value="3">Review quần cargo nữ + crop top</option>
+            <option value="4">Review áo len cardigan + quần ống suông</option>
+            <option value="5">Review đồ công sở: blazer + quần âu</option>
+            <option value="6">Review áo thun basic nhưng styling xịn</option>
+            <option value="7">Review đồ ngủ lụa sang chảnh</option>
+            <option value="8">Review đồ thể thao set gym</option>
+            <option value="9">Review áo khoác trench coat dài</option>
+            <option value="10">Review đồ denim: áo khoác + quần jeans</option>
+            <option value="11">Review váy suit (blazer dress)</option>
+            <option value="12">Review áo phông in họa tiết + quần short</option>
+            <option value="13">Review đồ layer mùa thu</option>
+            <option value="14">Review đồ dạ hội sequin</option>
+            <option value="15">Review quần palazzo + áo croptop</option>
+            <option value="16">Review hoodie oversize + legging</option>
+            <option value="17">Review áo khoác lông + boots cao cổ</option>
+            <option value="18">Review đồ bơi + áo khoác khoác ngoài</option>
+            <option value="19">Combo 5 outfit trong 1 video (fast transition)</option>
+        </select>
+        <p class="copy-hint">* Click vào ô dưới để copy Prompt</p>
+        <textarea id="promptOutput" readonly onclick="copyToClipboard('promptOutput')" placeholder="Nội dung Prompt chi tiết sẽ hiện ở đây..."></textarea>
+    </div>
 </div>
 
 <script>
-// Thay API_KEY bằng key từ https://x.ai/api (Premium+ hoặc SuperGrok Heavy)
-const XAI_API_KEY = "xai-your-api-key-here";  
-const API_URL_IMAGE = "https://api.x.ai/v1/images/generations";  // Endpoint image gen
-const API_URL_VIDEO = "https://api.x.ai/v1/videos/generations";  // Giả sử endpoint video (cập nhật nếu xAI thay đổi, hoặc dùng chain image → video prompt)
+    // Dữ liệu Hashtag
+    const hashtagData = {
+        "tintuc": "#tintucmx #mxh #tintuc #trendmoi #hotnews",
+        "mubaohiem": "#mubaohiem #phukienxe #antoangiaothong #nonbaohiem #xemayvn",
+        "dolot": "#dolotnu #noiy #sexylook #dolotcaocap #fashioninside",
+        "quanao": "#thoitrang #ootd #phongcach #fashionviet #mixandmatch",
+        "giadung": "#giadungthongminh #nhacuadoisong #meovattrongnha #tienich #decor"
+    };
 
-const personInput = document.getElementById("personImage");
-const clothInput  = document.getElementById("clothImage");
-const personPreview = document.getElementById("personPreview");
-const clothPreview  = document.getElementById("clothPreview");
-const generateBtn = document.getElementById("generateBtn");
-const loader = document.getElementById("loader");
-const resultDiv = document.getElementById("result");
+    // Dữ liệu Prompts
+    const prompts = [
+        "A stylish 23-year-old Vietnamese girl with long black hair, wearing oversized black bomber jacket, white crop top and baggy jeans, walking confidently toward camera in modern minimalist studio with soft white background, slow motion turn 360°, smiling, pointing at jacket details, then zoom in sleeve cuff, dynamic camera circle around her, cinematic lighting, 4K, fashion reel style",
+        "Handsome 27-year-old Asian guy, clean look, wearing light beige linen shirt unbuttoned 2 buttons, white shorts, standing on sunny rooftop, wind gently blowing fabric, he opens arms to show breathable material, slow spin, close-up collar and texture, golden hour lighting, smooth camera movement",
+        "Beautiful girl in flowing white boho maxi dress with floral pattern, barefoot on wooden floor in bright aesthetic room, spinning gracefully 3 times, dress flying beautifully, she stops and twirls wrist to show sleeve details, soft natural light from window, dreamy slow motion, ethereal vibe",
+        "Cool Gen Z girl with short dyed hair, wearing khaki cargo pants and black crop top, doing trendy TikTok walk toward camera, hands in pockets, then sudden stop and pop hip pose, pull pocket flap to show storage, finger gun point to camera, urban street background blur, dynamic zoom",
+        "Elegant woman in cream cardigan and high-waist wide-leg trousers, walking slowly in luxury apartment, soft piano music vibe, she hugs herself to show softness, unbuttons one button slowly, close-up knit texture, warm indoor lighting",
+        "Professional 28-year-old woman in sharp black blazer and matching trousers, power walk toward camera in modern office hallway, confident smile, slow motion hair flip, stops and adjusts lapel, shoulder roll to show perfect fit, CEO energy",
+        "Trendy guy wearing simple white oversized t-shirt tucked in baggy jeans, doing 4 different quick poses: hand in hair, lean on wall, cross arms, peace sign, fast cuts, Seoul street style, film grain",
+        "Gorgeous girl in champagne silk pajama set, lying on bed then slowly sits up, fabric sliding smoothly, stretches arms above head, stands up and walks toward mirror, soft bedroom morning light, sensual but elegant",
+        "Fit girl in bright pink sports bra + high-waist leggings, doing jumping jacks → squat → stretch, fabric stretches perfectly, sweat glow effect, gym background, energetic camera shake",
+        "Classy woman in beige long trench coat, dramatic slow walk in rainy city street (studio rain effect), coat flapping in wind, she stops under street lamp, opens coat to reveal inner outfit, cinematic noir style",
+        "Cool girl double denim look, walking toward camera doing finger guns, then 360 spin showing distressed details, rips on knees, fade effect, 90s vintage filter",
+        "Boss lady in black blazer dress with deep V-neck, strutting like runway model, fierce eye contact, sudden turn showing back detail, hair blow in wind, dark luxury background",
+        "Playful girl wearing oversized graphic t-shirt and denim shorts, jumping and spinning, t-shirt flies up showing styling trick (knot at waist), fun bright color pop background",
+        "Stylish guy layering: white tee + checkered shirt + knit vest + long coat, removes coat slowly → unbuttons vest → opens shirt to show layering, cozy cafe background, warm tones",
+        "Girl in sparkling silver sequin mini dress, walking under disco ball light, every step creates light reflections, slow motion hair flip, close-up sequin details shimmering",
+        "Tall girl in flowing cream palazzo pants and tiny crop top, walking very slowly, fabric waves like water, dramatic low angle shot, desert sand background",
+        "Cute girl in grey oversized hoodie and black leather leggings, doing hoodie kangaroo pocket hands, then pull strings to shrink hood comically, cozy bedroom setting",
+        "Winter queen in white faux fur coat and thigh-high boots, slow dramatic walk in snow (studio snow effect), removes one glove elegantly, touches fur collar",
+        "Beach babe in red bikini and open white beach shirt, walking on shoreline, takes off shirt dramatically and throws it toward camera, golden sunset",
+        "Same girl, white seamless background, quick cuts: 1. Black leather jacket pose → 2. Cut to pink sweater hug → 3. Cut to white dress twirl → 4. Cut to suit power pose → 5. Final pose in red gown, hand on hip, confident smile, high fashion editorial style"
+    ];
 
-let personFile = null;
-let clothFile = null;
+    function updateHashtags() {
+        const key = document.getElementById("hashtagCombo").value;
+        const output = document.getElementById("hashtagOutput");
+        output.value = hashtagData[key] || "";
+    }
 
-// Preview ảnh nhân vật
-personInput.addEventListener("change", (e) => {
-  personFile = e.target.files[0];
-  if (personFile) {
-    personPreview.src = URL.createObjectURL(personFile);
-    checkReady();
-  }
-});
+    function updatePrompt() {
+        const index = document.getElementById("promptCombo").value;
+        const output = document.getElementById("promptOutput");
+        output.value = index !== "" ? prompts[index] : "";
+    }
 
-// Preview ảnh trang phục
-clothInput.addEventListener("change", (e) => {
-  clothFile = e.target.files[0];
-  if (clothFile) {
-    clothPreview.src = URL.createObjectURL(clothFile);
-    checkReady();
-  }
-});
+    function copyToClipboard(elementId) {
+        const textElement = document.getElementById(elementId);
+        if (textElement.value.trim() === "") return;
 
-function checkReady() {
-  if (personFile && clothFile) {
-    generateBtn.disabled = false;
-  }
-}
+        textElement.select();
+        textElement.setSelectionRange(0, 99999); // Dành cho di động
 
-// Hàm file to base64
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-// Tạo prompt tự động cho Grok Imagine (mô tả đơn giản, có thể dùng Vision để analyze ảnh thật)
-async function generatePrompt(personBase64, clothBase64) {
-  // Giả sử dùng Grok chat để describe ảnh (nếu có Vision API), tạm dùng placeholder
-  const personDesc = "một người phụ nữ trẻ, tóc dài, đứng pose tự nhiên";  // Thay bằng real desc nếu integrate Vision
-  const clothDesc = "một chiếc váy đỏ ngắn xinh xắn";  // Tương tự
-
-  return `Tạo video ngắn 5 giây: ${personDesc} mặc ${clothDesc}, động tác đi bộ tự nhiên quay 360 độ, photorealistic, high resolution, dynamic lighting. Dựa trên ảnh gốc để giữ chi tiết khuôn mặt và body.`;
-}
-
-// Gọi API Grok Imagine để tạo video (chain: image try-on → animate video)
-generateBtn.addEventListener("click", async () => {
-  generateBtn.disabled = true;
-  loader.style.display = "block";
-  resultDiv.innerHTML = "";
-
-  try {
-    const personBase64 = await fileToBase64(personFile);
-    const clothBase64 = await fileToBase64(clothFile);
-    const prompt = await generatePrompt(personBase64, clothBase64);
-
-    // Bước 1: Tạo image try-on (sử dụng prompt, hỗ trợ image input nếu API cho phép)
-    const imageResponse = await fetch(API_URL_IMAGE, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${XAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "grok-2-image-1212",
-        prompt: prompt.replace("video ngắn 5 giây", "hình ảnh tĩnh"),  // Adapt cho image
-        n: 1,
-        size: "1024x1024",
-        response_format: "url"
-        // Nếu hỗ trợ image input: thêm "images": [personBase64, clothBase64] (check docs.x.ai)
-      })
-    });
-
-    const imageData = await imageResponse.json();
-    if (!imageData.data || !imageData.data[0].url) throw new Error("Không tạo được image try-on");
-
-    const tryonImageUrl = imageData.data[0].url;
-
-    // Bước 2: Animate image thành video (sử dụng prompt video, giả sử endpoint tồn tại)
-    const videoResponse = await fetch(API_URL_VIDEO, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${XAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "grok-imagine-video",  // Model video extension (Aurora-based)
-        prompt: `${prompt}. Animate từ hình ảnh: ${tryonImageUrl}. Độ dài 5s, FPS 30, với sound tự nhiên.`,
-        image: tryonImageUrl,  // Input image để animate
-        duration: 5,
-        response_format: "url"
-      })
-    });
-
-    const videoData = await videoResponse.json();
-    if (!videoData.video_url) throw new Error("Không tạo được video");
-
-    // Hiển thị prompt dùng để generate
-    resultDiv.innerHTML += `<div id="promptDisplay">Prompt gửi Grok Imagine: ${prompt}</div>`;
-
-    // Hiển thị video
-    resultDiv.innerHTML += `
-      <h2>Kết quả từ Grok Imagine</h2>
-      <video controls autoplay loop>
-        <source src="${videoData.video_url}" type="video/mp4">
-        Trình duyệt không hỗ trợ video.
-      </video>
-      <p><a href="${videoData.video_url}" target="_blank">Tải video về máy</a></p>
-    `;
-  } catch (err) {
-    resultDiv.innerHTML = `<p style="color:red;">Lỗi: ${err.message}. Kiểm tra API key và docs tại https://docs.x.ai/docs/guides/image-generations</p>`;
-  } finally {
-    loader.style.display = "none";
-    generateBtn.disabled = false;
-  }
-});
+        navigator.clipboard.writeText(textElement.value).then(() => {
+            const alertBox = document.getElementById("copyAlert");
+            alertBox.style.display = "block";
+            setTimeout(() => {
+                alertBox.style.display = "none";
+            }, 2000);
+        });
+    }
 </script>
 
 </body>
