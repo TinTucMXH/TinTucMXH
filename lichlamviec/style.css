@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background: #f5f5f5;
+    background: #f7f7f7;
     margin: 0;
 }
 
@@ -12,21 +12,14 @@ body {
 
 h1 {
     text-align: center;
-    color: #0085ff;
+    color: #0076ff;
+    margin-bottom: 20px;
 }
 
-#shiftSelect {
+select {
     padding: 8px 12px;
     font-size: 16px;
-    margin: 10px 0 20px 0;
-}
-
-.month-box {
-    background: white;
-    padding: 15px;
-    margin-bottom: 25px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin: 10px 15px 20px 0;
 }
 
 .month-title {
@@ -35,26 +28,37 @@ h1 {
     margin-bottom: 10px;
 }
 
-.days {
+.calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 6px;
 }
 
-.day {
-    padding: 8px;
-    background: #eaeaea;
-    text-align: center;
+.day-box {
+    padding: 10px;
+    background: white;
     border-radius: 6px;
+    text-align: center;
     font-size: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
-.work {
+.work-day {
     background: #4caf50;
     color: white;
 }
 
-.off {
+.night-day {
+    background: #673ab7;
+    color: white;
+}
+
+.off-day {
     background: #ff5252;
     color: white;
+}
+
+.header {
+    background: #ddd;
+    font-weight: bold;
 }
