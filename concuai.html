@@ -1,508 +1,245 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Công cụ AI - Thời trang | Gia dụng | Content</title>
-  <style>
-    :root{
-      --bg: #f4fbfb;
-      --panel: #ffffff;
-      --accent: #2d8f8f; /* xanh nhã nhặn */
-      --accent-2: #66b2b2;
-      --muted: #6b7a7a;
-      --border: rgba(45,143,143,0.12);
-      --shadow: 0 6px 18px rgba(34,60,80,0.06);
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Công Cụ AI – Thời Trang | Gia Dụng | Content</title>
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background: linear-gradient(180deg, var(--bg), #eef9f9);
-      color:#094444;
-      min-height:100vh;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:28px;
-    }
+<style>
+body {
+    margin:0; font-family:Arial; background:#f1faf9;
+}
 
-    .app {
-      width: 100%;
-      max-width: 1100px;
-      background: var(--panel);
-      border-radius:14px;
-      box-shadow: var(--shadow);
-      border:1px solid var(--border);
-      overflow:hidden;
-    }
+/* ==== APP WRAPPER ==== */
+.app { max-width:1200px; margin:auto; background:white; }
 
-    header{
-      padding:18px 24px;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      border-bottom:1px solid var(--border);
-      background: linear-gradient(90deg, rgba(45,143,143,0.06), rgba(102,178,178,0.03));
-    }
-    header h1{
-      margin:0;
-      font-size:18px;
-      color:var(--accent);
-      letter-spacing:0.2px;
-    }
-    header p{ margin:0; color:var(--muted); font-size:13px; }
+/* ==== HEADER ==== */
+header {
+    padding:12px 16px;
+    background:#dff5f3;
+    color:#0b5252;
+    border-bottom:1px solid #bde5e2;
+}
+header h1 { margin:0; font-size:18px; }
 
-    .main{
-      display:flex;
-      gap:18px;
-      padding:22px;
-    }
+/* ==== TAB MENU ==== */
+.tabs {
+    display:flex; overflow-x:auto;
+    border-bottom:1px solid #c7efec;
+    background:#f4fcfc;
+}
+.tab-btn {
+    padding:12px 18px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    white-space:nowrap;
+    font-weight:600;
+    color:#0b5252;
+}
+.tab-btn.active {
+    border-bottom:3px solid #2ca7a3;
+    color:#2ca7a3;
+}
 
-    /* Tabs */
-    .tabs {
-      width: 220px;
-      border-right:1px solid var(--border);
-      padding-right:16px;
-    }
-    .tab-btn{
-      display:block;
-      width:100%;
-      text-align:left;
-      padding:12px 14px;
-      margin-bottom:8px;
-      border-radius:10px;
-      background:transparent;
-      border:1px solid transparent;
-      color: #093c3c;
-      cursor:pointer;
-      font-weight:600;
-    }
-    .tab-btn.active{
-      background: linear-gradient(90deg, rgba(45,143,143,0.12), rgba(102,178,178,0.06));
-      border-color: rgba(45,143,143,0.16);
-      color: var(--accent);
-      box-shadow: 0 4px 10px rgba(45,143,143,0.06);
-    }
+/* ==== CONTENT AREA ==== */
+.content {
+    padding:16px;
+}
 
-    /* Panel content */
-    .panel {
-      flex:1;
-      min-height:420px;
-      display:flex;
-      gap:18px;
-    }
+/* MOBILE 100% WIDTH */
+select, textarea, input {
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:8px;
+    border:1px solid #c9e9e8;
+    font-size:15px;
+}
 
-    .left, .right {
-      background: linear-gradient(180deg,#ffffff,#fbffff);
-      border-radius:10px;
-      padding:16px;
-      border:1px solid var(--border);
-      box-shadow: 0 4px 12px rgba(9,68,68,0.02);
-    }
+/* PROMPT BOX */
+textarea {
+    min-height:200px;
+}
 
-    .left { width:360px; }
+/* BUTTONS */
+.btn {
+    background:#2ca7a3; color:white;
+    border:none; padding:10px 14px;
+    border-radius:6px;
+    font-weight:bold;
+}
+.btn.ghost {
+    background:white; color:#2ca7a3;
+    border:1px solid #2ca7a3;
+}
 
-    label { display:block; font-size:13px; margin-bottom:6px; color:var(--muted); }
+.video-box {
+    width:100%;
+    background:#eefdfc;
+    border:1px dashed #a9dcd9;
+    padding:12px;
+    border-radius:10px;
+    text-align:center;
+}
 
-    select, textarea, input[type="text"]{
-      width:100%;
-      padding:10px 12px;
-      border-radius:8px;
-      border:1px solid rgba(9,68,68,0.08);
-      font-size:14px;
-      outline:none;
-      background:transparent;
-      color:#033;
-    }
-    textarea{
-      min-height:160px;
-      resize:vertical;
-      line-height:1.5;
-    }
-
-    .row { display:flex; gap:12px; align-items:center; }
-    .btn {
-      background: var(--accent);
-      color:#fff;
-      padding:10px 14px;
-      border-radius:8px;
-      border: none;
-      cursor:pointer;
-      font-weight:700;
-      letter-spacing:0.2px;
-      box-shadow: 0 6px 14px rgba(45,143,143,0.12);
-    }
-    .btn.ghost{
-      background:transparent;
-      color:var(--accent);
-      border:1px solid rgba(45,143,143,0.12);
-      box-shadow:none;
-      font-weight:600;
-    }
-
-    .small { font-size:13px; padding:8px 10px; border-radius:8px; }
-
-    /* video box */
-    .video-box{
-      width:100%;
-      min-height:260px;
-      border-radius:8px;
-      border:1px dashed rgba(9,68,68,0.06);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      gap:12px;
-      background: linear-gradient(180deg, rgba(9,68,68,0.01), rgba(9,68,68,0.00));
-    }
-    .video-placeholder{
-      width:100%;
-      max-width:560px;
-      height: 280px;
-      background: linear-gradient(180deg,#f8fefc,#eef9f9);
-      border-radius:8px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border:1px solid var(--border);
-      color:var(--muted);
-      padding:10px;
-      text-align:center;
-    }
-
-    .meta { font-size:13px; color:var(--muted); }
-
-    /* small responsive */
-    @media (max-width:940px){
-      .main{ flex-direction:column; }
-      .left{ width:100%;}
-      .panel{ flex-direction:column; }
-      .video-placeholder{ height:200px; }
-    }
-  </style>
+/* ==== RESPONSIVE ==== */
+@media (min-width:800px) {
+    .flex-row { display:flex; gap:20px; }
+    .left { width:45%; }
+    .right { width:55%; }
+}
+</style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="Công cụ AI">
-    <header>
-      <div>
-        <h1>Công cụ AI - Thời trang | Gia dụng | Content</h1>
-        <p>Giao diện: màu xanh nhã nhặn • Chọn mẫu → xem prompt → copy → xem mô phỏng</p>
-      </div>
-    </header>
 
-    <div class="main">
-      <div class="tabs" role="tablist" aria-label="Tab chính">
-        <button class="tab-btn active" data-tab="fashion" role="tab" aria-selected="true">Thời trang</button>
-        <button class="tab-btn" data-tab="home" role="tab" aria-selected="false">Gia dụng</button>
-        <button class="tab-btn" data-tab="content" role="tab" aria-selected="false">Content</button>
-      </div>
+<div class="app">
 
-      <div class="panel">
-        <!-- Left column: controls -->
-        <div class="left" id="panel-fashion">
-          <!-- Fashion content (default visible) -->
-          <div id="fashion-area">
-            <label for="motion-select">Chọn chuyển động / kiểu quay</label>
-            <select id="motion-select" aria-label="Chọn chuyển động">
-              <option value="motion1">Chuyển động 1 — Bước tiến nhẹ hướng camera (váy ren màu kem)</option>
-              <option value="motion2">Chuyển động 2 — Quay bán nghiêng, xoay người 1/4</option>
-              <option value="motion3">Chuyển động 3 — Slow walk + ánh mắt máy quay</option>
-              <option value="custom">Tùy chỉnh (nhập mô tả)</option>
-            </select>
+<header>
+    <h1>Công Cụ AI – Tạo Prompt Video / Ảnh</h1>
+</header>
 
-            <div style="height:10px"></div>
+<!-- TAB MENU -->
+<div class="tabs">
+    <button class="tab-btn active" data-tab="fashion">Thời Trang</button>
+    <button class="tab-btn" data-tab="home">Gia Dụng</button>
+    <button class="tab-btn" data-tab="content">Content</button>
+</div>
 
-            <label for="prompt-text">Mô tả / Prompt (có thể chỉnh sửa)</label>
-            <textarea id="prompt-text" spellcheck="false">
-A beautiful young woman walks gracefully toward the camera inside a modern apartment hallway with wooden flooring.
-She is wearing a delicate cream-colored sheer lace mini dress, fitted at the waist with a soft flared skirt and intricate floral lace patterns throughout. The dress is semi-transparent with thin, elegant lace straps and a deep neckline, enhancing a feminine and sophisticated look.
+<!-- CONTENT -->
+<div class="content">
 
-She carries a light-colored shoulder bag on one side and holds a phone in the other hand.
-Her long, wavy black hair flows naturally as she moves.
-The camera captures her from the front, centered perfectly, highlighting her gentle steps, slim figure, and elegant posture.
+<!-- ========= TAB THỜI TRANG ========= -->
+<div id="fashion" class="panel">
 
-Her expression is calm and confident as she walks closer, allowing the lace dress and her silhouette to stand out beautifully in the clean, modern interior.
-            </textarea>
+    <label>Chọn chuyển động / kiểu quay</label>
+    <select id="motion-select">
 
-            <div style="height:12px"></div>
-            <div class="row">
-              <button class="btn" id="copy-prompt">Sao chép Prompt</button>
-              <button class="btn ghost small" id="reset-prompt">Khôi phục mẫu</button>
-              <div style="flex:1"></div>
-              <label class="meta" style="margin:0">Định dạng: 9:16 cho video dọc</label>
-            </div>
+        <option value="motion1">● Walk toward camera – váy ren kem</option>
+        <option value="motion2">● 1/4 spin – bán nghiêng</option>
+        <option value="motion3">● Slow walk + eye contact</option>
 
-            <hr style="margin:14px 0; border:none; border-top:1px solid var(--border)" />
+        <!-- Frame-by-frame -->
+        <option value="fb1">◆ FB1 – Walking Cinematic (0–5s)</option>
+        <option value="fb2">◆ FB2 – Spin Turn 180° (0–6s)</option>
+        <option value="fb3">◆ FB3 – Pose → Eye Contact → Walk Away (0–7s)</option>
 
-            <label class="meta">Xem mô phỏng video</label>
-            <div class="video-box" aria-live="polite">
-              <div class="video-placeholder" id="video-placeholder">
-                <div>
-                  <strong>Ô hiển thị video mô phỏng</strong>
-                  <div style="height:8px"></div>
-                  <div class="meta">Nhấn "Tìm video mô phỏng" để mở tìm kiếm YouTube bằng prompt hiện tại (mẫu).</div>
-                </div>
-              </div>
+        <!-- Thêm chuyển động -->
+        <option value="extra1">● Catwalk runway</option>
+        <option value="extra2">● Step-back turning pose</option>
+        <option value="extra3">● Hair flip + slow turn</option>
+        <option value="extra4">● Sitting → Stand up → Walk</option>
+        <option value="custom">Tự nhập mô tả</option>
+    </select>
 
-              <div style="display:flex; gap:8px; align-items:center;">
-                <button class="btn small" id="open-video">Tìm video mô phỏng</button>
-                <button class="btn ghost small" id="embed-video">Nhúng link video (tùy bạn)</button>
-                <input id="video-link" type="text" placeholder="Dán link YouTube / embed ở đây nếu muốn" style="width:320px" />
-              </div>
-            </div>
+    <label>Mô tả Prompt</label>
+    <textarea id="prompt-text"></textarea>
 
-          </div>
+    <button class="btn" id="copy-btn">Copy Prompt</button>
+    <button class="btn ghost" id="reset-btn">Khôi phục mẫu</button>
 
-          <!-- Home & Content hidden panels (simple placeholders) -->
-          <div id="home-area" style="display:none">
-            <label for="home-select">Mẫu gia dụng</label>
-            <select id="home-select">
-              <option>Quay sản phẩm: Máy xay, góc chụp 3/4</option>
-              <option>Quay sử dụng: Close-up thao tác</option>
-            </select>
-            <div style="height:12px"></div>
-            <label>Mô tả prompt</label>
-            <textarea id="home-prompt">Mẫu prompt cho phần Gia dụng...</textarea>
-            <div style="height:12px"></div>
-            <button class="btn" id="copy-home">Sao chép</button>
-          </div>
-
-          <div id="content-area" style="display:none">
-            <label for="content-select">Mẫu content</label>
-            <select id="content-select">
-              <option>Tiêu đề quảng cáo ngắn</option>
-              <option>Mô tả sản phẩm dài</option>
-            </select>
-            <div style="height:12px"></div>
-            <label>Mô tả prompt</label>
-            <textarea id="content-prompt">Mẫu prompt cho Content...</textarea>
-            <div style="height:12px"></div>
-            <button class="btn" id="copy-content">Sao chép</button>
-          </div>
-        </div>
-
-        <!-- Right column: preview / instructions -->
-        <div class="right" id="panel-right">
-          <h3 style="margin-top:0;color:var(--accent)">Xem trước & Hướng dẫn</h3>
-
-          <p class="meta">Khi bạn chọn một mẫu chuyển động ở ô bên trái, prompt sẽ được load vào ô mô tả. Bạn có thể sửa trực tiếp, bấm <strong>Sao chép Prompt</strong> để lấy lệnh dùng cho AI video hoặc AI image generator.</p>
-
-          <h4 style="margin-bottom:8px;color:#155656">Mẹo sử dụng</h4>
-          <ul style="margin-top:0;color:var(--muted)">
-            <li>Chỉnh thêm chi tiết ánh sáng, màu nền, tỉ lệ (ví dụ: "soft warm lighting", "9:16 vertical").</li>
-            <li>Muốn nhắm đến tone gợi cảm/ fashion/ editorial thì thêm từ khóa như "editorial fashion", "cinematic lighting".</li>
-            <li>Để dùng video mẫu thực tế: dán link YouTube vào ô "Dán link..." rồi nhấn "Nhúng link video".</li>
-          </ul>
-
-          <div style="height:10px"></div>
-
-          <label>Preview Prompt (tổng quan)</label>
-          <div style="padding:12px;border-radius:8px;border:1px solid var(--border);background:#fbffff; min-height:120px;">
-            <pre id="preview" style="white-space:pre-wrap;margin:0;color:#073; font-size:13px; line-height:1.45;"></pre>
-          </div>
-
-          <div style="height:12px"></div>
-          <div style="display:flex;gap:10px;">
-            <button class="btn" id="export-txt">Tải prompt (.txt)</button>
-            <button class="btn ghost" id="clear-all">Clear</button>
-          </div>
-
-        </div>
-      </div>
-
+    <div class="video-box" id="video-box">
+        <p>Video mô phỏng – dán link YouTube vào:</p>
+        <input placeholder="Dán link video YouTube..." id="video-link">
+        <button class="btn" id="embed-btn">Nhúng Video</button>
     </div>
-  </div>
 
-  <script>
-    // --- Data mẫu cho các chuyển động ---
-    const templates = {
-      motion1: {
-        title: "Chuyển động 1 — Bước tiến nhẹ hướng camera (váy ren màu kem)",
-        prompt: `A beautiful young woman walks gracefully toward the camera inside a modern apartment hallway with wooden flooring.
-She is wearing a delicate cream-colored sheer lace mini dress, fitted at the waist with a soft flared skirt and intricate floral lace patterns throughout. The dress is semi-transparent with thin, elegant lace straps and a deep neckline, enhancing a feminine and sophisticated look.
+</div>
 
-She carries a light-colored shoulder bag on one side and holds a phone in the other hand.
-Her long, wavy black hair flows naturally as she moves.
-The camera captures her from the front, centered perfectly, highlighting her gentle steps, slim figure, and elegant posture.
+<!-- ========= TAB GIA DỤNG ========= -->
+<div id="home" class="panel" style="display:none;">
+    <textarea placeholder="Prompt Gia dụng..."></textarea>
+</div>
 
-Her expression is calm and confident as she walks closer, allowing the lace dress and her silhouette to stand out beautifully in the clean, modern interior.`,
-        video: "" // optional embed link if you have
-      },
-      motion2: {
-        title: "Chuyển động 2 — Quay bán nghiêng, xoay người 1/4",
-        prompt: `A sophisticated pose: the model turns a quarter to the side while looking at camera, soft side lighting, fluid motion. Wardrobe: cream lace mini dress, slight wind movement on skirt. Capture 3/4 silhouette.`,
-        video: ""
-      },
-      motion3: {
-        title: "Chuyển động 3 — Slow walk + ánh mắt máy quay",
-        prompt: `Slow cinematic walk toward the camera, camera tracks slowly. Focus on face and upper-body, soft cinematic lighting, fashion editorial mood. Clothing: cream lace dress, high detail on fabric.`,
-        video: ""
-      }
+<!-- ========= TAB CONTENT ========= -->
+<div id="content" class="panel" style="display:none;">
+    <textarea placeholder="Prompt Content..."></textarea>
+</div>
+
+</div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+// Prompt templates
+const templates = {
+motion1: `A beautiful young woman walks gracefully toward the camera...`,
+motion2: `Quarter turn 1/4 angle fashion shot...`,
+motion3: `Slow cinematic walk with eye contact...`,
+
+// ==== FRAME-BY-FRAME ====
+fb1: `FRAME-BY-FRAME – WALKING CINEMATIC (0–5s)
+0–1s: Close-up chân bước nhẹ, vải ren chuyển động mềm.
+1–2s: Góc 3/4, tóc bay nhẹ theo bước chân.
+2–3s: Camera nâng lên gương mặt, ánh sáng soft warm.
+3–4s: Cô gái nhìn vào camera, nở nụ cười nhẹ.
+4–5s: Tiến gần camera, highlight váy ren kem.`,
+
+fb2: `FRAME-BY-FRAME – SPIN 180° (0–6s)
+0–1s: Đứng nghiêng 45°, tay ôm túi nhẹ.
+1–2s: Bắt đầu xoay 90°, chân trái bước mượt.
+2–3s: Váy ren xoè nhẹ, tóc vung nhẹ phía sau.
+3–4s: Xoay đủ 180°, đối diện camera.
+4–5s: Dừng bằng dáng pose thời trang.
+5–6s: Nở nụ cười + eye contact.`,
+
+fb3: `FRAME-BY-FRAME – POSE ➜ EYE CONTACT ➜ WALK AWAY (0–7s)
+0–2s: Cô gái đứng tạo dáng nghiêng, tay chạm tóc.
+2–4s: Ngẩng mặt nhìn camera, ánh mắt mạnh mẽ.
+4–5s: Xoay nhẹ vai và hông.
+5–7s: Quay lưng và bước đi, váy ren chuyển động mềm.`,
+
+extra1: `Catwalk fashion runway...`,
+extra2: `Step back turn pose...`,
+extra3: `Hair flip + slow turn...`,
+extra4: `Sitting to standing then walking...`,
+};
+
+const motionSelect = document.getElementById("motion-select");
+const promptText = document.getElementById("prompt-text");
+const copyBtn = document.getElementById("copy-btn");
+const resetBtn = document.getElementById("reset-btn");
+
+// Load default
+promptText.value = templates.motion1;
+
+// Change motion
+motionSelect.addEventListener("change", () => {
+    let v = motionSelect.value;
+    promptText.value = templates[v] || "";
+});
+
+// Copy
+copyBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(promptText.value);
+    copyBtn.textContent = "Đã copy ✓";
+    setTimeout(()=> copyBtn.textContent="Copy Prompt",1200);
+});
+
+// Reset
+resetBtn.addEventListener("click", () => {
+    motionSelect.value="motion1";
+    promptText.value = templates.motion1;
+});
+
+// Tab switching
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.onclick = ()=>{
+        document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+
+        document.querySelectorAll(".panel").forEach(p=>p.style.display="none");
+        document.getElementById(btn.dataset.tab).style.display="block";
     };
+});
 
-    // Elements
-    const tabs = document.querySelectorAll('.tab-btn');
-    const panelFashion = document.getElementById('panel-fashion');
-    const panelHome = document.getElementById('home-area');
-    const panelContent = document.getElementById('content-area');
+// Embed video
+document.getElementById("embed-btn").addEventListener("click", ()=>{
+    const link = document.getElementById("video-link").value.trim();
+    const box = document.getElementById("video-box");
+    if(!link) return;
+    box.innerHTML = `<iframe width="100%" height="260" src="${link.replace("watch?v=","embed/")}" frameborder="0" allowfullscreen></iframe>`;
+});
+</script>
 
-    const motionSelect = document.getElementById('motion-select');
-    const promptText = document.getElementById('prompt-text');
-    const copyBtn = document.getElementById('copy-prompt');
-    const resetBtn = document.getElementById('reset-prompt');
-
-    const preview = document.getElementById('preview');
-    const openVideoBtn = document.getElementById('open-video');
-    const embedVideoBtn = document.getElementById('embed-video');
-    const videoLinkInput = document.getElementById('video-link');
-    const videoPlaceholder = document.getElementById('video-placeholder');
-
-    const exportTxtBtn = document.getElementById('export-txt');
-    const clearBtn = document.getElementById('clear-all');
-
-    // Tab logic
-    tabs.forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        tabs.forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-selected','false') });
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected','true');
-        const tab = btn.dataset.tab;
-        // show/hide areas
-        panelFashion.style.display = (tab === 'fashion' ? 'block' : 'none');
-        panelHome.style.display = (tab === 'home' ? 'block' : 'none');
-        panelContent.style.display = (tab === 'content' ? 'block' : 'none');
-
-        // For simplicity: when switch away, update preview area with appropriate content
-        updatePreview();
-      });
-    });
-
-    // Load initial template
-    function loadTemplate(key){
-      if(templates[key]){
-        promptText.value = templates[key].prompt.trim();
-      }
-      updatePreview();
-    }
-
-    motionSelect.addEventListener('change', (e)=>{
-      const val = e.target.value;
-      if(val === 'custom'){
-        promptText.value = '';
-      } else {
-        loadTemplate(val);
-      }
-    });
-
-    // Copy to clipboard
-    copyBtn.addEventListener('click', async ()=>{
-      try {
-        await navigator.clipboard.writeText(promptText.value.trim());
-        copyBtn.textContent = "Đã sao chép ✓";
-        setTimeout(()=> copyBtn.textContent = "Sao chép Prompt", 1500);
-      } catch (err) {
-        alert("Không thể sao chép tự động — hãy copy thủ công.\n\n" + err);
-      }
-    });
-
-    // Reset to motion1 default
-    resetBtn.addEventListener('click', ()=>{
-      loadTemplate('motion1');
-      motionSelect.value = 'motion1';
-    });
-
-    // Update preview
-    function updatePreview(){
-      const txt = promptText.value.trim();
-      preview.textContent = txt || "(Preview trống)";
-    }
-    promptText.addEventListener('input', updatePreview);
-
-    // Open video simulation — open YouTube search with prompt
-    openVideoBtn.addEventListener('click', ()=>{
-      const q = encodeURIComponent(promptText.value.trim().slice(0,400));
-      if(!q) return alert("Prompt đang trống. Vui lòng chọn/mô tả prompt trước khi tìm video mô phỏng.");
-      const url = `https://www.youtube.com/results?search_query=${q}`;
-      window.open(url, '_blank');
-    });
-
-    // Embed provided link into placeholder area (showing iframe if YouTube link)
-    embedVideoBtn.addEventListener('click', ()=>{
-      const link = videoLinkInput.value.trim();
-      if(!link) return alert("Dán link YouTube/Vimeo hoặc embed link vào ô trước khi nhúng.");
-      // Basic detection for YouTube watch?v= or youtu.be
-      let embedHtml = '';
-      if(link.includes('youtube.com') || link.includes('youtu.be')){
-        // convert to embed url
-        let videoId = '';
-        if(link.includes('watch?v=')) {
-          videoId = link.split('watch?v=')[1].split('&')[0];
-        } else if(link.includes('youtu.be/')) {
-          videoId = link.split('youtu.be/')[1].split('?')[0];
-        } else {
-          // try last segment
-          videoId = link.split('/').pop();
-        }
-        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-        embedHtml = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:0;border-radius:8px" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-      } else if(link.includes('vimeo.com')){
-        // Vimeo embed
-        const videoId = link.split('/').pop().split('?')[0];
-        const embedUrl = `https://player.vimeo.com/video/${videoId}`;
-        embedHtml = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:0;border-radius:8px" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
-      } else {
-        // generic link - construct a simple video tag
-        embedHtml = `<video width="100%" height="100%" controls style="border-radius:8px"><source src="${link}">Your browser does not support the video tag.</video>`;
-      }
-
-      // replace placeholder content
-      videoPlaceholder.innerHTML = embedHtml;
-    });
-
-    // Export prompt to .txt (simple client-side)
-    exportTxtBtn.addEventListener('click', ()=>{
-      const text = promptText.value.trim();
-      if(!text) return alert("Prompt rỗng.");
-      const blob = new Blob([text], {type: "text/plain;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'prompt.txt';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    });
-
-    // Clear
-    clearBtn.addEventListener('click', ()=>{
-      if(confirm("Xóa nội dung hiện tại?")) {
-        promptText.value = '';
-        updatePreview();
-        videoPlaceholder.innerHTML = `<div><strong>Ô hiển thị video mô phỏng</strong><div style="height:8px"></div><div class="meta">Nhấn "Tìm video mô phỏng" để mở tìm kiếm YouTube bằng prompt hiện tại (mẫu).</div></div>`;
-      }
-    });
-
-    // Initialize with motion1
-    motionSelect.value = 'motion1';
-    loadTemplate('motion1');
-
-    // Other small handlers for home/content copy buttons
-    document.getElementById('copy-home').addEventListener('click', ()=>{
-      const txt = document.getElementById('home-prompt').value.trim();
-      if(!txt) return alert("Rỗng");
-      navigator.clipboard.writeText(txt).then(()=> alert("Đã sao chép mẫu Gia dụng"));
-    });
-    document.getElementById('copy-content').addEventListener('click', ()=>{
-      const txt = document.getElementById('content-prompt').value.trim();
-      if(!txt) return alert("Rỗng");
-      navigator.clipboard.writeText(txt).then(()=> alert("Đã sao chép mẫu Content"));
-    });
-
-    // Make preview reflect initial content
-    updatePreview();
-  </script>
 </body>
 </html>
