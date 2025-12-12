@@ -1,244 +1,302 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Công Cụ AI – Thời Trang | Gia Dụng | Content</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Công Cụ AI Thời Trang</title>
 
 <style>
-body {
-    margin:0; font-family:Arial; background:#f1faf9;
-}
+    body {
+        margin: 0;
+        padding: 0;
+        background: #e7f5ff;
+        font-family: 'Segoe UI', sans-serif;
+        color: #003049;
+    }
 
-/* ==== APP WRAPPER ==== */
-.app { max-width:1200px; margin:auto; background:white; }
+    .container {
+        width: 100%;
+        padding: 15px;
+        box-sizing: border-box;
+    }
 
-/* ==== HEADER ==== */
-header {
-    padding:12px 16px;
-    background:#dff5f3;
-    color:#0b5252;
-    border-bottom:1px solid #bde5e2;
-}
-header h1 { margin:0; font-size:18px; }
+    h2 {
+        text-align: center;
+        color: #004b6e;
+        margin-bottom: 10px;
+    }
 
-/* ==== TAB MENU ==== */
-.tabs {
-    display:flex; overflow-x:auto;
-    border-bottom:1px solid #c7efec;
-    background:#f4fcfc;
-}
-.tab-btn {
-    padding:12px 18px;
-    background:none;
-    border:none;
-    cursor:pointer;
-    white-space:nowrap;
-    font-weight:600;
-    color:#0b5252;
-}
-.tab-btn.active {
-    border-bottom:3px solid #2ca7a3;
-    color:#2ca7a3;
-}
+    /* Tabs */
+    .tabs {
+        display: flex;
+        justify-content: space-around;
+        background: #a8d8ff;
+        padding: 10px 0;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
 
-/* ==== CONTENT AREA ==== */
-.content {
-    padding:16px;
-}
+    .tab {
+        padding: 10px 15px;
+        cursor: pointer;
+        font-weight: bold;
+        border-radius: 6px;
+        background: #d4ecff;
+    }
 
-/* MOBILE 100% WIDTH */
-select, textarea, input {
-    width:100%;
-    padding:10px;
-    margin-bottom:10px;
-    border-radius:8px;
-    border:1px solid #c9e9e8;
-    font-size:15px;
-}
+    .tab.active {
+        background: #0096c7;
+        color: #fff;
+    }
 
-/* PROMPT BOX */
-textarea {
-    min-height:200px;
-}
+    .tab-content {
+        display: none;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+    }
 
-/* BUTTONS */
-.btn {
-    background:#2ca7a3; color:white;
-    border:none; padding:10px 14px;
-    border-radius:6px;
-    font-weight:bold;
-}
-.btn.ghost {
-    background:white; color:#2ca7a3;
-    border:1px solid #2ca7a3;
-}
+    .tab-content.active {
+        display: block;
+    }
 
-.video-box {
-    width:100%;
-    background:#eefdfc;
-    border:1px dashed #a9dcd9;
-    padding:12px;
-    border-radius:10px;
-    text-align:center;
-}
+    select, textarea, input[type="file"] {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 6px;
+        border: 1px solid #bcd9ea;
+        font-size: 16px;
+    }
 
-/* ==== RESPONSIVE ==== */
-@media (min-width:800px) {
-    .flex-row { display:flex; gap:20px; }
-    .left { width:45%; }
-    .right { width:55%; }
-}
+    textarea {
+        height: 220px;
+        resize: none;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #0096c7;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        margin-top: 8px;
+        cursor: pointer;
+    }
+
+    iframe {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 9/16;
+        border-radius: 10px;
+        margin-top: 12px;
+        border: 1px solid #ccc;
+    }
 </style>
 </head>
 <body>
 
-<div class="app">
+<div class="container">
 
-<header>
-    <h1>Công Cụ AI – Tạo Prompt Video / Ảnh</h1>
-</header>
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" onclick="openTab('thoitrang')">Thời Trang</div>
+        <div class="tab" onclick="openTab('giadung')">Gia Dụng</div>
+        <div class="tab" onclick="openTab('content')">Content</div>
+    </div>
 
-<!-- TAB MENU -->
-<div class="tabs">
-    <button class="tab-btn active" data-tab="fashion">Thời Trang</button>
-    <button class="tab-btn" data-tab="home">Gia Dụng</button>
-    <button class="tab-btn" data-tab="content">Content</button>
-</div>
+    <!-- TAB THỜI TRANG -->
+    <div id="thoitrang" class="tab-content active">
 
-<!-- CONTENT -->
-<div class="content">
+        <h2>🎥 Công Cụ Tạo Video Thời Trang AI</h2>
 
-<!-- ========= TAB THỜI TRANG ========= -->
-<div id="fashion" class="panel">
+        <label><b>📸 Input ảnh trang phục</b></label>
+        <input type="file">
 
-    <label>Chọn chuyển động / kiểu quay</label>
-    <select id="motion-select">
+        <label><b>🎬 Chọn chuyển động</b></label>
+        <select id="motionList" onchange="showPrompt()">
+            <option value="">— chọn chuyển động —</option>
 
-        <option value="motion1">● Walk toward camera – váy ren kem</option>
-        <option value="motion2">● 1/4 spin – bán nghiêng</option>
-        <option value="motion3">● Slow walk + eye contact</option>
+            <option value="stair">Đi xuống cầu thang (chậm, sang)</option>
+            <option value="ivy">Đi trước tường gạch – ivy</option>
+            <option value="cafe">Đi trong quán cafe</option>
+            <option value="street">Đi phố tối giản</option>
+            <option value="park">Đi trong công viên</option>
+            <option value="urban">Đi phố hiện đại</option>
+            <option value="urban2">Đi phố 2</option>
+            <option value="city">Đi vỉa hè thành phố</option>
 
-        <!-- Frame-by-frame -->
-        <option value="fb1">◆ FB1 – Walking Cinematic (0–5s)</option>
-        <option value="fb2">◆ FB2 – Spin Turn 180° (0–6s)</option>
-        <option value="fb3">◆ FB3 – Pose → Eye Contact → Walk Away (0–7s)</option>
+            <option value="cute1">Cute pose Hàn Quốc 1</option>
+            <option value="cute2">Cute pose OOTD</option>
+            <option value="ootd1">OOTD trắng – studio</option>
+            <option value="walk_turn">Đi & xoay nhẹ</option>
+            <option value="shirt1">Quảng cáo áo – chỉnh cổ</option>
+            <option value="shirt2">Quảng cáo top – chỉnh lai</option>
+            <option value="studio_pose">Studio – tạo dáng</option>
+            <option value="cute3">Cute OOTD Hàn Quốc 3</option>
+            <option value="walk_halfturn">Đi và xoay 180°</option>
+        </select>
 
-        <!-- Thêm chuyển động -->
-        <option value="extra1">● Catwalk runway</option>
-        <option value="extra2">● Step-back turning pose</option>
-        <option value="extra3">● Hair flip + slow turn</option>
-        <option value="extra4">● Sitting → Stand up → Walk</option>
-        <option value="custom">Tự nhập mô tả</option>
-    </select>
+        <label><b>🎞 Frame-by-frame (0–1s, 1–3s…)</b></label>
+        <select id="frameList" onchange="showPrompt()">
+            <option value="">— chọn mẫu thước phim —</option>
+            <option value="frame1">0–1s bước nhẹ → 1–3s đưa tay tóc → 3–5s mỉm cười</option>
+            <option value="frame2">0–2s đứng pose → 2–4s xoay nhẹ → 4–6s bước gần</option>
+            <option value="frame3">0–1s chỉnh áo → 1–2s vuốt tóc → 2–4s half-turn</option>
+        </select>
 
-    <label>Mô tả Prompt</label>
-    <textarea id="prompt-text"></textarea>
+        <label><b>📝 Prompt đã tạo</b></label>
+        <textarea id="promptOutput" readonly></textarea>
 
-    <button class="btn" id="copy-btn">Copy Prompt</button>
-    <button class="btn ghost" id="reset-btn">Khôi phục mẫu</button>
+        <button onclick="copyPrompt()">Copy Prompt</button>
 
-    <div class="video-box" id="video-box">
-        <p>Video mô phỏng – dán link YouTube vào:</p>
-        <input placeholder="Dán link video YouTube..." id="video-link">
-        <button class="btn" id="embed-btn">Nhúng Video</button>
+        <iframe id="demoVideo" src=""></iframe>
+
+    </div>
+
+    <!-- TAB GIA DỤNG -->
+    <div id="giadung" class="tab-content">
+        <h2>Gia dụng đang cập nhật…</h2>
+    </div>
+
+    <!-- TAB CONTENT -->
+    <div id="content" class="tab-content">
+        <h2>Content đang cập nhật…</h2>
     </div>
 
 </div>
 
-<!-- ========= TAB GIA DỤNG ========= -->
-<div id="home" class="panel" style="display:none;">
-    <textarea placeholder="Prompt Gia dụng..."></textarea>
-</div>
-
-<!-- ========= TAB CONTENT ========= -->
-<div id="content" class="panel" style="display:none;">
-    <textarea placeholder="Prompt Content..."></textarea>
-</div>
-
-</div><!-- /content -->
-</div><!-- /app -->
-
 <script>
-// Prompt templates
-const templates = {
-motion1: `A beautiful young woman walks gracefully toward the camera...`,
-motion2: `Quarter turn 1/4 angle fashion shot...`,
-motion3: `Slow cinematic walk with eye contact...`,
+const prompts = {
 
-// ==== FRAME-BY-FRAME ====
-fb1: `FRAME-BY-FRAME – WALKING CINEMATIC (0–5s)
-0–1s: Close-up chân bước nhẹ, vải ren chuyển động mềm.
-1–2s: Góc 3/4, tóc bay nhẹ theo bước chân.
-2–3s: Camera nâng lên gương mặt, ánh sáng soft warm.
-3–4s: Cô gái nhìn vào camera, nở nụ cười nhẹ.
-4–5s: Tiến gần camera, highlight váy ren kem.`,
+    /* ================= PROMPTS ĐÃ TỐI ƯU — HỢP INPUT ẢNH ================= */
 
-fb2: `FRAME-BY-FRAME – SPIN 180° (0–6s)
-0–1s: Đứng nghiêng 45°, tay ôm túi nhẹ.
-1–2s: Bắt đầu xoay 90°, chân trái bước mượt.
-2–3s: Váy ren xoè nhẹ, tóc vung nhẹ phía sau.
-3–4s: Xoay đủ 180°, đối diện camera.
-4–5s: Dừng bằng dáng pose thời trang.
-5–6s: Nở nụ cười + eye contact.`,
+    stair: `A beautiful young woman slowly descends a marble staircase inside a minimalist modern space. 
+Use the outfit from the input reference image.
+She moves gracefully, one hand carrying her bag while the other swings naturally. 
+Her expression remains soft and elegant as the camera tracks her from the front, keeping her centered.`,
 
-fb3: `FRAME-BY-FRAME – POSE ➜ EYE CONTACT ➜ WALK AWAY (0–7s)
-0–2s: Cô gái đứng tạo dáng nghiêng, tay chạm tóc.
-2–4s: Ngẩng mặt nhìn camera, ánh mắt mạnh mẽ.
-4–5s: Xoay nhẹ vai và hông.
-5–7s: Quay lưng và bước đi, váy ren chuyển động mềm.`,
+    ivy: `A beautiful young woman walks slowly toward the camera in front of an antique wooden door and a brick wall covered with green ivy. 
+Use the outfit from the input reference image.
+She gently smooths her hair as she smiles softly. 
+The camera keeps her centered, capturing her confident and elegant steps.`,
 
-extra1: `Catwalk fashion runway...`,
-extra2: `Step back turn pose...`,
-extra3: `Hair flip + slow turn...`,
-extra4: `Sitting to standing then walking...`,
+    cafe: `A young elegant woman walks naturally inside a minimalist white café. 
+Use the outfit from the input reference image.
+She tucks her hair behind her ear gently, smiling softly. 
+The camera tracks her from the front, keeping her perfectly centered.`,
+
+    street: `A fashionable young woman walks gracefully along a minimalist urban street. 
+Use the outfit from the input reference image.
+Her soft wavy hair moves gently with each step while she adjusts her hair slightly. 
+Camera follows steadily from the front.`,
+
+    park: `A beautiful young woman strolls through a lush green park. 
+Use the outfit from the input reference image.
+She gently smooths her hair with a calm, soft expression. 
+The camera pans lightly, always keeping her centered.`,
+
+    urban: `A beautiful young woman walks slowly through a modern city landscape. 
+Use the outfit from the input reference image.
+With a gentle smile and natural steps, she raises a hand to touch her hair. 
+Camera captures her centered with smooth, fluid motion.`,
+
+    urban2: `A stylish young woman walks in front of a modern building. 
+Use the outfit from the input reference image.
+She tucks her hair behind her ear with a soft confident smile. 
+Camera follows from the front in a clean, bright setting.`,
+
+    city: `A beautiful young woman walks along a busy city sidewalk. 
+Use the outfit from the input reference image.
+She smiles gently while the wind moves her hair softly. 
+The background stays blurred while camera keeps her centered.`,
+
+
+    /* ================= POSE / OOTD ================= */
+
+    cute1: `The girl creates several cute Korean-style poses in soft lighting. 
+Use the outfit from the input reference image.
+She smiles, tilts her head, makes a V-sign, touches her hair, and ends with a soft half-turn.
+Camera stays knee-up and centered.`,
+
+    cute2: `The girl poses in a bright clean space for OOTD. 
+Use the outfit from the input reference image.
+She smiles, tilts her head, touches her hair adorably, brings hands forward and ends with a soft half-turn.`,
+
+    ootd1: `The girl poses in a modern white interior. 
+Use the outfit from the input reference image.
+She adjusts her cardigan lightly, poses naturally, touches her hair and keeps a soft smile.
+Camera knee-up and centered.`,
+
+    walk_turn: `The girl walks naturally while holding her handbag, touching her hair subtly. 
+Use the outfit from the input reference image.
+She stops and performs a smooth gentle half-turn.`,
+
+    shirt1: `The girl showcases a shirt in soft studio lighting. 
+Use the outfit from the input reference image.
+She adjusts the collar, shows fabric details, turns slightly, touches her hair and smiles.`,
+
+    shirt2: `The girl advertises the top: adjusting hem, touching collar, turning to side and smiling softly. 
+Use the outfit from the input reference image.`,
+
+    studio_pose: `The girl poses naturally in a bright studio. 
+Use the outfit from the input reference image.
+She places a hand on her waist, tilts gently, steps forward to sway her dress, and lifts the hem lightly.`,
+
+    cute3: `The girl creates cute OOTD poses: smiles, head tilt, touches hair, V-sign, shoulder-lift playful pose. 
+Use the outfit from the input reference image.`,
+
+    walk_halfturn: `The girl walks gently with a relaxed smile, touching her hair occasionally. 
+Use the outfit from the input reference image.
+After a few steps she makes a smooth half-turn.`,
+
+    /* FRAME BY FRAME */
+    frame1: `0–1s: she steps lightly toward the camera.
+1–3s: she gently touches her hair.
+3–5s: she smiles softly while staying centered.
+Use the outfit from the input reference image.`,
+
+    frame2: `0–2s: she poses naturally.
+2–4s: she performs a soft half-turn.
+4–6s: she walks slowly toward the camera.
+Use the outfit from the input reference image.`,
+
+    frame3: `0–1s: she adjusts her top.
+1–2s: she brushes hair aside.
+2–4s: she turns lightly to the side.
+Use the outfit from the input reference image.`
+
 };
 
-const motionSelect = document.getElementById("motion-select");
-const promptText = document.getElementById("prompt-text");
-const copyBtn = document.getElementById("copy-btn");
-const resetBtn = document.getElementById("reset-btn");
+/* ==================== JS FUNCTION ===================== */
 
-// Load default
-promptText.value = templates.motion1;
+function openTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById(tab).classList.add('active');
+}
 
-// Change motion
-motionSelect.addEventListener("change", () => {
-    let v = motionSelect.value;
-    promptText.value = templates[v] || "";
-});
+function showPrompt() {
+    let m = document.getElementById("motionList").value;
+    let f = document.getElementById("frameList").value;
 
-// Copy
-copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(promptText.value);
-    copyBtn.textContent = "Đã copy ✓";
-    setTimeout(()=> copyBtn.textContent="Copy Prompt",1200);
-});
+    let text = "";
 
-// Reset
-resetBtn.addEventListener("click", () => {
-    motionSelect.value="motion1";
-    promptText.value = templates.motion1;
-});
+    if (m) text += prompts[m] + "\n\n";
+    if (f) text += prompts[f];
 
-// Tab switching
-document.querySelectorAll(".tab-btn").forEach(btn=>{
-    btn.onclick = ()=>{
-        document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
+    document.getElementById("promptOutput").value = text;
+}
 
-        document.querySelectorAll(".panel").forEach(p=>p.style.display="none");
-        document.getElementById(btn.dataset.tab).style.display="block";
-    };
-});
-
-// Embed video
-document.getElementById("embed-btn").addEventListener("click", ()=>{
-    const link = document.getElementById("video-link").value.trim();
-    const box = document.getElementById("video-box");
-    if(!link) return;
-    box.innerHTML = `<iframe width="100%" height="260" src="${link.replace("watch?v=","embed/")}" frameborder="0" allowfullscreen></iframe>`;
-});
+function copyPrompt() {
+    let text = document.getElementById("promptOutput");
+    text.select();
+    navigator.clipboard.writeText(text.value);
+    alert("Đã copy prompt!");
+}
 </script>
 
 </body>
