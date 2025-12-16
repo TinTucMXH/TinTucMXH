@@ -56,8 +56,9 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .output {
@@ -85,11 +86,11 @@ button:hover {
   <label>📌 Nhập nội dung / chủ đề:</label>
   <textarea id="inputText" placeholder="Ví dụ: quần chíp nữ, mũ bảo hiểm, tin tức, review sản phẩm..."></textarea>
 
-  <button onclick="genHashtag()">🔥 Phân tích Hashtag HOT</button>
+  <button id="genBtn" onclick="genHashtag()">🔥 Phân tích Hashtag HOT</button>
 
   <div class="output">
     <label>✅ Hashtag HOT đề xuất:</label>
-    <textarea id="outputText" readonly></textarea>
+    <textarea id="outputText" readonly placeholder="Hashtag sẽ hiển thị tại đây..."></textarea>
 
     <div class="stats" id="stats"></div>
 
@@ -98,65 +99,54 @@ button:hover {
 </div>
 
 <script>
-const API_KEY = "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"; // ⚠️ thay bằng key của bạn
-
 async function genHashtag() {
   const input = document.getElementById("inputText").value.trim();
   const out = document.getElementById("outputText");
   const stats = document.getElementById("stats");
+  const btn = document.getElementById("genBtn");
 
   if (!input) {
-    alert("Vui lòng nhập nội dung!");
+    alert("⚠️ Vui lòng nhập nội dung!");
     return;
   }
 
-  out.value = "⏳ Đang phân tích hashtag...";
+  btn.disabled = true;
+  out.value = "⏳ AI đang phân tích hashtag...";
   stats.innerText = "";
 
-  const prompt = `
-Bạn là chuyên gia Social Media.
-Hãy tạo danh sách hashtag HOT, dễ lên xu hướng TikTok/Facebook/Reels cho nội dung sau:
-"${input}"
-
-Yêu cầu:
-- 15–25 hashtag
-- Ngắn gọn
-- Không vi phạm
-- Phù hợp Việt Nam
-- Viết 1 dòng, cách nhau bằng dấu cách
-`;
-
   try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch("api.php", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + API_KEY
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.7
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: input })
     });
 
+    if (!res.ok) throw new Error("API lỗi");
+
     const data = await res.json();
-    const result = data.choices[0].message.content.trim();
+
+    // Chuẩn output từ OpenAI Responses API
+    const result =
+      data.output?.[0]?.content?.[0]?.text ||
+      "❌ Không nhận được kết quả";
 
     out.value = result;
 
-    const count = result.split("#").length - 1;
+    const count = (result.match(/#/g) || []).length;
     stats.innerText = `📊 Tổng số hashtag: ${count}`;
 
   } catch (err) {
-    out.value = "❌ Lỗi gọi API";
+    out.value = "❌ Lỗi kết nối AI. Kiểm tra backend!";
     console.error(err);
   }
+
+  btn.disabled = false;
 }
 
 function copyHashtag() {
   const out = document.getElementById("outputText");
   out.select();
+  out.setSelectionRange(0, 99999);
   document.execCommand("copy");
   alert("✅ Đã copy hashtag!");
 }
@@ -164,3 +154,4 @@ function copyHashtag() {
 
 </body>
 </html>
+
