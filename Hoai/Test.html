@@ -2,368 +2,163 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<title>🔥 Công cụ Hashtag HOT AI</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Công Cụ AI Thời Trang</title>
 
 <style>
-/* ================= BASE ================= */
 body {
-    margin: 0;
-    padding: 0;
-    background: #0b0b0b;
-    font-family: 'Segoe UI', sans-serif;
-    color: #ffffff;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0b0f14;
+  color: #ffffff;
 }
 
 .container {
-    width: 100%;
-    padding: 16px;
-    box-sizing: border-box;
+  max-width: 900px;
+  margin: 40px auto;
+  background: #111827;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 30px rgba(0,255,200,0.15);
 }
 
-/* ================= TABS ================= */
-.tabs {
-    display: flex;
-    justify-content: space-around;
-    background: #111;
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 16px;
-    border: 1px solid #222;
+h1 {
+  text-align: center;
+  color: #00ffd5;
+  margin-bottom: 20px;
 }
 
-.tab {
-    padding: 10px 18px;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 8px;
-    background: #1a1a1a;
-    color: #ccc;
-    transition: 0.25s;
-}
-
-.tab:hover {
-    background: #222;
-    color: #fff;
-}
-
-.tab.active {
-    background: linear-gradient(135deg,#00e5ff,#2979ff);
-    color: #fff;
-    box-shadow: 0 0 12px rgba(0,229,255,0.6);
-}
-
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-/* ================= LAYOUT ================= */
-.layout {
-    display: grid;
-    grid-template-columns: 1fr 1.3fr;
-    gap: 16px;
-}
-
-/* ================= GROUP BOX ================= */
-.box {
-    background: #121212;
-    border: 1px solid #222;
-    border-radius: 14px;
-    padding: 16px;
-}
-
-.box h3 {
-    margin-top: 0;
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-/* ================= FORM ================= */
 label {
-    color: #ddd;
-    font-weight: bold;
-}
-
-select,
-textarea,
-input[type="file"] {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 8px;
-    background: #1a1a1a;
-    color: #fff;
-    border: 1px solid #333;
-}
-
-select:focus,
-textarea:focus,
-input[type="file"]:focus {
-    outline: none;
-    border-color: #00e5ff;
-    box-shadow: 0 0 6px rgba(0,229,255,0.6);
+  font-weight: bold;
+  display: block;
+  margin: 10px 0 6px;
 }
 
 textarea {
-    height: 220px;
-    resize: none;
+  width: 100%;
+  min-height: 120px;
+  background: #020617;
+  border: 1px solid #1f2937;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  resize: vertical;
 }
 
-/* ================= BUTTON ================= */
 button {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg,#00e5ff,#2979ff);
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.25s;
+  margin-top: 15px;
+  background: linear-gradient(135deg,#00ffd5,#00bfff);
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 14px rgba(0,229,255,0.7);
+  opacity: 0.9;
 }
 
-/* ================= VIDEO ================= */
-iframe {
-    width: 100%;
-    aspect-ratio: 9/16;
-    margin-top: 12px;
-    border-radius: 12px;
-    border: 1px solid #333;
-    background: #000;
+.output {
+  margin-top: 15px;
 }
 
-/* ================= MOBILE ================= */
-@media (max-width: 768px) {
-    .layout {
-        grid-template-columns: 1fr;
-    }
+.stats {
+  margin-top: 10px;
+  color: #00ffd5;
+  font-size: 14px;
+}
+
+.copy-btn {
+  background: #22c55e;
+  color: #000;
+  margin-left: 10px;
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
+  <h1>🚀 AI Phân tích Hashtag HOT</h1>
 
-    <!-- TABS -->
-    <div class="tabs">
-        <div class="tab active" onclick="openTab(event,'thoitrang')">Thời Trang</div>
-        <div class="tab" onclick="openTab(event,'giadung')">Gia Dụng</div>
-        <div class="tab" onclick="openTab(event,'content')">Content</div>
-    </div>
+  <label>📌 Nhập nội dung / chủ đề:</label>
+  <textarea id="inputText" placeholder="Ví dụ: quần chíp nữ, mũ bảo hiểm, tin tức, review sản phẩm..."></textarea>
 
-    <!-- TAB THỜI TRANG -->
-    <div id="thoitrang" class="tab-content active">
-        <div class="layout">
+  <button onclick="genHashtag()">🔥 Phân tích Hashtag HOT</button>
 
-            <!-- LEFT -->
-            <div class="box">
-                <h3>⚙️ Tuỳ chọn tạo video</h3>
+  <div class="output">
+    <label>✅ Hashtag HOT đề xuất:</label>
+    <textarea id="outputText" readonly></textarea>
 
-                <label>📸 Ảnh trang phục</label>
-                <input type="file">
+    <div class="stats" id="stats"></div>
 
-                <label>🎬 Chuyển động</label>
-                <select id="motionList" onchange="showPrompt()">
-                    <option value="">— chọn chuyển động —</option>
-            <option value="stair">Đi xuống cầu thang (chậm, sang)</option>
-            <option value="ivy">Đi trước tường gạch – ivy</option>
-            <option value="cafe">Đi trong quán cafe</option>
-            <option value="street">Đi phố tối giản</option>
-            <option value="park">Đi trong công viên</option>
-            <option value="urban">Đi phố hiện đại</option>
-            <option value="urban2">Đi phố 2</option>
-            <option value="city">Đi vỉa hè thành phố</option>
-
-            <option value="cute1">Cute pose Hàn Quốc 1</option>
-            <option value="cute2">Cute pose OOTD</option>
-            <option value="ootd1">OOTD trắng – studio</option>
-            <option value="walk_turn">Đi & xoay nhẹ</option>
-            <option value="shirt1">Quảng cáo áo – chỉnh cổ</option>
-            <option value="shirt2">Quảng cáo top – chỉnh lai</option>
-            <option value="studio_pose">Studio – tạo dáng</option>
-            <option value="cute3">Cute OOTD Hàn Quốc 3</option>
-            <option value="walk_halfturn">Đi và xoay 180°</option>
-            
-            <option value="revieok">review tt1</option>
-            <option value="ongkinh1">trước ống kính 1</option>
-                </select>
-
-                <label>🎞 Frame-by-frame</label>
-                <select id="frameList" onchange="showPrompt()">
-                    <option value="">— chọn mẫu thước phim —</option>
-            <option value="frame1">0–1s bước nhẹ → 1–3s đưa tay tóc → 3–5s mỉm cười</option>
-            <option value="frame2">0–2s đứng pose → 2–4s xoay nhẹ → 4–6s bước gần</option>
-            <option value="frame3">0–1s chỉnh áo → 1–2s vuốt tóc → 2–4s half-turn</option>
-                </select>
-
-                <button onclick="copyPrompt()">📋 Copy Prompt</button>
-            </div>
-
-            <!-- RIGHT -->
-            <div class="box">
-                <h3>📄 Prompt & Video</h3>
-
-                <label>📝 Prompt</label>
-                <textarea id="promptOutput" readonly></textarea>
-
-                <label>🎥 Video preview</label>
-                <iframe id="demoVideo"></iframe>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="giadung" class="tab-content">
-        <div class="box"><h3>Gia dụng đang cập nhật…</h3></div>
-    </div>
-
-    <div id="content" class="tab-content">
-        <div class="box"><h3>Content đang cập nhật…</h3></div>
-    </div>
-
+    <button class="copy-btn" onclick="copyHashtag()">📋 Copy Hashtag</button>
+  </div>
 </div>
 
 <script>
-const prompts = {
-    /* ================= PROMPTS ĐÃ TỐI ƯU — HỢP INPUT ẢNH ================= */
+const API_KEY = "YOUR_OPENAI_API_KEY_HERE"; // ⚠️ thay bằng key của bạn
 
-    stair: `A beautiful young woman slowly descends a marble staircase inside a minimalist modern space. 
-Use the outfit from the input reference image.
-She moves gracefully, one hand carrying her bag while the other swings naturally. 
-Her expression remains soft and elegant as the camera tracks her from the front, keeping her centered.`,
+async function genHashtag() {
+  const input = document.getElementById("inputText").value.trim();
+  const out = document.getElementById("outputText");
+  const stats = document.getElementById("stats");
 
-    ivy: `A beautiful young woman walks slowly toward the camera in front of an antique wooden door and a brick wall covered with green ivy. 
-Use the outfit from the input reference image.
-She gently smooths her hair as she smiles softly. 
-The camera keeps her centered, capturing her confident and elegant steps.`,
+  if (!input) {
+    alert("Vui lòng nhập nội dung!");
+    return;
+  }
 
-    cafe: `A young elegant woman walks naturally inside a minimalist white café. 
-Use the outfit from the input reference image.
-She tucks her hair behind her ear gently, smiling softly. 
-The camera tracks her from the front, keeping her perfectly centered.`,
+  out.value = "⏳ Đang phân tích hashtag...";
+  stats.innerText = "";
 
-    street: `A fashionable young woman walks gracefully along a minimalist urban street. 
-Use the outfit from the input reference image.
-Her soft wavy hair moves gently with each step while she adjusts her hair slightly. 
-Camera follows steadily from the front.`,
+  const prompt = `
+Bạn là chuyên gia Social Media.
+Hãy tạo danh sách hashtag HOT, dễ lên xu hướng TikTok/Facebook/Reels cho nội dung sau:
+"${input}"
 
-    park: `A beautiful young woman strolls through a lush green park. 
-Use the outfit from the input reference image.
-She gently smooths her hair with a calm, soft expression. 
-The camera pans lightly, always keeping her centered.`,
+Yêu cầu:
+- 15–25 hashtag
+- Ngắn gọn
+- Không vi phạm
+- Phù hợp Việt Nam
+- Viết 1 dòng, cách nhau bằng dấu cách
+`;
 
-    urban: `A beautiful young woman walks slowly through a modern city landscape. 
-Use the outfit from the input reference image.
-With a gentle smile and natural steps, she raises a hand to touch her hair. 
-Camera captures her centered with smooth, fluid motion.`,
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + API_KEY
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7
+      })
+    });
 
-    urban2: `A stylish young woman walks in front of a modern building. 
-Use the outfit from the input reference image.
-She tucks her hair behind her ear with a soft confident smile. 
-Camera follows from the front in a clean, bright setting.`,
+    const data = await res.json();
+    const result = data.choices[0].message.content.trim();
 
-    city: `A beautiful young woman walks along a busy city sidewalk. 
-Use the outfit from the input reference image.
-She smiles gently while the wind moves her hair softly. 
-The background stays blurred while camera keeps her centered.`,
+    out.value = result;
 
+    const count = result.split("#").length - 1;
+    stats.innerText = `📊 Tổng số hashtag: ${count}`;
 
-    /* ================= POSE / OOTD ================= */
-
-    cute1: `The girl creates several cute Korean-style poses in soft lighting. 
-Use the outfit from the input reference image.
-She smiles, tilts her head, makes a V-sign, touches her hair, and ends with a soft half-turn.
-Camera stays knee-up and centered.`,
-
-    cute2: `The girl poses in a bright clean space for OOTD. 
-Use the outfit from the input reference image.
-She smiles, tilts her head, touches her hair adorably, brings hands forward and ends with a soft half-turn.`,
-
-    ootd1: `The girl poses in a modern white interior. 
-Use the outfit from the input reference image.
-She adjusts her cardigan lightly, poses naturally, touches her hair and keeps a soft smile.
-Camera knee-up and centered.`,
-
-    walk_turn: `The girl walks naturally while holding her handbag, touching her hair subtly. 
-Use the outfit from the input reference image.
-She stops and performs a smooth gentle half-turn.`,
-
-revieok: ` Create a cinematic fashion video based on the model in the reference image.
-The model keeps the same face, body shape, hairstyle, and outfit as in the image.
-Show her posing confidently in a modern fashion style.
-Camera movement should be smooth, elegant, with soft depth of field and natural lighting.
-Have the model perform stylish movements such as turning slightly, shifting weight, gentle hand motions, adjusting her outfit, or giving expressive fashion poses.
-Capture the vibe of high-fashion editorial video, minimalistic, artistic, contemporary aesthetic.
-4K resolution, slow cinematic motion, professional look. `,
-
-    shirt1: `The girl showcases a shirt in soft studio lighting. 
-Use the outfit from the input reference image.
-She adjusts the collar, shows fabric details, turns slightly, touches her hair and smiles.`,
-
-    shirt2: `The girl advertises the top: adjusting hem, touching collar, turning to side and smiling softly. 
-Use the outfit from the input reference image.`,
-
-    studio_pose: `The girl poses naturally in a bright studio. 
-Use the outfit from the input reference image.
-She places a hand on her waist, tilts gently, steps forward to sway her dress, and lifts the hem lightly.`,
-
-    cute3: `The girl creates cute OOTD poses: smiles, head tilt, touches hair, V-sign, shoulder-lift playful pose. 
-Use the outfit from the input reference image.`,
-
-    walk_halfturn: `The girl walks gently with a relaxed smile, touching her hair occasionally. 
-Use the outfit from the input reference image.
-After a few steps she makes a smooth half-turn.`,
-
-    /* FRAME BY FRAME */
-    frame1: `0–1s: she steps lightly toward the camera.
-1–3s: she gently touches her hair.
-3–5s: she smiles softly while staying centered.
-Use the outfit from the input reference image.`,
-
-    frame2: `0–2s: she poses naturally.
-2–4s: she performs a soft half-turn.
-4–6s: she walks slowly toward the camera.
-Use the outfit from the input reference image.`,
-
-    frame3: `0–1s: she adjusts her top.
-1–2s: she brushes hair aside.
-2–4s: she turns lightly to the side.
-Use the outfit from the input reference image.`,
-
-    ongkinh1: `The girl creates a few cute Korean-style poses: she gives a soft, gentle smile with bright eyes, slightly tilts her head in a cute way, lightly touches her hair naturally with one hand, then brings her hands together in front of her waist with a sweet expression. She switches to a small ‘V sign’ pose beside her face and then a playful pose with a subtle shoulder lift. The camera stays framed from the knees up and keeps her centered in the shot.`,
-};
-
-function openTab(e, tabId) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    e.target.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
+  } catch (err) {
+    out.value = "❌ Lỗi gọi API";
+    console.error(err);
+  }
 }
 
-function showPrompt() {
-    let m = motionList.value;
-    let f = frameList.value;
-    let text = "";
-    if (m) text += prompts[m] + "\n\n";
-    if (f) text += prompts[f];
-    promptOutput.value = text;
-}
-
-function copyPrompt() {
-    promptOutput.select();
-    navigator.clipboard.writeText(promptOutput.value);
-    alert("✅ Đã copy prompt!");
+function copyHashtag() {
+  const out = document.getElementById("outputText");
+  out.select();
+  document.execCommand("copy");
+  alert("✅ Đã copy hashtag!");
 }
 </script>
 
