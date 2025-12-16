@@ -1,212 +1,26 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi"
+      xmlns="http://www.w3.org/1999/xhtml"
+      prefix="og: http://ogp.me/ns#">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grok Imagine Try-On Video - Thử Đồ Bằng AI xAI</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 20px; max-width: 900px; margin: auto; }
-    h1 { text-align: center; color: #1a73e8; }
-    .container { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-    .upload-box {
-      border: 3px dashed #ccc;
-      padding: 20px;
-      text-align: center;
-      border-radius: 12px;
-      margin: 20px 0;
-      transition: all 0.3s;
-    }
-    .upload-box:hover { border-color: #1a73e8; }
-    .upload-box img.preview { max-width: 100%; max-height: 400px; margin-top: 10px; border-radius: 8px; }
-    button {
-      background: #1a73e8;
-      color: white;
-      border: none;
-      padding: 14px 30px;
-      font-size: 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    button:hover { background: #0d47a1; }
-    button:disabled { background: #999; cursor: not-allowed; }
-    #result { margin-top: 30px; text-align: center; }
-    #result video { max-width: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-    .loader {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #1a73e8;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-      display: none;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    #promptDisplay { background: #e8f4fd; padding: 10px; border-radius: 8px; margin: 10px 0; font-style: italic; }
-  </style>
+  <meta charset="UTF-8">
+
+  <!-- Open Graph -->
+  <meta property="og:locale" content="vi_VN" />
+  <meta property="og:site_name" content="Hoai Affiliate" />
+  <meta property="og:title" content="🔥 Sản phẩm đang HOT – Giá tốt hôm nay" />
+  <meta property="og:description" content="Ưu đãi có hạn – Click xem ngay!" />
+  <meta property="og:url" content="https://ten-project.pages.dev" />
+
+  <!-- ẢNH PREVIEW (BẮT BUỘC LÀ LINK ẢNH TRỰC TIẾP) -->
+  <meta property="og:image" content="https://ten-project.pages.dev/preview.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <!-- Redirect sau 1.5s -->
+  <meta http-equiv="refresh" content="1.5;url=https://s.shopee.vn/an_redir?origin_link=https%3A%2F%2Fshopee.vn%2Fproduct%2F408810138%2F24750838321%3Fgads_t_sig%3DVTJGc2RHVmtYMTlxTFVSVVRrdENkUm9yWVZMbGw0Q214S0d1TzNEZmUwNTFRdzRSKzMrSkZ3anU2OHlDVEFqUXhPZDNldTdadk9DVjJMTEVDN3B4ZmVQQTFRSnF0enpLdGFBNjZoSG50TjgyTWhwdXc5Z1JoUUU4ZWUvclJ6Q0tUSzVvcVJNaGcrTzlsSGFBeVQ1Q1JBPT0&sm=fb_partner&affiliate_id=17335420220" />
 </head>
 <body>
-
-<div class="container">
-  <h1>Grok Imagine Try-On Video</h1>
-  <p style="text-align:center;color:#555;">Upload ảnh bạn + ảnh quần áo → Grok Imagine tạo video bạn mặc thử chỉ trong vài giây! (Dùng API xAI grok-2-image-1212 + video extension)</p>
-
-  <!-- Upload ảnh nhân vật -->
-  <div class="upload-box" id="personBox">
-    <p><strong>Bước 1:</strong> Ảnh nhân vật (toàn thân, đứng thẳng)</p>
-    <input type="file" id="personImage" accept="image/*" />
-    <img id="personPreview" class="preview" src="" alt=""/>
-  </div>
-
-  <!-- Upload ảnh trang phục -->
-  <div class="upload-box" id="clothBox">
-    <p><strong>Bước 2:</strong> Ảnh trang phục (chụp thẳng)</p>
-    <input type="file" id="clothImage" accept="image/*" />
-    <img id="clothPreview" class="preview" src="" alt=""/>
-  </div>
-
-  <div style="text-align:center;">
-    <button id="generateBtn" disabled> Tạo Video Với Grok Imagine</button>
-  </div>
-
-  <div class="loader" id="loader"></div>
-
-  <div id="result"></div>
-</div>
-
-<script>
-// Thay API_KEY bằng key từ https://x.ai/api (Premium+ hoặc SuperGrok Heavy)
-const XAI_API_KEY = "xai-your-api-key-here";  
-const API_URL_IMAGE = "https://api.x.ai/v1/images/generations";  // Endpoint image gen
-const API_URL_VIDEO = "https://api.x.ai/v1/videos/generations";  // Giả sử endpoint video (cập nhật nếu xAI thay đổi, hoặc dùng chain image → video prompt)
-
-const personInput = document.getElementById("personImage");
-const clothInput  = document.getElementById("clothImage");
-const personPreview = document.getElementById("personPreview");
-const clothPreview  = document.getElementById("clothPreview");
-const generateBtn = document.getElementById("generateBtn");
-const loader = document.getElementById("loader");
-const resultDiv = document.getElementById("result");
-
-let personFile = null;
-let clothFile = null;
-
-// Preview ảnh nhân vật
-personInput.addEventListener("change", (e) => {
-  personFile = e.target.files[0];
-  if (personFile) {
-    personPreview.src = URL.createObjectURL(personFile);
-    checkReady();
-  }
-});
-
-// Preview ảnh trang phục
-clothInput.addEventListener("change", (e) => {
-  clothFile = e.target.files[0];
-  if (clothFile) {
-    clothPreview.src = URL.createObjectURL(clothFile);
-    checkReady();
-  }
-});
-
-function checkReady() {
-  if (personFile && clothFile) {
-    generateBtn.disabled = false;
-  }
-}
-
-// Hàm file to base64
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-// Tạo prompt tự động cho Grok Imagine (mô tả đơn giản, có thể dùng Vision để analyze ảnh thật)
-async function generatePrompt(personBase64, clothBase64) {
-  // Giả sử dùng Grok chat để describe ảnh (nếu có Vision API), tạm dùng placeholder
-  const personDesc = "một người phụ nữ trẻ, tóc dài, đứng pose tự nhiên";  // Thay bằng real desc nếu integrate Vision
-  const clothDesc = "một chiếc váy đỏ ngắn xinh xắn";  // Tương tự
-
-  return `Tạo video ngắn 5 giây: ${personDesc} mặc ${clothDesc}, động tác đi bộ tự nhiên quay 360 độ, photorealistic, high resolution, dynamic lighting. Dựa trên ảnh gốc để giữ chi tiết khuôn mặt và body.`;
-}
-
-// Gọi API Grok Imagine để tạo video (chain: image try-on → animate video)
-generateBtn.addEventListener("click", async () => {
-  generateBtn.disabled = true;
-  loader.style.display = "block";
-  resultDiv.innerHTML = "";
-
-  try {
-    const personBase64 = await fileToBase64(personFile);
-    const clothBase64 = await fileToBase64(clothFile);
-    const prompt = await generatePrompt(personBase64, clothBase64);
-
-    // Bước 1: Tạo image try-on (sử dụng prompt, hỗ trợ image input nếu API cho phép)
-    const imageResponse = await fetch(API_URL_IMAGE, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${XAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "grok-2-image-1212",
-        prompt: prompt.replace("video ngắn 5 giây", "hình ảnh tĩnh"),  // Adapt cho image
-        n: 1,
-        size: "1024x1024",
-        response_format: "url"
-        // Nếu hỗ trợ image input: thêm "images": [personBase64, clothBase64] (check docs.x.ai)
-      })
-    });
-
-    const imageData = await imageResponse.json();
-    if (!imageData.data || !imageData.data[0].url) throw new Error("Không tạo được image try-on");
-
-    const tryonImageUrl = imageData.data[0].url;
-
-    // Bước 2: Animate image thành video (sử dụng prompt video, giả sử endpoint tồn tại)
-    const videoResponse = await fetch(API_URL_VIDEO, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${XAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "grok-imagine-video",  // Model video extension (Aurora-based)
-        prompt: `${prompt}. Animate từ hình ảnh: ${tryonImageUrl}. Độ dài 5s, FPS 30, với sound tự nhiên.`,
-        image: tryonImageUrl,  // Input image để animate
-        duration: 5,
-        response_format: "url"
-      })
-    });
-
-    const videoData = await videoResponse.json();
-    if (!videoData.video_url) throw new Error("Không tạo được video");
-
-    // Hiển thị prompt dùng để generate
-    resultDiv.innerHTML += `<div id="promptDisplay">Prompt gửi Grok Imagine: ${prompt}</div>`;
-
-    // Hiển thị video
-    resultDiv.innerHTML += `
-      <h2>Kết quả từ Grok Imagine</h2>
-      <video controls autoplay loop>
-        <source src="${videoData.video_url}" type="video/mp4">
-        Trình duyệt không hỗ trợ video.
-      </video>
-      <p><a href="${videoData.video_url}" target="_blank">Tải video về máy</a></p>
-    `;
-  } catch (err) {
-    resultDiv.innerHTML = `<p style="color:red;">Lỗi: ${err.message}. Kiểm tra API key và docs tại https://docs.x.ai/docs/guides/image-generations</p>`;
-  } finally {
-    loader.style.display = "none";
-    generateBtn.disabled = false;
-  }
-});
-</script>
-
+  <p>Đang chuyển hướng đến sản phẩm…</p>
 </body>
 </html>
