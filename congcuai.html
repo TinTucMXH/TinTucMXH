@@ -9,9 +9,9 @@
     body {
         margin: 0;
         padding: 0;
-        background: #e7f5ff;
+        background: #0b0b0b; /* nền đen */
         font-family: 'Segoe UI', sans-serif;
-        color: #003049;
+        color: #ffffff; /* chữ trắng */
     }
 
     .container {
@@ -22,7 +22,7 @@
 
     h2 {
         text-align: center;
-        color: #004b6e;
+        color: #ffffff;
         margin-bottom: 10px;
     }
 
@@ -30,43 +30,69 @@
     .tabs {
         display: flex;
         justify-content: space-around;
-        background: #a8d8ff;
+        background: #111111;
         padding: 10px 0;
-        border-radius: 8px;
+        border-radius: 10px;
         margin-bottom: 15px;
+        border: 1px solid #222;
     }
 
     .tab {
         padding: 10px 15px;
         cursor: pointer;
         font-weight: bold;
-        border-radius: 6px;
-        background: #d4ecff;
+        border-radius: 8px;
+        background: #1a1a1a;
+        color: #cccccc;
+        transition: all 0.25s ease;
+    }
+
+    .tab:hover {
+        background: #222;
+        color: #ffffff;
     }
 
     .tab.active {
-        background: #0096c7;
-        color: #fff;
+        background: linear-gradient(135deg, #00e5ff, #2979ff);
+        color: #ffffff;
+        box-shadow: 0 0 12px rgba(0,229,255,0.6);
     }
 
     .tab-content {
         display: none;
-        background: #fff;
+        background: #121212;
         padding: 15px;
-        border-radius: 8px;
+        border-radius: 12px;
+        border: 1px solid #222;
     }
 
     .tab-content.active {
         display: block;
     }
 
-    select, textarea, input[type="file"] {
+    label {
+        color: #dddddd;
+    }
+
+    select,
+    textarea,
+    input[type="file"] {
         width: 100%;
         padding: 12px;
         margin: 10px 0;
-        border-radius: 6px;
-        border: 1px solid #bcd9ea;
-        font-size: 16px;
+        border-radius: 8px;
+        background: #1a1a1a;
+        color: #ffffff;
+        border: 1px solid #333;
+        font-size: 15px;
+    }
+
+    select:focus,
+    textarea:focus,
+    input[type="file"]:focus {
+        outline: none;
+        border-color: #00e5ff;
+        box-shadow: 0 0 6px rgba(0,229,255,0.6);
     }
 
     textarea {
@@ -76,23 +102,30 @@
 
     button {
         width: 100%;
-        padding: 12px;
-        background: #0096c7;
+        padding: 13px;
+        background: linear-gradient(135deg, #00e5ff, #2979ff);
         color: white;
         font-size: 16px;
+        font-weight: bold;
         border: none;
-        border-radius: 6px;
-        margin-top: 8px;
+        border-radius: 8px;
+        margin-top: 10px;
         cursor: pointer;
+        transition: all 0.25s ease;
+    }
+
+    button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 14px rgba(0,229,255,0.7);
     }
 
     iframe {
         width: 100%;
-        height: auto;
-        aspect-ratio: 9/16;
-        border-radius: 10px;
-        margin-top: 12px;
-        border: 1px solid #ccc;
+        aspect-ratio: 9 / 16;
+        border-radius: 12px;
+        margin-top: 14px;
+        border: 1px solid #333;
+        background: #000;
     }
 </style>
 </head>
