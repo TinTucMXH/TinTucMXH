@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: application/json");
 
-$API_KEY = "sk-proj-XXXX"; // GIỮ KÍN
+$API_KEY = "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"; // GIỮ KÍN
 
 $data = json_decode(file_get_contents("php://input"), true);
 $input = $data["text"] ?? "";
