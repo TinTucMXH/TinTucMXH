@@ -235,13 +235,112 @@ iframe {
 
 <script>
 const prompts = {
-    stair: "A beautiful young woman slowly descends a marble staircase. Use the outfit from the input reference image.",
-    ivy: "A young woman walks in front of a brick wall with green ivy. Use the outfit from the input reference image.",
-    cafe: "A young woman walks inside a minimalist cafe. Use the outfit from the input reference image.",
-    street: "A fashionable young woman walks along a minimalist urban street. Use the outfit from the input reference image.",
+    /* ================= PROMPTS ĐÃ TỐI ƯU — HỢP INPUT ẢNH ================= */
 
-    frame1: "0–1s step forward → 1–3s touch hair → 3–5s soft smile.",
-    frame2: "0–2s pose → 2–4s half-turn → 4–6s walk closer."
+    stair: `A beautiful young woman slowly descends a marble staircase inside a minimalist modern space. 
+Use the outfit from the input reference image.
+She moves gracefully, one hand carrying her bag while the other swings naturally. 
+Her expression remains soft and elegant as the camera tracks her from the front, keeping her centered.`,
+
+    ivy: `A beautiful young woman walks slowly toward the camera in front of an antique wooden door and a brick wall covered with green ivy. 
+Use the outfit from the input reference image.
+She gently smooths her hair as she smiles softly. 
+The camera keeps her centered, capturing her confident and elegant steps.`,
+
+    cafe: `A young elegant woman walks naturally inside a minimalist white café. 
+Use the outfit from the input reference image.
+She tucks her hair behind her ear gently, smiling softly. 
+The camera tracks her from the front, keeping her perfectly centered.`,
+
+    street: `A fashionable young woman walks gracefully along a minimalist urban street. 
+Use the outfit from the input reference image.
+Her soft wavy hair moves gently with each step while she adjusts her hair slightly. 
+Camera follows steadily from the front.`,
+
+    park: `A beautiful young woman strolls through a lush green park. 
+Use the outfit from the input reference image.
+She gently smooths her hair with a calm, soft expression. 
+The camera pans lightly, always keeping her centered.`,
+
+    urban: `A beautiful young woman walks slowly through a modern city landscape. 
+Use the outfit from the input reference image.
+With a gentle smile and natural steps, she raises a hand to touch her hair. 
+Camera captures her centered with smooth, fluid motion.`,
+
+    urban2: `A stylish young woman walks in front of a modern building. 
+Use the outfit from the input reference image.
+She tucks her hair behind her ear with a soft confident smile. 
+Camera follows from the front in a clean, bright setting.`,
+
+    city: `A beautiful young woman walks along a busy city sidewalk. 
+Use the outfit from the input reference image.
+She smiles gently while the wind moves her hair softly. 
+The background stays blurred while camera keeps her centered.`,
+
+
+    /* ================= POSE / OOTD ================= */
+
+    cute1: `The girl creates several cute Korean-style poses in soft lighting. 
+Use the outfit from the input reference image.
+She smiles, tilts her head, makes a V-sign, touches her hair, and ends with a soft half-turn.
+Camera stays knee-up and centered.`,
+
+    cute2: `The girl poses in a bright clean space for OOTD. 
+Use the outfit from the input reference image.
+She smiles, tilts her head, touches her hair adorably, brings hands forward and ends with a soft half-turn.`,
+
+    ootd1: `The girl poses in a modern white interior. 
+Use the outfit from the input reference image.
+She adjusts her cardigan lightly, poses naturally, touches her hair and keeps a soft smile.
+Camera knee-up and centered.`,
+
+    walk_turn: `The girl walks naturally while holding her handbag, touching her hair subtly. 
+Use the outfit from the input reference image.
+She stops and performs a smooth gentle half-turn.`,
+
+revieok: ` Create a cinematic fashion video based on the model in the reference image.
+The model keeps the same face, body shape, hairstyle, and outfit as in the image.
+Show her posing confidently in a modern fashion style.
+Camera movement should be smooth, elegant, with soft depth of field and natural lighting.
+Have the model perform stylish movements such as turning slightly, shifting weight, gentle hand motions, adjusting her outfit, or giving expressive fashion poses.
+Capture the vibe of high-fashion editorial video, minimalistic, artistic, contemporary aesthetic.
+4K resolution, slow cinematic motion, professional look. `,
+
+    shirt1: `The girl showcases a shirt in soft studio lighting. 
+Use the outfit from the input reference image.
+She adjusts the collar, shows fabric details, turns slightly, touches her hair and smiles.`,
+
+    shirt2: `The girl advertises the top: adjusting hem, touching collar, turning to side and smiling softly. 
+Use the outfit from the input reference image.`,
+
+    studio_pose: `The girl poses naturally in a bright studio. 
+Use the outfit from the input reference image.
+She places a hand on her waist, tilts gently, steps forward to sway her dress, and lifts the hem lightly.`,
+
+    cute3: `The girl creates cute OOTD poses: smiles, head tilt, touches hair, V-sign, shoulder-lift playful pose. 
+Use the outfit from the input reference image.`,
+
+    walk_halfturn: `The girl walks gently with a relaxed smile, touching her hair occasionally. 
+Use the outfit from the input reference image.
+After a few steps she makes a smooth half-turn.`,
+
+    /* FRAME BY FRAME */
+    frame1: `0–1s: she steps lightly toward the camera.
+1–3s: she gently touches her hair.
+3–5s: she smiles softly while staying centered.
+Use the outfit from the input reference image.`,
+
+    frame2: `0–2s: she poses naturally.
+2–4s: she performs a soft half-turn.
+4–6s: she walks slowly toward the camera.
+Use the outfit from the input reference image.`,
+
+    frame3: `0–1s: she adjusts her top.
+1–2s: she brushes hair aside.
+2–4s: she turns lightly to the side.
+Use the outfit from the input reference image.`,
+
+    ongkinh1: `The girl creates a few cute Korean-style poses: she gives a soft, gentle smile with bright eyes, slightly tilts her head in a cute way, lightly touches her hair naturally with one hand, then brings her hands together in front of her waist with a sweet expression. She switches to a small ‘V sign’ pose beside her face and then a playful pose with a subtle shoulder lift. The camera stays framed from the knees up and keeps her centered in the shot.`,
 };
 
 function openTab(e, tabId) {
