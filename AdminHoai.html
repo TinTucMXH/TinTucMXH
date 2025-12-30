@@ -207,9 +207,20 @@
           <i class="fas fa-external-link-alt"></i>
         </button>
       </div>
-      <p style="font-size: 12px; color: #64748b; text-align: center; margin-top: 20px;">Hệ thống hỗ trợ soạn thảo nội dung nhanh.</p>
     </div>
+<hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
 
+  <div class="hashtag-section" style="display: flex; flex-direction: column; gap: 10px;">
+    <label style="font-weight: bold; font-size: 14px;">Chọn chủ đề nội dung:</label>
+    
+    <select id="categorySelect" style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;" onchange="updateHashtags()">
+      <option value="">-- Chọn trường thông tin --</option>
+      <option value="tin-tuc-mxh">Tin tức MXH</option>
+      <option value="tin-moi-mxh">Tin mới MXH</option>
+      <option value="ao-lot">Áo lót</option>
+      <option value="quan-chip">Quần chíp</option>
+      <option value="mu-bao-hiem">Mũ bảo hiểm</option>
+    </select>
  <div style="position: relative; display: flex; align-items: flex-start; gap: 5px;">
       <textarea id="hashtagOutput"  
         placeholder="Hashtags sẽ hiện ở đây..." 
