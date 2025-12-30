@@ -210,6 +210,61 @@
       <p style="font-size: 12px; color: #64748b; text-align: center; margin-top: 20px;">Hệ thống hỗ trợ soạn thảo nội dung nhanh.</p>
     </div>
 
+ <div style="position: relative; display: flex; align-items: flex-start; gap: 5px;">
+      <textarea id="hashtagOutput"  
+        placeholder="Hashtags sẽ hiện ở đây..." 
+        style="width: 100%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; resize: none;"></textarea>
+      
+      <button onclick="copyHashtags()" title="Copy" 
+        style="padding: 5px 10px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;">
+        <i class="fas fa-copy"></i> Copy
+      </button>
+    </div>
+  </div>
+
+  <p style="font-size: 12px; color: #64748b; text-align: center; margin-top: 20px;">Hệ thống hỗ trợ soạn thảo nội dung nhanh.</p>
+</div>
+    <script>
+  // Dữ liệu Hashtag
+  const hashtagData = {
+    'tin-tuc-mxh': '#tintuc #mxh #tintucmxh #socialmedia #news',
+    'tin-moi-mxh': '#tinmoi #tinmoimxh #mxh #tinnew',
+    'ao-lot': '#aolot #noiy #dolotnu #thoitrangnoiy #sexy-lingerie',
+    'quan-chip': '#quanchip #quanlotnu #dolotcaocap #underwear',
+    'mu-bao-hiem': '#mubaohiem #safety #phuot #mubaohiemchinhhang #xemay'
+  };
+
+  // Hàm cập nhật hashtag khi chọn từ listbox
+  function updateHashtags() {
+    const select = document.getElementById('categorySelect');
+    const output = document.getElementById('hashtagOutput');
+    const value = select.value;
+    
+    output.value = hashtagData[value] || '';
+  }
+
+  // Hàm copy nội dung
+  function copyHashtags() {
+    const output = document.getElementById('hashtagOutput');
+    if (!output.value) {
+      alert('Chưa có nội dung để copy!');
+      return;
+    }
+    
+    output.select();
+    output.setSelectionRange(0, 99999); // Cho thiết bị di động
+    
+    try {
+      navigator.clipboard.writeText(output.value);
+      alert('Đã copy: ' + output.value);
+    } catch (err) {
+      // Cách dự phòng cho trình duyệt cũ
+      document.execCommand('copy');
+      alert('Đã copy nội dung!');
+    }
+  }
+</script>
+
     <div id="tab-affiliate" class="tab-content">
   <fieldset class="group-box">
     <legend><i class="fab fa-tiktok"></i> Nội quy TikTok</legend>
