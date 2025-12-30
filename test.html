@@ -129,8 +129,8 @@
     <div class="tabs-header">
       <div class="tab-btn active" onclick="openTab(event, 'tab-ui')">Tạo giao diện trang</div>
       <div class="tab-btn" onclick="openTab(event, 'tab-ai')">Trợ lý ảo</div>
+      <div class="tab-btn" onclick="openTab(event, 'tab-affiliate')">TikTok Affiliate</div>
     </div>
-
     <div id="tab-ui" class="tab-content active">
       <fieldset class="group-box">
         <legend><i class="fas fa-edit"></i> Nội dung hiển thị</legend>
@@ -194,24 +194,114 @@
 
     <div id="tab-ai" class="tab-content">
       <div class="assistant-grid">
-        <button class="btn-assistant" onclick="window.open('https://chatgpt.com', '_blank')">
-          <span><i class="fas fa-robot"></i> Trợ lý 1 (ChatGPT)</span>
+        <button class="btn-assistant" onclick="window.open('https://gemini.google.com/gem/16kyqHdhneKuo0dT3WKDIiux3BYgylH82?usp=sharing', '_blank')">
+          <span><i class="fas fa-robot"></i> Trợ lý tạo prompt tạo video từ các thành phần(Gemini)</span>
           <i class="fas fa-external-link-alt"></i>
         </button>
-        <button class="btn-assistant" onclick="window.open('https://gemini.google.com', '_blank')">
-          <span><i class="fas fa-brain"></i> Trợ lý 2 (Gemini)</span>
+        <button class="btn-assistant" onclick="window.open('https://gemini.google.com/gem/1S2Uav8nw2qw5BQHIvvu6oxXKASGN4jef?usp=sharing', '_blank')">
+          <span><i class="fas fa-brain"></i>trợ lý sáng tạo dựa trên kịch bản(Gemini)</span>
           <i class="fas fa-external-link-alt"></i>
         </button>
-        <button class="btn-assistant" onclick="window.open('https://claude.ai', '_blank')">
-          <span><i class="fas fa-magic"></i> Trợ lý 3 (Claude AI)</span>
+        <button class="btn-assistant" onclick="window.open('https://gemini.google.com/gem/1y6TDB30XFw2LRmInE_QyrgowoM2yy7yy?usp=sharing', '_blank')">
+          <span><i class="fas fa-magic"></i> Trợ lý sao chép video(Gemini)</span>
           <i class="fas fa-external-link-alt"></i>
         </button>
       </div>
       <p style="font-size: 12px; color: #64748b; text-align: center; margin-top: 20px;">Hệ thống hỗ trợ soạn thảo nội dung nhanh.</p>
     </div>
-  </div>
 
-  <div class="tooltip-container" id="draggableTooltip">
+    <div id="tab-affiliate" class="tab-content">
+  <fieldset class="group-box">
+    <legend><i class="fab fa-tiktok"></i> Nội quy TikTok</legend>
+
+    <div class="media-list">
+
+      <div class="media-item">
+        <span>🚫 Sản phẩm bị hạn chế / không hỗ trợ</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?identity=1&role=1&knowledge_id=6837787798570754&from=policy" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>⛔ Sản phẩm bị cấm</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?identity=1&role=1&knowledge_id=6837773789169410&from=policy" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>🎲 Cờ bạc – quà tặng – yếu tố bất ngờ</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?identity=1&role=1&knowledge_id=4037641545271042&from=policy" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>⚠️ Mô tả sản phẩm phóng đại</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?identity=1&role=1&knowledge_id=6837770400581377&from=policy" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>📜 Nguyên tắc nội dung TikTok Shop</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?knowledge_id=6837773789480706&role=1&identity=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>🪤 3 cạm bẫy người bán / creator</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?knowledge_id=6837776050161410&role=1&identity=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>🖼️ Nội dung “Khung hình tĩnh”</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?knowledge_id=6837776050210562&role=1&identity=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>❌ Quảng bá không liên quan</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?knowledge_id=6837787798488834&role=1&identity=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>🧒 Quảng cáo bởi người vị thành niên</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?knowledge_id=6837793229653761&role=1&identity=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>📋 Nội dung sao chép</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?knowledge_id=6837791128880898&role=1&identity=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>⚠️ Nội dung gây hiểu lầm</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?knowledge_id=6837791128323842&role=1&identity=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>🔀 Chuyển hướng lưu lượng truy cập</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?knowledge_id=6837787798587138&role=1&identity=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>💼 Cập nhật mã số thuế</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?from=policy&identity=1&knowledge_id=6903175718323969&role=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>💰 Thông tin cơ bản về Thuế</span>
+        <a href="https://seller-vn.tiktok.com/university/essay?knowledge_id=6837804173133569&role=1&identity=1" target="_blank">Tra cứu</a>
+      </div>
+
+      <div class="media-item">
+        <span>⭐ Xử lý đánh giá tiêu cực</span>
+        <a href="https://docs.google.com/document/d/1omkZhxBimUFqSYVbMLwSKC_yRNtu06yJ/edit?usp=sharing" target="_blank">Tra cứu</a>
+      </div>
+
+    </div>
+  </fieldset>
+
+  <p style="font-size:12px;color:#64748b;text-align:center;margin-top:10px">
+    ⚠️ Khuyến nghị: Đọc kỹ nội quy trước khi làm video & gắn link Affiliate để tránh khóa giỏ hàng / bóp tương tác. Team Vũ Quốc Hoài
+  </p>
+</div>
+
+    
+  </div>
+    <div class="tooltip-container" id="draggableTooltip">
     <div class="tooltip-btn" id="tooltipToggle"><i class="fas fa-tools"></i></div>
     <div class="tooltip-menu" id="tooltipMenu">
       <a href="https://x2download.com" target="_blank" class="tooltip-item">
