@@ -192,23 +192,90 @@
       <input type="text" id="linktrangwes" readonly placeholder="Sẽ hiển thị sau khi lưu">
     </div>
 
-    <div id="tab-ai" class="tab-content">
-      <div class="assistant-grid">
-        <button class="btn-assistant" onclick="window.open('https://gemini.google.com/gem/16kyqHdhneKuo0dT3WKDIiux3BYgylH82?usp=sharing', '_blank')">
-          <span><i class="fas fa-robot"></i> Trợ lý tạo prompt tạo video từ các thành phần(Gemini)</span>
-          <i class="fas fa-external-link-alt"></i>
-        </button>
-        <button class="btn-assistant" onclick="window.open('https://gemini.google.com/gem/1S2Uav8nw2qw5BQHIvvu6oxXKASGN4jef?usp=sharing', '_blank')">
-          <span><i class="fas fa-brain"></i>trợ lý sáng tạo dựa trên kịch bản(Gemini)</span>
-          <i class="fas fa-external-link-alt"></i>
-        </button>
-        <button class="btn-assistant" onclick="window.open('https://gemini.google.com/gem/1y6TDB30XFw2LRmInE_QyrgowoM2yy7yy?usp=sharing', '_blank')">
-          <span><i class="fas fa-magic"></i> Trợ lý sao chép video(Gemini)</span>
-          <i class="fas fa-external-link-alt"></i>
-        </button>
-      </div>
-      <p style="font-size: 12px; color: #64748b; text-align: center; margin-top: 20px;">Hệ thống hỗ trợ soạn thảo nội dung nhanh.</p>
+   <div id="tab-ai" class="tab-content">
+  <div class="assistant-grid">
+    <button class="btn-assistant" onclick="window.open('https://gemini.google.com/gem/16kyqHdhneKuo0dT3WKDIiux3BYgylH82?usp=sharing', '_blank')">
+      <span><i class="fas fa-robot"></i> Trợ lý tạo prompt tạo video từ các thành phần(Gemini)</span>
+      <i class="fas fa-external-link-alt"></i>
+    </button>
+    <button class="btn-assistant" onclick="window.open('https://gemini.google.com/gem/1S2Uav8nw2qw5BQHIvvu6oxXKASGN4jef?usp=sharing', '_blank')">
+      <span><i class="fas fa-brain"></i> Trợ lý sáng tạo dựa trên kịch bản(Gemini)</span>
+      <i class="fas fa-external-link-alt"></i>
+    </button>
+    <button class="btn-assistant" onclick="window.open('https://gemini.google.com/gem/1y6TDB30XFw2LRmInE_QyrgowoM2yy7yy?usp=sharing', '_blank')">
+      <span><i class="fas fa-magic"></i> Trợ lý sao chép video(Gemini)</span>
+      <i class="fas fa-external-link-alt"></i>
+    </button>
+  </div>
+
+  <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+
+  <div class="hashtag-section" style="display: flex; flex-direction: column; gap: 10px;">
+    <label style="font-weight: bold; font-size: 14px;">Chọn chủ đề nội dung:</label>
+    
+    <select id="categorySelect" style="padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;" onchange="updateHashtags()">
+      <option value="">-- Chọn trường thông tin --</option>
+      <option value="tin-tuc-mxh">Tin tức MXH</option>
+      <option value="tin-moi-mxh">Tin mới MXH</option>
+      <option value="ao-lot">Áo lót</option>
+      <option value="quan-chip">Quần chíp</option>
+      <option value="mu-bao-hiem">Mũ bảo hiểm</option>
+    </select>
+
+    <div style="position: relative; display: flex; align-items: flex-start; gap: 5px;">
+      <textarea id="hashtagOutput" readonly 
+        placeholder="Hashtags sẽ hiện ở đây..." 
+        style="width: 100%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 13px; resize: none;"></textarea>
+      
+      <button onclick="copyHashtags()" title="Copy" 
+        style="padding: 5px 10px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;">
+        <i class="fas fa-copy"></i> Copy
+      </button>
     </div>
+  </div>
+
+  <p style="font-size: 12px; color: #64748b; text-align: center; margin-top: 20px;">Hệ thống hỗ trợ soạn thảo nội dung nhanh.</p>
+</div>
+    <script>
+  // Dữ liệu Hashtag
+  const hashtagData = {
+    'tin-tuc-mxh': '#tintuc #mxh #trending #socialmedia #news',
+    'tin-moi-mxh': '#tinmoi #hotnews #congdong mạng #xuhuong',
+    'ao-lot': '#aolot #noiy #dolotnu #thoitrangnoiy #sexy-lingerie',
+    'quan-chip': '#quanchip #quanlotnu #dolotcaocap #underwear',
+    'mu-bao-hiem': '#mubaohiem #safety #phuot #mubaohiemchinhhang #xemay'
+  };
+
+  // Hàm cập nhật hashtag khi chọn từ listbox
+  function updateHashtags() {
+    const select = document.getElementById('categorySelect');
+    const output = document.getElementById('hashtagOutput');
+    const value = select.value;
+    
+    output.value = hashtagData[value] || '';
+  }
+
+  // Hàm copy nội dung
+  function copyHashtags() {
+    const output = document.getElementById('hashtagOutput');
+    if (!output.value) {
+      alert('Chưa có nội dung để copy!');
+      return;
+    }
+    
+    output.select();
+    output.setSelectionRange(0, 99999); // Cho thiết bị di động
+    
+    try {
+      navigator.clipboard.writeText(output.value);
+      alert('Đã copy: ' + output.value);
+    } catch (err) {
+      // Cách dự phòng cho trình duyệt cũ
+      document.execCommand('copy');
+      alert('Đã copy nội dung!');
+    }
+  }
+</script>
 
     <div id="tab-affiliate" class="tab-content">
   <fieldset class="group-box">
