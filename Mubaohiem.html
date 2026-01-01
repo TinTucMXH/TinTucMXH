@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop Mũ Bảo Hiểm</title>
+
+<style>
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #0f172a;
+  color: #fff;
+}
+
+/* HEADER */
+header {
+  padding: 16px;
+  text-align: center;
+  background: #020617;
+  border-bottom: 2px solid #22d3ee;
+}
+
+header h1 {
+  color: #22d3ee;
+}
+
+/* PRODUCT GRID */
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* PRODUCT CARD */
+.product-card {
+  background: #020617;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(34,211,238,0.15);
+  transition: transform 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+}
+
+.product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.product-info {
+  padding: 15px;
+}
+
+.product-info h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.product-info p {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 12px;
+}
+
+.product-info button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: linear-gradient(90deg,#22d3ee,#38bdf8);
+  color: #000;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: #020617;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+}
+
+.modal-content img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.modal-content h2 {
+  margin-bottom: 8px;
+  color: #22d3ee;
+}
+
+.modal-content p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #fff;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🪖 Shop Mũ Bảo Hiểm Chính Hãng</h1>
+</header>
+
+<div class="container">
+  <div class="product-grid">
+
+    <!-- PRODUCT 1 -->
+    <div class="product-card">
+      <img src="https://i.imgur.com/7QZ6F0b.jpg">
+      <div class="product-info">
+        <h3>Mũ Bảo Hiểm Fullface</h3>
+        <p>Thiết kế thể thao – an toàn tối đa</p>
+        <button onclick="openModal(
+          'Mũ Bảo Hiểm Fullface',
+          'https://i.imgur.com/7QZ6F0b.jpg',
+          'Mũ fullface đạt chuẩn an toàn, vỏ ABS chịu lực cao, kính chống tia UV, phù hợp đi tour – phượt.'
+        )">Xem chi tiết</button>
+      </div>
+    </div>
+
+    <!-- PRODUCT 2 -->
+    <div class="product-card">
+      <img src="https://i.imgur.com/zf7gZPd.jpg">
+      <div class="product-info">
+        <h3>Mũ 3/4 Cao Cấp</h3>
+        <p>Nhẹ – thoáng – thời trang</p>
+        <button onclick="openModal(
+          'Mũ 3/4 Cao Cấp',
+          'https://i.imgur.com/zf7gZPd.jpg',
+          'Mũ 3/4 thiết kế gọn nhẹ, lót êm ái, phù hợp đi phố, nhiều size cho nam nữ.'
+        )">Xem chi tiết</button>
+      </div>
+    </div>
+
+    <!-- PRODUCT 3 -->
+    <div class="product-card">
+      <img src="https://i.imgur.com/6B4KJ7J.jpg">
+      <div class="product-info">
+        <h3>Mũ Nửa Đầu</h3>
+        <p>Gọn nhẹ – tiện lợi</p>
+        <button onclick="openModal(
+          'Mũ Nửa Đầu',
+          'https://i.imgur.com/6B4KJ7J.jpg',
+          'Mũ nửa đầu nhỏ gọn, phù hợp di chuyển ngắn, có nhiều màu sắc.'
+        )">Xem chi tiết</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">×</span>
+    <img id="modalImg">
+    <h2 id="modalTitle"></h2>
+    <p id="modalDesc"></p>
+  </div>
+</div>
+
+<script>
+function openModal(title, img, desc) {
+  document.getElementById('modalTitle').innerText = title;
+  document.getElementById('modalImg').src = img;
+  document.getElementById('modalDesc').innerText = desc;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+window.onclick = function(e) {
+  if (e.target === document.getElementById('modal')) {
+    closeModal();
+  }
+}
+</script>
+
+</body>
+</html>
