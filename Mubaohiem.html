@@ -192,7 +192,37 @@ header h1{color:#22d3ee}
   <button class="tab-btn" onclick="setType('34',this)">Mũ 3/4</button>
   <button class="tab-btn" onclick="setType('half',this)">Mũ Nửa Đầu</button>
 </div>
+<!-- FILTER -->
+<div class="filter-box">
+  <div class="accordion">
+    <div class="accordion-header" onclick="toggleFilter(this)">
+      🔍 Bộ lọc sản phẩm
+    </div>
+    <div class="accordion-content">
 
+      <strong>Size:</strong><br>
+      <label><input type="checkbox" class="f-size" value="S"> S</label>
+      <label><input type="checkbox" class="f-size" value="M"> M</label>
+      <label><input type="checkbox" class="f-size" value="L"> L</label>
+      <label><input type="checkbox" class="f-size" value="XL"> XL</label>
+
+      <hr>
+
+      <strong>Hãng:</strong><br>
+      <label><input type="checkbox" class="f-brand" value="AGV"> AGV</label>
+      <label><input type="checkbox" class="f-brand" value="LS2"> LS2</label>
+      <label><input type="checkbox" class="f-brand" value="YOHE"> YOHE</label>
+
+      <hr>
+
+      <strong>Giá:</strong><br>
+      <label><input type="radio" name="price" value="0-2000000"> Dưới 2 triệu</label><br>
+      <label><input type="radio" name="price" value="2000000-4000000"> 2 – 4 triệu</label><br>
+      <label><input type="radio" name="price" value="4000000-99999999"> Trên 4 triệu</label>
+
+    </div>
+  </div>
+</div>
 <div class="container">
   <div class="product-grid">
 
