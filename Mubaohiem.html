@@ -8,162 +8,32 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#0f172a;color:#fff}
-
-/* HEADER */
-header{
-  background:#020617;
-  padding:16px;
-  text-align:center;
-  border-bottom:2px solid #22d3ee;
-}
+header{background:#020617;padding:16px;text-align:center;border-bottom:2px solid #22d3ee}
 header h1{color:#22d3ee}
 
-/* TABS */
-.tabs{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  padding:14px;
-  flex-wrap:wrap;
-}
-.tab-btn{
-  padding:10px 18px;
-  border:none;
-  border-radius:20px;
-  background:#1e293b;
-  color:#fff;
-  cursor:pointer;
-}
-.tab-btn.active{
-  background:#22d3ee;
-  color:#000;
-  font-weight:bold;
-}
+.tabs{display:flex;gap:10px;justify-content:center;padding:14px;flex-wrap:wrap}
+.tab-btn{padding:10px 18px;border:none;border-radius:20px;background:#1e293b;color:#fff;cursor:pointer}
+.tab-btn.active{background:#22d3ee;color:#000;font-weight:bold}
 
-/* FILTER */
-.filter-box{
-  max-width:1200px;
-  margin:auto;
-  padding:0 16px;
-}
-.accordion{
-  background:#020617;
-  border-radius:10px;
-  margin-bottom:14px;
-}
-.accordion-header{
-  padding:14px;
-  cursor:pointer;
-  border-bottom:1px solid #22d3ee33;
-}
-.accordion-content{
-  display:none;
-  padding:14px;
-}
-.accordion-content label{
-  display:inline-block;
-  margin:6px 12px 6px 0;
-}
+.filter-box{max-width:1200px;margin:auto;padding:0 16px}
+.accordion{background:#020617;border-radius:10px;margin-bottom:14px}
+.accordion-header{padding:14px;cursor:pointer;border-bottom:1px solid #22d3ee33}
+.accordion-content{display:none;padding:14px}
+.accordion-content label{display:inline-block;margin:6px 12px 6px 0}
 
-/* PRODUCTS */
 .container{max-width:1200px;margin:auto;padding:20px}
-.product-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-}
-.product{
-  background:#020617;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 0 15px rgba(34,211,238,.15);
-}
-.product img{
-  width:100%;
-  height:200px;
-  object-fit:cover;
-}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.product{background:#020617;border-radius:12px;overflow:hidden;box-shadow:0 0 15px rgba(34,211,238,.15)}
+.product img{width:100%;height:200px;object-fit:cover}
 .product-info{padding:14px}
-.product-info h3{margin-bottom:6px}
-.product-info p{font-size:14px;opacity:.8}
-.product-info button{
-  margin-top:10px;
-  width:100%;
-  padding:8px;
-  border:none;
-  border-radius:8px;
-  background:linear-gradient(90deg,#22d3ee,#38bdf8);
-  cursor:pointer;
-}
-
-/* MODAL */
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.85);
-  justify-content:center;
-  align-items:center;
-  z-index:999;
-}
-.modal-box{
-  background:#020617;
-  width:95%;
-  max-width:520px;
-  border-radius:12px;
-  padding:16px;
-  position:relative;
-}
-.close{
-  position:absolute;
-  top:10px;
-  right:14px;
-  font-size:22px;
-  cursor:pointer;
-}
-
-/* SLIDER */
-.slider{position:relative;margin-bottom:10px}
-.slider img{width:100%;border-radius:8px}
-.arrow{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  background:rgba(0,0,0,.6);
-  border:none;
-  color:#fff;
-  font-size:20px;
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  cursor:pointer;
-}
-.arrow.left{left:8px}
-.arrow.right{right:8px}
-
-/* DETAIL */
-.price{color:#22d3ee;font-size:20px;font-weight:bold;margin:6px 0}
-.size-box button{
-  margin:4px;
-  padding:6px 10px;
-  border-radius:6px;
-  border:1px solid #22d3ee;
-  background:none;
-  color:#fff;
-  cursor:pointer;
-}
-.size-box button.active{
-  background:#22d3ee;
-  color:#000;
-}
+.product-info button{margin-top:10px;width:100%;padding:8px;border:none;border-radius:8px;background:linear-gradient(90deg,#22d3ee,#38bdf8);cursor:pointer}
+.hide{display:none}
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>🪖 Shop Mũ Bảo Hiểm</h1>
-</header>
+<header><h1>🪖 Shop Mũ Bảo Hiểm</h1></header>
 
 <!-- TABS -->
 <div class="tabs">
@@ -178,11 +48,20 @@ header h1{color:#22d3ee}
   <div class="accordion">
     <div class="accordion-header" onclick="toggleFilter(this)">🔍 Bộ lọc sản phẩm</div>
     <div class="accordion-content">
+
       <strong>Size:</strong><br>
-      <label><input type="checkbox"> S</label>
-      <label><input type="checkbox"> M</label>
-      <label><input type="checkbox"> L</label>
-      <label><input type="checkbox"> XL</label>
+      <label><input type="checkbox" class="f-size" value="S"> S</label>
+      <label><input type="checkbox" class="f-size" value="M"> M</label>
+      <label><input type="checkbox" class="f-size" value="L"> L</label>
+      <label><input type="checkbox" class="f-size" value="XL"> XL</label>
+
+      <hr>
+
+      <strong>Hãng:</strong><br>
+      <label><input type="checkbox" class="f-brand" value="AGV"> AGV</label>
+      <label><input type="checkbox" class="f-brand" value="LS2"> LS2</label>
+      <label><input type="checkbox" class="f-brand" value="YOHE"> YOHE</label>
+
     </div>
   </div>
 </div>
@@ -191,92 +70,50 @@ header h1{color:#22d3ee}
 <div class="container">
   <div class="product-grid">
 
-    <!-- FULLFACE -->
-    <div class="product" data-type="fullface">
+    <div class="product"
+      data-type="fullface"
+      data-size="M,L"
+      data-brand="AGV">
       <img src="https://i.imgur.com/7QZ6F0b.jpg">
       <div class="product-info">
         <h3>AGV Fullface Racing</h3>
-        <p>2.450.000đ</p>
-        <button onclick="openModal(
-          ['https://i.imgur.com/7QZ6F0b.jpg','https://i.imgur.com/YlZpE7C.jpg'],
-          'AGV Fullface Racing','2.450.000đ'
-        )">Xem chi tiết</button>
+        <button>Xem chi tiết</button>
       </div>
     </div>
 
-    <!-- FLIP -->
-    <div class="product" data-type="flip">
+    <div class="product"
+      data-type="flip"
+      data-size="L,XL"
+      data-brand="LS2">
       <img src="https://i.imgur.com/zf7gZPd.jpg">
       <div class="product-info">
         <h3>LS2 Mũ Lật Hàm</h3>
-        <p>2.950.000đ</p>
-        <button onclick="openModal(
-          ['https://i.imgur.com/zf7gZPd.jpg','https://i.imgur.com/PEP2Zyb.jpg'],
-          'LS2 Mũ Lật Hàm','2.950.000đ'
-        )">Xem chi tiết</button>
+        <button>Xem chi tiết</button>
       </div>
     </div>
 
-    <!-- 3/4 -->
-    <div class="product" data-type="34">
-      <img src="https://i.imgur.com/PEP2Zyb.jpg">
-      <div class="product-info">
-        <h3>Mũ 3/4 Classic</h3>
-        <p>1.250.000đ</p>
-        <button onclick="openModal(
-          ['https://i.imgur.com/PEP2Zyb.jpg'],
-          'Mũ 3/4 Classic','1.250.000đ'
-        )">Xem chi tiết</button>
-      </div>
-    </div>
-
-    <!-- HALF -->
-    <div class="product" data-type="half">
+    <div class="product"
+      data-type="half"
+      data-size="S,M"
+      data-brand="YOHE">
       <img src="https://i.imgur.com/6B4KJ7J.jpg">
       <div class="product-info">
-        <h3>Mũ Nửa Đầu</h3>
-        <p>550.000đ</p>
-        <button onclick="openModal(
-          ['https://i.imgur.com/6B4KJ7J.jpg'],
-          'Mũ Nửa Đầu','550.000đ'
-        )">Xem chi tiết</button>
+        <h3>YOHE Nửa Đầu</h3>
+        <button>Xem chi tiết</button>
       </div>
     </div>
 
-  </div>
-</div>
-
-<!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <span class="close" onclick="closeModal()">×</span>
-    <div class="slider">
-      <button class="arrow left" onclick="prevImg()">‹</button>
-      <img id="modalImg">
-      <button class="arrow right" onclick="nextImg()">›</button>
-    </div>
-    <h2 id="modalTitle"></h2>
-    <div class="price" id="modalPrice"></div>
-    <div class="size-box">
-      <label>Size:</label><br>
-      <button onclick="selectSize(this)">S</button>
-      <button onclick="selectSize(this)">M</button>
-      <button onclick="selectSize(this)">L</button>
-      <button onclick="selectSize(this)">XL</button>
-    </div>
   </div>
 </div>
 
 <script>
-let images=[],index=0,currentType='fullface';
+let currentType='fullface';
 
 function setType(type,btn){
   currentType=type;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.querySelectorAll('.product').forEach(p=>{
-    p.style.display=p.dataset.type===type?'block':'none';
-  });
+  applyFilter();
 }
 
 function toggleFilter(el){
@@ -284,20 +121,27 @@ function toggleFilter(el){
   c.style.display=c.style.display==='block'?'none':'block';
 }
 
-function openModal(imgs,title,price){
-  images=imgs;index=0;
-  modalImg.src=imgs[0];
-  modalTitle.innerText=title;
-  modalPrice.innerText=price;
-  modal.style.display='flex';
+document.querySelectorAll('.accordion-content input')
+.forEach(i=>i.addEventListener('change',applyFilter));
+
+function applyFilter(){
+  let sizes=[...document.querySelectorAll('.f-size:checked')].map(i=>i.value);
+  let brands=[...document.querySelectorAll('.f-brand:checked')].map(i=>i.value);
+
+  document.querySelectorAll('.product').forEach(p=>{
+    let ok=true;
+
+    if(p.dataset.type!==currentType) ok=false;
+
+    if(sizes.length && !sizes.some(s=>p.dataset.size.includes(s))) ok=false;
+
+    if(brands.length && !brands.includes(p.dataset.brand)) ok=false;
+
+    p.classList.toggle('hide',!ok);
+  });
 }
-function closeModal(){modal.style.display='none'}
-function nextImg(){index=(index+1)%images.length;modalImg.src=images[index]}
-function prevImg(){index=(index-1+images.length)%images.length;modalImg.src=images[index]}
-function selectSize(btn){
-  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-}
+
+applyFilter();
 </script>
 
 </body>
