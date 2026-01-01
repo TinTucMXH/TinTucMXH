@@ -49,13 +49,11 @@ header h1{color:#22d3ee}
 .accordion{
   background:#020617;
   border-radius:10px;
-  margin-bottom:12px;
+  margin-bottom:14px;
 }
 .accordion-header{
   padding:14px;
   cursor:pointer;
-  display:flex;
-  justify-content:space-between;
   border-bottom:1px solid #22d3ee33;
 }
 .accordion-content{
@@ -63,10 +61,9 @@ header h1{color:#22d3ee}
   padding:14px;
 }
 .accordion-content label{
-  margin-right:12px;
   display:inline-block;
+  margin:6px 12px 6px 0;
 }
-.accordion-content input{margin-right:6px}
 
 /* PRODUCTS */
 .container{max-width:1200px;margin:auto;padding:20px}
@@ -126,14 +123,8 @@ header h1{color:#22d3ee}
 }
 
 /* SLIDER */
-.slider{
-  position:relative;
-  margin-bottom:10px;
-}
-.slider img{
-  width:100%;
-  border-radius:8px;
-}
+.slider{position:relative;margin-bottom:10px}
+.slider img{width:100%;border-radius:8px}
 .arrow{
   position:absolute;
   top:50%;
@@ -150,21 +141,8 @@ header h1{color:#22d3ee}
 .arrow.left{left:8px}
 .arrow.right{right:8px}
 
-/* PRODUCT DETAIL */
-.price{
-  color:#22d3ee;
-  font-size:20px;
-  font-weight:bold;
-  margin:6px 0;
-}
-.select-box{
-  margin:8px 0;
-}
-.select-box select{
-  width:100%;
-  padding:8px;
-  border-radius:6px;
-}
+/* DETAIL */
+.price{color:#22d3ee;font-size:20px;font-weight:bold;margin:6px 0}
 .size-box button{
   margin:4px;
   padding:6px 10px;
@@ -178,29 +156,6 @@ header h1{color:#22d3ee}
   background:#22d3ee;
   color:#000;
 }
-.filter-box{
-  max-width:1200px;
-  margin:auto;
-  padding:0 16px;
-}
-.accordion{
-  background:#020617;
-  border-radius:10px;
-  margin-bottom:14px;
-}
-.accordion-header{
-  padding:14px;
-  cursor:pointer;
-  border-bottom:1px solid #22d3ee33;
-}
-.accordion-content{
-  display:none;
-  padding:14px;
-}
-.accordion-content label{
-  display:inline-block;
-  margin:6px 12px 6px 0;
-}
 </style>
 </head>
 
@@ -210,54 +165,80 @@ header h1{color:#22d3ee}
   <h1>🪖 Shop Mũ Bảo Hiểm</h1>
 </header>
 
+<!-- TABS -->
 <div class="tabs">
   <button class="tab-btn active" onclick="setType('fullface',this)">Mũ Fullface</button>
+  <button class="tab-btn" onclick="setType('flip',this)">Mũ lật hàm</button>
   <button class="tab-btn" onclick="setType('34',this)">Mũ 3/4</button>
   <button class="tab-btn" onclick="setType('half',this)">Mũ Nửa Đầu</button>
 </div>
+
 <!-- FILTER -->
 <div class="filter-box">
   <div class="accordion">
-    <div class="accordion-header" onclick="toggleFilter(this)">
-      🔍 Bộ lọc sản phẩm
-    </div>
+    <div class="accordion-header" onclick="toggleFilter(this)">🔍 Bộ lọc sản phẩm</div>
     <div class="accordion-content">
-
       <strong>Size:</strong><br>
-      <label><input type="checkbox" class="f-size" value="S"> S</label>
-      <label><input type="checkbox" class="f-size" value="M"> M</label>
-      <label><input type="checkbox" class="f-size" value="L"> L</label>
-      <label><input type="checkbox" class="f-size" value="XL"> XL</label>
-
-      <hr>
-
-      <strong>Hãng:</strong><br>
-      <label><input type="checkbox" class="f-brand" value="AGV"> AGV</label>
-      <label><input type="checkbox" class="f-brand" value="LS2"> LS2</label>
-      <label><input type="checkbox" class="f-brand" value="YOHE"> YOHE</label>
-
-      <hr>
-
-      <strong>Giá:</strong><br>
-      <label><input type="radio" name="price" value="0-2000000"> Dưới 2 triệu</label><br>
-      <label><input type="radio" name="price" value="2000000-4000000"> 2 – 4 triệu</label><br>
-      <label><input type="radio" name="price" value="4000000-99999999"> Trên 4 triệu</label>
-
+      <label><input type="checkbox"> S</label>
+      <label><input type="checkbox"> M</label>
+      <label><input type="checkbox"> L</label>
+      <label><input type="checkbox"> XL</label>
     </div>
   </div>
 </div>
+
+<!-- PRODUCTS -->
 <div class="container">
   <div class="product-grid">
 
+    <!-- FULLFACE -->
     <div class="product" data-type="fullface">
       <img src="https://i.imgur.com/7QZ6F0b.jpg">
       <div class="product-info">
         <h3>AGV Fullface Racing</h3>
-        <p>Giá: 2.450.000đ</p>
+        <p>2.450.000đ</p>
         <button onclick="openModal(
-          ['https://i.imgur.com/7QZ6F0b.jpg','https://i.imgur.com/YlZpE7C.jpg','https://i.imgur.com/t0XKcWm.jpg'],
-          'AGV Fullface Racing',
-          '2.450.000đ'
+          ['https://i.imgur.com/7QZ6F0b.jpg','https://i.imgur.com/YlZpE7C.jpg'],
+          'AGV Fullface Racing','2.450.000đ'
+        )">Xem chi tiết</button>
+      </div>
+    </div>
+
+    <!-- FLIP -->
+    <div class="product" data-type="flip">
+      <img src="https://i.imgur.com/zf7gZPd.jpg">
+      <div class="product-info">
+        <h3>LS2 Mũ Lật Hàm</h3>
+        <p>2.950.000đ</p>
+        <button onclick="openModal(
+          ['https://i.imgur.com/zf7gZPd.jpg','https://i.imgur.com/PEP2Zyb.jpg'],
+          'LS2 Mũ Lật Hàm','2.950.000đ'
+        )">Xem chi tiết</button>
+      </div>
+    </div>
+
+    <!-- 3/4 -->
+    <div class="product" data-type="34">
+      <img src="https://i.imgur.com/PEP2Zyb.jpg">
+      <div class="product-info">
+        <h3>Mũ 3/4 Classic</h3>
+        <p>1.250.000đ</p>
+        <button onclick="openModal(
+          ['https://i.imgur.com/PEP2Zyb.jpg'],
+          'Mũ 3/4 Classic','1.250.000đ'
+        )">Xem chi tiết</button>
+      </div>
+    </div>
+
+    <!-- HALF -->
+    <div class="product" data-type="half">
+      <img src="https://i.imgur.com/6B4KJ7J.jpg">
+      <div class="product-info">
+        <h3>Mũ Nửa Đầu</h3>
+        <p>550.000đ</p>
+        <button onclick="openModal(
+          ['https://i.imgur.com/6B4KJ7J.jpg'],
+          'Mũ Nửa Đầu','550.000đ'
         )">Xem chi tiết</button>
       </div>
     </div>
@@ -269,34 +250,13 @@ header h1{color:#22d3ee}
 <div class="modal" id="modal">
   <div class="modal-box">
     <span class="close" onclick="closeModal()">×</span>
-
     <div class="slider">
       <button class="arrow left" onclick="prevImg()">‹</button>
       <img id="modalImg">
       <button class="arrow right" onclick="nextImg()">›</button>
     </div>
-
     <h2 id="modalTitle"></h2>
     <div class="price" id="modalPrice"></div>
-
-    <div class="select-box">
-      <label>Màu tem</label>
-      <select>
-        <option>Đen đỏ</option>
-        <option>Đen xanh</option>
-        <option>Trắng</option>
-      </select>
-    </div>
-
-    <div class="select-box">
-      <label>Màu kính</label>
-      <select>
-        <option>Kính trong</option>
-        <option>Kính đen</option>
-        <option>Kính bạc</option>
-      </select>
-    </div>
-
     <div class="size-box">
       <label>Size:</label><br>
       <button onclick="selectSize(this)">S</button>
@@ -304,14 +264,14 @@ header h1{color:#22d3ee}
       <button onclick="selectSize(this)">L</button>
       <button onclick="selectSize(this)">XL</button>
     </div>
-
   </div>
 </div>
 
 <script>
-let images=[],index=0;
+let images=[],index=0,currentType='fullface';
 
 function setType(type,btn){
+  currentType=type;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.product').forEach(p=>{
@@ -319,16 +279,21 @@ function setType(type,btn){
   });
 }
 
-function openModal(imgs,title,price){
-  images=imgs; index=0;
-  document.getElementById('modalImg').src=images[0];
-  document.getElementById('modalTitle').innerText=title;
-  document.getElementById('modalPrice').innerText=price;
-  document.getElementById('modal').style.display='flex';
+function toggleFilter(el){
+  let c=el.nextElementSibling;
+  c.style.display=c.style.display==='block'?'none':'block';
 }
-function closeModal(){document.getElementById('modal').style.display='none'}
-function nextImg(){index=(index+1)%images.length;document.getElementById('modalImg').src=images[index]}
-function prevImg(){index=(index-1+images.length)%images.length;document.getElementById('modalImg').src=images[index]}
+
+function openModal(imgs,title,price){
+  images=imgs;index=0;
+  modalImg.src=imgs[0];
+  modalTitle.innerText=title;
+  modalPrice.innerText=price;
+  modal.style.display='flex';
+}
+function closeModal(){modal.style.display='none'}
+function nextImg(){index=(index+1)%images.length;modalImg.src=images[index]}
+function prevImg(){index=(index-1+images.length)%images.length;modalImg.src=images[index]}
 function selectSize(btn){
   btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
