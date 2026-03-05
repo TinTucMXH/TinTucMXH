@@ -2,43 +2,111 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Tool Copy Nội Dung</title>
 
 <style>
+
 body{
-    font-family: Arial;
-    padding:40px;
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding:15px;
+    background:#f0f7ff;
 }
 
+/* khung chính */
+.container{
+    max-width:600px;
+    margin:auto;
+}
+
+/* tiêu đề */
+h2{
+    text-align:center;
+    color:#0a6fd6;
+}
+
+/* textbox */
 textarea{
     width:100%;
-    height:120px;
+    height:140px;
     font-size:16px;
-    padding:10px;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #cfd9e6;
+    resize:none;
+    box-sizing:border-box;
 }
 
-button{
-    padding:10px 20px;
-    margin:10px 5px;
-    font-size:16px;
-    cursor:pointer;
+/* grid button */
+.button-grid{
+    margin-top:15px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
 }
+
+/* style button */
+button{
+    padding:14px;
+    font-size:16px;
+    border:none;
+    border-radius:10px;
+    background:#4da3ff;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#2f8cff;
+}
+
+button:active{
+    transform:scale(0.97);
+}
+
+/* thông báo */
+#notify{
+    margin-top:10px;
+    text-align:center;
+    color:green;
+    font-weight:bold;
+}
+
 </style>
 
 </head>
+
 <body>
 
-<h2>Nhập nội dung</h2>
+<div class="container">
+
+<h2>Tool Copy Nội Dung</h2>
 
 <textarea id="content" placeholder="Nhập nội dung tại đây..."></textarea>
 
-<br><br>
+<div class="button-grid">
 
-<button onclick="copyText('#tintucmxh #mxh #tintuc ')">Tin tức mxh</button>
-<button onclick="copyText('#tinmoimxh #mxh #tintuc ')">Tin Mới</button>
+<button onclick="copyText('#tintucmxh #mxh #tintuc')">Tin tức MXH</button>
+
+<button onclick="copyText('#tinmoimxh #mxh #tintuc')">Tin Mới</button>
+
 <button onclick="copyText('#todaynews #mxh #tintuc')">Today News</button>
+
 <button onclick="copyText('#cxcn #camxucconnguoi #mxh #tintuc')">Cảm xúc</button>
-<button onclick="copyText('#hashtag5')">Copy 5</button>
+
+<button onclick="copyText('#hashtag5')">Hashtag 5</button>
+
+<button onclick="copyText('#tinnong #mxh #news')">Tin Nóng</button>
+
+</div>
+
+<div id="notify"></div>
+
+</div>
 
 <script>
 
@@ -58,7 +126,7 @@ function copyText(hashtag){
 
     navigator.clipboard.writeText(result);
 
-    alert("Đã copy nội dung!");
+    document.getElementById("notify").innerText = "✅ Đã copy nội dung!";
 }
 
 </script>
