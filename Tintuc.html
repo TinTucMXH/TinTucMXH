@@ -169,7 +169,14 @@ function copyText2(hashtag){
 
     document.getElementById("notify").innerText = "✅ Đã copy nội dung 2!";
 }
+function copyText3(hashtag){
 
+    let result = "\n\n" + getToday() + "\n" + hashtag;
+
+    navigator.clipboard.writeText(result);
+
+    document.getElementById("notify").innerText = "✅ Đã copy nội dung sản phẩm!";
+}
 </script>
 
 </body>
