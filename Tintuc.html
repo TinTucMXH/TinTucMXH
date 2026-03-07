@@ -21,13 +21,12 @@ body{
     margin:auto;
 }
 
-/* tiêu đề */
 h2{
     text-align:center;
     color:#0a6fd6;
 }
 
-/* textbox */
+/* TEXTBOX CHUNG */
 textarea{
     width:100%;
     height:140px;
@@ -37,9 +36,17 @@ textarea{
     border:1px solid #cfd9e6;
     resize:none;
     box-sizing:border-box;
+    margin-top:10px;
 }
 
-/* grid button */
+/* TEXTBOX 2 màu đen */
+.textbox2{
+    background:#1a1a1a;
+    color:white;
+    border:1px solid #333;
+}
+
+/* GRID BUTTON */
 .button-grid{
     margin-top:15px;
     display:grid;
@@ -47,7 +54,7 @@ textarea{
     gap:10px;
 }
 
-/* style button */
+/* BUTTON PHẦN 1 */
 button{
     padding:14px;
     font-size:16px;
@@ -64,8 +71,14 @@ button:hover{
     background:#2f8cff;
 }
 
-button:active{
-    transform:scale(0.97);
+/* BUTTON PHẦN 2 (đen gradient) */
+.button-dark button{
+    background:linear-gradient(135deg,#111,#333,#111);
+    color:white;
+}
+
+.button-dark button:hover{
+    background:linear-gradient(135deg,#000,#444,#000);
 }
 
 /* thông báo */
@@ -74,6 +87,12 @@ button:active{
     text-align:center;
     color:green;
     font-weight:bold;
+}
+
+.section-title{
+    margin-top:20px;
+    font-weight:bold;
+    color:#0a6fd6;
 }
 
 </style>
@@ -86,21 +105,34 @@ button:active{
 
 <h2>Tool Copy Nội Dung</h2>
 
-<textarea id="content" placeholder="Nhập nội dung tại đây..."></textarea>
+<!-- TEXTBOX 1 -->
+<div class="section-title">Nội dung 1</div>
+<textarea id="content1"></textarea>
 
 <div class="button-grid">
 
-<button onclick="copyText('#tintucmxh #mxh #tintuc')">Tin tức MXH</button>
+<button onclick="copyText1('#tintucmxh #mxh #tintuc')">Tin tức MXH</button>
+<button onclick="copyText1('#tinmoimxh #mxh #tintuc')">Tin Mới</button>
+<button onclick="copyText1('#todaynews #mxh #tintuc')">Today News</button>
+<button onclick="copyText1('#cxcn #camxucconnguoi #mxh #tintuc')">Cảm xúc</button>
+<button onclick="copyText1('#hashtag5')">Hashtag 5</button>
+<button onclick="copyText1('#tinnong #mxh #news')">Tin Nóng</button>
 
-<button onclick="copyText('#tinmoimxh #mxh #tintuc')">Tin Mới</button>
+</div>
 
-<button onclick="copyText('#todaynews #mxh #tintuc')">Today News</button>
 
-<button onclick="copyText('#cxcn #camxucconnguoi #mxh #tintuc')">Cảm xúc</button>
+<!-- TEXTBOX 2 -->
+<div class="section-title">Nội dung 2</div>
+<textarea id="content2" class="textbox2"></textarea>
 
-<button onclick="copyText('#hashtag5')">Hashtag 5</button>
+<div class="button-grid button-dark">
 
-<button onclick="copyText('#tinnong #mxh #news')">Tin Nóng</button>
+<button onclick="copyText2('#sale #khuyenmai')">Sale</button>
+<button onclick="copyText2('#hanghot #deal')">Hàng Hot</button>
+<button onclick="copyText2('#review #sanpham')">Review</button>
+<button onclick="copyText2('#giamgia #uudai')">Giảm Giá</button>
+<button onclick="copyText2('#tiktokshop #sanphamhot')">TikTok Shop</button>
+<button onclick="copyText2('#muasam #dealhot')">Mua Sắm</button>
 
 </div>
 
@@ -118,15 +150,24 @@ function getToday(){
     return `Ngày đăng : ${day}/${month}/${year}`;
 }
 
-function copyText(hashtag){
+function copyText1(hashtag){
 
-    let text = document.getElementById("content").value;
-
+    let text = document.getElementById("content1").value;
     let result = text + "\n\n" + getToday() + "\n" + hashtag;
 
     navigator.clipboard.writeText(result);
 
-    document.getElementById("notify").innerText = "✅ Đã copy nội dung!";
+    document.getElementById("notify").innerText = "✅ Đã copy nội dung 1!";
+}
+
+function copyText2(hashtag){
+
+    let text = document.getElementById("content2").value;
+    let result = text + "\n\n" + getToday() + "\n" + hashtag;
+
+    navigator.clipboard.writeText(result);
+
+    document.getElementById("notify").innerText = "✅ Đã copy nội dung 2!";
 }
 
 </script>
