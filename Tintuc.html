@@ -3,84 +3,84 @@
 <head>
 <meta charset="UTF-8">
 
-<!-- KHÔNG CHO ZOOM -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Tool Copy Nội Dung</title>
 
 <style>
 
 body{
-    font-family:Arial;
-    margin:0;
-    padding:15px;
-    background:#f0f7ff;
+font-family:Arial;
+margin:0;
+padding:15px;
+background:#f0f7ff;
 }
 
 .container{
-    max-width:600px;
-    margin:auto;
+max-width:600px;
+margin:auto;
 }
 
 h2{
-    text-align:center;
-    color:#0a6fd6;
+text-align:center;
+color:#0a6fd6;
 }
 
 .section{
-    margin-top:18px;
-    font-weight:bold;
-    color:#0a6fd6;
+margin-top:18px;
+font-weight:bold;
+color:#0a6fd6;
 }
 
 textarea{
-    width:100%;
-    height:140px;
-    padding:12px;
-    margin-top:8px;
-    border-radius:10px;
-    border:1px solid #cfd9e6;
-    resize:none;
-    font-size:16px;
-    box-sizing:border-box;
+width:100%;
+height:140px;
+padding:12px;
+margin-top:8px;
+border-radius:10px;
+border:1px solid #cfd9e6;
+resize:none;
+font-size:16px;
+box-sizing:border-box;
 }
 
 .dark{
-    background:#1a1a1a;
-    color:white;
-    border:1px solid #333;
+background:#1a1a1a;
+color:white;
+border:1px solid #333;
 }
 
 .grid{
-    margin-top:12px;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
+margin-top:12px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
 }
 
 button{
-    padding:14px;
-    border:none;
-    border-radius:10px;
-    font-size:15px;
-    font-weight:bold;
-    background:#4da3ff;
-    color:white;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:15px;
+font-weight:bold;
+background:#4da3ff;
+color:white;
 }
 
 button:active{
-    transform:scale(0.97);
+transform:scale(0.97);
 }
 
 .dark-btn button{
-    background:linear-gradient(135deg,#111,#333,#111);
+background:linear-gradient(135deg,#111,#333,#111);
 }
 
 #notify{
-    margin-top:12px;
-    text-align:center;
-    color:green;
-    font-weight:bold;
+margin-top:12px;
+text-align:center;
+color:green;
+font-weight:bold;
 }
 
 </style>
@@ -98,16 +98,22 @@ button:active{
 <div class="grid">
 
 <button onclick="copyData('content1','#tintucmxh #mxh #tintuc')">Tin tức MXH</button>
+
 <button onclick="copyData('content1','#tinmoimxh #mxh #tintuc')">Tin Mới</button>
+
 <button onclick="copyData('content1','#todaynews #mxh #tintuc')">Today News</button>
+
 <button onclick="copyData('content1','#cxcn #camxucconnguoi #mxh #tintuc')">Cảm xúc</button>
+
 <button onclick="copyData('content1','#tintuc #mxh')">Chi tiết</button>
-<button onclick="copyData('content1','#tinnong #mxh #news')">Tin Nóng</button>
+
+<button onclick="tinNong()">Tin Nóng</button>
 
 </div>
 
 
 <div class="section">Nội dung 2</div>
+
 <textarea id="content2" class="dark"></textarea>
 
 <div class="grid dark-btn">
@@ -131,44 +137,85 @@ Royal M179
 
 </div>
 
-
 <script>
 
 function today(){
-    const d = new Date();
-    return "Ngày đăng : " +
-    String(d.getDate()).padStart(2,'0') + "/" +
-    String(d.getMonth()+1).padStart(2,'0') + "/" +
-    d.getFullYear();
+const d=new Date();
+return "Ngày đăng : "
++String(d.getDate()).padStart(2,'0')+"/"
++String(d.getMonth()+1).padStart(2,'0')+"/"
++d.getFullYear();
+}
+
+function replaceWords(text){
+
+text=text.replace(/tử vong/gi,"TV");
+text=text.replace(/dao/gi,"🔪");
+text=text.replace(/buồn/gi,"😢");
+text=text.replace(/lạnh/gi,"🥶");
+
+return text;
+}
+
+function rewriteNews(text){
+
+text=replaceWords(text);
+
+return "🚨 TIN NÓNG MXH\n\n"
++text+
+"\n\nThông tin đang thu hút sự chú ý trên mạng xã hội.";
+}
+
+function tinNong(){
+
+let text=document.getElementById("content1").value;
+
+if(!text.trim()){
+notify("⚠️ Chưa có nội dung");
+return;
+}
+
+let result=rewriteNews(text)
++"\n\n"+today()
++"\n#tinnong #mxh #news";
+
+navigator.clipboard.writeText(result);
+
+notify("🔥 Đã tạo Tin Nóng và copy!");
+
 }
 
 function copyData(id,tag){
 
-    let text=document.getElementById(id).value;
+let text=document.getElementById(id).value;
 
-    let result=text + "\n\n" + today() + "\n" + tag;
+let result=text
++"\n\n"+today()
++"\n"+tag;
 
-    navigator.clipboard.writeText(result);
+navigator.clipboard.writeText(result);
 
-    notify("✅ Đã copy nội dung!");
+notify("✅ Đã copy nội dung!");
+
 }
 
 function copyProduct(text){
 
-    let result=today() + "\n" + text;
+let result=today()+"\n"+text;
 
-    navigator.clipboard.writeText(result);
+navigator.clipboard.writeText(result);
 
-    notify("✅ Đã copy nội dung sản phẩm!");
+notify("✅ Đã copy nội dung sản phẩm!");
+
 }
 
 function notify(msg){
 
-    document.getElementById("notify").innerText=msg;
+document.getElementById("notify").innerText=msg;
 
-    setTimeout(()=>{
-        document.getElementById("notify").innerText="";
-    },2000);
+setTimeout(()=>{
+document.getElementById("notify").innerText="";
+},2000);
 
 }
 
