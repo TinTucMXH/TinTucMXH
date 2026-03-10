@@ -66,6 +66,11 @@ font-size:15px;
 font-weight:bold;
 background:#4da3ff;
 color:white;
+transition:0.2s;
+}
+
+button.active{
+background:#2ecc71;
 }
 
 button:active{
@@ -97,17 +102,17 @@ font-weight:bold;
 
 <div class="grid">
 
-<button onclick="copyData('content1','#tintucmxh #mxh #tintuc')">Tin tức MXH</button>
+<button onclick="setActive(this);copyData('content1','#tintucmxh #mxh #tintuc')">Tin tức MXH</button>
 
-<button onclick="copyData('content1','#tinmoimxh #mxh #tintuc')">Tin Mới</button>
+<button onclick="setActive(this);copyData('content1','#tinmoimxh #mxh #tintuc')">Tin Mới</button>
 
-<button onclick="copyData('content1','#todaynews #mxh #tintuc')">Today News</button>
+<button onclick="setActive(this);copyData('content1','#todaynews #mxh #tintuc')">Today News</button>
 
-<button onclick="copyData('content1','#cxcn #camxucconnguoi #mxh #tintuc')">Cảm xúc</button>
+<button onclick="setActive(this);copyData('content1','#cxcn #camxucconnguoi #mxh #tintuc')">Cảm xúc</button>
 
-<button onclick="copyData('content1','#tintuc #mxh')">Chi tiết</button>
+<button onclick="setActive(this);copyData('content1','#tintuc #mxh')">Chi tiết</button>
 
-<button onclick="tinNong()">Tin Nóng</button>
+<button onclick="setActive(this);tinNong()">Tin Nóng</button>
 
 </div>
 
@@ -118,18 +123,18 @@ font-weight:bold;
 
 <div class="grid dark-btn">
 
-<button onclick="copyProduct('🚀 Mũ Fullface thể thao Royal M266 – đẹp, chắc, giá cực tốt hôm nay! #royalm266 #fullfacehelmet #muabaohiem #dealhot #tiktokshop #xuhuongtiktok #fyp')">
+<button onclick="setActive(this);copyProduct('🚀 Mũ Fullface thể thao Royal M266 – đẹp, chắc, giá cực tốt hôm nay! #royalm266 #fullfacehelmet #muabaohiem #dealhot #tiktokshop #xuhuongtiktok #fyp')">
 Royal M266
 </button>
 
-<button onclick="copyProduct('Royal M179 là dòng mũ bảo hiểm fullface lật hàm hiện đại, kết hợp giữa sự an toàn của mũ fullface và sự tiện lợi của mũ 3/4. Thiết kế lật cằm thông minh giúp người dùng dễ dàng giao tiếp mà không cần tháo mũ. #royalm179 #royalhelmet #muabaohiem #muabaohiemfullface #muabaohiemlatham')">
+<button onclick="setActive(this);copyProduct('Royal M179 là dòng mũ bảo hiểm fullface lật hàm hiện đại, kết hợp giữa sự an toàn của mũ fullface và sự tiện lợi của mũ 3/4. Thiết kế lật cằm thông minh giúp người dùng dễ dàng giao tiếp mà không cần tháo mũ. #royalm179 #royalhelmet #muabaohiem #muabaohiemfullface #muabaohiemlatham')">
 Royal M179
 </button>
 
-<button onclick="copyData('content2','#review #sanpham')">Review</button>
-<button onclick="copyData('content2','#giamgia #uudai')">Giảm Giá</button>
-<button onclick="copyData('content2','#tiktokshop #sanphamhot')">TikTok Shop</button>
-<button onclick="copyData('content2','#muasam #dealhot')">Mua Sắm</button>
+<button onclick="setActive(this);copyData('content2','#review #sanpham')">Review</button>
+<button onclick="setActive(this);copyData('content2','#giamgia #uudai')">Giảm Giá</button>
+<button onclick="setActive(this);copyData('content2','#tiktokshop #sanphamhot')">TikTok Shop</button>
+<button onclick="setActive(this);copyData('content2','#muasam #dealhot')">Mua Sắm</button>
 
 </div>
 
@@ -137,14 +142,28 @@ Royal M179
 
 </div>
 
+
 <script>
 
+function setActive(btn){
+
+document.querySelectorAll("button").forEach(b=>{
+b.classList.remove("active");
+});
+
+btn.classList.add("active");
+
+}
+
 function today(){
+
 const d=new Date();
+
 return "Ngày đăng : "
 +String(d.getDate()).padStart(2,'0')+"/"
 +String(d.getMonth()+1).padStart(2,'0')+"/"
 +d.getFullYear();
+
 }
 
 function replaceWords(text){
@@ -155,6 +174,7 @@ text=text.replace(/buồn/gi,"😢");
 text=text.replace(/lạnh/gi,"🥶");
 
 return text;
+
 }
 
 function rewriteNews(text){
@@ -164,6 +184,7 @@ text=replaceWords(text);
 return "🚨 TIN NÓNG MXH\n\n"
 +text+
 "\n\nThông tin đang thu hút sự chú ý trên mạng xã hội.";
+
 }
 
 function tinNong(){
