@@ -308,11 +308,13 @@ p.style.display="flex"
 
 }
 
-document.getElementById("popup").ondblclick=function(){
+document.getElementById("popup").onclick=function(){
 
 this.style.display="none"
 
 redo()
+
+ctx.beginPath()
 
 }
 
