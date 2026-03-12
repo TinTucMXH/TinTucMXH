@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bé Tập Viết Số</title>
+<title>Bé Tập Viết</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
 
@@ -17,6 +17,10 @@ text-align:center;
 padding:10px;
 }
 
+h2{
+color:#1565c0;
+}
+
 canvas{
 background:white;
 border:3px solid #1976d2;
@@ -25,7 +29,7 @@ touch-action:none;
 }
 
 button{
-padding:10px 18px;
+padding:10px 16px;
 margin:8px;
 font-size:16px;
 border:none;
@@ -53,9 +57,11 @@ margin-top:10px;
 
 <body>
 
-<h2>✏️ Bé Viết Số</h2>
+<h2>✏️ Bé Tập Viết Chữ</h2>
 
-<canvas id="canvas" width="300" height="300"></canvas>
+<p>Viết chữ hoặc số vào ô</p>
+
+<canvas id="writeCanvas" width="300" height="300"></canvas>
 
 <br>
 
@@ -64,12 +70,14 @@ margin-top:10px;
 
 <div id="result">?</div>
 
+<canvas id="notebook" width="300" height="300"></canvas>
+
 <script>
 
-const canvas = document.getElementById("canvas");
+const canvas = document.getElementById("writeCanvas");
 const ctx = canvas.getContext("2d");
 
-ctx.lineWidth = 20;
+ctx.lineWidth = 18;
 ctx.lineCap = "round";
 
 let drawing=false;
@@ -95,6 +103,7 @@ let y = (e.touches?e.touches[0].clientY:e.clientY) - rect.top;
 
 ctx.lineTo(x,y);
 ctx.stroke();
+
 ctx.beginPath();
 ctx.moveTo(x,y);
 
@@ -109,8 +118,16 @@ canvas.addEventListener("touchend",end);
 canvas.addEventListener("touchmove",draw);
 
 function clearCanvas(){
+
 ctx.clearRect(0,0,canvas.width,canvas.height);
+
 document.getElementById("result").innerText="?";
+
+let ctx2=document.getElementById("notebook").getContext("2d");
+ctx2.clearRect(0,0,300,300);
+
+drawNotebook();
+
 }
 
 let model;
@@ -155,7 +172,64 @@ let max = data.indexOf(Math.max(...data));
 
 document.getElementById("result").innerText=max;
 
+drawLetter(max);
+
 }
+
+function drawNotebook(){
+
+let canvas2=document.getElementById("notebook");
+let ctx2=canvas2.getContext("2d");
+
+let size=100;
+
+for(let x=0;x<canvas2.width;x+=size){
+
+for(let y=0;y<canvas2.height;y+=size){
+
+ctx2.strokeStyle="#2196f3";
+ctx2.lineWidth=2;
+
+ctx2.strokeRect(x,y,size,size);
+
+ctx2.strokeStyle="#90caf9";
+ctx2.lineWidth=1;
+
+ctx2.beginPath();
+ctx2.moveTo(x+size/2,y);
+ctx2.lineTo(x+size/2,y+size);
+ctx2.stroke();
+
+ctx2.beginPath();
+ctx2.moveTo(x,y+size/2);
+ctx2.lineTo(x+size,y+size/2);
+ctx2.stroke();
+
+}
+
+}
+
+}
+
+function drawLetter(letter){
+
+let canvas2=document.getElementById("notebook");
+let ctx2=canvas2.getContext("2d");
+
+drawNotebook();
+
+ctx2.font="120px Arial";
+
+ctx2.textAlign="center";
+ctx2.textBaseline="middle";
+
+ctx2.fillStyle="black";
+
+ctx2.fillText(letter,150,150);
+
+}
+
+drawNotebook();
 
 </script>
 
