@@ -90,14 +90,6 @@ background:#4da3ff;
 color:white;
 }
 
-button.active{
-background:#2ecc71;
-}
-
-.dark-btn button{
-background:linear-gradient(135deg,#111,#333,#111);
-}
-
 .mail-row{
 display:flex;
 gap:8px;
@@ -132,6 +124,10 @@ margin-top:6px;
 }
 
 .salary-box textarea{
+height:120px;
+}
+
+.history{
 height:120px;
 }
 
@@ -184,13 +180,13 @@ font-weight:bold;
 
 <textarea id="content2" class="dark"></textarea>
 
-<div class="grid dark-btn">
+<div class="grid">
 
-<button onclick="copyProduct('🚀 Mũ Fullface thể thao Royal M266 – đẹp, chắc, giá cực tốt hôm nay! #royalm266 #fullfacehelmet #muabaohiem #dealhot #tiktokshop #xuhuongtiktok #fyp')">
+<button onclick="copyProduct('🚀 Mũ Fullface Royal M266 giá tốt hôm nay #royalm266 #muabaohiem')">
 Royal M266
 </button>
 
-<button onclick="copyProduct('Royal M179 là dòng mũ bảo hiểm fullface lật hàm hiện đại, an toàn và tiện lợi. #royalm179 #royalhelmet #muabaohiem')">
+<button onclick="copyProduct('Mũ lật hàm Royal M179 tiện lợi an toàn #royalm179 #muabaohiem')">
 Royal M179
 </button>
 
@@ -204,7 +200,7 @@ Royal M179
 </div>
 
 
-<!-- TAB 3 MAIL -->
+<!-- TAB MAIL -->
 
 <div id="tab3" class="tabcontent">
 
@@ -228,28 +224,35 @@ Royal M179
 
 <h3>Tính Thu Nhập</h3>
 
-<label>$ USD</label>
-<input type="number" id="usd">
+<label>Thu nhập $</label>
+<input type="number" id="income">
 
 <label>Tỷ giá VNĐ</label>
 <input type="number" id="rate" value="25000">
 
 <label>Phần trăm nhận</label>
+
 <select id="percent">
-<option value="100">100%</option>
-<option value="90">90%</option>
-<option value="80">80%</option>
-<option value="70">70%</option>
-<option value="60">60%</option>
-<option value="50">50%</option>
+<option>50</option>
+<option>55</option>
+<option>60</option>
+<option>65</option>
+<option>70</option>
+<option>75</option>
+<option>80</option>
+<option>85</option>
+<option>90</option>
+<option>95</option>
+<option selected>100</option>
 </select>
 
-<label>Thu nhập $</label>
-<input type="number" id="income">
-
 <button onclick="tinhTien()">Tính Tiền</button>
+<button onclick="copyLuong()">Copy bảng lương</button>
+<button onclick="clearHistory()">Xóa lịch sử</button>
 
-<textarea id="salaryResult" readonly placeholder="Bảng lương hiển thị tại đây"></textarea>
+<textarea id="salaryResult" readonly placeholder="Bảng lương"></textarea>
+
+<textarea id="history" class="history" readonly placeholder="Lịch sử bảng lương"></textarea>
 
 </div>
 
@@ -281,24 +284,7 @@ function today(){
 
 const d=new Date();
 
-return "Ngày đăng : "
-+String(d.getDate()).padStart(2,'0')+"/"
-+String(d.getMonth()+1).padStart(2,'0')+"/"
-+d.getFullYear();
-
-}
-
-function tinNong(){
-
-let text=document.getElementById("content1").value;
-
-let result="🚨 TIN NÓNG MXH\n\n"+text+
-"\n\n"+today()+
-"\n#tinnong #mxh #news";
-
-navigator.clipboard.writeText(result);
-
-notify("Đã copy Tin Nóng");
+return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
 
 }
 
@@ -306,19 +292,29 @@ function copyData(id,tag){
 
 let text=document.getElementById(id).value;
 
-let result=text+"\n\n"+today()+"\n"+tag;
+let result=text+"\n\nNgày đăng: "+today()+"\n"+tag;
 
 navigator.clipboard.writeText(result);
 
-notify("Đã copy nội dung");
+notify("Đã copy");
+
+}
+
+function tinNong(){
+
+let text=document.getElementById("content1").value;
+
+let result="🚨 TIN NÓNG\n\n"+text+"\n\n#tinnong #mxh";
+
+navigator.clipboard.writeText(result);
+
+notify("Đã copy Tin Nóng");
 
 }
 
 function copyProduct(text){
 
-let result=today()+"\n"+text;
-
-navigator.clipboard.writeText(result);
+navigator.clipboard.writeText(text);
 
 notify("Đã copy sản phẩm");
 
@@ -326,24 +322,44 @@ notify("Đã copy sản phẩm");
 
 function tinhTien(){
 
-let usd=parseFloat(document.getElementById("usd").value)||0;
-let rate=parseFloat(document.getElementById("rate").value)||0;
-let percent=parseFloat(document.getElementById("percent").value)||0;
 let income=parseFloat(document.getElementById("income").value)||0;
 
+let rate=parseFloat(document.getElementById("rate").value)||0;
+
+let percent=parseFloat(document.getElementById("percent").value)||0;
+
 let receiveUsd=income*percent/100;
+
 let vnd=receiveUsd*rate;
 
 let result=
-"===== BẢNG LƯƠNG =====\n\n"+
-"USD : $"+usd+"\n"+
-"Tỷ giá : "+rate.toLocaleString()+" VNĐ\n"+
-"Phần trăm : "+percent+"%\n"+
-"Thu nhập gốc : $"+income+"\n\n"+
-"Thực nhận : $"+receiveUsd.toFixed(2)+"\n"+
-"Quy đổi VNĐ : "+vnd.toLocaleString()+" VNĐ";
+"===== BẢNG LƯƠNG =====\n"+
+"Ngày: "+today()+"\n\n"+
+"Thu nhập gốc: $"+income+"\n"+
+"Phần trăm nhận: "+percent+"%\n"+
+"Thực nhận: $"+receiveUsd.toFixed(2)+"\n"+
+"Tỷ giá: "+rate.toLocaleString()+" VNĐ\n"+
+"Quy đổi: "+vnd.toLocaleString()+" VNĐ\n";
 
 document.getElementById("salaryResult").value=result;
+
+document.getElementById("history").value=
+result+"\n----------------\n"+
+document.getElementById("history").value;
+
+}
+
+function copyLuong(){
+
+navigator.clipboard.writeText(document.getElementById("salaryResult").value);
+
+notify("Đã copy bảng lương");
+
+}
+
+function clearHistory(){
+
+document.getElementById("history").value="";
 
 }
 
