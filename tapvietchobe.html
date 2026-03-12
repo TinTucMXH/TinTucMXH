@@ -23,15 +23,16 @@ color:#1976d2;
 
 #buttons{
 display:grid;
-grid-template-columns:repeat(6,1fr);
-gap:8px;
-max-width:420px;
+grid-template-columns:repeat(auto-fill,minmax(48px,1fr));
+gap:6px;
+width:100%;
+max-width:380px;
 margin:auto;
 }
 
-button{
-font-size:26px;
-padding:12px;
+#buttons button{
+font-size:20px;
+padding:10px 0;
 border:none;
 border-radius:10px;
 background:#4caf50;
