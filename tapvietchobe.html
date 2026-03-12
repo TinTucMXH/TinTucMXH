@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bé Luyện Viết</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#eef6ff;
+text-align:center;
+padding:10px;
+touch-action:none;
+overflow-y:auto;
+}
+
+h2{
+color:#1976d2;
+margin-bottom:10px;
+}
+
+/* TAB */
+
+.tabs{
+display:flex;
+justify-content:center;
+gap:6px;
+margin-bottom:10px;
+flex-wrap:wrap;
+}
+
+.tabs button{
+flex:1;
+max-width:120px;
+padding:10px;
+font-size:16px;
+border:none;
+border-radius:10px;
+background:#90caf9;
+font-weight:bold;
+}
+
+.tabs button.active{
+background:#1976d2;
+color:white;
+}
+
+/* button chữ */
+
+#buttons{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(55px,1fr));
+gap:8px;
+width:100%;
+max-width:420px;
+margin:auto;
+}
+
+#buttons button{
+font-size:22px;
+padding:12px 0;
+border:none;
+border-radius:12px;
+background:#4caf50;
+color:white;
+font-weight:bold;
+}
+
+/* bảng vẽ */
+
+#board{
+position:relative;
+width:360px;
+height:360px;
+margin:20px auto;
+}
+
+canvas{
+position:absolute;
+left:0;
+top:0;
+}
+
+/* nhóm nút chức năng */
+
+.controls{
+margin-top:10px;
+display:flex;
+justify-content:center;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.controls button{
+flex:1;
+max-width:140px;
+font-size:22px;
+padding:14px;
+border:none;
+border-radius:14px;
+font-weight:bold;
+color:white;
+}
+
+.btnRedo{background:#2196f3;}
+.btnClear{background:#f44336;}
+.btnScore{background:#ff9800;}
+
+/* popup */
+
+#popup{
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+display:none;
+background:rgba(0,0,0,0.6);
+align-items:center;
+justify-content:center;
+}
+
+#popupContent{
+font-size:120px;
+color:red;
+background:white;
+padding:40px;
+border-radius:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>✏️ Bé Luyện Viết</h2>
+
+<div class="tabs">
+
+<button onclick="showTab('hoa',this)" class="active">Chữ hoa</button>
+<button onclick="showTab('thuong',this)">Chữ thường</button>
+<button onclick="showTab('dau',this)">Chữ có dấu</button>
+<button onclick="showTab('so',this)">Số</button>
+
+</div>
+
+<div id="buttons"></div>
+
+<div id="board">
+
+<canvas id="gridCanvas" width="360" height="360"></canvas>
+<canvas id="letterCanvas" width="360" height="360"></canvas>
+<canvas id="drawCanvas" width="360" height="360"></canvas>
+
+</div>
+
+<div class="controls">
+
+<button class="btnRedo" onclick="redo()">🔄 Vẽ lại</button>
+<button class="btnClear" onclick="clearAll()">🗑 Xóa</button>
+<button class="btnScore" onclick="score()">⭐ Chấm điểm</button>
+
+</div>
+
+<div id="popup">
+<div id="popupContent"></div>
+</div>
+
+<script>
+
+/* dữ liệu tab */
+
+const data={
+
+hoa:[
+"A","B","C","D","E","F","G","H","I","J",
+"K","L","M","N","O","P","Q","R","S","T",
+"U","V","W","X","Y","Z"
+],
+
+thuong:[
+"a","b","c","d","e","f","g","h","i","j",
+"k","l","m","n","o","p","q","r","s","t",
+"u","v","w","x","y","z"
+],
+
+dau:[
+"Ă","Â","Ê","Ô","Ơ","Ư","Đ",
+"ă","â","ê","ô","ơ","ư","đ"
+],
+
+so:[
+"0","1","2","3","4","5","6","7","8","9"
+]
+
+}
+
+const btnDiv=document.getElementById("buttons")
+
+function showTab(tab,el){
+
+document.querySelectorAll(".tabs button")
+.forEach(b=>b.classList.remove("active"))
+
+el.classList.add("active")
+
+btnDiv.innerHTML=""
+
+data[tab].forEach(c=>{
+
+let b=document.createElement("button")
+b.innerText=c
+b.onclick=()=>drawLetter(c)
+
+btnDiv.appendChild(b)
+
+})
+
+}
+
+showTab("hoa",document.querySelector(".tabs button"))
+
+/* canvas */
+
+const gridCanvas=document.getElementById("gridCanvas")
+const gridCtx=gridCanvas.getContext("2d")
+
+const letterCanvas=document.getElementById("letterCanvas")
+const letterCtx=letterCanvas.getContext("2d")
+
+const drawCanvas=document.getElementById("drawCanvas")
+const ctx=drawCanvas.getContext("2d")
+
+ctx.lineWidth=12
+ctx.lineCap="round"
+
+let drawing=false
+let drawData=[]
+
+function drawGrid(){
+
+gridCtx.clearRect(0,0,360,360)
+
+let size=40
+
+for(let x=0;x<=360;x+=size){
+
+for(let y=0;y<=360;y+=size){
+
+gridCtx.strokeStyle="#90caf9"
+gridCtx.strokeRect(x,y,size,size)
+
+}
+
+}
+
+}
+
+function drawLetter(letter){
+
+letterCtx.clearRect(0,0,360,360)
+
+letterCtx.setLineDash([10,10])
+letterCtx.font="220px Arial"
+
+letterCtx.textAlign="center"
+letterCtx.textBaseline="middle"
+
+letterCtx.strokeStyle="#444"
+letterCtx.strokeText(letter,180,200)
+
+redo()
+
+}
+
+function redo(){
+
+ctx.clearRect(0,0,360,360)
+drawData=[]
+
+}
+
+function clearAll(){
+
+redo()
+letterCtx.clearRect(0,0,360,360)
+
+}
+
+/* vẽ */
+
+function start(e){
+drawing=true
+draw(e)
+}
+
+function end(){
+drawing=false
+ctx.beginPath()
+}
+
+function draw(e){
+
+if(!drawing)return
+
+e.preventDefault()
+
+let rect=drawCanvas.getBoundingClientRect()
+
+let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left
+let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top
+
+drawData.push({x,y})
+
+ctx.lineTo(x,y)
+ctx.stroke()
+
+ctx.beginPath()
+ctx.moveTo(x,y)
+
+}
+
+drawCanvas.addEventListener("mousedown",start)
+drawCanvas.addEventListener("mouseup",end)
+drawCanvas.addEventListener("mousemove",draw)
+
+drawCanvas.addEventListener("touchstart",start,{passive:false})
+drawCanvas.addEventListener("touchend",end)
+drawCanvas.addEventListener("touchmove",draw,{passive:false})
+
+/* chấm điểm */
+
+function score(){
+
+if(drawData.length<10){
+showSad()
+return
+}
+
+let outside=0
+
+drawData.forEach(p=>{
+if(p.x<10||p.x>350||p.y<10||p.y>350){
+outside++
+}
+})
+
+if(outside>30){
+showSad()
+}else{
+
+let scores=[10,9,8]
+let s=scores[Math.floor(Math.random()*3)]
+
+showScore(s)
+
+}
+
+}
+
+function showScore(s){
+
+let p=document.getElementById("popup")
+let c=document.getElementById("popupContent")
+
+c.innerHTML=s
+p.style.display="flex"
+
+}
+
+function showSad(){
+
+let p=document.getElementById("popup")
+let c=document.getElementById("popupContent")
+
+c.innerHTML="☹️"
+p.style.display="flex"
+
+}
+
+document.getElementById("popup").onclick=function(){
+
+this.style.display="none"
+redo()
+ctx.beginPath()
+
+}
+
+drawGrid()
+
+</script>
+
+</body>
+</html>
