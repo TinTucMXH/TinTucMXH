@@ -84,7 +84,7 @@ left:0;
 top:0;
 }
 
-/* nhóm nút */
+/* nút */
 
 .controls{
 margin-top:10px;
@@ -166,38 +166,18 @@ border-radius:20px;
 
 <script>
 
-/* dữ liệu chữ */
+/* dữ liệu */
 
 const data={
-
 hoa:"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""),
-
 thuong:"abcdefghijklmnopqrstuvwxyz".split(""),
-
-dau:[
-"á","à","ả","ã","ạ",
-"ă","ắ","ằ","ẳ","ẵ","ặ",
-"â","ấ","ầ","ẩ","ẫ","ậ",
-
-"é","è","ẻ","ẽ","ẹ",
-"ê","ế","ề","ể","ễ","ệ",
-
+dau:["á","à","ả","ã","ạ","ă","ắ","ằ","ẳ","ẵ","ặ","â","ấ","ầ","ẩ","ẫ","ậ",
+"é","è","ẻ","ẽ","ẹ","ê","ế","ề","ể","ễ","ệ",
 "í","ì","ỉ","ĩ","ị",
-
-"ó","ò","ỏ","õ","ọ",
-"ô","ố","ồ","ổ","ỗ","ộ",
-"ơ","ớ","ờ","ở","ỡ","ợ",
-
-"ú","ù","ủ","ũ","ụ",
-"ư","ứ","ừ","ử","ữ","ự",
-
-"ý","ỳ","ỷ","ỹ","ỵ",
-
-"đ"
-],
-
+"ó","ò","ỏ","õ","ọ","ô","ố","ồ","ổ","ỗ","ộ","ơ","ớ","ờ","ở","ỡ","ợ",
+"ú","ù","ủ","ũ","ụ","ư","ứ","ừ","ử","ữ","ự",
+"ý","ỳ","ỷ","ỹ","ỵ","đ"],
 so:["0","1","2","3","4","5","6","7","8","9"]
-
 }
 
 const btnDiv=document.getElementById("buttons")
@@ -215,7 +195,11 @@ data[tab].forEach(c=>{
 
 let b=document.createElement("button")
 b.innerText=c
-b.onclick=()=>drawLetter(c)
+
+b.onclick=()=>{
+drawLetter(c)
+speak(c)
+}
 
 btnDiv.appendChild(b)
 
@@ -224,6 +208,22 @@ btnDiv.appendChild(b)
 }
 
 showTab("hoa",document.querySelector(".tabs button"))
+
+/* phát âm */
+
+function speak(text){
+
+let msg=new SpeechSynthesisUtterance()
+
+msg.text=text
+msg.lang="vi-VN"
+msg.rate=0.8
+msg.pitch=1.2
+
+speechSynthesis.cancel()
+speechSynthesis.speak(msg)
+
+}
 
 /* canvas */
 
@@ -240,8 +240,6 @@ let drawing=false
 let drawData=[]
 
 function drawGrid(){
-
-gridCtx.clearRect(0,0,360,360)
 
 for(let x=0;x<=360;x+=40){
 
@@ -269,7 +267,7 @@ letterCtx.strokeStyle="#444"
 
 letterCtx.strokeText(letter,180,200)
 
-/* vẽ mũi tên hướng nét */
+/* mũi tên */
 
 arrowCtx.strokeStyle="red"
 arrowCtx.fillStyle="red"
@@ -292,10 +290,8 @@ redo()
 }
 
 function redo(){
-
 ctx.clearRect(0,0,360,360)
 drawData=[]
-
 }
 
 function clearAll(){
@@ -309,17 +305,13 @@ arrowCtx.clearRect(0,0,360,360)
 /* vẽ */
 
 function start(e){
-
 drawing=true
 draw(e)
-
 }
 
 function end(){
-
 drawing=false
 ctx.beginPath()
-
 }
 
 function draw(e){
