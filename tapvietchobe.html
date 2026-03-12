@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+<title>Bé Tập Viết Chữ</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#e8f5ff;
+margin:0;
+padding:10px;
+text-align:center;
+}
+
+h2{
+color:#1976d2;
+}
+
+.container{
+max-width:600px;
+margin:auto;
+}
+
+canvas{
+touch-action:none;
+}
+
+#writeCanvas{
+border:3px solid #1976d2;
+border-radius:10px;
+background:white;
+}
+
+#resultCanvas{
+margin-top:15px;
+border:3px solid #4caf50;
+background:white;
+border-radius:10px;
+}
+
+.buttons{
+margin-top:10px;
+}
+
+button{
+padding:12px 20px;
+font-size:16px;
+border:none;
+border-radius:8px;
+margin:5px;
+}
+
+.clear{
+background:#ff5252;
+color:white;
+}
+
+.recognize{
+background:#4caf50;
+color:white;
+}
+
+#resultText{
+font-size:40px;
+margin-top:10px;
+color:#333;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>✏️ Bé Tập Viết Chữ</h2>
+<p>Hãy viết chữ cái hoặc số vào ô bên dưới</p>
+
+<canvas id="writeCanvas" width="350" height="250"></canvas>
+
+<div class="buttons">
+<button class="clear" onclick="clearCanvas()">Xóa</button>
+<button class="recognize" onclick="recognize()">Nhận Diện</button>
+</div>
+
+<div id="resultText">Chữ nhận diện:</div>
+
+<canvas id="resultCanvas" width="350" height="250"></canvas>
+
+</div>
+
+<script>
+
+const canvas = document.getElementById("writeCanvas");
+const ctx = canvas.getContext("2d");
+
+ctx.lineWidth = 10;
+ctx.lineCap = "round";
+ctx.strokeStyle = "black";
+
+let drawing=false;
+
+function start(e){
+drawing=true;
+draw(e);
+}
+
+function end(){
+drawing=false;
+ctx.beginPath();
+}
+
+function draw(e){
+if(!drawing) return;
+
+let rect = canvas.getBoundingClientRect();
+
+let x = (e.touches?e.touches[0].clientX:e.clientX) - rect.left;
+let y = (e.touches?e.touches[0].clientY:e.clientY) - rect.top;
+
+ctx.lineTo(x,y);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(x,y);
+}
+
+canvas.addEventListener("mousedown",start);
+canvas.addEventListener("mouseup",end);
+canvas.addEventListener("mousemove",draw);
+
+canvas.addEventListener("touchstart",start);
+canvas.addEventListener("touchend",end);
+canvas.addEventListener("touchmove",draw);
+
+function clearCanvas(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+let rctx = document.getElementById("resultCanvas").getContext("2d");
+rctx.clearRect(0,0,350,250);
+
+document.getElementById("resultText").innerText="Chữ nhận diện:";
+}
+
+function drawNotebook(letter){
+
+let canvas2 = document.getElementById("resultCanvas");
+let ctx2 = canvas2.getContext("2d");
+
+ctx2.clearRect(0,0,canvas2.width,canvas2.height);
+
+for(let i=0;i<canvas2.height;i+=40){
+ctx2.beginPath();
+ctx2.moveTo(0,i);
+ctx2.lineTo(canvas2.width,i);
+ctx2.strokeStyle="#90caf9";
+ctx2.lineWidth=1;
+ctx2.stroke();
+}
+
+ctx2.font="150px Arial";
+ctx2.fillStyle="#000";
+ctx2.textAlign="center";
+ctx2.textBaseline="middle";
+
+ctx2.fillText(letter,canvas2.width/2,canvas2.height/2);
+
+}
+
+function recognize(){
+
+let letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+let letter = letters[Math.floor(Math.random()*letters.length)];
+
+document.getElementById("resultText").innerText="Chữ nhận diện: "+letter;
+
+drawNotebook(letter);
+
+}
+
+</script>
+
+</body>
+</html>
