@@ -14,41 +14,47 @@ background:#eef6ff;
 text-align:center;
 padding:10px;
 touch-action:none;
-overflow:hidden;
+overflow-y:auto;
 }
 
 h2{
 color:#1976d2;
+margin-bottom:10px;
 }
+
+/* thanh cuộn đẹp */
+
+::-webkit-scrollbar{
+width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+background:#1976d2;
+border-radius:10px;
+}
+
+/* button chữ */
 
 #buttons{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(48px,1fr));
-gap:6px;
+grid-template-columns:repeat(auto-fill,minmax(55px,1fr));
+gap:8px;
 width:100%;
-max-width:380px;
+max-width:420px;
 margin:auto;
 }
 
 #buttons button{
-font-size:20px;
-padding:10px 0;
+font-size:22px;
+padding:12px 0;
 border:none;
-border-radius:10px;
+border-radius:12px;
 background:#4caf50;
 color:white;
 font-weight:bold;
 }
 
-.controls{
-margin-top:10px;
-}
-
-.controls button{
-background:#ff9800;
-margin:4px;
-font-size:20px;
-}
+/* bảng vẽ */
 
 #board{
 position:relative;
@@ -62,6 +68,48 @@ position:absolute;
 left:0;
 top:0;
 }
+
+/* nhóm nút chức năng */
+
+.controls{
+margin-top:10px;
+display:flex;
+justify-content:center;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.controls button{
+
+flex:1;
+max-width:140px;
+
+font-size:22px;
+padding:14px;
+
+border:none;
+border-radius:14px;
+
+font-weight:bold;
+color:white;
+
+}
+
+/* màu từng nút */
+
+.btnRedo{
+background:#2196f3;
+}
+
+.btnClear{
+background:#f44336;
+}
+
+.btnScore{
+background:#ff9800;
+}
+
+/* popup */
 
 #popup{
 
@@ -109,9 +157,9 @@ border-radius:20px;
 
 <div class="controls">
 
-<button onclick="redo()">Vẽ lại</button>
-<button onclick="clearAll()">Xóa</button>
-<button onclick="score()">Chấm điểm</button>
+<button class="btnRedo" onclick="redo()">🔄 Vẽ lại</button>
+<button class="btnClear" onclick="clearAll()">🗑 Xóa</button>
+<button class="btnScore" onclick="score()">⭐ Chấm điểm</button>
 
 </div>
 
