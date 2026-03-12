@@ -18,13 +18,43 @@ background:#f0f7ff;
 }
 
 .container{
-max-width:600px;
+max-width:650px;
 margin:auto;
 }
 
 h2{
 text-align:center;
 color:#0a6fd6;
+}
+
+/* TAB */
+
+.tabs{
+display:flex;
+margin-bottom:10px;
+gap:5px;
+}
+
+.tabbtn{
+flex:1;
+padding:12px;
+border:none;
+border-radius:8px;
+background:#cfd9e6;
+font-weight:bold;
+}
+
+.tabbtn.active{
+background:#2ecc71;
+color:white;
+}
+
+.tabcontent{
+display:none;
+}
+
+.tabcontent.active{
+display:block;
 }
 
 .section{
@@ -81,6 +111,23 @@ transform:scale(0.97);
 background:linear-gradient(135deg,#111,#333,#111);
 }
 
+.mail-row{
+display:flex;
+gap:8px;
+margin-top:10px;
+}
+
+.mail-row input{
+flex:1;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.openbtn{
+background:#2ecc71;
+}
+
 #notify{
 margin-top:12px;
 text-align:center;
@@ -97,7 +144,22 @@ font-weight:bold;
 
 <h2>Tool Copy Nội Dung</h2>
 
-<div class="section">Nội dung 1</div>
+<!-- TAB BUTTON -->
+
+<div class="tabs">
+
+<button class="tabbtn active" onclick="openTab('tab1',this)">Nội dung 1</button>
+
+<button class="tabbtn" onclick="openTab('tab2',this)">Nội dung 2</button>
+
+<button class="tabbtn" onclick="openTab('tab3',this)">Mail</button>
+
+</div>
+
+<!-- TAB 1 -->
+
+<div id="tab1" class="tabcontent active">
+
 <textarea id="content1"></textarea>
 
 <div class="grid">
@@ -116,8 +178,11 @@ font-weight:bold;
 
 </div>
 
+</div>
 
-<div class="section">Nội dung 2</div>
+<!-- TAB 2 -->
+
+<div id="tab2" class="tabcontent">
 
 <textarea id="content2" class="dark"></textarea>
 
@@ -138,6 +203,34 @@ Royal M179
 
 </div>
 
+</div>
+
+<!-- TAB 3 MAIL -->
+
+<div id="tab3" class="tabcontent">
+
+<div class="mail-row">
+<input type="text" id="link1" placeholder="Link web 1">
+<button class="openbtn" onclick="openLink('link1')">Mở</button>
+</div>
+
+<div class="mail-row">
+<input type="text" id="link2" placeholder="Link web 2">
+<button class="openbtn" onclick="openLink('link2')">Mở</button>
+</div>
+
+<div class="mail-row">
+<input type="text" id="link3" placeholder="Link web 3">
+<button class="openbtn" onclick="openLink('link3')">Mở</button>
+</div>
+
+<div class="mail-row">
+<input type="text" id="link4" placeholder="Link web 4">
+<button class="openbtn" onclick="openLink('link4')">Mở</button>
+</div>
+
+</div>
+
 <div id="notify"></div>
 
 </div>
@@ -145,9 +238,34 @@ Royal M179
 
 <script>
 
+function openTab(id,btn){
+
+document.querySelectorAll(".tabcontent").forEach(t=>{
+t.classList.remove("active");
+});
+
+document.querySelectorAll(".tabbtn").forEach(t=>{
+t.classList.remove("active");
+});
+
+document.getElementById(id).classList.add("active");
+btn.classList.add("active");
+
+}
+
+function openLink(id){
+
+let url=document.getElementById(id).value;
+
+if(url.trim()){
+window.open(url,"_blank");
+}
+
+}
+
 function setActive(btn){
 
-document.querySelectorAll("button").forEach(b=>{
+document.querySelectorAll(".grid button").forEach(b=>{
 b.classList.remove("active");
 });
 
@@ -170,8 +288,6 @@ function replaceWords(text){
 
 text=text.replace(/tử vong/gi,"TV");
 text=text.replace(/dao/gi,"🔪");
-text=text.replace(/buồn/gi,"😢");
-text=text.replace(/lạnh/gi,"🥶");
 
 return text;
 
