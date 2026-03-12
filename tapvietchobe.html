@@ -22,58 +22,36 @@ color:#1976d2;
 #buttons{
 display:grid;
 grid-template-columns:repeat(6,1fr);
-gap:6px;
+gap:8px;
 max-width:420px;
 margin:auto;
 }
 
 button{
 font-size:28px;
-padding:12px;
+padding:14px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 background:#4caf50;
 color:white;
 font-weight:bold;
 }
 
-#scoreBtn{
-background:#ff9800;
-margin-top:10px;
+button:active{
+background:#2e7d32;
+}
+
+#board{
+position:relative;
+width:360px;
+height:360px;
+margin:20px auto;
 }
 
 canvas{
-background:white;
-border:3px solid #1976d2;
-margin-top:15px;
-touch-action:none;
-max-width:100%;
-}
-
-#popup{
-
-position:fixed;
-top:0;
+position:absolute;
 left:0;
-right:0;
-bottom:0;
-
-background:rgba(0,0,0,0.6);
-
-display:none;
-align-items:center;
-justify-content:center;
-
-}
-
-#popupContent{
-
-font-size:120px;
-color:red;
-background:white;
-padding:40px;
-border-radius:20px;
-
+top:0;
 }
 
 </style>
@@ -81,43 +59,45 @@ border-radius:20px;
 
 <body>
 
-<h2>✏️ Bé Luyện Viết</h2>
+<h2>✏️ Bé Luyện Viết Chữ</h2>
 
 <div id="buttons"></div>
 
+<div id="board">
+
 <canvas id="gridCanvas" width="360" height="360"></canvas>
-<canvas id="drawCanvas" width="360" height="360" style="position:absolute;left:0;right:0;margin:auto;"></canvas>
+<canvas id="letterCanvas" width="360" height="360"></canvas>
+<canvas id="drawCanvas" width="360" height="360"></canvas>
 
-<br>
-
-<button id="scoreBtn">Chấm Điểm</button>
-
-<div id="popup">
-<div id="popupContent"></div>
 </div>
 
 <script>
 
 const chars=[
-"A","B","C","D","E","F",
-"G","H","I","J","K","L",
-"M","N","O","P","Q","R",
-"S","T","U","V","W","X",
-"Y","Z","Ă","Â","Ê","Ô","Ơ","Ư","Đ",
-"0","1","2","3","4","5","6","7","8","9"
+"0","1","2","3","4","5","6","7","8","9",
+"A","B","C","D","E","F","G","H","I","J",
+"K","L","M","N","O","P","Q","R","S","T",
+"U","V","W","X","Y","Z",
+"Ă","Â","Ê","Ô","Ơ","Ư","Đ"
 ]
 
 const btnDiv=document.getElementById("buttons")
 
 chars.forEach(c=>{
+
 let b=document.createElement("button")
 b.innerText=c
 b.onclick=()=>drawLetter(c)
+
 btnDiv.appendChild(b)
+
 })
 
 const gridCanvas=document.getElementById("gridCanvas")
 const gridCtx=gridCanvas.getContext("2d")
+
+const letterCanvas=document.getElementById("letterCanvas")
+const letterCtx=letterCanvas.getContext("2d")
 
 const drawCanvas=document.getElementById("drawCanvas")
 const ctx=drawCanvas.getContext("2d")
@@ -126,7 +106,6 @@ ctx.lineWidth=12
 ctx.lineCap="round"
 
 let drawing=false
-let drawData=[]
 
 function drawGrid(){
 
@@ -149,17 +128,20 @@ gridCtx.strokeRect(x,y,size,size)
 
 function drawLetter(letter){
 
-drawGrid()
+letterCtx.clearRect(0,0,360,360)
+
+letterCtx.setLineDash([10,10])
+
+letterCtx.font="220px Arial"
+
+letterCtx.textAlign="center"
+letterCtx.textBaseline="middle"
+
+letterCtx.strokeStyle="#444"
+
+letterCtx.strokeText(letter,180,200)
 
 ctx.clearRect(0,0,360,360)
-
-gridCtx.setLineDash([8,8])
-gridCtx.font="220px Arial"
-gridCtx.textAlign="center"
-gridCtx.textBaseline="middle"
-gridCtx.strokeStyle="#555"
-
-gridCtx.strokeText(letter,180,200)
 
 }
 
@@ -186,8 +168,6 @@ let rect=drawCanvas.getBoundingClientRect()
 let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left
 let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top
 
-drawData.push({x,y})
-
 ctx.lineTo(x,y)
 ctx.stroke()
 
@@ -203,73 +183,6 @@ drawCanvas.addEventListener("mousemove",draw)
 drawCanvas.addEventListener("touchstart",start)
 drawCanvas.addEventListener("touchend",end)
 drawCanvas.addEventListener("touchmove",draw)
-
-function score(){
-
-if(drawData.length<10){
-showSad()
-return
-}
-
-let outside=0
-
-drawData.forEach(p=>{
-
-if(p.x<20||p.x>340||p.y<20||p.y>340){
-
-outside++
-
-}
-
-})
-
-if(outside>20){
-
-showSad()
-
-}else{
-
-let scores=[10,9,8]
-let s=scores[Math.floor(Math.random()*scores.length)]
-
-showScore(s)
-
-}
-
-}
-
-document.getElementById("scoreBtn").onclick=score
-
-function showScore(s){
-
-let p=document.getElementById("popup")
-let c=document.getElementById("popupContent")
-
-c.innerHTML=s
-
-p.style.display="flex"
-
-}
-
-function showSad(){
-
-let p=document.getElementById("popup")
-let c=document.getElementById("popupContent")
-
-c.innerHTML="☹️"
-
-p.style.display="flex"
-
-}
-
-document.getElementById("popup").ondblclick=function(){
-
-this.style.display="none"
-
-ctx.clearRect(0,0,360,360)
-drawData=[]
-
-}
 
 drawGrid()
 
