@@ -22,15 +22,30 @@ color:#1976d2;
 margin-bottom:10px;
 }
 
-/* thanh cuộn đẹp */
+/* TAB */
 
-::-webkit-scrollbar{
-width:8px;
+.tabs{
+display:flex;
+justify-content:center;
+gap:6px;
+margin-bottom:10px;
+flex-wrap:wrap;
 }
 
-::-webkit-scrollbar-thumb{
-background:#1976d2;
+.tabs button{
+flex:1;
+max-width:120px;
+padding:10px;
+font-size:16px;
+border:none;
 border-radius:10px;
+background:#90caf9;
+font-weight:bold;
+}
+
+.tabs button.active{
+background:#1976d2;
+color:white;
 }
 
 /* button chữ */
@@ -80,62 +95,40 @@ flex-wrap:wrap;
 }
 
 .controls button{
-
 flex:1;
 max-width:140px;
-
 font-size:22px;
 padding:14px;
-
 border:none;
 border-radius:14px;
-
 font-weight:bold;
 color:white;
-
 }
 
-/* màu từng nút */
-
-.btnRedo{
-background:#2196f3;
-}
-
-.btnClear{
-background:#f44336;
-}
-
-.btnScore{
-background:#ff9800;
-}
+.btnRedo{background:#2196f3;}
+.btnClear{background:#f44336;}
+.btnScore{background:#ff9800;}
 
 /* popup */
 
 #popup{
-
 position:fixed;
 top:0;
 left:0;
 right:0;
 bottom:0;
-
 display:none;
-
 background:rgba(0,0,0,0.6);
-
 align-items:center;
 justify-content:center;
-
 }
 
 #popupContent{
-
 font-size:120px;
 color:red;
 background:white;
 padding:40px;
 border-radius:20px;
-
 }
 
 </style>
@@ -144,6 +137,15 @@ border-radius:20px;
 <body>
 
 <h2>✏️ Bé Luyện Viết</h2>
+
+<div class="tabs">
+
+<button onclick="showTab('hoa',this)" class="active">Chữ hoa</button>
+<button onclick="showTab('thuong',this)">Chữ thường</button>
+<button onclick="showTab('dau',this)">Chữ có dấu</button>
+<button onclick="showTab('so',this)">Số</button>
+
+</div>
 
 <div id="buttons"></div>
 
@@ -169,17 +171,45 @@ border-radius:20px;
 
 <script>
 
-const chars=[
-"0","1","2","3","4","5","6","7","8","9",
+/* dữ liệu tab */
+
+const data={
+
+hoa:[
 "A","B","C","D","E","F","G","H","I","J",
 "K","L","M","N","O","P","Q","R","S","T",
-"U","V","W","X","Y","Z",
-"Ă","Â","Ê","Ô","Ơ","Ư","Đ"
+"U","V","W","X","Y","Z"
+],
+
+thuong:[
+"a","b","c","d","e","f","g","h","i","j",
+"k","l","m","n","o","p","q","r","s","t",
+"u","v","w","x","y","z"
+],
+
+dau:[
+"Ă","Â","Ê","Ô","Ơ","Ư","Đ",
+"ă","â","ê","ô","ơ","ư","đ"
+],
+
+so:[
+"0","1","2","3","4","5","6","7","8","9"
 ]
+
+}
 
 const btnDiv=document.getElementById("buttons")
 
-chars.forEach(c=>{
+function showTab(tab,el){
+
+document.querySelectorAll(".tabs button")
+.forEach(b=>b.classList.remove("active"))
+
+el.classList.add("active")
+
+btnDiv.innerHTML=""
+
+data[tab].forEach(c=>{
 
 let b=document.createElement("button")
 b.innerText=c
@@ -188,6 +218,12 @@ b.onclick=()=>drawLetter(c)
 btnDiv.appendChild(b)
 
 })
+
+}
+
+showTab("hoa",document.querySelector(".tabs button"))
+
+/* canvas */
 
 const gridCanvas=document.getElementById("gridCanvas")
 const gridCtx=gridCanvas.getContext("2d")
@@ -228,14 +264,12 @@ function drawLetter(letter){
 letterCtx.clearRect(0,0,360,360)
 
 letterCtx.setLineDash([10,10])
-
 letterCtx.font="220px Arial"
 
 letterCtx.textAlign="center"
 letterCtx.textBaseline="middle"
 
 letterCtx.strokeStyle="#444"
-
 letterCtx.strokeText(letter,180,200)
 
 redo()
@@ -256,18 +290,16 @@ letterCtx.clearRect(0,0,360,360)
 
 }
 
-function start(e){
+/* vẽ */
 
+function start(e){
 drawing=true
 draw(e)
-
 }
 
 function end(){
-
 drawing=false
 ctx.beginPath()
-
 }
 
 function draw(e){
@@ -299,31 +331,25 @@ drawCanvas.addEventListener("touchstart",start,{passive:false})
 drawCanvas.addEventListener("touchend",end)
 drawCanvas.addEventListener("touchmove",draw,{passive:false})
 
+/* chấm điểm */
+
 function score(){
 
 if(drawData.length<10){
-
 showSad()
 return
-
 }
 
 let outside=0
 
 drawData.forEach(p=>{
-
 if(p.x<10||p.x>350||p.y<10||p.y>350){
-
 outside++
-
 }
-
 })
 
 if(outside>30){
-
 showSad()
-
 }else{
 
 let scores=[10,9,8]
@@ -341,7 +367,6 @@ let p=document.getElementById("popup")
 let c=document.getElementById("popupContent")
 
 c.innerHTML=s
-
 p.style.display="flex"
 
 }
@@ -352,7 +377,6 @@ let p=document.getElementById("popup")
 let c=document.getElementById("popupContent")
 
 c.innerHTML="☹️"
-
 p.style.display="flex"
 
 }
@@ -360,9 +384,7 @@ p.style.display="flex"
 document.getElementById("popup").onclick=function(){
 
 this.style.display="none"
-
 redo()
-
 ctx.beginPath()
 
 }
