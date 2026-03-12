@@ -6,7 +6,7 @@
 
 <title>Bé Tập Viết</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 
 <style>
 
@@ -17,10 +17,6 @@ text-align:center;
 padding:10px;
 }
 
-h2{
-color:#1565c0;
-}
-
 canvas{
 background:white;
 border:3px solid #1976d2;
@@ -29,7 +25,7 @@ touch-action:none;
 }
 
 button{
-padding:10px 16px;
+padding:10px 18px;
 margin:8px;
 font-size:16px;
 border:none;
@@ -47,7 +43,7 @@ color:white;
 }
 
 #result{
-font-size:40px;
+font-size:50px;
 font-weight:bold;
 margin-top:10px;
 }
@@ -57,9 +53,9 @@ margin-top:10px;
 
 <body>
 
-<h2>✏️ Bé Tập Viết Chữ</h2>
+<h2>✏️ Bé Tập Viết Số</h2>
 
-<p>Viết chữ hoặc số vào ô</p>
+<p id="status">Đang tải AI...</p>
 
 <canvas id="writeCanvas" width="300" height="300"></canvas>
 
@@ -98,8 +94,8 @@ if(!drawing) return;
 
 let rect = canvas.getBoundingClientRect();
 
-let x = (e.touches?e.touches[0].clientX:e.clientX) - rect.left;
-let y = (e.touches?e.touches[0].clientY:e.clientY) - rect.top;
+let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
 
 ctx.lineTo(x,y);
 ctx.stroke();
@@ -123,9 +119,6 @@ ctx.clearRect(0,0,canvas.width,canvas.height);
 
 document.getElementById("result").innerText="?";
 
-let ctx2=document.getElementById("notebook").getContext("2d");
-ctx2.clearRect(0,0,300,300);
-
 drawNotebook();
 
 }
@@ -137,6 +130,8 @@ async function loadModel(){
 model = await tf.loadLayersModel(
 "https://storage.googleapis.com/tfjs-models/tfjs/mnist/model.json"
 );
+
+document.getElementById("status").innerText="AI đã sẵn sàng";
 
 }
 
@@ -162,17 +157,25 @@ return img;
 
 async function predict(){
 
+if(!model){
+
+alert("AI chưa tải xong");
+
+return;
+
+}
+
 let img = preprocess();
 
 let prediction = model.predict(img);
 
 let data = await prediction.data();
 
-let max = data.indexOf(Math.max(...data));
+let result = data.indexOf(Math.max(...data));
 
-document.getElementById("result").innerText=max;
+document.getElementById("result").innerText=result;
 
-drawLetter(max);
+drawLetter(result);
 
 }
 
@@ -181,13 +184,15 @@ function drawNotebook(){
 let canvas2=document.getElementById("notebook");
 let ctx2=canvas2.getContext("2d");
 
+ctx2.clearRect(0,0,300,300);
+
 let size=100;
 
-for(let x=0;x<canvas2.width;x+=size){
+for(let x=0;x<300;x+=size){
 
-for(let y=0;y<canvas2.height;y+=size){
+for(let y=0;y<300;y+=size){
 
-ctx2.strokeStyle="#2196f3";
+ctx2.strokeStyle="#1976d2";
 ctx2.lineWidth=2;
 
 ctx2.strokeRect(x,y,size,size);
@@ -213,10 +218,9 @@ ctx2.stroke();
 
 function drawLetter(letter){
 
-let canvas2=document.getElementById("notebook");
-let ctx2=canvas2.getContext("2d");
-
 drawNotebook();
+
+let ctx2=document.getElementById("notebook").getContext("2d");
 
 ctx2.font="120px Arial";
 
