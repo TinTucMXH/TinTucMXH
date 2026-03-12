@@ -10,18 +10,19 @@
 
 body{
 font-family:Arial;
-background:#e8f5ff;
+background:#e3f2fd;
 margin:0;
 padding:10px;
 text-align:center;
 }
 
 h2{
-color:#1976d2;
+color:#1565c0;
+margin-bottom:5px;
 }
 
 .container{
-max-width:600px;
+max-width:650px;
 margin:auto;
 }
 
@@ -30,45 +31,49 @@ touch-action:none;
 }
 
 #writeCanvas{
-border:3px solid #1976d2;
-border-radius:10px;
+border:3px solid #1565c0;
+border-radius:12px;
 background:white;
+width:100%;
+height:250px;
 }
 
 #resultCanvas{
 margin-top:15px;
 border:3px solid #4caf50;
+border-radius:12px;
 background:white;
-border-radius:10px;
-}
-
-.buttons{
-margin-top:10px;
+width:100%;
+height:260px;
 }
 
 button{
-padding:12px 20px;
+padding:12px 18px;
 font-size:16px;
 border:none;
-border-radius:8px;
-margin:5px;
+border-radius:10px;
+margin:6px;
 }
 
 .clear{
-background:#ff5252;
+background:#ef5350;
 color:white;
 }
 
 .recognize{
-background:#4caf50;
+background:#43a047;
+color:white;
+}
+
+.speak{
+background:#ff9800;
 color:white;
 }
 
 #resultText{
 font-size:40px;
-margin-top:10px;
-color:#333;
 font-weight:bold;
+margin-top:10px;
 }
 
 </style>
@@ -78,19 +83,22 @@ font-weight:bold;
 
 <div class="container">
 
-<h2>✏️ Bé Tập Viết Chữ</h2>
-<p>Hãy viết chữ cái hoặc số vào ô bên dưới</p>
+<h2>✏️ Bé Luyện Viết Chữ</h2>
+<p>Viết chữ cái hoặc số vào ô dưới</p>
 
-<canvas id="writeCanvas" width="350" height="250"></canvas>
+<canvas id="writeCanvas"></canvas>
 
-<div class="buttons">
+<div>
+
 <button class="clear" onclick="clearCanvas()">Xóa</button>
 <button class="recognize" onclick="recognize()">Nhận Diện</button>
+<button class="speak" onclick="speak()">🔊 Đọc Chữ</button>
+
 </div>
 
-<div id="resultText">Chữ nhận diện:</div>
+<div id="resultText">?</div>
 
-<canvas id="resultCanvas" width="350" height="250"></canvas>
+<canvas id="resultCanvas"></canvas>
 
 </div>
 
@@ -99,9 +107,11 @@ font-weight:bold;
 const canvas = document.getElementById("writeCanvas");
 const ctx = canvas.getContext("2d");
 
-ctx.lineWidth = 10;
-ctx.lineCap = "round";
-ctx.strokeStyle = "black";
+canvas.width=350;
+canvas.height=250;
+
+ctx.lineWidth=12;
+ctx.lineCap="round";
 
 let drawing=false;
 
@@ -116,17 +126,20 @@ ctx.beginPath();
 }
 
 function draw(e){
+
 if(!drawing) return;
 
-let rect = canvas.getBoundingClientRect();
+let rect=canvas.getBoundingClientRect();
 
-let x = (e.touches?e.touches[0].clientX:e.clientX) - rect.left;
-let y = (e.touches?e.touches[0].clientY:e.clientY) - rect.top;
+let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
 
 ctx.lineTo(x,y);
 ctx.stroke();
+
 ctx.beginPath();
 ctx.moveTo(x,y);
+
 }
 
 canvas.addEventListener("mousedown",start);
@@ -138,36 +151,13 @@ canvas.addEventListener("touchend",end);
 canvas.addEventListener("touchmove",draw);
 
 function clearCanvas(){
+
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
-let rctx = document.getElementById("resultCanvas").getContext("2d");
-rctx.clearRect(0,0,350,250);
+let rctx=document.getElementById("resultCanvas").getContext("2d");
+rctx.clearRect(0,0,400,260);
 
-document.getElementById("resultText").innerText="Chữ nhận diện:";
-}
-
-function drawNotebook(letter){
-
-let canvas2 = document.getElementById("resultCanvas");
-let ctx2 = canvas2.getContext("2d");
-
-ctx2.clearRect(0,0,canvas2.width,canvas2.height);
-
-for(let i=0;i<canvas2.height;i+=40){
-ctx2.beginPath();
-ctx2.moveTo(0,i);
-ctx2.lineTo(canvas2.width,i);
-ctx2.strokeStyle="#90caf9";
-ctx2.lineWidth=1;
-ctx2.stroke();
-}
-
-ctx2.font="150px Arial";
-ctx2.fillStyle="#000";
-ctx2.textAlign="center";
-ctx2.textBaseline="middle";
-
-ctx2.fillText(letter,canvas2.width/2,canvas2.height/2);
+document.getElementById("resultText").innerText="?";
 
 }
 
@@ -175,11 +165,57 @@ function recognize(){
 
 let letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-let letter = letters[Math.floor(Math.random()*letters.length)];
+let letter=letters[Math.floor(Math.random()*letters.length)];
 
-document.getElementById("resultText").innerText="Chữ nhận diện: "+letter;
+document.getElementById("resultText").innerText=letter;
 
 drawNotebook(letter);
+
+}
+
+function drawNotebook(letter){
+
+let canvas2=document.getElementById("resultCanvas");
+let ctx2=canvas2.getContext("2d");
+
+canvas2.width=350;
+canvas2.height=260;
+
+ctx2.clearRect(0,0,canvas2.width,canvas2.height);
+
+for(let i=0;i<canvas2.height;i+=40){
+
+ctx2.beginPath();
+ctx2.moveTo(0,i);
+ctx2.lineTo(canvas2.width,i);
+ctx2.strokeStyle="#90caf9";
+ctx2.lineWidth=1;
+ctx2.stroke();
+
+}
+
+ctx2.font="140px Arial";
+ctx2.textAlign="center";
+ctx2.textBaseline="middle";
+
+ctx2.strokeStyle="#000";
+ctx2.setLineDash([8,8]);
+ctx2.lineWidth=3;
+
+ctx2.strokeText(letter,canvas2.width/2,canvas2.height/2);
+
+}
+
+function speak(){
+
+let letter=document.getElementById("resultText").innerText;
+
+if(letter=="?") return;
+
+let speech=new SpeechSynthesisUtterance(letter);
+speech.lang="vi-VN";
+
+speechSynthesis.speak(speech);
 
 }
 
