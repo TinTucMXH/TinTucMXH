@@ -4,17 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bé Tập Viết</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<title>Bé Luyện Viết Chữ</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:#e3f2fd;
+background:#eaf4ff;
 text-align:center;
 padding:10px;
+}
+
+h2{
+color:#1976d2;
 }
 
 canvas{
@@ -22,30 +24,24 @@ background:white;
 border:3px solid #1976d2;
 border-radius:10px;
 touch-action:none;
+max-width:100%;
 }
 
 button{
 padding:10px 18px;
-margin:8px;
+margin:6px;
 font-size:16px;
 border:none;
 border-radius:8px;
 }
 
-.clear{
-background:#f44336;
-color:white;
-}
-
-.recognize{
-background:#4caf50;
-color:white;
-}
+.clear{background:#f44336;color:white;}
+.recognize{background:#4caf50;color:white;}
 
 #result{
-font-size:50px;
+font-size:48px;
 font-weight:bold;
-margin-top:10px;
+margin:10px;
 }
 
 </style>
@@ -53,28 +49,28 @@ margin-top:10px;
 
 <body>
 
-<h2>✏️ Bé Tập Viết Số</h2>
+<h2>✏️ Bé Tập Viết Chữ</h2>
 
-<p id="status">Đang tải AI...</p>
+<p>Viết chữ hoặc số vào ô</p>
 
-<canvas id="writeCanvas" width="300" height="300"></canvas>
+<canvas id="writeCanvas" width="320" height="320"></canvas>
 
 <br>
 
 <button class="clear" onclick="clearCanvas()">Xóa</button>
-<button class="recognize" onclick="predict()">Nhận diện</button>
+<button class="recognize" onclick="recognize()">Nhận diện</button>
 
 <div id="result">?</div>
 
-<canvas id="notebook" width="300" height="300"></canvas>
+<canvas id="notebook" width="320" height="320"></canvas>
 
 <script>
 
-const canvas = document.getElementById("writeCanvas");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("writeCanvas");
+const ctx=canvas.getContext("2d");
 
-ctx.lineWidth = 18;
-ctx.lineCap = "round";
+ctx.lineWidth=20;
+ctx.lineCap="round";
 
 let drawing=false;
 
@@ -90,9 +86,9 @@ ctx.beginPath();
 
 function draw(e){
 
-if(!drawing) return;
+if(!drawing)return;
 
-let rect = canvas.getBoundingClientRect();
+let rect=canvas.getBoundingClientRect();
 
 let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
 let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
@@ -115,7 +111,7 @@ canvas.addEventListener("touchmove",draw);
 
 function clearCanvas(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,320,320);
 
 document.getElementById("result").innerText="?";
 
@@ -123,92 +119,136 @@ drawNotebook();
 
 }
 
-let model;
+function getPixels(){
 
-async function loadModel(){
+let temp=document.createElement("canvas");
+temp.width=28;
+temp.height=28;
 
-model = await tf.loadLayersModel(
-"https://storage.googleapis.com/tfjs-models/tfjs/mnist/model.json"
-);
+let t=temp.getContext("2d");
 
-document.getElementById("status").innerText="AI đã sẵn sàng";
+t.drawImage(canvas,0,0,28,28);
 
-}
+let data=t.getImageData(0,0,28,28).data;
 
-loadModel();
+let arr=[];
 
-function preprocess(){
+for(let i=0;i<data.length;i+=4){
 
-let img = tf.browser.fromPixels(canvas,1);
-
-img = tf.image.resizeBilinear(img,[28,28]);
-
-img = img.mean(2);
-
-img = img.expandDims(0);
-
-img = img.expandDims(-1);
-
-img = img.div(255.0);
-
-return img;
+arr.push(data[i]);
 
 }
 
-async function predict(){
-
-if(!model){
-
-alert("AI chưa tải xong");
-
-return;
+return arr;
 
 }
 
-let img = preprocess();
+function createTemplate(char){
 
-let prediction = model.predict(img);
+let c=document.createElement("canvas");
+c.width=28;
+c.height=28;
 
-let data = await prediction.data();
+let g=c.getContext("2d");
 
-let result = data.indexOf(Math.max(...data));
+g.fillStyle="white";
+g.fillRect(0,0,28,28);
 
-document.getElementById("result").innerText=result;
+g.fillStyle="black";
+g.font="24px Arial";
+g.textAlign="center";
+g.textBaseline="middle";
 
-drawLetter(result);
+g.fillText(char,14,16);
+
+let data=g.getImageData(0,0,28,28).data;
+
+let arr=[];
+
+for(let i=0;i<data.length;i+=4){
+
+arr.push(data[i]);
+
+}
+
+return arr;
+
+}
+
+const chars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+let templates={};
+
+for(let c of chars){
+
+templates[c]=createTemplate(c);
+
+}
+
+function recognize(){
+
+let img=getPixels();
+
+let best="?";
+let bestScore=99999999;
+
+for(let c of chars){
+
+let temp=templates[c];
+
+let score=0;
+
+for(let i=0;i<img.length;i++){
+
+score+=Math.abs(img[i]-temp[i]);
+
+}
+
+if(score<bestScore){
+
+bestScore=score;
+best=c;
+
+}
+
+}
+
+document.getElementById("result").innerText=best;
+
+drawLetter(best);
 
 }
 
 function drawNotebook(){
 
-let canvas2=document.getElementById("notebook");
-let ctx2=canvas2.getContext("2d");
+let c=document.getElementById("notebook");
+let g=c.getContext("2d");
 
-ctx2.clearRect(0,0,300,300);
+g.clearRect(0,0,320,320);
 
-let size=100;
+let size=80;
 
-for(let x=0;x<300;x+=size){
+for(let x=0;x<320;x+=size){
 
-for(let y=0;y<300;y+=size){
+for(let y=0;y<320;y+=size){
 
-ctx2.strokeStyle="#1976d2";
-ctx2.lineWidth=2;
+g.strokeStyle="#1976d2";
+g.lineWidth=2;
 
-ctx2.strokeRect(x,y,size,size);
+g.strokeRect(x,y,size,size);
 
-ctx2.strokeStyle="#90caf9";
-ctx2.lineWidth=1;
+g.strokeStyle="#90caf9";
+g.lineWidth=1;
 
-ctx2.beginPath();
-ctx2.moveTo(x+size/2,y);
-ctx2.lineTo(x+size/2,y+size);
-ctx2.stroke();
+g.beginPath();
+g.moveTo(x+size/2,y);
+g.lineTo(x+size/2,y+size);
+g.stroke();
 
-ctx2.beginPath();
-ctx2.moveTo(x,y+size/2);
-ctx2.lineTo(x+size,y+size/2);
-ctx2.stroke();
+g.beginPath();
+g.moveTo(x,y+size/2);
+g.lineTo(x+size,y+size/2);
+g.stroke();
 
 }
 
@@ -220,16 +260,18 @@ function drawLetter(letter){
 
 drawNotebook();
 
-let ctx2=document.getElementById("notebook").getContext("2d");
+let g=document.getElementById("notebook").getContext("2d");
 
-ctx2.font="120px Arial";
+g.setLineDash([8,8]);
 
-ctx2.textAlign="center";
-ctx2.textBaseline="middle";
+g.font="150px Arial";
 
-ctx2.fillStyle="black";
+g.textAlign="center";
+g.textBaseline="middle";
 
-ctx2.fillText(letter,150,150);
+g.strokeStyle="black";
+
+g.strokeText(letter,160,160);
 
 }
 
