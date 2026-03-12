@@ -17,31 +17,37 @@ padding:10px;
 
 h2{
 color:#1976d2;
+margin-bottom:10px;
 }
 
-canvas{
-background:white;
-border:3px solid #1976d2;
-border-radius:10px;
-touch-action:none;
-max-width:100%;
+#buttons{
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:8px;
+max-width:420px;
+margin:auto;
 }
 
 button{
-padding:10px 18px;
-margin:6px;
-font-size:16px;
+font-size:28px;
+padding:14px;
 border:none;
-border-radius:8px;
+border-radius:10px;
+background:#4caf50;
+color:white;
+font-weight:bold;
 }
 
-.clear{background:#f44336;color:white;}
-.recognize{background:#4caf50;color:white;}
+button:active{
+background:#2e7d32;
+}
 
-#result{
-font-size:48px;
-font-weight:bold;
-margin:10px;
+canvas{
+margin-top:20px;
+background:white;
+border:3px solid #1976d2;
+border-radius:10px;
+max-width:100%;
 }
 
 </style>
@@ -51,206 +57,49 @@ margin:10px;
 
 <h2>✏️ Bé Tập Viết Chữ</h2>
 
-<p>Viết chữ hoặc số vào ô</p>
+<div id="buttons"></div>
 
-<canvas id="writeCanvas" width="320" height="320"></canvas>
-
-<br>
-
-<button class="clear" onclick="clearCanvas()">Xóa</button>
-<button class="recognize" onclick="recognize()">Nhận diện</button>
-
-<div id="result">?</div>
-
-<canvas id="notebook" width="320" height="320"></canvas>
+<canvas id="notebook" width="360" height="200"></canvas>
 
 <script>
 
-const canvas=document.getElementById("writeCanvas");
-const ctx=canvas.getContext("2d");
+const chars=[
+"0","1","2","3","4","5","6","7","8","9",
+"A","B","C","D","E","F","G","H","I","J",
+"K","L","M","N","O","P","Q","R","S","T",
+"U","V","W","X","Y","Z",
+"Ă","Â","Ê","Ô","Ơ","Ư","Đ"
+];
 
-ctx.lineWidth=20;
-ctx.lineCap="round";
+const container=document.getElementById("buttons");
 
-let drawing=false;
-
-function start(e){
-drawing=true;
-draw(e);
-}
-
-function end(){
-drawing=false;
-ctx.beginPath();
-}
-
-function draw(e){
-
-if(!drawing)return;
-
-let rect=canvas.getBoundingClientRect();
-
-let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
-
-ctx.lineTo(x,y);
-ctx.stroke();
-
-ctx.beginPath();
-ctx.moveTo(x,y);
-
-}
-
-canvas.addEventListener("mousedown",start);
-canvas.addEventListener("mouseup",end);
-canvas.addEventListener("mousemove",draw);
-
-canvas.addEventListener("touchstart",start);
-canvas.addEventListener("touchend",end);
-canvas.addEventListener("touchmove",draw);
-
-function clearCanvas(){
-
-ctx.clearRect(0,0,320,320);
-
-document.getElementById("result").innerText="?";
-
-drawNotebook();
-
-}
-
-function getPixels(){
-
-let temp=document.createElement("canvas");
-temp.width=28;
-temp.height=28;
-
-let t=temp.getContext("2d");
-
-t.drawImage(canvas,0,0,28,28);
-
-let data=t.getImageData(0,0,28,28).data;
-
-let arr=[];
-
-for(let i=0;i<data.length;i+=4){
-
-arr.push(data[i]);
-
-}
-
-return arr;
-
-}
-
-function createTemplate(char){
-
-let c=document.createElement("canvas");
-c.width=28;
-c.height=28;
-
-let g=c.getContext("2d");
-
-g.fillStyle="white";
-g.fillRect(0,0,28,28);
-
-g.fillStyle="black";
-g.font="24px Arial";
-g.textAlign="center";
-g.textBaseline="middle";
-
-g.fillText(char,14,16);
-
-let data=g.getImageData(0,0,28,28).data;
-
-let arr=[];
-
-for(let i=0;i<data.length;i+=4){
-
-arr.push(data[i]);
-
-}
-
-return arr;
-
-}
-
-const chars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-let templates={};
-
-for(let c of chars){
-
-templates[c]=createTemplate(c);
-
-}
-
-function recognize(){
-
-let img=getPixels();
-
-let best="?";
-let bestScore=99999999;
-
-for(let c of chars){
-
-let temp=templates[c];
-
-let score=0;
-
-for(let i=0;i<img.length;i++){
-
-score+=Math.abs(img[i]-temp[i]);
-
-}
-
-if(score<bestScore){
-
-bestScore=score;
-best=c;
-
-}
-
-}
-
-document.getElementById("result").innerText=best;
-
-drawLetter(best);
-
-}
+chars.forEach(c=>{
+let b=document.createElement("button");
+b.innerText=c;
+b.onclick=()=>drawLetter(c);
+container.appendChild(b);
+});
 
 function drawNotebook(){
 
-let c=document.getElementById("notebook");
-let g=c.getContext("2d");
+let canvas=document.getElementById("notebook");
+let g=canvas.getContext("2d");
 
-g.clearRect(0,0,320,320);
+g.clearRect(0,0,360,200);
 
-let size=80;
+let gap=40;
 
-for(let x=0;x<320;x+=size){
-
-for(let y=0;y<320;y+=size){
-
-g.strokeStyle="#1976d2";
-g.lineWidth=2;
-
-g.strokeRect(x,y,size,size);
-
-g.strokeStyle="#90caf9";
-g.lineWidth=1;
+for(let i=0;i<5;i++){
 
 g.beginPath();
-g.moveTo(x+size/2,y);
-g.lineTo(x+size/2,y+size);
-g.stroke();
+g.moveTo(0,i*gap);
+g.lineTo(360,i*gap);
 
-g.beginPath();
-g.moveTo(x,y+size/2);
-g.lineTo(x+size,y+size/2);
-g.stroke();
+g.lineWidth=(i==2)?3:1;
 
-}
+g.strokeStyle=(i==2)?"#2196f3":"#90caf9";
+
+g.stroke();
 
 }
 
@@ -264,14 +113,14 @@ let g=document.getElementById("notebook").getContext("2d");
 
 g.setLineDash([8,8]);
 
-g.font="150px Arial";
+g.font="140px Arial";
 
 g.textAlign="center";
 g.textBaseline="middle";
 
 g.strokeStyle="black";
 
-g.strokeText(letter,160,160);
+g.strokeText(letter,180,100);
 
 }
 
