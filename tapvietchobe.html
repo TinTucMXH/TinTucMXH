@@ -13,6 +13,8 @@ font-family:Arial;
 background:#eef6ff;
 text-align:center;
 padding:10px;
+touch-action:none;
+overflow:hidden;
 }
 
 h2{
@@ -28,8 +30,8 @@ margin:auto;
 }
 
 button{
-font-size:28px;
-padding:14px;
+font-size:26px;
+padding:12px;
 border:none;
 border-radius:10px;
 background:#4caf50;
@@ -37,8 +39,14 @@ color:white;
 font-weight:bold;
 }
 
-button:active{
-background:#2e7d32;
+.controls{
+margin-top:10px;
+}
+
+.controls button{
+background:#ff9800;
+margin:4px;
+font-size:20px;
 }
 
 #board{
@@ -54,12 +62,39 @@ left:0;
 top:0;
 }
 
+#popup{
+
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+
+display:none;
+
+background:rgba(0,0,0,0.6);
+
+align-items:center;
+justify-content:center;
+
+}
+
+#popupContent{
+
+font-size:120px;
+color:red;
+background:white;
+padding:40px;
+border-radius:20px;
+
+}
+
 </style>
 </head>
 
 <body>
 
-<h2>✏️ Bé Luyện Viết Chữ</h2>
+<h2>✏️ Bé Luyện Viết</h2>
 
 <div id="buttons"></div>
 
@@ -69,6 +104,18 @@ top:0;
 <canvas id="letterCanvas" width="360" height="360"></canvas>
 <canvas id="drawCanvas" width="360" height="360"></canvas>
 
+</div>
+
+<div class="controls">
+
+<button onclick="redo()">Vẽ lại</button>
+<button onclick="clearAll()">Xóa</button>
+<button onclick="score()">Chấm điểm</button>
+
+</div>
+
+<div id="popup">
+<div id="popupContent"></div>
 </div>
 
 <script>
@@ -106,6 +153,7 @@ ctx.lineWidth=12
 ctx.lineCap="round"
 
 let drawing=false
+let drawData=[]
 
 function drawGrid(){
 
@@ -141,7 +189,21 @@ letterCtx.strokeStyle="#444"
 
 letterCtx.strokeText(letter,180,200)
 
+redo()
+
+}
+
+function redo(){
+
 ctx.clearRect(0,0,360,360)
+drawData=[]
+
+}
+
+function clearAll(){
+
+redo()
+letterCtx.clearRect(0,0,360,360)
 
 }
 
@@ -163,10 +225,14 @@ function draw(e){
 
 if(!drawing)return
 
+e.preventDefault()
+
 let rect=drawCanvas.getBoundingClientRect()
 
 let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left
 let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top
+
+drawData.push({x,y})
 
 ctx.lineTo(x,y)
 ctx.stroke()
@@ -180,9 +246,75 @@ drawCanvas.addEventListener("mousedown",start)
 drawCanvas.addEventListener("mouseup",end)
 drawCanvas.addEventListener("mousemove",draw)
 
-drawCanvas.addEventListener("touchstart",start)
+drawCanvas.addEventListener("touchstart",start,{passive:false})
 drawCanvas.addEventListener("touchend",end)
-drawCanvas.addEventListener("touchmove",draw)
+drawCanvas.addEventListener("touchmove",draw,{passive:false})
+
+function score(){
+
+if(drawData.length<10){
+
+showSad()
+return
+
+}
+
+let outside=0
+
+drawData.forEach(p=>{
+
+if(p.x<10||p.x>350||p.y<10||p.y>350){
+
+outside++
+
+}
+
+})
+
+if(outside>30){
+
+showSad()
+
+}else{
+
+let scores=[10,9,8]
+let s=scores[Math.floor(Math.random()*3)]
+
+showScore(s)
+
+}
+
+}
+
+function showScore(s){
+
+let p=document.getElementById("popup")
+let c=document.getElementById("popupContent")
+
+c.innerHTML=s
+
+p.style.display="flex"
+
+}
+
+function showSad(){
+
+let p=document.getElementById("popup")
+let c=document.getElementById("popupContent")
+
+c.innerHTML="☹️"
+
+p.style.display="flex"
+
+}
+
+document.getElementById("popup").ondblclick=function(){
+
+this.style.display="none"
+
+redo()
+
+}
 
 drawGrid()
 
