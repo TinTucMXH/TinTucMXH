@@ -2,75 +2,47 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bé Tập Viết Chữ</title>
+<title>Bé Tập Viết Số</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
 
 <style>
 
 body{
 font-family:Arial;
 background:#e3f2fd;
-margin:0;
-padding:10px;
 text-align:center;
-}
-
-h2{
-color:#1565c0;
-margin-bottom:5px;
-}
-
-.container{
-max-width:650px;
-margin:auto;
+padding:10px;
 }
 
 canvas{
+background:white;
+border:3px solid #1976d2;
+border-radius:10px;
 touch-action:none;
 }
 
-#writeCanvas{
-border:3px solid #1565c0;
-border-radius:12px;
-background:white;
-width:100%;
-height:250px;
-}
-
-#resultCanvas{
-margin-top:15px;
-border:3px solid #4caf50;
-border-radius:12px;
-background:white;
-width:100%;
-height:260px;
-}
-
 button{
-padding:12px 18px;
+padding:10px 18px;
+margin:8px;
 font-size:16px;
 border:none;
-border-radius:10px;
-margin:6px;
+border-radius:8px;
 }
 
 .clear{
-background:#ef5350;
+background:#f44336;
 color:white;
 }
 
 .recognize{
-background:#43a047;
+background:#4caf50;
 color:white;
 }
 
-.speak{
-background:#ff9800;
-color:white;
-}
-
-#resultText{
+#result{
 font-size:40px;
 font-weight:bold;
 margin-top:10px;
@@ -81,37 +53,24 @@ margin-top:10px;
 
 <body>
 
-<div class="container">
+<h2>✏️ Bé Viết Số</h2>
 
-<h2>✏️ Bé Luyện Viết Chữ</h2>
-<p>Viết chữ cái hoặc số vào ô dưới</p>
+<canvas id="canvas" width="300" height="300"></canvas>
 
-<canvas id="writeCanvas"></canvas>
-
-<div>
+<br>
 
 <button class="clear" onclick="clearCanvas()">Xóa</button>
-<button class="recognize" onclick="recognize()">Nhận Diện</button>
-<button class="speak" onclick="speak()">🔊 Đọc Chữ</button>
+<button class="recognize" onclick="predict()">Nhận diện</button>
 
-</div>
-
-<div id="resultText">?</div>
-
-<canvas id="resultCanvas"></canvas>
-
-</div>
+<div id="result">?</div>
 
 <script>
 
-const canvas = document.getElementById("writeCanvas");
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width=350;
-canvas.height=250;
-
-ctx.lineWidth=12;
-ctx.lineCap="round";
+ctx.lineWidth = 20;
+ctx.lineCap = "round";
 
 let drawing=false;
 
@@ -129,14 +88,13 @@ function draw(e){
 
 if(!drawing) return;
 
-let rect=canvas.getBoundingClientRect();
+let rect = canvas.getBoundingClientRect();
 
-let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
+let x = (e.touches?e.touches[0].clientX:e.clientX) - rect.left;
+let y = (e.touches?e.touches[0].clientY:e.clientY) - rect.top;
 
 ctx.lineTo(x,y);
 ctx.stroke();
-
 ctx.beginPath();
 ctx.moveTo(x,y);
 
@@ -151,71 +109,51 @@ canvas.addEventListener("touchend",end);
 canvas.addEventListener("touchmove",draw);
 
 function clearCanvas(){
-
 ctx.clearRect(0,0,canvas.width,canvas.height);
+document.getElementById("result").innerText="?";
+}
 
-let rctx=document.getElementById("resultCanvas").getContext("2d");
-rctx.clearRect(0,0,400,260);
+let model;
 
-document.getElementById("resultText").innerText="?";
+async function loadModel(){
+
+model = await tf.loadLayersModel(
+"https://storage.googleapis.com/tfjs-models/tfjs/mnist/model.json"
+);
 
 }
 
-function recognize(){
+loadModel();
 
-let letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+function preprocess(){
 
-let letter=letters[Math.floor(Math.random()*letters.length)];
+let img = tf.browser.fromPixels(canvas,1);
 
-document.getElementById("resultText").innerText=letter;
+img = tf.image.resizeBilinear(img,[28,28]);
 
-drawNotebook(letter);
+img = img.mean(2);
 
-}
+img = img.expandDims(0);
 
-function drawNotebook(letter){
+img = img.expandDims(-1);
 
-let canvas2=document.getElementById("resultCanvas");
-let ctx2=canvas2.getContext("2d");
+img = img.div(255.0);
 
-canvas2.width=350;
-canvas2.height=260;
-
-ctx2.clearRect(0,0,canvas2.width,canvas2.height);
-
-for(let i=0;i<canvas2.height;i+=40){
-
-ctx2.beginPath();
-ctx2.moveTo(0,i);
-ctx2.lineTo(canvas2.width,i);
-ctx2.strokeStyle="#90caf9";
-ctx2.lineWidth=1;
-ctx2.stroke();
+return img;
 
 }
 
-ctx2.font="140px Arial";
-ctx2.textAlign="center";
-ctx2.textBaseline="middle";
+async function predict(){
 
-ctx2.strokeStyle="#000";
-ctx2.setLineDash([8,8]);
-ctx2.lineWidth=3;
+let img = preprocess();
 
-ctx2.strokeText(letter,canvas2.width/2,canvas2.height/2);
+let prediction = model.predict(img);
 
-}
+let data = await prediction.data();
 
-function speak(){
+let max = data.indexOf(Math.max(...data));
 
-let letter=document.getElementById("resultText").innerText;
-
-if(letter=="?") return;
-
-let speech=new SpeechSynthesisUtterance(letter);
-speech.lang="vi-VN";
-
-speechSynthesis.speak(speech);
+document.getElementById("result").innerText=max;
 
 }
 
