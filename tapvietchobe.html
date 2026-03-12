@@ -4,50 +4,76 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bé Luyện Viết Chữ</title>
+<title>Bé Luyện Viết</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:#eaf4ff;
+background:#eef6ff;
 text-align:center;
 padding:10px;
 }
 
 h2{
 color:#1976d2;
-margin-bottom:10px;
 }
 
 #buttons{
 display:grid;
 grid-template-columns:repeat(6,1fr);
-gap:8px;
+gap:6px;
 max-width:420px;
 margin:auto;
 }
 
 button{
 font-size:28px;
-padding:14px;
+padding:12px;
 border:none;
-border-radius:10px;
+border-radius:8px;
 background:#4caf50;
 color:white;
 font-weight:bold;
 }
 
-button:active{
-background:#2e7d32;
+#scoreBtn{
+background:#ff9800;
+margin-top:10px;
 }
 
 canvas{
-margin-top:20px;
 background:white;
 border:3px solid #1976d2;
-border-radius:10px;
+margin-top:15px;
+touch-action:none;
 max-width:100%;
+}
+
+#popup{
+
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+
+background:rgba(0,0,0,0.6);
+
+display:none;
+align-items:center;
+justify-content:center;
+
+}
+
+#popupContent{
+
+font-size:120px;
+color:red;
+background:white;
+padding:40px;
+border-radius:20px;
+
 }
 
 </style>
@@ -55,51 +81,67 @@ max-width:100%;
 
 <body>
 
-<h2>✏️ Bé Tập Viết Chữ</h2>
+<h2>✏️ Bé Luyện Viết</h2>
 
 <div id="buttons"></div>
 
-<canvas id="notebook" width="360" height="200"></canvas>
+<canvas id="gridCanvas" width="360" height="360"></canvas>
+<canvas id="drawCanvas" width="360" height="360" style="position:absolute;left:0;right:0;margin:auto;"></canvas>
+
+<br>
+
+<button id="scoreBtn">Chấm Điểm</button>
+
+<div id="popup">
+<div id="popupContent"></div>
+</div>
 
 <script>
 
 const chars=[
-"0","1","2","3","4","5","6","7","8","9",
-"A","B","C","D","E","F","G","H","I","J",
-"K","L","M","N","O","P","Q","R","S","T",
-"U","V","W","X","Y","Z",
-"Ă","Â","Ê","Ô","Ơ","Ư","Đ"
-];
+"A","B","C","D","E","F",
+"G","H","I","J","K","L",
+"M","N","O","P","Q","R",
+"S","T","U","V","W","X",
+"Y","Z","Ă","Â","Ê","Ô","Ơ","Ư","Đ",
+"0","1","2","3","4","5","6","7","8","9"
+]
 
-const container=document.getElementById("buttons");
+const btnDiv=document.getElementById("buttons")
 
 chars.forEach(c=>{
-let b=document.createElement("button");
-b.innerText=c;
-b.onclick=()=>drawLetter(c);
-container.appendChild(b);
-});
+let b=document.createElement("button")
+b.innerText=c
+b.onclick=()=>drawLetter(c)
+btnDiv.appendChild(b)
+})
 
-function drawNotebook(){
+const gridCanvas=document.getElementById("gridCanvas")
+const gridCtx=gridCanvas.getContext("2d")
 
-let canvas=document.getElementById("notebook");
-let g=canvas.getContext("2d");
+const drawCanvas=document.getElementById("drawCanvas")
+const ctx=drawCanvas.getContext("2d")
 
-g.clearRect(0,0,360,200);
+ctx.lineWidth=12
+ctx.lineCap="round"
 
-let gap=40;
+let drawing=false
+let drawData=[]
 
-for(let i=0;i<5;i++){
+function drawGrid(){
 
-g.beginPath();
-g.moveTo(0,i*gap);
-g.lineTo(360,i*gap);
+gridCtx.clearRect(0,0,360,360)
 
-g.lineWidth=(i==2)?3:1;
+let size=40
 
-g.strokeStyle=(i==2)?"#2196f3":"#90caf9";
+for(let x=0;x<=360;x+=size){
 
-g.stroke();
+for(let y=0;y<=360;y+=size){
+
+gridCtx.strokeStyle="#90caf9"
+gridCtx.strokeRect(x,y,size,size)
+
+}
 
 }
 
@@ -107,24 +149,129 @@ g.stroke();
 
 function drawLetter(letter){
 
-drawNotebook();
+drawGrid()
 
-let g=document.getElementById("notebook").getContext("2d");
+ctx.clearRect(0,0,360,360)
 
-g.setLineDash([8,8]);
+gridCtx.setLineDash([8,8])
+gridCtx.font="220px Arial"
+gridCtx.textAlign="center"
+gridCtx.textBaseline="middle"
+gridCtx.strokeStyle="#555"
 
-g.font="140px Arial";
-
-g.textAlign="center";
-g.textBaseline="middle";
-
-g.strokeStyle="black";
-
-g.strokeText(letter,180,100);
+gridCtx.strokeText(letter,180,200)
 
 }
 
-drawNotebook();
+function start(e){
+
+drawing=true
+draw(e)
+
+}
+
+function end(){
+
+drawing=false
+ctx.beginPath()
+
+}
+
+function draw(e){
+
+if(!drawing)return
+
+let rect=drawCanvas.getBoundingClientRect()
+
+let x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left
+let y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top
+
+drawData.push({x,y})
+
+ctx.lineTo(x,y)
+ctx.stroke()
+
+ctx.beginPath()
+ctx.moveTo(x,y)
+
+}
+
+drawCanvas.addEventListener("mousedown",start)
+drawCanvas.addEventListener("mouseup",end)
+drawCanvas.addEventListener("mousemove",draw)
+
+drawCanvas.addEventListener("touchstart",start)
+drawCanvas.addEventListener("touchend",end)
+drawCanvas.addEventListener("touchmove",draw)
+
+function score(){
+
+if(drawData.length<10){
+showSad()
+return
+}
+
+let outside=0
+
+drawData.forEach(p=>{
+
+if(p.x<20||p.x>340||p.y<20||p.y>340){
+
+outside++
+
+}
+
+})
+
+if(outside>20){
+
+showSad()
+
+}else{
+
+let scores=[10,9,8]
+let s=scores[Math.floor(Math.random()*scores.length)]
+
+showScore(s)
+
+}
+
+}
+
+document.getElementById("scoreBtn").onclick=score
+
+function showScore(s){
+
+let p=document.getElementById("popup")
+let c=document.getElementById("popupContent")
+
+c.innerHTML=s
+
+p.style.display="flex"
+
+}
+
+function showSad(){
+
+let p=document.getElementById("popup")
+let c=document.getElementById("popupContent")
+
+c.innerHTML="☹️"
+
+p.style.display="flex"
+
+}
+
+document.getElementById("popup").ondblclick=function(){
+
+this.style.display="none"
+
+ctx.clearRect(0,0,360,360)
+drawData=[]
+
+}
+
+drawGrid()
 
 </script>
 
