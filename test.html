@@ -240,67 +240,34 @@ saveData();
 notify("Đã copy sản phẩm");
 
 }
-
-/* SAVE DATA /
-
 function saveData(){
-
 localStorage.setItem("tool_content1",document.getElementById("content1").value);
-
 localStorage.setItem("tool_content2",document.getElementById("content2").value);
-
 }
-
-/ LOAD DATA /
-
 function loadData(){
-
 let c1=localStorage.getItem("tool_content1");
 let c2=localStorage.getItem("tool_content2");
-
 if(c1) document.getElementById("content1").value=c1;
-
 if(c2) document.getElementById("content2").value=c2;
-
 }
-
-/ AUTO SAVE /
-
-document.getElementById("content1").addEventListener("input",saveData);
+document.getElementById("content1")addEventListener("input",saveData);
 document.getElementById("content2").addEventListener("input",saveData);
-
-/ EXPORT TXT /
-
 function exportTXT(){
-
 let data=
 "=== NỘI DUNG 1 ===\n"+
 document.getElementById("content1").value+
-
 "\n\n=== NỘI DUNG 2 ===\n"+
 document.getElementById("content2").value;
-
 let blob=new Blob([data],{type:"text/plain"});
-
 let a=document.createElement("a");
-
 a.href=URL.createObjectURL(blob);
 a.download="noidung_tool.txt";
-
 a.click();
-
 notify("Đã xuất file");
-
 }
-
-/ IMPORT TXT */
-
 document.getElementById("fileInput").addEventListener("change",function(e){
-
 let file=e.target.files[0];
-
 if(!file) return;
-
 let reader=new FileReader();
 
 reader.onload=function(event){
