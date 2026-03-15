@@ -241,17 +241,16 @@ notify("Đã copy sản phẩm");
 
 }
 
-/* SAVE DATA /
+/* LƯU DỮ LIỆU /
 
 function saveData(){
 
 localStorage.setItem("tool_content1",document.getElementById("content1").value);
-
 localStorage.setItem("tool_content2",document.getElementById("content2").value);
 
 }
 
-/ LOAD DATA /
+/ LOAD DỮ LIỆU /
 
 function loadData(){
 
@@ -259,7 +258,6 @@ let c1=localStorage.getItem("tool_content1");
 let c2=localStorage.getItem("tool_content2");
 
 if(c1) document.getElementById("content1").value=c1;
-
 if(c2) document.getElementById("content2").value=c2;
 
 }
@@ -269,37 +267,43 @@ if(c2) document.getElementById("content2").value=c2;
 document.getElementById("content1").addEventListener("input",saveData);
 document.getElementById("content2").addEventListener("input",saveData);
 
-/ EXPORT TXT /
+/ XUẤT FILE TXT /
 
 function exportTXT(){
 
-let data=
-"=== NỘI DUNG 1 ===\n"+
-document.getElementById("content1").value+
+let c1=document.getElementById("content1").value;
+let c2=document.getElementById("content2").value;
 
-"\n\n=== NỘI DUNG 2 ===\n"+
-document.getElementById("content2").value;
+let data=
+"[CONTENT1]\n"+
+c1+
+"\n[/CONTENT1]\n"+
+"[CONTENT2]\n"+
+c2+
+"\n[/CONTENT2]";
 
 let blob=new Blob([data],{type:"text/plain"});
 
 let a=document.createElement("a");
 
 a.href=URL.createObjectURL(blob);
-a.download="noidung_tool.txt";
-
+a.download="dulieu_tool.txt";
 a.click();
 
 notify("Đã xuất file");
 
 }
 
-/ IMPORT TXT */
+/ NHẬP FILE TXT /
 
 document.getElementById("fileInput").addEventListener("change",function(e){
 
 let file=e.target.files[0];
 
-if(!file) return;
+if(!file){
+notify("Chưa chọn file");
+return;
+}
 
 let reader=new FileReader();
 
@@ -307,19 +311,21 @@ reader.onload=function(event){
 
 let text=event.target.result;
 
-let part=text.split("=== NỘI DUNG 2 ===");
+let c1="";
+let c2="";
 
-let c1=part[0].replace("=== NỘI DUNG 1 ===","").trim();
+let match1=text.match(/[CONTENT1]([\s\S]?)[/CONTENT1]/);
+if(match1) c1=match1[1].trim();
 
-let c2=part[1] ? part[1].trim() : "";
+let match2=text.match(/[CONTENT2]([\s\S]*?)[/CONTENT2]/);
+if(match2) c2=match2[1].trim();
 
 document.getElementById("content1").value=c1;
-
 document.getElementById("content2").value=c2;
 
 saveData();
 
-notify("Đã load file");
+notify("Đã nhập file TXT");
 
 };
 
