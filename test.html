@@ -90,14 +90,50 @@ background:#4da3ff;
 color:white;
 }
 
-.filebox{
-margin-top:10px;
-display:flex;
-gap:8px;
+/* nút xanh than */
+.bluebtn{
+background:linear-gradient(135deg,#0d3b66,#5fa8ff);
 }
 
-.filebox button{
+.mail-row{
+display:flex;
+gap:8px;
+margin-top:10px;
+}
+
+.mail-row input{
 flex:1;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.openbtn{
+background:#2ecc71;
+}
+
+.salary-box{
+margin-top:15px;
+padding:12px;
+background:#ffffff;
+border-radius:10px;
+}
+
+.salary-box input,
+.salary-box select{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+margin-top:6px;
+}
+
+.salary-box textarea{
+height:120px;
+}
+
+.history{
+height:120px;
 }
 
 #notify{
@@ -119,13 +155,15 @@ font-weight:bold;
 <div class="tabs">
 <button class="tabbtn active" onclick="openTab('tab1',this)">Nội dung 1</button>
 <button class="tabbtn" onclick="openTab('tab2',this)">Nội dung 2</button>
+<button class="tabbtn" onclick="openTab('tab3',this)">Mail</button>
 </div>
+
 
 <!-- TAB 1 -->
 
 <div id="tab1" class="tabcontent active">
 
-<textarea id="content1" placeholder="Nhập nội dung..."></textarea>
+<textarea id="content1"></textarea>
 
 <div class="grid">
 
@@ -136,15 +174,25 @@ font-weight:bold;
 <button onclick="copyData('content1','#tintuc #mxh')">Chi tiết</button>
 <button onclick="tinNong()">Tin Nóng</button>
 
+<!-- BUTTON MỚI -->
+<button class="bluebtn" onclick="copyData('content1','#tinmoi24h #tintuc #mxh')">
+TinMoi24h
+</button>
+
+<button class="bluebtn" onclick="copyData('content1','#bacgiang #tintuc #mxh')">
+BacGiang
+</button>
+
 </div>
 
 </div>
+
 
 <!-- TAB 2 -->
 
 <div id="tab2" class="tabcontent">
 
-<textarea id="content2" class="dark" placeholder="Nội dung sản phẩm..."></textarea>
+<textarea id="content2" class="dark"></textarea>
 
 <div class="grid">
 
@@ -165,19 +213,69 @@ Royal M179
 
 </div>
 
-<div class="filebox">
 
-<button onclick="exportTXT()">Xuất TXT</button>
+<!-- TAB MAIL -->
 
-<button onclick="document.getElementById('fileInput').click()">Nhập TXT</button>
+<div id="tab3" class="tabcontent">
 
-<input type="file" id="fileInput" accept=".txt" style="display:none">
+<div class="mail-row">
+<input type="text" value="https://mail.tm/" readonly>
+<button class="openbtn" onclick="window.open('https://mail.tm/')">Mở</button>
+</div>
+
+<div class="mail-row">
+<input type="text" value="https://yahoo.com.vn" readonly>
+<button class="openbtn" onclick="window.open('https://yahoo.com.vn')">Mở</button>
+</div>
+
+<div class="mail-row">
+<input type="text" value="https://gmail.com" readonly>
+<button class="openbtn" onclick="window.open('https://gmail.com')">Mở</button>
+</div>
+
+
+<div class="salary-box">
+
+<h3>Tính Thu Nhập</h3>
+
+<label>Thu nhập $</label>
+<input type="number" id="income">
+
+<label>Tỷ giá VNĐ</label>
+<input type="number" id="rate" value="25000">
+
+<label>Phần trăm nhận</label>
+
+<select id="percent">
+<option>50</option>
+<option>55</option>
+<option>60</option>
+<option>65</option>
+<option>70</option>
+<option>75</option>
+<option>80</option>
+<option>85</option>
+<option>90</option>
+<option>95</option>
+<option selected>100</option>
+</select>
+
+<button onclick="tinhTien()">Tính Tiền</button>
+<button onclick="copyLuong()">Copy bảng lương</button>
+<button onclick="clearHistory()">Xóa lịch sử</button>
+
+<textarea id="salaryResult" readonly placeholder="Bảng lương"></textarea>
+
+<textarea id="history" class="history" readonly placeholder="Lịch sử bảng lương"></textarea>
+
+</div>
 
 </div>
 
 <div id="notify"></div>
 
 </div>
+
 
 <script>
 
@@ -199,6 +297,7 @@ btn.classList.add("active");
 function today(){
 
 const d=new Date();
+
 return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
 
 }
@@ -210,8 +309,6 @@ let text=document.getElementById(id).value;
 let result=text+"\n\nNgày đăng: "+today()+"\n"+tag;
 
 navigator.clipboard.writeText(result);
-
-saveData();
 
 notify("Đã copy");
 
@@ -225,8 +322,6 @@ let result="🚨 TIN NÓNG\n\n"+text+"\n\n#tinnong #mxh";
 
 navigator.clipboard.writeText(result);
 
-saveData();
-
 notify("Đã copy Tin Nóng");
 
 }
@@ -235,64 +330,52 @@ function copyProduct(text){
 
 navigator.clipboard.writeText(text);
 
-saveData();
-
 notify("Đã copy sản phẩm");
 
 }
-function saveData(){
-localStorage.setItem("tool_content1",document.getElementById("content1").value);
-localStorage.setItem("tool_content2",document.getElementById("content2").value);
+
+function tinhTien(){
+
+let income=parseFloat(document.getElementById("income").value)||0;
+
+let rate=parseFloat(document.getElementById("rate").value)||0;
+
+let percent=parseFloat(document.getElementById("percent").value)||0;
+
+let receiveUsd=income*percent/100;
+
+let vnd=receiveUsd*rate;
+
+let result=
+"===== BẢNG LƯƠNG =====\n"+
+"Ngày: "+today()+"\n\n"+
+"Thu nhập gốc: $"+income+"\n"+
+"Phần trăm nhận: "+percent+"%\n"+
+"Thực nhận: $"+receiveUsd.toFixed(2)+"\n"+
+"Tỷ giá: "+rate.toLocaleString()+" VNĐ\n"+
+"Quy đổi: "+vnd.toLocaleString()+" VNĐ\n";
+
+document.getElementById("salaryResult").value=result;
+
+document.getElementById("history").value=
+result+"\n----------------\n"+
+document.getElementById("history").value;
+
 }
-function loadData(){
-let c1=localStorage.getItem("tool_content1");
-let c2=localStorage.getItem("tool_content2");
-if(c1) document.getElementById("content1").value=c1;
-if(c2) document.getElementById("content2").value=c2;
+
+function copyLuong(){
+
+navigator.clipboard.writeText(document.getElementById("salaryResult").value);
+
+notify("Đã copy bảng lương");
+
 }
-document.getElementById("content1")addEventListener("input",saveData);
-document.getElementById("content2").addEventListener("input",saveData);
-function exportTXT(){
-let data=
-"=== NỘI DUNG 1 ===\n"+
-document.getElementById("content1").value+
-"\n\n=== NỘI DUNG 2 ===\n"+
-document.getElementById("content2").value;
-let blob=new Blob([data],{type:"text/plain"});
-let a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="noidung_tool.txt";
-a.click();
-notify("Đã xuất file");
+
+function clearHistory(){
+
+document.getElementById("history").value="";
+
 }
-document.getElementById("fileInput").addEventListener("change",function(e){
-let file=e.target.files[0];
-if(!file) return;
-let reader=new FileReader();
-
-reader.onload=function(event){
-
-let text=event.target.result;
-
-let part=text.split("=== NỘI DUNG 2 ===");
-
-let c1=part[0].replace("=== NỘI DUNG 1 ===","").trim();
-
-let c2=part[1] ? part[1].trim() : "";
-
-document.getElementById("content1").value=c1;
-
-document.getElementById("content2").value=c2;
-
-saveData();
-
-notify("Đã load file");
-
-};
-
-reader.readAsText(file);
-
-});
 
 function notify(msg){
 
@@ -303,8 +386,6 @@ document.getElementById("notify").innerText="";
 },2000);
 
 }
-
-window.onload=loadData;
 
 </script>
 
