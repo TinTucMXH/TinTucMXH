@@ -2,183 +2,81 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Tool Copy Nội Dung</title>
 
 <style>
+body{font-family:Arial;margin:0;padding:15px;background:#f0f7ff;}
+.container{max-width:650px;margin:auto;}
+h2{text-align:center;color:#0a6fd6;}
 
-body{
-font-family:Arial;
-margin:0;
-padding:15px;
-background:#f0f7ff;
-}
+.tabs{display:flex;gap:5px;margin-bottom:10px;}
+.tabbtn{flex:1;padding:12px;border:none;border-radius:8px;background:#cfd9e6;font-weight:bold;}
+.tabbtn.active{background:#2ecc71;color:white;}
 
-.container{
-max-width:650px;
-margin:auto;
-}
+.tabcontent{display:none;}
+.tabcontent.active{display:block;}
 
-h2{
-text-align:center;
-color:#0a6fd6;
-}
-
-.tabs{
-display:flex;
-gap:5px;
-margin-bottom:10px;
-}
-
-.tabbtn{
-flex:1;
-padding:12px;
-border:none;
-border-radius:8px;
-background:#cfd9e6;
-font-weight:bold;
-}
-
-.tabbtn.active{
-background:#2ecc71;
-color:white;
-}
-
-.tabcontent{
-display:none;
-}
-
-.tabcontent.active{
-display:block;
-}
-
-.textbox-wrap{
-position:relative;
-}
-
+.textbox-wrap{position:relative;}
 textarea{
-width:100%;
-height:140px;
-padding:12px;
-margin-top:8px;
-border-radius:10px;
-border:1px solid #cfd9e6;
-resize:none;
-font-size:16px;
-box-sizing:border-box;
+width:100%;height:140px;padding:12px;margin-top:8px;
+border-radius:10px;border:1px solid #cfd9e6;
+resize:none;font-size:16px;box-sizing:border-box;
 }
 
-.iconbox{
-position:absolute;
-top:10px;
-right:10px;
-display:flex;
-gap:5px;
-}
-
+.iconbox{position:absolute;top:10px;right:10px;display:flex;gap:5px;}
 .iconbtn{
-width:28px;
-height:28px;
-border:none;
-border-radius:6px;
-background:#2ecc71;
-color:white;
-font-size:16px;
+width:28px;height:28px;border:none;border-radius:6px;
+background:#2ecc71;color:white;font-size:16px;
 }
 
-.dark{
-background:#1a1a1a;
-color:white;
-border:1px solid #333;
-}
+.dark{background:#1a1a1a;color:white;border:1px solid #333;}
 
-.grid{
-margin-top:12px;
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
+.grid{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
 button{
-padding:14px;
-border:none;
-border-radius:10px;
-font-size:14px;
-font-weight:bold;
-background:#4da3ff;
-color:white;
+padding:14px;border:none;border-radius:10px;
+font-size:14px;font-weight:bold;background:#4da3ff;color:white;
 }
 
-.bluebtn{
-background:linear-gradient(135deg,#0d3b66,#5fa8ff);
-}
+.bluebtn{background:linear-gradient(135deg,#0d3b66,#5fa8ff);}
 
-.mail-row{
-display:flex;
-gap:6px;
-margin-top:6px;
-}
-
+.mail-row{margin-top:8px;padding:6px;background:#fff;border-radius:8px;}
 .mail-row input{
-flex:1;
-padding:8px;
-border-radius:6px;
-border:1px solid #ccc;
-font-size:13px;
+width:100%;padding:8px;margin-top:4px;
+border-radius:6px;border:1px solid #ccc;font-size:13px;
 }
 
-.go{
-width:32px;
-height:32px;
-background:#2ecc71;
-padding:0;
-}
+.go{width:100%;margin-top:5px;background:#2ecc71;}
 
-.groupbox{
-background:white;
-padding:10px;
-border-radius:10px;
-}
+.groupbox{background:white;padding:10px;border-radius:10px;}
 
 .salary-box{
-margin-top:15px;
-padding:12px;
-background:#ffffff;
-border-radius:10px;
+margin-top:15px;padding:12px;background:#ffffff;border-radius:10px;
 }
 
 .salary-box input,
 .salary-box select{
-width:100%;
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
-margin-top:6px;
+width:100%;padding:10px;border-radius:8px;
+border:1px solid #ccc;margin-top:6px;
 }
 
-.salary-box textarea{
-height:120px;
-}
+.salary-box textarea{height:120px;}
+.history{height:120px;}
 
-.history{
-height:120px;
-}
+#notify{margin-top:12px;text-align:center;color:green;font-weight:bold;}
 
-#notify{
-margin-top:12px;
-text-align:center;
-color:green;
+.page-name{
+color:#0a6fd6;
 font-weight:bold;
+margin-bottom:3px;
 }
-
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
 <h2>Tool Copy Nội Dung</h2>
@@ -191,12 +89,9 @@ font-weight:bold;
 </div>
 
 <!-- TAB 1 -->
-
 <div id="tab1" class="tabcontent active">
-
 <div class="textbox-wrap">
 <textarea id="content1"></textarea>
-
 <div class="iconbox">
 <button class="iconbtn" onclick="pasteText()">📋</button>
 <button class="iconbtn" onclick="clearText()">❌</button>
@@ -204,73 +99,51 @@ font-weight:bold;
 </div>
 
 <div class="grid">
-
 <button onclick="copyData('content1','#tintucmxh #mxh #tintuc')">1. Tin tức MXH</button>
 <button onclick="copyData('content1','#tinmoimxh #mxh #tintuc')">2. Tin Mới</button>
-
 <button onclick="copyData('content1','#todaynews #mxh #tintuc')">3. Today News</button>
 <button onclick="copyData('content1','#cxcn #camxucconnguoi #mxh #tintuc')">4. Cảm xúc</button>
-
 <button onclick="copyData('content1','#tintuc #mxh')">5. Chi tiết</button>
 <button onclick="tinNong()">6. Tin Nóng</button>
-
 <button class="bluebtn" onclick="copyData('content1','#tinmoi24h #tintuc #mxh')">7. TinMoi24h</button>
 <button class="bluebtn" onclick="copyData('content1','#bacgiang #tintuc #mxh')">8. BacGiang</button>
-
 <button class="bluebtn" onclick="copyData('content1','#tinmoimangxahoi #mxh')">9. Tin mới MXH</button>
 <button class="bluebtn" onclick="copyData('content1','#tinviet #tintuc')">10. Tin Việt</button>
-
 </div>
-
 </div>
 
 <!-- TAB 2 -->
-
 <div id="tab2" class="tabcontent">
-
 <textarea id="content2" class="dark"></textarea>
-
 <div class="grid">
-
-<button onclick="copyProduct('🚀 Mũ Fullface Royal M266 giá tốt hôm nay #royalm266 #muabaohiem')">
-Royal M266
-</button>
-
-<button onclick="copyProduct('Mũ lật hàm Royal M179 tiện lợi an toàn #royalm179 #muabaohiem')">
-Royal M179
-</button>
-
+<button onclick="copyProduct('🚀 Mũ Fullface Royal M266 giá tốt hôm nay #royalm266 #muabaohiem')">Royal M266</button>
+<button onclick="copyProduct('Mũ lật hàm Royal M179 tiện lợi an toàn #royalm179 #muabaohiem')">Royal M179</button>
 <button onclick="copyData('content2','#review #sanpham')">Review</button>
 <button onclick="copyData('content2','#giamgia #uudai')">Giảm Giá</button>
-
 <button onclick="copyData('content2','#tiktokshop #sanphamhot')">TikTok Shop</button>
 <button onclick="copyData('content2','#muasam #dealhot')">Mua Sắm</button>
-
+</div>
 </div>
 
-</div>
-
-<!-- TAB MAIL -->
-
+<!-- TAB MAIL (ĐÃ KHÔI PHỤC FULL) -->
 <div id="tab3" class="tabcontent">
 
 <div class="mail-row">
-<input type="text" value="https://mail.tm/" readonly>
-<button class="openbtn" onclick="window.open('https://mail.tm/')">Mở</button>
+<input value="https://mail.tm/" readonly>
+<button onclick="window.open('https://mail.tm/')">Mở</button>
 </div>
 
 <div class="mail-row">
-<input type="text" value="https://yahoo.com.vn" readonly>
-<button class="openbtn" onclick="window.open('https://yahoo.com.vn')">Mở</button>
+<input value="https://yahoo.com.vn" readonly>
+<button onclick="window.open('https://yahoo.com.vn')">Mở</button>
 </div>
 
 <div class="mail-row">
-<input type="text" value="https://gmail.com" readonly>
-<button class="openbtn" onclick="window.open('https://gmail.com')">Mở</button>
+<input value="https://gmail.com" readonly>
+<button onclick="window.open('https://gmail.com')">Mở</button>
 </div>
 
 <div class="salary-box">
-
 <h3>Tính Thu Nhập</h3>
 
 <label>Thu nhập $</label>
@@ -280,60 +153,68 @@ Royal M179
 <input type="number" id="rate" value="25000">
 
 <label>Phần trăm nhận</label>
-
 <select id="percent">
-<option>50</option>
-<option>55</option>
-<option>60</option>
-<option>65</option>
-<option>70</option>
-<option>75</option>
-<option>80</option>
-<option>85</option>
-<option>90</option>
-<option>95</option>
-<option selected>100</option>
+<option>50</option><option>55</option><option>60</option>
+<option>65</option><option>70</option><option>75</option>
+<option>80</option><option>85</option><option>90</option>
+<option>95</option><option selected>100</option>
 </select>
 
 <button onclick="tinhTien()">Tính Tiền</button>
 <button onclick="copyLuong()">Copy bảng lương</button>
 <button onclick="clearHistory()">Xóa lịch sử</button>
 
-<textarea id="salaryResult" readonly placeholder="Bảng lương"></textarea>
-<textarea id="history" class="history" readonly placeholder="Lịch sử bảng lương"></textarea>
-
+<textarea id="salaryResult" readonly></textarea>
+<textarea id="history" class="history" readonly></textarea>
 </div>
 
 </div>
 
 <!-- TAB PAGE -->
-
 <div id="tab4" class="tabcontent">
-
-<div class="groupbox">
-
-<script>
-for(let i=1;i<=10;i++){
-document.write(`
-<div class="mail-row">
-<input value="https://facebook.com/page${i}" readonly onclick="copyThis(this)">
-<input value="ID:1000${i}" readonly onclick="copyThis(this)">
-<button class="go" onclick="window.open('https://facebook.com/page${i}')">GO</button>
-</div>
-`);
-}
-</script>
-
-</div>
-
+<div class="groupbox" id="pageList"></div>
 </div>
 
 <div id="notify"></div>
-
 </div>
 
 <script>
 
+// DATA PAGE (ĐẦY ĐỦ)
+let pages = [
+{ name:"Tin Mới-Mạng Xã Hội", link:"https://facebook.com/tinmoi.mxh", id:"10001"},
+{ name:"Tin Tức MXH", link:"https://facebook.com/TinTucMXH.Page", id:"10002"},
+{ name:"Page MXH", link:"https://facebook.com/page3", id:"10003"},
+{ name:"Cảm Xúc Con Người", link:"https://facebook.com/camxucconnguoii", id:"10004"},
+{ name:"Today News", link:"https://facebook.com/todaynews8entertainment", id:"10005"},
+{ name:"Bac Giang Hiện Tại", link:"https://facebook.com/page6", id:"10006"},
+{ name:"Page Tin Mới", link:"https://facebook.com/page7", id:"10007"},
+{ name:"Page Hot", link:"https://facebook.com/page8", id:"10008"},
+{ name:"Page Video", link:"https://facebook.com/page9", id:"10009"},
+{ name:"Page Review", link:"https://facebook.com/page10", id:"10010"}
+];
+
+// render page
+let container = document.getElementById("pageList");
+
+// clear trước (tránh bị lặp khi reload script)
+container.innerHTML = "";
+
+pages.forEach(p => {
+  let div = document.createElement("div");
+  div.className = "mail-row";
+
+  div.innerHTML = `
+    <div class="page-name">${p.name}</div>
+    <input value="${p.link}" readonly onclick="copyThis(this)">
+    <input value="ID:${p.id}" readonly onclick="copyThis(this)">
+    <button class="go" onclick="window.open('${p.link}')">GO</button>
+  `;
+
+  container.appendChild(div);
+});
+
+// FUNCTIONS
 function openTab(id,btn){
 document.querySelectorAll(".tabcontent").forEach(t=>t.classList.remove("active"));
 document.querySelectorAll(".tabbtn").forEach(t=>t.classList.remove("active"));
@@ -348,38 +229,27 @@ return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
 
 function copyData(id,tag){
 let text=document.getElementById(id).value;
-let result=text+"\n\nNgày đăng: "+today()+"\n"+tag;
-navigator.clipboard.writeText(result);
+navigator.clipboard.writeText(text+"\n\nNgày đăng: "+today()+"\n"+tag);
 notify("Đã copy");
 }
 
 function tinNong(){
 let text=document.getElementById("content1").value;
-let result="🚨 TIN NÓNG\n\n"+text+"\n\n#tinnong #mxh";
-navigator.clipboard.writeText(result);
+navigator.clipboard.writeText("🚨 TIN NÓNG\n\n"+text+"\n\n#tinnong #mxh");
 notify("Đã copy Tin Nóng");
 }
 
-function copyProduct(text){
-navigator.clipboard.writeText(text);
-notify("Đã copy sản phẩm");
-}
+function copyProduct(t){navigator.clipboard.writeText(t);notify("Đã copy");}
 
 function pasteText(){
-navigator.clipboard.readText().then(text=>{
-document.getElementById("content1").value=text;
-});
+navigator.clipboard.readText().then(t=>{document.getElementById("content1").value=t;});
 }
 
-function clearText(){
-document.getElementById("content1").value="";
-}
+function clearText(){document.getElementById("content1").value="";}
 
-function copyThis(el){
-navigator.clipboard.writeText(el.value);
-notify("Đã copy");
-}
+function copyThis(el){navigator.clipboard.writeText(el.value);notify("Đã copy");}
 
+// TÍNH TIỀN (ĐÃ FIX)
 function tinhTien(){
 let income=parseFloat(document.getElementById("income").value)||0;
 let rate=parseFloat(document.getElementById("rate").value)||0;
@@ -391,11 +261,10 @@ let vnd=receiveUsd*rate;
 let result=
 "===== BẢNG LƯƠNG =====\n"+
 "Ngày: "+today()+"\n\n"+
-"Thu nhập gốc: $"+income+"\n"+
-"Phần trăm nhận: "+percent+"%\n"+
+"Thu nhập: $"+income+"\n"+
+"Nhận: "+percent+"%\n"+
 "Thực nhận: $"+receiveUsd.toFixed(2)+"\n"+
-"Tỷ giá: "+rate.toLocaleString()+" VNĐ\n"+
-"Quy đổi: "+vnd.toLocaleString()+" VNĐ\n";
+"VNĐ: "+vnd.toLocaleString()+"\n";
 
 document.getElementById("salaryResult").value=result;
 
@@ -419,6 +288,5 @@ setTimeout(()=>{document.getElementById("notify").innerText="";},2000);
 }
 
 </script>
-
 </body>
 </html>
