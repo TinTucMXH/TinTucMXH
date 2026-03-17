@@ -123,20 +123,11 @@ margin-top:6px;
 }
 
 .mail-row input{
+flex:1;
 padding:8px;
 border-radius:6px;
 border:1px solid #ccc;
 font-size:13px;
-}
-
-.link{
-flex:2;
-}
-
-.idbox{
-flex:1;
-max-width:90px;
-text-align:center;
 }
 
 .go{
@@ -150,7 +141,6 @@ padding:0;
 background:white;
 padding:10px;
 border-radius:10px;
-margin-top:10px;
 }
 
 .salary-box{
@@ -292,17 +282,25 @@ Royal M179
 <label>Phần trăm nhận</label>
 
 <select id="percent">
-<option>50</option><option>55</option><option>60</option><option>65</option>
-<option>70</option><option>75</option><option>80</option><option>85</option>
-<option>90</option><option>95</option><option selected>100</option>
+<option>50</option>
+<option>55</option>
+<option>60</option>
+<option>65</option>
+<option>70</option>
+<option>75</option>
+<option>80</option>
+<option>85</option>
+<option>90</option>
+<option>95</option>
+<option selected>100</option>
 </select>
 
 <button onclick="tinhTien()">Tính Tiền</button>
 <button onclick="copyLuong()">Copy bảng lương</button>
 <button onclick="clearHistory()">Xóa lịch sử</button>
 
-<textarea id="salaryResult" readonly></textarea>
-<textarea id="history" class="history" readonly></textarea>
+<textarea id="salaryResult" readonly placeholder="Bảng lương"></textarea>
+<textarea id="history" class="history" readonly placeholder="Lịch sử bảng lương"></textarea>
 
 </div>
 
@@ -312,19 +310,19 @@ Royal M179
 
 <div id="tab4" class="tabcontent">
 
-<div class="groupbox" id="pageList"></div>
-
 <div class="groupbox">
 
-<h3>🔎 Lấy ID Facebook</h3>
-
-<input id="fbLink" placeholder="Dán link Facebook..."
-style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
-
-<button style="margin-top:8px;width:100%;" onclick="getFacebookID()">Lấy ID</button>
-
-<input id="fbID" readonly placeholder="ID hiển thị..."
-style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-top:8px;">
+<script>
+for(let i=1;i<=10;i++){
+document.write(`
+<div class="mail-row">
+<input value="https://facebook.com/page${i}" readonly onclick="copyThis(this)">
+<input value="ID:1000${i}" readonly onclick="copyThis(this)">
+<button class="go" onclick="window.open('https://facebook.com/page${i}')">GO</button>
+</div>
+`);
+}
+</script>
 
 </div>
 
@@ -336,15 +334,6 @@ style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-to
 
 <script>
 
-for(let i=1;i<=10;i++){
-document.getElementById("pageList").innerHTML+=`
-<div class="mail-row">
-<input class="link" value="https://facebook.com/page${i}" readonly onclick="copyThis(this)">
-<input class="idbox" value="ID:${1000+i}" readonly onclick="copyThis(this)">
-<button class="go" onclick="window.open('https://facebook.com/page${i}')">GO</button>
-</div>`;
-}
-
 function openTab(id,btn){
 document.querySelectorAll(".tabcontent").forEach(t=>t.classList.remove("active"));
 document.querySelectorAll(".tabbtn").forEach(t=>t.classList.remove("active"));
@@ -353,7 +342,7 @@ btn.classList.add("active");
 }
 
 function today(){
-let d=new Date();
+const d=new Date();
 return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
 }
 
@@ -377,8 +366,8 @@ notify("Đã copy sản phẩm");
 }
 
 function pasteText(){
-navigator.clipboard.readText().then(t=>{
-document.getElementById("content1").value=t;
+navigator.clipboard.readText().then(text=>{
+document.getElementById("content1").value=text;
 });
 }
 
@@ -391,55 +380,42 @@ navigator.clipboard.writeText(el.value);
 notify("Đã copy");
 }
 
-function getFacebookID(){
-let link=document.getElementById("fbLink").value.trim();
-if(!link){ notify("Nhập link"); return; }
-
-let id="";
-if(link.includes("id=")){
-id=link.split("id=")[1].split("&")[0];
-}else{
-let parts=link.split("/");
-id=parts.filter(p=>p).pop();
-}
-
-document.getElementById("fbID").value=id;
-notify("Đã lấy ID");
-}
-
 function tinhTien(){
-let income=parseFloat(income.value)||0;
-let rate=parseFloat(rate.value)||0;
-let percent=parseFloat(percent.value)||0;
+let income=parseFloat(document.getElementById("income").value)||0;
+let rate=parseFloat(document.getElementById("rate").value)||0;
+let percent=parseFloat(document.getElementById("percent").value)||0;
 
-let usd=income*percent/100;
-let vnd=usd*rate;
+let receiveUsd=income*percent/100;
+let vnd=receiveUsd*rate;
 
 let result=
 "===== BẢNG LƯƠNG =====\n"+
 "Ngày: "+today()+"\n\n"+
-"Thu nhập: $"+income+"\n"+
-"Nhận: "+percent+"%\n"+
-"USD: $"+usd.toFixed(2)+"\n"+
-"VNĐ: "+vnd.toLocaleString();
+"Thu nhập gốc: $"+income+"\n"+
+"Phần trăm nhận: "+percent+"%\n"+
+"Thực nhận: $"+receiveUsd.toFixed(2)+"\n"+
+"Tỷ giá: "+rate.toLocaleString()+" VNĐ\n"+
+"Quy đổi: "+vnd.toLocaleString()+" VNĐ\n";
 
-salaryResult.value=result;
-history.value=result+"\n-----\n"+history.value;
+document.getElementById("salaryResult").value=result;
+
+document.getElementById("history").value=
+result+"\n----------------\n"+
+document.getElementById("history").value;
 }
 
 function copyLuong(){
-navigator.clipboard.writeText(salaryResult.value);
-notify("Đã copy");
+navigator.clipboard.writeText(document.getElementById("salaryResult").value);
+notify("Đã copy bảng lương");
 }
 
 function clearHistory(){
-history.value="";
+document.getElementById("history").value="";
 }
 
 function notify(msg){
-notifyEl=document.getElementById("notify");
-notifyEl.innerText=msg;
-setTimeout(()=>notifyEl.innerText="",2000);
+document.getElementById("notify").innerText=msg;
+setTimeout(()=>{document.getElementById("notify").innerText="";},2000);
 }
 
 </script>
