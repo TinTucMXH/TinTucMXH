@@ -8,162 +8,213 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 <title>Tool Copy Nội Dung</title>
 
 <style>
+body{font-family:Arial;margin:0;padding:15px;background:#f0f7ff;}
+.container{max-width:650px;margin:auto;}
+h2{text-align:center;color:#0a6fd6;}
 
-body{
-font-family:Arial;
-margin:0;
-padding:15px;
-background:#f0f7ff;
+.tabs{display:flex;gap:5px;margin-bottom:10px;}
+.tabbtn{flex:1;padding:12px;border:none;border-radius:8px;background:#cfd9e6;font-weight:bold;}
+.tabbtn.active{background:#2ecc71;color:white;}
+
+.tabcontent{display:none;}
+.tabcontent.active{display:block;}
+
+.textbox-wrap{position:relative;}
+textarea{
+width:100%;height:140px;padding:12px;margin-top:8px;
+border-radius:10px;border:1px solid #cfd9e6;
+resize:none;font-size:16px;box-sizing:border-box;
 }
 
-.container{
-max-width:650px;
-margin:auto;
+.iconbox{position:absolute;top:10px;right:10px;display:flex;gap:5px;}
+.iconbtn{
+width:28px;height:28px;border:none;border-radius:6px;
+background:#2ecc71;color:white;font-size:16px;
 }
 
-h2{
-text-align:center;
-color:#0a6fd6;
-}
+.dark{background:#1a1a1a;color:white;border:1px solid #333;}
 
-.tabs{
-display:flex;
-gap:5px;
-margin-bottom:10px;
-}
-
-.tabbtn{
-flex:1;
-padding:12px;
-border:none;
-border-radius:8px;
-background:#cfd9e6;
-font-weight:bold;
-}
-
-.tabbtn.active{
-background:#2ecc71;
-color:white;
-}
-
-.tabcontent{
-display:none;
-}
-
-.tabcontent.active{
-display:block;
-}
-
-.mail-row{
-display:flex;
-gap:6px;
-margin-top:6px;
-align-items:center;
-}
-
-.mail-row input{
-padding:8px;
-border-radius:6px;
-border:1px solid #ccc;
-font-size:13px;
-}
-
-.link{
-flex:2;
-}
-
-.idbox{
-flex:1;
-max-width:100px;
-}
-
-.go{
-width:32px;
-height:32px;
-background:#2ecc71;
-border:none;
-color:white;
-border-radius:6px;
-}
-
-.groupbox{
-background:white;
-padding:10px;
-border-radius:10px;
-}
-
-.label{
-color:#0a6fd6;
-font-size:13px;
-margin-top:10px;
-font-weight:bold;
-}
+.grid{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
 button{
-padding:10px;
-border:none;
-border-radius:8px;
-background:#4da3ff;
-color:white;
+padding:14px;border:none;border-radius:10px;
+font-size:14px;font-weight:bold;background:#4da3ff;color:white;
+}
+
+.bluebtn{background:linear-gradient(135deg,#0d3b66,#5fa8ff);}
+
+.mail-row{margin-top:8px;padding:6px;background:#fff;border-radius:8px;}
+.mail-row input{
+width:100%;padding:8px;margin-top:4px;
+border-radius:6px;border:1px solid #ccc;font-size:13px;
+}
+
+.go{width:100%;margin-top:5px;background:#2ecc71;}
+
+.groupbox{background:white;padding:10px;border-radius:10px;}
+
+.salary-box{
+margin-top:15px;padding:12px;background:#ffffff;border-radius:10px;
+}
+
+.salary-box input,
+.salary-box select{
+width:100%;padding:10px;border-radius:8px;
+border:1px solid #ccc;margin-top:6px;
+}
+
+.salary-box textarea{height:120px;}
+.history{height:120px;}
+
+#notify{margin-top:12px;text-align:center;color:green;font-weight:bold;}
+
+.page-name{
+color:#0a6fd6;
 font-weight:bold;
+margin-bottom:3px;
 }
-
-#notify{
-margin-top:12px;
-text-align:center;
-color:green;
-font-weight:bold;
-}
-
-.getuid{
-background:#ff9800;
-}
-
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
 <h2>Tool Copy Nội Dung</h2>
 
 <div class="tabs">
-<button class="tabbtn active" onclick="openTab('tab4',this)">Trang Page</button>
+<button class="tabbtn active" onclick="openTab('tab1',this)">Nội dung 1</button>
+<button class="tabbtn" onclick="openTab('tab2',this)">Nội dung 2</button>
+<button class="tabbtn" onclick="openTab('tab3',this)">Mail</button>
+<button class="tabbtn" onclick="openTab('tab4',this)">Trang Page</button>
 </div>
 
-<div id="tab4" class="tabcontent active">
+<!-- TAB 1 -->
+<div id="tab1" class="tabcontent active">
+<div class="textbox-wrap">
+<textarea id="content1"></textarea>
+<div class="iconbox">
+<button class="iconbtn" onclick="pasteText()">📋</button>
+<button class="iconbtn" onclick="clearText()">❌</button>
+</div>
+</div>
 
-<div class="groupbox">
+<div class="grid">
+<button onclick="copyData('content1','#tintucmxh #mxh #tintuc')">1. Tin tức MXH</button>
+<button onclick="copyData('content1','#tinmoimxh #mxh #tintuc')">2. Tin Mới</button>
+<button onclick="copyData('content1','#todaynews #mxh #tintuc')">3. Today News</button>
+<button onclick="copyData('content1','#cxcn #camxucconnguoi #mxh #tintuc')">4. Cảm xúc</button>
+<button onclick="copyData('content1','#tintuc #mxh')">5. Chi tiết</button>
+<button onclick="tinNong()">6. Tin Nóng</button>
+<button class="bluebtn" onclick="copyData('content1','#tinmoi24h #tintuc #mxh')">7. TinMoi24h</button>
+<button class="bluebtn" onclick="copyData('content1','#bacgiang #tintuc #mxh')">8. BacGiang</button>
+<button class="bluebtn" onclick="copyData('content1','#tinmoimangxahoi #mxh')">9. Tin mới MXH</button>
+<button class="bluebtn" onclick="copyData('content1','#tinviet #tintuc')">10. Tin Việt</button>
+</div>
+</div>
 
-<!-- TOOL LẤY UID -->
-<div class="label">🔎 Nhập link Facebook để lấy UID</div>
+<!-- TAB 2 (GIỮ NGUYÊN) -->
+<div id="tab2" class="tabcontent">
+<textarea id="content2" class="dark"></textarea>
 
+<div class="grid">
+<button onclick="copyProduct('🚀 Mũ Fullface Royal M266 giá tốt hôm nay #royalm266 #muabaohiem')">Royal M266</button>
+<button onclick="copyProduct('Mũ lật hàm Royal M179 tiện lợi an toàn #royalm179 #muabaohiem')">Royal M179</button>
+<button onclick="copyData('content2','#review #sanpham')">Review</button>
+<button onclick="copyData('content2','#giamgia #uudai')">Giảm Giá</button>
+<button onclick="copyData('content2','#tiktokshop #sanphamhot')">TikTok Shop</button>
+<button onclick="copyData('content2','#muasam #dealhot')">Mua Sắm</button>
+</div>
+</div>
+
+<!-- TAB MAIL (GIỮ NGUYÊN) -->
+<div id="tab3" class="tabcontent">
 <div class="mail-row">
-<input id="fbLink" class="link" placeholder="Dán link Facebook vào đây...">
-<button class="getuid" onclick="getUID()">Lấy UID</button>
-<input id="fbUID" class="idbox" placeholder="UID" readonly onclick="copyThis(this)">
+<input value="https://mail.tm/" readonly>
+<button onclick="window.open('https://mail.tm/')">Mở</button>
+</div>
 </div>
 
-<hr>
-
-<div id="pageList"></div>
-
-</div>
-
+<!-- TAB PAGE (ĐÃ NÂNG CẤP) -->
+<div id="tab4" class="tabcontent">
+<div class="groupbox" id="pageList"></div>
 </div>
 
 <div id="notify"></div>
-
 </div>
 
 <script>
 
+// DATA PAGE
+let pages = [
+{ name:"Tin Mới-Mạng Xã Hội", link:"https://facebook.com/tinmoi.mxh", id:"10001"},
+{ name:"Tin Tức MXH", link:"https://facebook.com/TinTucMXH.Page", id:"10002"},
+{ name:"Page MXH", link:"https://facebook.com/page3", id:"10003"},
+{ name:"Cảm Xúc Con Người", link:"https://facebook.com/camxucconnguoii", id:"10004"},
+{ name:"Today News", link:"https://facebook.com/todaynews8entertainment", id:"10005"},
+{ name:"Bac Giang Hiện Tại", link:"https://facebook.com/page6", id:"10006"},
+{ name:"Page Tin Mới", link:"https://facebook.com/page7", id:"10007"},
+{ name:"Page Hot", link:"https://facebook.com/page8", id:"10008"},
+{ name:"Page Video", link:"https://facebook.com/page9", id:"10009"},
+{ name:"Page Review", link:"https://facebook.com/page10", id:"10010"}
+];
+
+// render page
+let container=document.getElementById("pageList");
+
+pages.forEach(p=>{
+let div=document.createElement("div");
+div.className="mail-row";
+
+div.innerHTML=`
+<div class="page-name">${p.name}</div>
+<input value="${p.link}" readonly onclick="copyThis(this)">
+<input value="ID:${p.id}" readonly onclick="copyThis(this)">
+<button class="go" onclick="window.open('${p.link}')">GO</button>
+`;
+
+container.appendChild(div);
+});
+
+// FUNCTIONS
 function openTab(id,btn){
 document.querySelectorAll(".tabcontent").forEach(t=>t.classList.remove("active"));
 document.querySelectorAll(".tabbtn").forEach(t=>t.classList.remove("active"));
 document.getElementById(id).classList.add("active");
 btn.classList.add("active");
+}
+
+function today(){
+const d=new Date();
+return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
+}
+
+function copyData(id,tag){
+let text=document.getElementById(id).value;
+let result=text+"\n\nNgày đăng: "+today()+"\n"+tag;
+navigator.clipboard.writeText(result);
+notify("Đã copy");
+}
+
+function tinNong(){
+let text=document.getElementById("content1").value;
+let result="🚨 TIN NÓNG\n\n"+text+"\n\n#tinnong #mxh";
+navigator.clipboard.writeText(result);
+notify("Đã copy Tin Nóng");
+}
+
+function copyProduct(text){
+navigator.clipboard.writeText(text);
+notify("Đã copy sản phẩm");
+}
+
+function pasteText(){
+navigator.clipboard.readText().then(text=>{
+document.getElementById("content1").value=text;
+});
+}
+
+function clearText(){
+document.getElementById("content1").value="";
 }
 
 function copyThis(el){
@@ -176,66 +227,6 @@ document.getElementById("notify").innerText=msg;
 setTimeout(()=>{document.getElementById("notify").innerText="";},2000);
 }
 
-// ===== LẤY UID =====
-async function getUID(){
-let link=document.getElementById("fbLink").value.trim();
-
-if(!link){
-notify("Nhập link trước");
-return;
-}
-
-// Trường hợp có sẵn ID
-let match=link.match(/id=(\d+)/);
-if(match){
-document.getElementById("fbUID").value=match[1];
-notify("Đã lấy UID");
-return;
-}
-
-// Username → gọi API
-try{
-let clean=link.replace("https://","").replace("http://","").replace("www.","");
-clean=clean.split("/")[1];
-
-let res=await fetch("https://api.findids.net/api/get-uid-from-username?username="+clean);
-let data=await res.json();
-
-if(data.status==200){
-document.getElementById("fbUID").value=data.data.id;
-notify("Đã lấy UID");
-}else{
-notify("Không lấy được UID");
-}
-}catch{
-notify("Lỗi lấy UID");
-}
-}
-
-// ===== DATA PAGE =====
-let pages = [
-{ name:"Page Tin Tức", link:"https://facebook.com/page1", id:"10001"},
-{ name:"Page Giải Trí", link:"https://facebook.com/page2", id:"10002"},
-{ name:"Page MXH", link:"https://facebook.com/page3", id:"10003"},
-{ name:"Page Viral", link:"https://facebook.com/page4", id:"10004"}
-];
-
-let html="";
-pages.forEach(p=>{
-html+=`
-<div class="label">${p.name}</div>
-
-<div class="mail-row">
-<input class="link" value="${p.link}" readonly onclick="copyThis(this)">
-<input class="idbox" value="${p.id}" readonly onclick="copyThis(this)">
-<button class="go" onclick="window.open('${p.link}')">GO</button>
-</div>
-`;
-});
-
-document.getElementById("pageList").innerHTML=html;
-
 </script>
-
 </body>
 </html>
