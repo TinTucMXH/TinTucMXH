@@ -112,10 +112,9 @@ margin-bottom:3px;
 </div>
 </div>
 
-<!-- TAB 2 (GIỮ NGUYÊN) -->
+<!-- TAB 2 -->
 <div id="tab2" class="tabcontent">
 <textarea id="content2" class="dark"></textarea>
-
 <div class="grid">
 <button onclick="copyProduct('🚀 Mũ Fullface Royal M266 giá tốt hôm nay #royalm266 #muabaohiem')">Royal M266</button>
 <button onclick="copyProduct('Mũ lật hàm Royal M179 tiện lợi an toàn #royalm179 #muabaohiem')">Royal M179</button>
@@ -126,15 +125,52 @@ margin-bottom:3px;
 </div>
 </div>
 
-<!-- TAB MAIL (GIỮ NGUYÊN) -->
+<!-- TAB MAIL (ĐÃ KHÔI PHỤC FULL) -->
 <div id="tab3" class="tabcontent">
+
 <div class="mail-row">
 <input value="https://mail.tm/" readonly>
 <button onclick="window.open('https://mail.tm/')">Mở</button>
 </div>
+
+<div class="mail-row">
+<input value="https://yahoo.com.vn" readonly>
+<button onclick="window.open('https://yahoo.com.vn')">Mở</button>
 </div>
 
-<!-- TAB PAGE (ĐÃ NÂNG CẤP) -->
+<div class="mail-row">
+<input value="https://gmail.com" readonly>
+<button onclick="window.open('https://gmail.com')">Mở</button>
+</div>
+
+<div class="salary-box">
+<h3>Tính Thu Nhập</h3>
+
+<label>Thu nhập $</label>
+<input type="number" id="income">
+
+<label>Tỷ giá VNĐ</label>
+<input type="number" id="rate" value="25000">
+
+<label>Phần trăm nhận</label>
+<select id="percent">
+<option>50</option><option>55</option><option>60</option>
+<option>65</option><option>70</option><option>75</option>
+<option>80</option><option>85</option><option>90</option>
+<option>95</option><option selected>100</option>
+</select>
+
+<button onclick="tinhTien()">Tính Tiền</button>
+<button onclick="copyLuong()">Copy bảng lương</button>
+<button onclick="clearHistory()">Xóa lịch sử</button>
+
+<textarea id="salaryResult" readonly></textarea>
+<textarea id="history" class="history" readonly></textarea>
+</div>
+
+</div>
+
+<!-- TAB PAGE -->
 <div id="tab4" class="tabcontent">
 <div class="groupbox" id="pageList"></div>
 </div>
@@ -144,34 +180,22 @@ margin-bottom:3px;
 
 <script>
 
-// DATA PAGE
-let pages = [
+// PAGE DATA
+let pages=[
 { name:"Tin Mới-Mạng Xã Hội", link:"https://facebook.com/tinmoi.mxh", id:"10001"},
-{ name:"Tin Tức MXH", link:"https://facebook.com/TinTucMXH.Page", id:"10002"},
-{ name:"Page MXH", link:"https://facebook.com/page3", id:"10003"},
-{ name:"Cảm Xúc Con Người", link:"https://facebook.com/camxucconnguoii", id:"10004"},
-{ name:"Today News", link:"https://facebook.com/todaynews8entertainment", id:"10005"},
-{ name:"Bac Giang Hiện Tại", link:"https://facebook.com/page6", id:"10006"},
-{ name:"Page Tin Mới", link:"https://facebook.com/page7", id:"10007"},
-{ name:"Page Hot", link:"https://facebook.com/page8", id:"10008"},
-{ name:"Page Video", link:"https://facebook.com/page9", id:"10009"},
-{ name:"Page Review", link:"https://facebook.com/page10", id:"10010"}
+{ name:"Tin Tức MXH", link:"https://facebook.com/TinTucMXH.Page", id:"10002"}
 ];
 
 // render page
 let container=document.getElementById("pageList");
-
 pages.forEach(p=>{
 let div=document.createElement("div");
 div.className="mail-row";
-
 div.innerHTML=`
 <div class="page-name">${p.name}</div>
-<input value="${p.link}" readonly onclick="copyThis(this)">
-<input value="ID:${p.id}" readonly onclick="copyThis(this)">
-<button class="go" onclick="window.open('${p.link}')">GO</button>
-`;
-
+<input value="${p.link}" onclick="copyThis(this)" readonly>
+<input value="ID:${p.id}" onclick="copyThis(this)" readonly>
+<button class="go" onclick="window.open('${p.link}')">GO</button>`;
 container.appendChild(div);
 });
 
@@ -190,36 +214,57 @@ return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
 
 function copyData(id,tag){
 let text=document.getElementById(id).value;
-let result=text+"\n\nNgày đăng: "+today()+"\n"+tag;
-navigator.clipboard.writeText(result);
+navigator.clipboard.writeText(text+"\n\nNgày đăng: "+today()+"\n"+tag);
 notify("Đã copy");
 }
 
 function tinNong(){
 let text=document.getElementById("content1").value;
-let result="🚨 TIN NÓNG\n\n"+text+"\n\n#tinnong #mxh";
-navigator.clipboard.writeText(result);
+navigator.clipboard.writeText("🚨 TIN NÓNG\n\n"+text+"\n\n#tinnong #mxh");
 notify("Đã copy Tin Nóng");
 }
 
-function copyProduct(text){
-navigator.clipboard.writeText(text);
-notify("Đã copy sản phẩm");
-}
+function copyProduct(t){navigator.clipboard.writeText(t);notify("Đã copy");}
 
 function pasteText(){
-navigator.clipboard.readText().then(text=>{
-document.getElementById("content1").value=text;
-});
+navigator.clipboard.readText().then(t=>{document.getElementById("content1").value=t;});
 }
 
-function clearText(){
-document.getElementById("content1").value="";
+function clearText(){document.getElementById("content1").value="";}
+
+function copyThis(el){navigator.clipboard.writeText(el.value);notify("Đã copy");}
+
+// TÍNH TIỀN (ĐÃ FIX)
+function tinhTien(){
+let income=parseFloat(document.getElementById("income").value)||0;
+let rate=parseFloat(document.getElementById("rate").value)||0;
+let percent=parseFloat(document.getElementById("percent").value)||0;
+
+let receiveUsd=income*percent/100;
+let vnd=receiveUsd*rate;
+
+let result=
+"===== BẢNG LƯƠNG =====\n"+
+"Ngày: "+today()+"\n\n"+
+"Thu nhập: $"+income+"\n"+
+"Nhận: "+percent+"%\n"+
+"Thực nhận: $"+receiveUsd.toFixed(2)+"\n"+
+"VNĐ: "+vnd.toLocaleString()+"\n";
+
+document.getElementById("salaryResult").value=result;
+
+document.getElementById("history").value=
+result+"\n----------------\n"+
+document.getElementById("history").value;
 }
 
-function copyThis(el){
-navigator.clipboard.writeText(el.value);
-notify("Đã copy");
+function copyLuong(){
+navigator.clipboard.writeText(document.getElementById("salaryResult").value);
+notify("Đã copy bảng lương");
+}
+
+function clearHistory(){
+document.getElementById("history").value="";
 }
 
 function notify(msg){
