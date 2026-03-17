@@ -90,6 +90,11 @@ background:#4da3ff;
 color:white;
 }
 
+/* nút xanh than */
+.bluebtn{
+background:linear-gradient(135deg,#0d3b66,#5fa8ff);
+}
+
 .mail-row{
 display:flex;
 gap:8px;
@@ -168,6 +173,15 @@ font-weight:bold;
 <button onclick="copyData('content1','#cxcn #camxucconnguoi #mxh #tintuc')">Cảm xúc</button>
 <button onclick="copyData('content1','#tintuc #mxh')">Chi tiết</button>
 <button onclick="tinNong()">Tin Nóng</button>
+
+<!-- BUTTON MỚI -->
+<button class="bluebtn" onclick="copyData('content1','#tinmoi24h #tintuc #mxh')">
+TinMoi24h
+</button>
+
+<button class="bluebtn" onclick="copyData('content1','#bacgiang #tintuc #mxh')">
+BacGiang
+</button>
 
 </div>
 
