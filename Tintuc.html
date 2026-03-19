@@ -233,31 +233,94 @@ document.getElementById(id).classList.add("active");
 btn.classList.add("active");
 }
 
+// DATE
 function today(){
 const d=new Date();
 return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
 }
 
-function copyData(id,tag){
+// MODE
+function getMode(){
+return document.querySelector('input[name="mode"]:checked').value;
+}
+
+// SPLIT TEXT
+function splitText(){
+let raw = document.getElementById("content1").value.trim();
+let lines = raw.split("\n");
+let result = [];
+
+lines.forEach(line=>{
+let match = line.match(/^\d+\.\s*(.*)/);
+if(match){
+result.push(match[1]);
+}
+});
+
+return result;
+}
+
+// COPY DATA (SMART)
+function copyData(id,tag,index){
+let mode = getMode();
+
+// giữ nguyên
+if(mode === "single"){
 let text=document.getElementById(id).value;
 navigator.clipboard.writeText(text+"\n\nNgày đăng: "+today()+"\n"+tag);
 notify("Đã copy");
+return;
 }
 
-function tinNong(){
+// tách chuỗi
+let arr = splitText();
+
+if(arr.length < index){
+notify("Thiếu dòng "+index);
+return;
+}
+
+let text = arr[index-1];
+
+navigator.clipboard.writeText(
+text+"\n\nNgày đăng: "+today()+"\n"+tag
+);
+
+notify("Đã copy dòng "+index);
+}
+
+// TIN NÓNG
+function tinNong(index){
+let mode = getMode();
+
+if(mode === "single"){
 let text=document.getElementById("content1").value;
 navigator.clipboard.writeText("🚨 TIN NÓNG\n\n"+text+"\n\n#tinnong #mxh");
 notify("Đã copy Tin Nóng");
+return;
 }
 
-function copyProduct(t){navigator.clipboard.writeText(t);notify("Đã copy");}
+let arr = splitText();
+if(arr.length < index){
+notify("Thiếu dòng "+index);
+return;
+}
+let text = arr[index-1];
+navigator.clipboard.writeText(
+"🚨 TIN NÓNG\n\n"+text+"\n\n#tinnong #mxh"
+);
+notify("Đã copy Tin Nóng dòng "+index);
+}
+// BASIC
+function copyProduct(t){
+navigator.clipboard.writeText(t);
+notify("Đã copy");
+}
 
 function pasteText(){
 navigator.clipboard.readText().then(t=>{document.getElementById("content1").value=t;});
 }
-
 function clearText(){document.getElementById("content1").value="";}
-
 function copyThis(el){navigator.clipboard.writeText(el.value);notify("Đã copy");}
 
 // TÍNH TIỀN (ĐÃ FIX)
