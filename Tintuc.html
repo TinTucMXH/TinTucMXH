@@ -247,13 +247,18 @@ return document.querySelector('input[name="mode"]:checked').value;
 // SPLIT TEXT
 function splitText(){
 let raw = document.getElementById("content1").value.trim();
-let lines = raw.split("\n");
+
+// chuẩn hóa xuống dòng + loại bỏ dòng rỗng
+let lines = raw.split(/\r?\n/).map(l => l.trim()).filter(l => l !== "");
+
 let result = [];
 
 lines.forEach(line=>{
-let match = line.match(/^\d+\.\s*(.*)/);
+// regex mới: chịu được khoảng trắng lung tung
+let match = line.match(/^\s*(\d+)\s*\.\s*(.+)$/);
+
 if(match){
-result.push(match[1]);
+result.push(match[2].trim());
 }
 });
 
