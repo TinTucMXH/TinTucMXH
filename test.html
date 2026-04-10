@@ -2,6 +2,7 @@
 <html lang="vi">
 
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -46,7 +47,7 @@ max-width:720px;
 
 margin:auto;
 
-background:rgba(255,255,255,0.85);
+background:rgba(255,255,255,0.88);
 
 backdrop-filter:blur(10px);
 
@@ -478,12 +479,242 @@ height:170px;
 
 <body>
 
-<!-- Bạn giữ nguyên toàn bộ HTML + JS cũ phía dưới đây -->
-<!-- Không thay đổi logic -->
+<div class="container">
 
-<!-- CHỖ NÀY BẠN DÁN LẠI PHẦN HTML + SCRIPT CŨ CỦA BẠN -->
-<!-- Vì code của bạn rất dài nên mình đã tối ưu CSS phía trên -->
+<h2>Tool Copy Nội Dung</h2>
+
+<div class="tabs">
+
+<button class="tabbtn active"
+onclick="openTab('tab1',this)">
+Nội dung 1
+</button>
+
+<button class="tabbtn"
+onclick="openTab('tab2',this)">
+Nội dung 2
+</button>
+
+<button class="tabbtn"
+onclick="openTab('tab3',this)">
+Mail
+</button>
+
+<button class="tabbtn"
+onclick="openTab('tab4',this)">
+Trang Page
+</button>
+
+</div>
+
+<!-- TAB 1 -->
+
+<div id="tab1"
+class="tabcontent active">
+
+<div style="margin-bottom:8px;">
+
+<label>
+<input type="radio"
+name="mode"
+value="single"
+checked>
+1 chuỗi
+</label>
+
+<label style="margin-left:15px;">
+<input type="radio"
+name="mode"
+value="split">
+Tách chuỗi
+</label>
+
+</div>
+
+<div class="textbox-wrap">
+
+<textarea id="content1"
+placeholder="Dán nội dung...">
+</textarea>
+
+<div class="iconbox">
+
+<button class="iconbtn"
+onclick="pasteText()">
+📋
+</button>
+
+<button class="iconbtn"
+onclick="clearText()">
+❌
+</button>
+
+</div>
+
+</div>
+
+<div class="grid">
+
+<button onclick="copyData('content1','#tintucmxh #mxh #tintuc',1)">
+1. Tin tức MXH
+</button>
+
+<button onclick="copyData('content1','#tinmoimxh #mxh #tintuc',2)">
+2. Tin Mới
+</button>
+
+<button onclick="copyData('content1','#todaynews #mxh #tintuc',3)">
+3. Today News
+</button>
+
+<button onclick="copyData('content1','#cxcn #camxucconnguoi #mxh #tintuc',4)">
+4. Cảm xúc
+</button>
+
+<button onclick="copyData('content1','#tintuc #mxh',5)">
+5. Tin tức
+</button>
+
+<button onclick="tinNong(6)">
+6. Tin Nóng
+</button>
+
+<button class="bluebtn"
+onclick="copyData('content1','#tinmoi24h #tinmoinhat24h #tintuc #mxh',7)">
+7. TinMoi24h
+</button>
+
+<button class="bluebtn"
+onclick="copyData('content1','#bacgiang #tintuc #mxh',8)">
+8. BacGiang
+</button>
+
+<button class="bluebtn"
+onclick="copyData('content1','#tinmoimxh #tintuc',9)">
+9. Tin mới MXH
+</button>
+
+<button class="bluebtn"
+onclick="copyData('content1','#tinviet #tintuc',10)">
+10. Tin Việt
+</button>
+
+</div>
+
+</div>
+
+<div id="notify"></div>
+
+</div>
+
+<script>
+
+/* TAB */
+
+function openTab(id,btn){
+
+document
+.querySelectorAll(".tabcontent")
+.forEach(t=>t.classList.remove("active"));
+
+document
+.querySelectorAll(".tabbtn")
+.forEach(t=>t.classList.remove("active"));
+
+document
+.getElementById(id)
+.classList.add("active");
+
+btn.classList.add("active");
+
+}
+
+/* DATE */
+
+function today(){
+
+const d=new Date();
+
+return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
+
+}
+
+/* BASIC */
+
+function copyData(id,tag,index){
+
+let text=
+document.getElementById(id).value;
+
+navigator.clipboard.writeText(
+
+text+
+"\n\nNgày đăng: "+
+today()+
+"\n"+
+tag
+
+);
+
+notify("Đã copy");
+
+}
+
+function tinNong(){
+
+let text=
+document.getElementById("content1").value;
+
+navigator.clipboard.writeText(
+
+"🚨 TIN NÓNG\n\n"+
+text+
+"\n\n#tinnong #mxh"
+
+);
+
+notify("Đã copy Tin Nóng");
+
+}
+
+function pasteText(){
+
+navigator.clipboard.readText()
+.then(t=>{
+
+document
+.getElementById("content1")
+.value=t;
+
+});
+
+}
+
+function clearText(){
+
+document
+.getElementById("content1")
+.value="";
+
+}
+
+function notify(msg){
+
+document
+.getElementById("notify")
+.innerText=msg;
+
+setTimeout(()=>{
+
+document
+.getElementById("notify")
+.innerText="";
+
+},2000);
+
+}
+
+</script>
 
 </body>
-
 </html>
