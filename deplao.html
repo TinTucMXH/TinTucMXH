@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chia sẻ tin nhắn qua Zalo</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 16px;
+  }
+  .card {
+    background: #fff;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 24px;
+  }
+  h1 {
+    font-size: 18px;
+    margin: 0 0 4px;
+    color: #1a1a1a;
+  }
+  p.desc {
+    font-size: 13px;
+    color: #667085;
+    margin: 0 0 16px;
+  }
+  textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    font-size: 15px;
+    resize: vertical;
+    font-family: inherit;
+  }
+  textarea:focus {
+    outline: none;
+    border-color: #0068ff;
+  }
+  button {
+    margin-top: 12px;
+    width: 100%;
+    padding: 12px;
+    background: #0068ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:disabled {
+    background: #9cc3f5;
+    cursor: not-allowed;
+  }
+  #status {
+    margin-top: 12px;
+    font-size: 14px;
+    min-height: 20px;
+  }
+  .ok { color: #16a34a; }
+  .err { color: #dc2626; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Chia sẻ tin nhắn qua Zalo</h1>
+    <p class="desc">Nhập nội dung, bấm "Chia sẻ" rồi chọn Zalo và người bạn muốn gửi trong bảng chia sẻ.</p>
+    <textarea id="message" placeholder="Nhập nội dung tin nhắn..."></textarea>
+    <button id="shareBtn">Chia sẻ</button>
+    <div id="status"></div>
+  </div>
+
+<script>
+  const shareBtn = document.getElementById('shareBtn');
+  const messageBox = document.getElementById('message');
+  const statusEl = document.getElementById('status');
+
+  shareBtn.addEventListener('click', async () => {
+    const text = messageBox.value.trim();
+    if (!text) {
+      statusEl.textContent = 'Vui lòng nhập nội dung.';
+      statusEl.className = 'err';
+      return;
+    }
+
+    // Web Share API: mở bảng chia sẻ của hệ điều hành,
+    // người dùng tự chọn Zalo rồi chọn bạn bè/nhóm để gửi.
+    if (navigator.share) {
+      try {
+        await navigator.share({ text: text });
+        statusEl.textContent = 'Đã mở bảng chia sẻ.';
+        statusEl.className = 'ok';
+      } catch (err) {
+        // Người dùng bấm hủy hoặc trình duyệt chặn — không coi là lỗi nghiêm trọng
+        if (err.name !== 'AbortError') {
+          statusEl.textContent = 'Không chia sẻ được: ' + err.message;
+          statusEl.className = 'err';
+        }
+      }
+    } else {
+      // Fallback cho trình duyệt/máy tính không hỗ trợ Web Share API
+      try {
+        await navigator.clipboard.writeText(text);
+        statusEl.textContent = 'Trình duyệt này không hỗ trợ chia sẻ trực tiếp. Đã copy nội dung, hãy dán vào Zalo.';
+        statusEl.className = 'ok';
+      } catch (e) {
+        statusEl.textContent = 'Trình duyệt không hỗ trợ chia sẻ. Vui lòng copy thủ công.';
+        statusEl.className = 'err';
+      }
+    }
+  });
+</script>
+</body>
+</html>
