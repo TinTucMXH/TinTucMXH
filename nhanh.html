@@ -243,13 +243,48 @@
     font-size: 13.5px;
     text-align: center;
     min-height: 18px;
+    line-height: 1.5;
   }
   .ok { color: var(--ok); }
   .err { color: var(--err); }
+
+  .banner {
+    display: none;
+    border: 1px solid rgba(255,92,114,0.35);
+    background: rgba(255,92,114,0.08);
+    color: #ffb4bf;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .banner.show { display: block; }
+  .banner b { color: #fff; }
+
+  .fallback-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .fallback-btn {
+    flex: 1;
+    padding: 11px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .fallback-btn:active { transform: scale(0.98); }
 </style>
 </head>
 <body>
 <div class="app">
+
+  <div class="banner" id="envBanner"></div>
 
   <div class="top">
     <p class="eyebrow">Đăng · Chia sẻ · Gửi</p>
@@ -300,7 +335,9 @@
         <div class="name">YouTube</div>
       </div>
     </div>
-    <div class="hint">Chọn 1 hoặc nhiều nơi bạn định đăng — khi bấm Chia sẻ, hãy chọn đúng ứng dụng đó trong bảng hiện ra để hoàn tất đăng bài.</div>
+    <div class="hint">
+      Lưu ý thực tế: Zalo và Facebook thường nhận được ảnh/video qua bảng chia sẻ. <b style="color:#c7cbe6">TikTok không hỗ trợ nhận nội dung qua cơ chế chia sẻ chuẩn</b> — nếu TikTok không tự mở hoặc không có nội dung, hãy dùng nút "Tải tệp" bên dưới rồi đăng thủ công trong app. Facebook cũng không giữ chắc caption khi kèm video — hãy dán lại caption nếu cần.
+    </div>
   </div>
 
   <button class="share-btn" id="shareBtn">
@@ -310,6 +347,12 @@
     </svg>
     Chia sẻ ngay
   </button>
+
+  <div class="fallback-row">
+    <button class="fallback-btn" id="copyBtn">📋 Copy nội dung</button>
+    <button class="fallback-btn" id="downloadBtn">⬇️ Tải tệp về máy</button>
+  </div>
+
   <div id="status"></div>
 
 </div>
@@ -321,11 +364,33 @@
   const fileInput = document.getElementById('fileInput');
   const previews = document.getElementById('previews');
   const shareBtn = document.getElementById('shareBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
   const statusEl = document.getElementById('status');
+  const envBanner = document.getElementById('envBanner');
   const platformEls = document.querySelectorAll('.platform');
 
   let selectedFiles = [];
   let selectedPlatforms = new Set();
+
+  // Kiểm tra môi trường ngay khi tải trang — đây là nguyên nhân phổ biến
+  // nhất khiến "ấn share không có gì xảy ra".
+  (function checkEnvironment() {
+    if (location.protocol === 'file:') {
+      envBanner.innerHTML = '<b>Trang đang mở dạng file:// nên tính năng Chia sẻ sẽ KHÔNG hoạt động.</b> Hãy đưa trang này lên hosting HTTPS (hoặc chạy qua localhost) rồi mở bằng trình duyệt, thay vì mở trực tiếp từ trình quản lý file.';
+      envBanner.classList.add('show');
+      return;
+    }
+    if (!window.isSecureContext) {
+      envBanner.innerHTML = '<b>Trang chưa chạy trên kết nối an toàn (HTTPS).</b> Web Share API yêu cầu HTTPS, nếu không nút Chia sẻ sẽ không mở được app nào.';
+      envBanner.classList.add('show');
+      return;
+    }
+    if (!navigator.share) {
+      envBanner.innerHTML = '<b>Trình duyệt này không hỗ trợ chia sẻ trực tiếp.</b> Hãy dùng nút "Copy nội dung" / "Tải tệp về" bên dưới rồi đăng thủ công.';
+      envBanner.classList.add('show');
+    }
+  })();
 
   caption.addEventListener('input', () => {
     charNum.textContent = caption.value.length;
