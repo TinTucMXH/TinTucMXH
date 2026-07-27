@@ -2,538 +2,1121 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Chia sẻ nhanh</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<title>Content Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg-1: #0b0e1a;
-    --bg-2: #131a2e;
-    --card: #171f36;
-    --line: #262f4d;
-    --text: #eef1fb;
-    --muted: #8a91b3;
-    --accent: #6c8cff;
-    --accent-2: #b06cff;
-    --zalo: #0068ff;
-    --tiktok: #ff2c55;
-    --facebook: #1877f2;
-    --youtube: #ff0033;
-    --ok: #3ddc97;
-    --err: #ff5c72;
+  :root{
+    --primary: #4f46e5;
+    --primary-dark: #3c34b0;
+    --primary-light: #eef0fd;
+    --navy: #14162c;
+    --bg-top: #eef0fb;
+    --bg-bot: #f7f7fb;
+    --surface: #ffffff;
+    --border: #e8e9f3;
+    --ink: #171933;
+    --muted: #8b8da6;
+    --red: #ef4444;
+    --green: #16a34a;
+    --amber: #f59e0b;
+    --radius-lg: 22px;
+    --radius-md: 15px;
+    --radius-sm: 11px;
+    --shadow-sm: 0 1px 2px rgba(20,22,44,.05);
+    --shadow-md: 0 10px 30px rgba(20,22,44,.09);
+    --safe-t: env(safe-area-inset-top, 0px);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-l: env(safe-area-inset-left, 0px);
+    --safe-r: env(safe-area-inset-right, 0px);
   }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body{ height:100%; }
+  body{
+    margin:0;
+    font-family:'Inter', system-ui, sans-serif;
+    color:var(--ink);
+    background:linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 320px);
+    -webkit-font-smoothing:antialiased;
+    overscroll-behavior-y:none;
   }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background:
-      radial-gradient(circle at 20% -10%, rgba(108,140,255,0.25), transparent 45%),
-      radial-gradient(circle at 100% 0%, rgba(176,108,255,0.18), transparent 40%),
-      linear-gradient(180deg, var(--bg-1), var(--bg-2));
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    padding: 20px 14px 40px;
+  .app{
+    max-width:430px;
+    margin:0 auto;
+    min-height:100vh;
+    min-height:100dvh;
+    padding:calc(18px + var(--safe-t)) calc(16px + var(--safe-r)) calc(28px + var(--safe-b)) calc(16px + var(--safe-l));
   }
-  .app {
-    width: 100%;
-    max-width: 460px;
+  .brand{ margin-bottom:16px; padding:0 2px; }
+  .brand-eyebrow{
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--primary); margin-bottom:4px;
   }
-  .top {
-    padding: 6px 4px 18px;
+  .brand-title{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:600;
+    font-size:24px; letter-spacing:-.01em; color:var(--navy);
   }
-  .top .eyebrow {
-    font-size: 12px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 700;
-    margin: 0 0 6px;
+  .tabbar{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:6px;
+    box-shadow:var(--shadow-sm);
+    margin-bottom:18px;
+    position:sticky;
+    top:calc(8px + var(--safe-t));
+    z-index:20;
   }
-  .top h1 {
-    font-size: 24px;
-    margin: 0 0 6px;
-    letter-spacing: -0.02em;
+  .tabbtn{
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    border:none; background:transparent;
+    padding:9px 2px 8px;
+    border-radius:var(--radius-md);
+    color:var(--muted);
+    font-weight:700;
+    font-size:10.5px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, transform .12s ease;
   }
-  .top p {
-    font-size: 13.5px;
-    color: var(--muted);
-    margin: 0;
-    line-height: 1.5;
+  .tabbtn svg{ width:18px; height:18px; stroke:currentColor; }
+  .tabbtn:active{ transform:scale(.94); }
+  .tabbtn.active{
+    background:linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color:#fff;
+    box-shadow:0 6px 16px rgba(79,70,229,.32);
   }
-
-  .card {
-    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
-    background-color: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    padding: 18px;
-    margin-bottom: 16px;
+  .page{ display:none; animation:fade .18s ease; }
+  .page.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(5px);} to{opacity:1; transform:none;} }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-sm);
+    padding:16px;
+    margin-bottom:14px;
   }
-
-  label.section-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
+  h2.title{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:600;
+    font-size:18px; margin:0 0 6px; color:var(--navy);
   }
-
-  textarea {
-    width: 100%;
-    min-height: 100px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 14px;
-    color: var(--text);
-    font-size: 15.5px;
-    font-family: inherit;
-    resize: vertical;
-    line-height: 1.5;
+  .hint{ font-size:12px; color:var(--muted); margin:0 0 14px; line-height:1.55; }
+  .section-label{
+    font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--muted); margin:16px 0 8px;
   }
-  textarea::placeholder { color: #5c6488; }
-  textarea:focus { outline: none; border-color: var(--accent); }
-
-  .charcount {
-    text-align: right;
-    font-size: 11.5px;
-    color: var(--muted);
-    margin-top: 6px;
+  .editor-wrap{
+    position:relative;
+    width:100%;
+    min-height:180px;
+    border-radius:var(--radius-md);
+    background:#fbfbfe;
+    border:1px solid var(--border);
+    overflow:hidden;
   }
-
-  /* Media upload */
-  .drop {
-    border: 1.5px dashed var(--line);
-    border-radius: 14px;
-    padding: 22px 14px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color .15s ease, background .15s ease;
+  .editor-wrap:focus-within{ border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+  .editor-common{
+    position:absolute; inset:0; margin:0; padding:13px;
+    border:0; width:100%; height:100%;
+    font-family:'Inter', system-ui, sans-serif;
+    font-size:16px; line-height:1.6;
+    white-space:pre-wrap; word-wrap:break-word; overflow-wrap:anywhere;
   }
-  .drop:active { background: rgba(255,255,255,0.03); }
-  .drop.dragover { border-color: var(--accent); background: rgba(108,140,255,0.08); }
-  .drop .icon {
-    width: 40px; height: 40px;
-    margin: 0 auto 10px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    display: flex; align-items: center; justify-content: center;
+  .editor-backdrop{ background:transparent; color:var(--ink); overflow:auto; pointer-events:none; }
+  .editor-textarea{ background:transparent; color:transparent; caret-color:var(--ink); resize:none; overflow:auto; -webkit-appearance:none; }
+  .editor-textarea:focus{ outline:none; }
+  .misspell{
+    text-decoration:underline; text-decoration-color:var(--red);
+    text-decoration-style:wavy; text-decoration-thickness:1.5px;
   }
-  .drop .icon svg { width: 20px; height: 20px; }
-  .drop .main-txt { font-size: 14px; font-weight: 600; }
-  .drop .sub-txt { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  input[type="file"] { display: none; }
-
-  .previews {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 12px;
+  .field{ margin-top:12px; }
+  .field label{ display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:6px; }
+  .field input[type=text], .field textarea{
+    width:100%; border:1px solid var(--border); background:#fbfbfe;
+    border-radius:var(--radius-sm); padding:11px 12px;
+    font-size:16px; font-family:inherit; color:var(--ink);
   }
-  .preview-item {
-    position: relative;
-    aspect-ratio: 1 / 1;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #0b0e1a;
-    border: 1px solid var(--line);
+  .field input[type=text]:focus, .field textarea:focus{
+    outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light);
   }
-  .preview-item img, .preview-item video {
-    width: 100%; height: 100%; object-fit: cover;
+  .field textarea{ resize:vertical; min-height:80px; line-height:1.5; -webkit-appearance:none; }
+  .checkrow{ display:flex; gap:16px; font-size:13px; color:var(--ink); flex-wrap:wrap; }
+  .checkrow label{ display:flex; align-items:center; gap:6px; font-weight:500; }
+  .hashtag-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:9px;
   }
-  .preview-item .remove {
-    position: absolute; top: 4px; right: 4px;
-    width: 22px; height: 22px;
-    background: rgba(0,0,0,0.6);
-    border-radius: 50%;
-    border: none;
-    color: #fff;
-    font-size: 13px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+  .hashtag-btn{
+    position:relative;
+    border:1px solid var(--border);
+    background:#fbfbfe;
+    border-radius:var(--radius-md);
+    padding:14px 6px;
+    text-align:center;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
   }
-  .preview-item .tag {
-    position: absolute; bottom: 4px; left: 4px;
-    background: rgba(0,0,0,0.55);
-    font-size: 9.5px;
-    padding: 2px 6px;
-    border-radius: 6px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  .hashtag-btn:active{ transform:scale(.95); }
+  .hashtag-btn:hover{ border-color:var(--primary); box-shadow:var(--shadow-sm); }
+  .hashtag-btn .num{
+    font-family:'Fraunces', serif; font-weight:600; font-size:19px; color:var(--primary);
+    display:block; line-height:1;
   }
-
-  /* Platform chips */
-  .platforms {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+  .hashtag-btn .label{
+    display:block; margin-top:4px; font-size:10px; font-weight:700;
+    letter-spacing:.03em; color:var(--navy); text-transform:uppercase;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .platform {
-    border: 1.5px solid var(--line);
-    background: rgba(255,255,255,0.02);
-    border-radius: 14px;
-    padding: 12px 4px 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform .12s ease, border-color .12s ease, background .12s ease;
-    user-select: none;
+  .hashtag-btn .edit-pin{
+    position:absolute; top:5px; right:6px;
+    width:20px; height:20px; border-radius:50%;
+    background:var(--primary-light); color:var(--primary);
+    display:flex; align-items:center; justify-content:center;
+    font-size:10px; line-height:1; border:none; cursor:pointer;
   }
-  .platform:active { transform: scale(0.96); }
-  .platform .badge {
-    width: 34px; height: 34px;
-    margin: 0 auto 6px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 800;
-    font-size: 13px;
-    color: #fff;
+  .dropzone{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    border:1.5px dashed var(--border); border-radius:var(--radius-md);
+    background:#fbfbfe; color:var(--muted); font-size:13px; font-weight:600;
+    padding:16px 12px; cursor:pointer; transition:border-color .15s ease, color .15s ease, background .15s ease;
   }
-  .platform[data-p="zalo"] .badge { background: var(--zalo); }
-  .platform[data-p="tiktok"] .badge { background: linear-gradient(135deg, #25f4ee, #ff0050); }
-  .platform[data-p="facebook"] .badge { background: var(--facebook); }
-  .platform[data-p="youtube"] .badge { background: var(--youtube); }
-  .platform .name { font-size: 11.5px; font-weight: 600; color: var(--muted); }
-  .platform.active {
-    border-color: var(--accent);
-    background: rgba(108,140,255,0.09);
+  .dropzone svg{ width:19px; height:19px; stroke:currentColor; flex-shrink:0; }
+  .dropzone:hover{ border-color:var(--primary); color:var(--primary-dark); background:var(--primary-light); }
+  .video-preview{
+    margin-top:10px; border:1px solid var(--border); border-radius:var(--radius-md);
+    overflow:hidden; background:#000;
   }
-  .platform.active .name { color: var(--text); }
-
-  .hint {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 12px;
-    line-height: 1.5;
+  .video-preview video{ display:block; width:100%; max-height:240px; background:#000; }
+  .video-meta{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:9px 12px; background:var(--surface); font-size:12px; color:var(--muted); font-weight:600;
   }
-
-  .share-btn {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 16px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: 0 10px 24px rgba(108,140,255,0.25);
+  .video-meta span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .remove-video{
+    flex-shrink:0; border:none; background:#fde8ea; color:var(--red);
+    width:22px; height:22px; border-radius:50%; font-size:12px; cursor:pointer;
   }
-  .share-btn:disabled {
-    opacity: 0.5;
-    box-shadow: none;
-    cursor: not-allowed;
+  /* ===== Lưới xem trước nhiều file ảnh/video (tab Share) ===== */
+  .media-list{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:10px;
   }
-  .share-btn:active { transform: scale(0.98); }
-
-  #status {
-    margin-top: 12px;
-    font-size: 13.5px;
-    text-align: center;
-    min-height: 18px;
-    line-height: 1.5;
+  .media-item{
+    position:relative; border:1px solid var(--border); border-radius:var(--radius-sm);
+    overflow:hidden; background:#000; aspect-ratio:1/1;
   }
-  .ok { color: var(--ok); }
-  .err { color: var(--err); }
-
-  .banner {
-    display: none;
-    border: 1px solid rgba(255,92,114,0.35);
-    background: rgba(255,92,114,0.08);
-    color: #ffb4bf;
-    border-radius: 14px;
-    padding: 12px 14px;
-    font-size: 12.5px;
-    line-height: 1.55;
-    margin-bottom: 14px;
+  .media-item img, .media-item video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .media-item .media-badge{
+    position:absolute; bottom:4px; left:4px; background:rgba(0,0,0,.6); color:#fff;
+    font-size:9px; font-weight:700; letter-spacing:.02em; text-transform:uppercase;
+    padding:2px 6px; border-radius:999px;
   }
-  .banner.show { display: block; }
-  .banner b { color: #fff; }
-
-  .fallback-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+  .media-item .media-remove{
+    position:absolute; top:4px; right:4px; width:20px; height:20px; border-radius:50%;
+    border:none; background:rgba(0,0,0,.62); color:#fff; font-size:11px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
   }
-  .fallback-btn {
-    flex: 1;
-    padding: 11px;
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: rgba(255,255,255,0.03);
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
+  .media-count{ font-size:11.5px; color:var(--muted); font-weight:600; margin-top:8px; }
+  .btnrow{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .btn{
+    flex:1; border:none; padding:14px 14px; border-radius:var(--radius-sm);
+    font-weight:700; font-size:14.5px; cursor:pointer;
+    transition:transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+    min-height:46px;
   }
-  .fallback-btn:active { transform: scale(0.98); }
+  .btn:active{ transform:scale(.97); }
+  .btn:disabled{ opacity:.55; pointer-events:none; }
+  .btn-primary{
+    background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff;
+    box-shadow:0 8px 18px rgba(79,70,229,.28);
+  }
+  .btn-dark{ background:var(--navy); color:#fff; }
+  .btn-ghost{ background:var(--primary-light); color:var(--primary-dark); }
+  .btn-danger{ background:#fde8ea; color:var(--red); }
+  .btn-full{ width:100%; }
+  a.btn{ display:flex; align-items:center; justify-content:center; text-decoration:none; }
+  .listbox{
+    background:#fbfbfe; border:1px solid var(--border); border-radius:var(--radius-md);
+    max-height:240px; overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .listbox-item{
+    padding:12px 14px; font-size:13px; border-bottom:1px solid var(--border);
+    word-break:break-all; color:var(--ink);
+  }
+  .listbox-item:last-child{ border-bottom:none; }
+  .listbox-item.picked{
+    background:var(--primary-light); border-left:3px solid var(--primary); font-weight:600;
+  }
+  .listbox-item .item-title{ display:block; font-weight:700; color:var(--navy); margin-bottom:2px; }
+  .listbox-item .item-link{ display:block; font-size:11.5px; color:var(--muted); font-weight:400; }
+  .cue-card{
+    margin-top:10px; padding:11px; border:1px solid var(--border); border-radius:var(--radius-sm);
+    background:#fbfbfe;
+  }
+  .cue-time{ font-size:11.5px; font-weight:700; color:var(--primary); }
+  .cue-orig{ font-size:11.5px; color:var(--muted); margin:4px 0 8px; line-height:1.4; word-break:break-word; }
+  .cue-orig b{ color:var(--ink); font-weight:600; }
+  .cue-input{
+    width:100%; border:1px solid var(--border); background:#fff; border-radius:var(--radius-sm);
+    padding:9px 10px; font-size:14.5px; font-family:inherit; min-height:44px; resize:vertical;
+  }
+  .cue-input:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+  #vsStatus{
+    background:var(--primary-light); color:var(--primary-dark); border-radius:var(--radius-sm);
+    padding:10px 12px; font-weight:600;
+  }
+  #toast{
+    position:fixed; left:50%; bottom:calc(22px + var(--safe-b));
+    transform:translate(-50%, 20px);
+    background:var(--navy); color:#fff; padding:11px 20px; border-radius:999px;
+    font-size:13px; font-weight:600; opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease; z-index:50;
+    box-shadow:0 10px 24px rgba(0,0,0,.22); max-width:88%; text-align:center;
+  }
+  #toast.show{ opacity:1; transform:translate(-50%, 0); }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .chip{
+    background:var(--navy); color:#fff; font-size:11.5px; font-weight:700;
+    padding:7px 12px; border-radius:999px; max-width:100%;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer; border:none;
+  }
+  @media (max-width: 400px){
+    .brand-title{ font-size:22px; }
+    .tabbtn{ font-size:9.5px; }
+    .hashtag-btn{ padding:12px 4px; }
+    .hashtag-btn .num{ font-size:17px; }
+  }
 </style>
 </head>
 <body>
 <div class="app">
-
-  <div class="banner" id="envBanner"></div>
-
-  <div class="top">
-    <p class="eyebrow">Đăng · Chia sẻ · Gửi</p>
-    <h1>Chia sẻ nhanh</h1>
-    <p>Viết nội dung, thêm ảnh/video, chọn nơi muốn đăng rồi chia sẻ chỉ trong vài giây.</p>
+  <div class="brand">
+    <div class="brand-eyebrow">Bộ công cụ nội dung</div>
+    <div class="brand-title">Content Studio</div>
   </div>
-
-  <div class="card">
-    <label class="section-label">Nội dung</label>
-    <textarea id="caption" maxlength="2200" placeholder="Viết caption, mô tả video hoặc tin nhắn..."></textarea>
-    <div class="charcount"><span id="charNum">0</span>/2200</div>
+  <!-- ================= THANH TAB ================= -->
+  <div class="tabbar">
+    <button class="tabbtn active" data-tab="content">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 3.5h8l4 4V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/>
+        <path d="M14 3.5V7.5h4"/>
+        <path d="M7.5 12h7M7.5 15h7M7.5 18h4.5"/>
+      </svg>
+      Content
+    </button>
+    <button class="tabbtn" data-tab="share">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6" cy="12" r="2.3"/><circle cx="17" cy="5.5" r="2.3"/><circle cx="17" cy="18.5" r="2.3"/>
+        <path d="M8.1 10.8 14.9 7.2M8.1 13.2 14.9 16.8"/>
+      </svg>
+      Share
+    </button>
+    <button class="tabbtn" data-tab="shoppe">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="8" width="16" height="12" rx="2"/>
+        <path d="M8 8V6a4 4 0 0 1 8 0v2"/>
+      </svg>
+      Shoppe
+    </button>
+    <button class="tabbtn" data-tab="vietsub">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="5" width="18" height="13" rx="2"/>
+        <path d="M7 21h10"/>
+        <path d="M6.5 10.5h3M6.5 13.5h5M12.5 10.5h5"/>
+      </svg>
+      Vietsub
+    </button>
   </div>
-
-  <div class="card">
-    <label class="section-label">Ảnh / Video</label>
-    <div class="drop" id="dropZone">
-      <div class="icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="17 8 12 3 7 8"/>
-          <line x1="12" y1="3" x2="12" y2="15"/>
+  <!-- ================= TAB 1: CONTENT ================= -->
+  <section id="page-content" class="page active">
+    <div class="card">
+      <h2 class="title">Tiêu Đề Nội Dung</h2>
+      <p class="hint">Dán hoặc gõ nội dung vào ô bên dưới. Từ nghi sai chính tả tiếng Việt sẽ được gạch chân đỏ (kiểm tra dựa trên cấu trúc âm tiết + từ điển thông dụng, mang tính gợi ý).</p>
+      <div class="editor-wrap">
+        <div id="backdrop" class="editor-common editor-backdrop"></div>
+        <textarea id="contentInput" class="editor-common editor-textarea"
+          placeholder="Nhập nội dung bài viết..." spellcheck="false"></textarea>
+      </div>
+      <div class="section-label">Chọn bộ 5 hastag &amp; copy nội dung</div>
+      <div id="hashtagGrid" class="hashtag-grid"></div>
+      <div class="btnrow">
+        <button class="btn btn-ghost btn-full" id="btnClearContent">Xóa nội dung</button>
+      </div>
+    </div>
+  </section>
+  <!-- ================= TAB 2: SHARE ================= -->
+  <section id="page-share" class="page">
+    <div class="card">
+      <h2 class="title">Chia sẻ nội dung</h2>
+      <p class="hint">Nhập nội dung tin nhắn, chọn thêm ảnh hoặc video (có thể chọn nhiều file cùng lúc) nếu muốn, rồi bấm nút bên dưới để mở khung chia sẻ nhỏ của iPhone — chọn Zalo, gửi xong khung sẽ tự đóng lại.</p>
+      <div class="field" style="margin-top:0">
+        <textarea id="shareInput" placeholder="Nhập nội dung tin nhắn muốn gửi..." style="min-height:150px"></textarea>
+      </div>
+      <div class="section-label">Ảnh / Video đính kèm (tùy chọn — chọn được nhiều file cùng lúc)</div>
+      <input type="file" id="mediaInput" accept="image/*,video/*" multiple style="display:none">
+      <div id="mediaDropzone" class="dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5.5" width="13" height="13" rx="2"/>
+          <path d="m16 10.5 5-2.8v8.6l-5-2.8"/>
         </svg>
+        <span>Chọn ảnh hoặc video (có thể chọn nhiều file)</span>
       </div>
-      <div class="main-txt">Chạm để chọn ảnh hoặc video</div>
-      <div class="sub-txt">Có thể chọn nhiều tệp cùng lúc</div>
-      <input type="file" id="fileInput" accept="image/*,video/*" multiple>
-    </div>
-    <div class="previews" id="previews"></div>
-  </div>
-
-  <div class="card">
-    <label class="section-label">Đăng lên</label>
-    <div class="platforms">
-      <div class="platform" data-p="zalo">
-        <div class="badge">Za</div>
-        <div class="name">Zalo</div>
-      </div>
-      <div class="platform" data-p="tiktok">
-        <div class="badge">Tt</div>
-        <div class="name">TikTok</div>
-      </div>
-      <div class="platform" data-p="facebook">
-        <div class="badge">Fb</div>
-        <div class="name">Reels</div>
-      </div>
-      <div class="platform" data-p="youtube">
-        <div class="badge">Yt</div>
-        <div class="name">YouTube</div>
+      <div id="mediaList" class="media-list" style="display:none"></div>
+      <div class="btnrow">
+        <button class="btn btn-primary" id="btnShareZalo">Share Luôn Dép Lào</button>
+        <button class="btn btn-danger" id="btnClearShare">Clear</button>
       </div>
     </div>
-    <div class="hint">
-      Lưu ý thực tế: Zalo và Facebook thường nhận được ảnh/video qua bảng chia sẻ. <b style="color:#c7cbe6">TikTok không hỗ trợ nhận nội dung qua cơ chế chia sẻ chuẩn</b> — nếu TikTok không tự mở hoặc không có nội dung, hãy dùng nút "Tải tệp" bên dưới rồi đăng thủ công trong app. Facebook cũng không giữ chắc caption khi kèm video — hãy dán lại caption nếu cần.
+  </section>
+  <!-- ================= TAB 3: SHOPPE ================= -->
+  <section id="page-shoppe" class="page">
+    <div class="card">
+      <h2 class="title">Link Shopee</h2>
+      <p class="hint">Mỗi dòng nhập theo dạng <strong>Tiêu đề | Link</strong>. Bấm "Chia sẻ ngẫu nhiên" để copy random 1 link kèm tiêu đề mỗi lần bấm.</p>
+      <div class="btnrow" style="margin-top:0">
+        <button class="btn btn-primary btn-full" id="btnRandomShoppe">Chia sẻ ngẫu nhiên (Copy)</button>
+      </div>
+      <div class="section-label">Danh sách link (mỗi dòng: Tiêu đề | Link)</div>
+      <div class="field" style="margin-top:0">
+        <textarea id="shoppeLinksInput" style="min-height:100px"></textarea>
+      </div>
+      <div class="section-label">Xem trước</div>
+      <div id="shoppeListbox" class="listbox"></div>
     </div>
-  </div>
-
-  <button class="share-btn" id="shareBtn">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-      <line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/>
-    </svg>
-    Chia sẻ ngay
-  </button>
-
-  <div class="fallback-row">
-    <button class="fallback-btn" id="copyBtn">📋 Copy nội dung</button>
-    <button class="fallback-btn" id="downloadBtn">⬇️ Tải tệp về máy</button>
-  </div>
-
-  <div id="status"></div>
-
+  </section>
+  <!-- ================= TAB 4: VIETSUB ================= -->
+  <section id="page-vietsub" class="page">
+    <div class="card">
+      <h2 class="title">Vietsub video (Trung / Anh → Việt)</h2>
+      <p class="hint">
+        Tải video lên → chọn nhận diện <strong>chữ trên hình</strong> và/hoặc <strong>giọng nói trong âm thanh</strong> → tự động dịch sang tiếng Việt → cho sửa lại trước khi ghép đè phụ đề, xuất ra .mp4.
+        <br><strong>Lưu ý:</strong> mọi xử lý chạy ngay trên trình duyệt điện thoại nên khá nặng, đặc biệt là nhận diện giọng nói (phải tải mô hình AI ~70–150MB) — nên dùng video <strong>ngắn (dưới ~60 giây)</strong>, dùng Wi-Fi, và độ phân giải vừa phải để tránh treo máy hoặc quá lâu. Bản dịch tự động có thể chưa chính xác 100%, hãy kiểm tra lại trước khi ghép.
+      </p>
+      <input type="file" id="vsVideoInput" accept="video/*" style="display:none">
+      <div id="vsDropzone" class="dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5.5" width="13" height="13" rx="2"/>
+          <path d="m16 10.5 5-2.8v8.6l-5-2.8"/>
+        </svg>
+        <span>Chọn video cần vietsub</span>
+      </div>
+      <video id="vsVideoPlayer" controls playsinline style="display:none;width:100%;margin-top:10px;border-radius:var(--radius-md);background:#000"></video>
+      <div class="field">
+        <label>Nguồn cần dịch</label>
+        <div class="checkrow">
+          <label><input type="checkbox" id="vsModeOcr" checked> Chữ hiển thị trên hình</label>
+          <label><input type="checkbox" id="vsModeAudio"> Giọng nói trong âm thanh</label>
+        </div>
+      </div>
+      <div class="field" id="vsOcrLangWrap">
+        <label>Chữ trên hình là ngôn ngữ nào</label>
+        <div class="checkrow">
+          <label><input type="checkbox" id="vsLangZh" checked> Tiếng Trung</label>
+          <label><input type="checkbox" id="vsLangEn" checked> Tiếng Anh</label>
+        </div>
+      </div>
+      <div class="field" id="vsIntervalWrap">
+        <label>Lấy mẫu khung hình mỗi (giây) — số càng nhỏ càng chính xác nhưng càng lâu</label>
+        <input type="text" id="vsInterval" value="2" inputmode="decimal">
+      </div>
+      <p class="hint" style="margin-top:6px">Giọng nói trong âm thanh dùng mô hình AI nhận diện đa ngôn ngữ, tự động phát hiện tiếng nói là ngôn ngữ gì (Trung, Anh, v.v.) rồi dịch sang tiếng Việt — không cần chọn ngôn ngữ riêng.</p>
+      <div class="btnrow">
+        <button class="btn btn-primary btn-full" id="vsBtnDetect">1. Nhận diện chữ &amp; Dịch</button>
+      </div>
+      <div id="vsStatus" style="display:none;margin-top:12px"></div>
+      <div id="vsCuesWrap" style="display:none">
+        <div class="section-label">Phụ đề tiếng Việt (chỉnh sửa nếu cần)</div>
+        <div id="vsCuesList"></div>
+        <div class="btnrow">
+          <button class="btn btn-dark btn-full" id="vsBtnBurn">2. Ghép phụ đề &amp; Xuất .mp4</button>
+        </div>
+        <div class="btnrow">
+          <button class="btn btn-ghost btn-full" id="vsBtnSrt">Tải file phụ đề .srt (dự phòng)</button>
+        </div>
+      </div>
+      <div id="vsResultWrap" style="display:none;margin-top:16px">
+        <div class="section-label">Video đã ghép phụ đề</div>
+        <video id="vsResultPlayer" controls playsinline style="width:100%;border-radius:var(--radius-md);background:#000"></video>
+        <div class="btnrow">
+          <a id="vsDownloadLink" class="btn btn-primary btn-full" download="vietsub.mp4">Tải video .mp4</a>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
-
+<div id="toast"></div>
+<!-- Thư viện OCR (nhận diện chữ trên khung hình) -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<!-- Thư viện xử lý video ngay trên trình duyệt (ghép phụ đề, xuất mp4) -->
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 <script>
-  const caption = document.getElementById('caption');
-  const charNum = document.getElementById('charNum');
-  const dropZone = document.getElementById('dropZone');
-  const fileInput = document.getElementById('fileInput');
-  const previews = document.getElementById('previews');
-  const shareBtn = document.getElementById('shareBtn');
-  const copyBtn = document.getElementById('copyBtn');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const statusEl = document.getElementById('status');
-  const envBanner = document.getElementById('envBanner');
-  const platformEls = document.querySelectorAll('.platform');
-
-  let selectedFiles = [];
-  let selectedPlatforms = new Set();
-
-  // Kiểm tra môi trường ngay khi tải trang — đây là nguyên nhân phổ biến
-  // nhất khiến "ấn share không có gì xảy ra".
-  (function checkEnvironment() {
-    if (location.protocol === 'file:') {
-      envBanner.innerHTML = '<b>Trang đang mở dạng file:// nên tính năng Chia sẻ sẽ KHÔNG hoạt động.</b> Hãy đưa trang này lên hosting HTTPS (hoặc chạy qua localhost) rồi mở bằng trình duyệt, thay vì mở trực tiếp từ trình quản lý file.';
-      envBanner.classList.add('show');
+/* =========================================================
+   TIỆN ÍCH DÙNG CHUNG
+========================================================= */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(()=> t.classList.remove('show'), 2400);
+}
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(e){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      return true;
+    }catch(e2){ return false; }
+  }
+}
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+/* =========================================================
+   CHUYỂN TAB
+========================================================= */
+document.querySelectorAll('.tabbtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('page-' + btn.dataset.tab).classList.add('active');
+  });
+});
+/* =========================================================
+   TAB CONTENT: kiểm tra chính tả tiếng Việt cơ bản
+========================================================= */
+const VOWELS = "aàáảãạăằắẳẵặâầấẩẫậeèéẻẽẹêềếểễệiìíỉĩịoòóỏõọôồốổỗộơờớởỡợuùúủũụưừứửữựyỳýỷỹỵ";
+const ONSETS = ["ngh","ng","nh","ph","th","tr","ch","gi","kh","qu","b","c","d","đ","g","h","k","l","m","n","p","q","r","s","t","v","x"];
+const FINALS = ["ch","ng","nh","c","m","n","p","t"];
+const syllableRegex = new RegExp(
+  "^(" + ONSETS.join("|") + ")?" +
+  "([" + VOWELS + "]{1,3})" +
+  "(" + FINALS.join("|") + ")?$", "i"
+);
+const WHITELIST = new Set([
+  "shopee","zalo","facebook","tiktok","content","share","copy","hastag","hashtag",
+  "sale","freeship","voucher","live","livestream","ok","wifi","admin","app","web",
+  "google","youtube","instagram","link","boy","girl","ib","inbox","vietsub"
+]);
+function isValidVietnameseWord(word){
+  const lower = word.toLowerCase();
+  if(WHITELIST.has(lower)) return true;
+  if(/^\d+$/.test(word)) return true;
+  if(word === word.toUpperCase() && word.length > 1) return true;
+  return syllableRegex.test(lower);
+}
+function tokenize(text){
+  return text.match(/[A-Za-zÀ-ỹĐđ]+|[^A-Za-zÀ-ỹĐđ]+/g) || [];
+}
+function buildHighlightedHtml(text){
+  const tokens = tokenize(text);
+  let html = "";
+  let prevWasHash = false;
+  for(const tok of tokens){
+    const isWord = /[A-Za-zÀ-ỹĐđ]/.test(tok[0]);
+    if(isWord){
+      const skipCheck = prevWasHash;
+      const valid = skipCheck || isValidVietnameseWord(tok);
+      html += valid ? escapeHtml(tok) : `<span class="misspell">${escapeHtml(tok)}</span>`;
+      prevWasHash = false;
+    }else{
+      html += escapeHtml(tok);
+      prevWasHash = tok.trim().endsWith('#');
+    }
+  }
+  return html;
+}
+const contentInput = document.getElementById('contentInput');
+const backdrop = document.getElementById('backdrop');
+function refreshHighlight(){
+  backdrop.innerHTML = buildHighlightedHtml(contentInput.value) + "\n";
+}
+contentInput.addEventListener('input', refreshHighlight);
+contentInput.addEventListener('paste', ()=> setTimeout(refreshHighlight, 0));
+contentInput.addEventListener('scroll', ()=>{
+  backdrop.scrollTop = contentInput.scrollTop;
+  backdrop.scrollLeft = contentInput.scrollLeft;
+});
+document.getElementById('btnClearContent').addEventListener('click', ()=>{
+  contentInput.value = ';
+  refreshHighlight();
+});
+/* =========================================================
+   LƯỚI NÚT HASTAG ĐÁNH SỐ (1..9)
+========================================================= */
+const HASHTAG_NUMBERS = [1,2,3,4,5,6,7,8,9];
+const hashtagLabels = {
+  1:  'Tin tức mxh',
+  2:  'Tin Tức Mạng Xã Hội',
+  3:  'Tin Mới',
+  4:  'Tin Ngắn Mỗi Ngày',
+  5:  'Cảm Xúc Con Người',
+  6:  'ToDay News',
+  7:  'Tin Đường Phố',
+  8:  'TTMXH',
+  9:  'Tin Mới 24h'
+};
+const hashtagPresets = {
+  1:  ['#tintucmxh','#mxh24h','#hotnews','#xuhuongmoi','#capnhatnhanh'],
+  2:  ['#tintucmangxahoi','#mangxahoi','#newsdaily','#tinnong24h','#videohot'],
+  3:  ['#tinmoi','#tinnhanh','#capnhat24h','#newsupdate','#hottrendvn'],
+  4:  ['#tinnganmoingay','#banthinhanh','#tinthoisu','#moingaymottin','#thongtin24h'],
+  5:  ['#camxucconnguoi','#cauchuyencuocsong','#yeuthuong','#songtichcuc','#truyencamhung'],
+  6:  ['#todaynews','#breakingnews','#worldnews','#dailyupdate','#latestnews'],
+  7:  ['#tinduongpho','#duongpho24h','#thucte','#hientruong','#cuocsongquanhta'],
+  8:  ['#ttmxh','#tinxuhuong','#newsviral','#capnhatmoi','#tinhomnay'],
+  9:  ['#tinmoi24h','#24hnews','#news24','#tintuc24h','#tintucnong']
+};
+const hashtagGrid = document.getElementById('hashtagGrid');
+function joinHashtags(arr){ return arr.join(' '); }
+function renderHashtagGrid(){
+  hashtagGrid.innerHTML = HASHTAG_NUMBERS.map(n => `
+    <div class="hashtag-btn" data-n="${n}" title="Bấm để copy kèm 5 hastag của nút ${n}">
+      <button class="edit-pin" data-edit="${n}" title="Sửa 5 hastag">✎</button>
+      <span class="num">${n}</span>
+      <span class="label">${escapeHtml(hashtagLabels[n] || ')}</span>
+    </div>
+  `).join(');
+}
+renderHashtagGrid();
+hashtagGrid.addEventListener('click', async (e)=>{
+  const editBtn = e.target.closest('[data-edit]');
+  if(editBtn){
+    const n = editBtn.dataset.edit;
+    const current = joinHashtags(hashtagPresets[n]);
+    const next = prompt(`Sửa 5 hastag cho nút ${n} (cách nhau bằng dấu cách):`, current);
+    if(next !== null && next.trim() !== '){
+      let list = next.trim().split(/\s+/).filter(Boolean).slice(0, 5);
+      while(list.length < 5) list.push('#hashtag');
+      hashtagPresets[n] = list;
+      renderHashtagGrid();
+    }
+    return;
+  }
+  const card = e.target.closest('.hashtag-btn');
+  if(!card) return;
+  const content = contentInput.value.trim();
+  if(!content){ showToast('Chưa có nội dung để copy'); return; }
+  const n = card.dataset.n;
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2,'0');
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const yyyy = now.getFullYear();
+  const dateStr = `${dd}/${mm}/${yyyy}`;
+  const hashtagLine = joinHashtags(hashtagPresets[n]);
+  const formatted =
+`${content}
+Ngày đăng: ${dateStr}
+${hashtagLine}`;
+  const ok = await copyText(formatted);
+  showToast(ok ? `Đã copy với 5 hastag: ${hashtagLine}` : 'Copy thất bại, vui lòng thử lại');
+});
+/* =========================================================
+   TAB SHARE
+========================================================= */
+const shareInput = document.getElementById('shareInput');
+const mediaInput = document.getElementById('mediaInput');
+const mediaDropzone = document.getElementById('mediaDropzone');
+const mediaList = document.getElementById('mediaList');
+const btnShareZalo = document.getElementById('btnShareZalo');
+let selectedFiles = []; // File[] — có thể trộn ảnh và video
+mediaDropzone.addEventListener('click', ()=> mediaInput.click());
+mediaInput.addEventListener('change', ()=>{
+  const files = Array.from(mediaInput.files || []);
+  if(files.length === 0) return;
+  selectedFiles = selectedFiles.concat(files);
+  mediaInput.value = '; // cho phép chọn lại đúng file đó ở lần sau nếu cần
+  renderMediaList();
+});
+function renderMediaList(){
+  if(selectedFiles.length === 0){
+    mediaList.style.display = 'none';
+    mediaList.innerHTML = ';
+    return;
+  }
+  mediaList.style.display = 'grid';
+  mediaList.innerHTML = selectedFiles.map((f, i) => {
+    const url = URL.createObjectURL(f);
+    const isVideo = f.type.startsWith('video/');
+    const preview = isVideo
+      ? `<video src="${url}" muted playsinline preload="metadata"></video>`
+      : `<img src="${url}" alt="">`;
+    return `
+      <div class="media-item">
+        ${preview}
+        <span class="media-badge">${isVideo ? 'Video' : 'Ảnh'}</span>
+        <button type="button" class="media-remove" data-i="${i}" title="Bỏ file này">✕</button>
+      </div>
+    `;
+  }).join(') + `<div class="media-count" style="grid-column:1/-1">${selectedFiles.length} file đã chọn</div>`;
+  mediaList.querySelectorAll('.media-remove').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.i);
+      selectedFiles.splice(i, 1);
+      renderMediaList();
+    });
+  });
+}
+btnShareZalo.addEventListener('click', async ()=>{
+  const text = shareInput.value.trim();
+  if(!text && selectedFiles.length === 0){ showToast('Chưa có nội dung hoặc file để chia sẻ'); return; }
+  const shareData = {};
+  if(selectedFiles.length > 0) shareData.files = selectedFiles;
+  if(text) shareData.text = text;
+  const canUseNativeShare =
+    !!navigator.share &&
+    (selectedFiles.length === 0 || (navigator.canShare && navigator.canShare(shareData)));
+  if(canUseNativeShare){
+    btnShareZalo.disabled = true;
+    try{
+      await navigator.share(shareData);
+      showToast('Đã gửi qua khung chia sẻ');
+    }catch(err){
+      if(!err || err.name !== 'AbortError'){
+        showToast('Không thể mở khung chia sẻ, đã copy nội dung thay thế');
+        if(text) await copyText(text);
+      }
+    }finally{
+      btnShareZalo.disabled = false;
+    }
+    return;
+  }
+  if(text) await copyText(text);
+  showToast(selectedFiles.length > 0
+    ? 'Trình duyệt/Zalo không hỗ trợ gửi nhiều file kiểu này. Đã copy nội dung — mở Zalo và đính kèm ảnh/video thủ công.'
+    : 'Trình duyệt không hỗ trợ khung chia sẻ. Đã copy nội dung — dán vào Zalo thủ công.');
+});
+document.getElementById('btnClearShare').addEventListener('click', ()=>{
+  shareInput.value = ';
+  selectedFiles = [];
+  renderMediaList();
+  shareInput.focus();
+});
+/* =========================================================
+   TAB SHOPPE
+========================================================= */
+const shoppeLinksInput = document.getElementById('shoppeLinksInput');
+const shoppeListbox = document.getElementById('shoppeListbox');
+const DEFAULT_LINKS = [
+  'Tấm pin mặt trời loại A 185W Tấm pin mặt trời silicon đơn tinh thể công suất đầy đủ Mô-đun PV | https://s.shopee.vn/6L1mJUYpt2',
+  'Combo 20 Tấm pin năng lượng mặt trời LONGi 445W | https://s.shopee.vn/2g8TwoJxIv',
+  'Combo tấm Pin năng lượng mặt trời JinKO 440W | https://s.shopee.vn/gNPZAFUGZ',
+  'Tấm pin năng lượng mặt trời dã ngoại cắm trại EcoFlow 400W Portable Solar Panel | https://s.shopee.vn/6VLCVtE2cm',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/1BJgA6QNYT',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/7AatJ8U0Kw',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/6VLCVuv12l',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/4Va88FTIqQ',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/6py2uXcV4u',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/17ilzPGk0',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/7KuJVTHlk9',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/60Ovv1jo22',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/7pqa6P4Bgi',
+  'Deal Quạt Mini tích hợp sò lạnh | https://s.shopee.vn/1gFZahEg1a',
+  'Deal Quạt Hot | https://s.shopee.vn/AUqy7Af2tm',
+  'Voucher Thời Trang Nữ | https://s.shopee.vn/BQloEhujt',
+  'Voucher Son bóng lifter Gloss | https://s.shopee.vn/6VKpMYpN8l',
+  'Voucher Camera giám sát | https://s.shopee.vn/8V5tkKBdX3',
+  'Voucher Thẻ nhớ | https://s.shopee.vn/5L8ryXGhGf',
+  'Voucher Thẻ nhớ 32g/64g | https://s.shopee.vn/3B4NOaFoqW',
+  'Voucher Thiết bị định vị thông minh | https://s.shopee.vn/7AaWA0h2eG',
+  'Voucher Quạt tốc độ gió cao | https://s.shopee.vn/8pik98naPI',
+  'Voucher Máy sấy tóc | https://s.shopee.vn/30kxCSdqv5',
+  'Voucher Camera wwiffi | https://s.shopee.vn/qgTrrsZDR',
+  'Voucher Quạt tích điện | https://s.shopee.vn/6Ai0DjDGHA',
+  'Voucher Kính cường lực | https://s.shopee.vn/8V5v0431s4',
+  'Voucher Combo túi mũ cói đi biển | https://s.shopee.vn/8pilOiITyK',
+  'Voucher Đàm maxi hai dây tiểu thư | https://s.shopee.vn/5VSJQfiLSs',
+  'Voucher Sơ mi nam | https://s.shopee.vn/9Kf1zmdgZm',
+  'Voucher Tã quần chính hãng cho bé | https://s.shopee.vn/1qZ141epD2',
+  'Voucher Quạt tubo z 3600 | https://s.shopee.vn/2VohrHk8oA',
+  'Voucher sữa rửa mặt mát lạnh | https://s.shopee.vn/qgTsG30yI',
+  'Voucher khẩu trang chống nắng | https://s.shopee.vn/3LNoqsx5ar',
+  'Voucher Dây đeo điện thoại | https://s.shopee.vn/gN3g0v5e7',
+  'Voucher Ốp điện thoại | https://s.shopee.vn/qgTsMVs13',
+  'Voucher Áo điều hòa giải pháp mùa chống nóng mùa hè | https://s.shopee.vn/3VhO7XIs4L'
+];
+shoppeLinksInput.value = DEFAULT_LINKS.join('\n');
+function getShoppeLinks(){
+  return shoppeLinksInput.value
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(line => {
+      const sepIndex = line.indexOf('|');
+      if(sepIndex === -1){
+        return { title: 'Sản phẩm Shopee', link: line };
+      }
+      const title = line.slice(0, sepIndex).trim() || 'Sản phẩm Shopee';
+      const link = line.slice(sepIndex + 1).trim();
+      return { title, link };
+    })
+    .filter(item => item.link);
+}
+function renderShoppeList(pickedIndex = -1){
+  const items = getShoppeLinks();
+  shoppeListbox.innerHTML = items.map((item, i) => `
+    <div class="listbox-item ${i===pickedIndex?'picked':'}">
+      <span class="item-title">${escapeHtml(item.title)}</span>
+      <span class="item-link">${escapeHtml(item.link)}</span>
+    </div>
+  `).join(') || '<div class="listbox-item">Chưa có link nào</div>';
+}
+renderShoppeList();
+shoppeLinksInput.addEventListener('input', ()=> renderShoppeList());
+document.getElementById('btnRandomShoppe').addEventListener('click', async ()=>{
+  const items = getShoppeLinks();
+  if(items.length === 0){ showToast('Danh sách link đang trống'); return; }
+  const idx = Math.floor(Math.random() * items.length);
+  const picked = items[idx];
+  renderShoppeList(idx);
+  const textToCopy = `${picked.title}\n${picked.link}`;
+  const ok = await copyText(textToCopy);
+  showToast(ok ? `Đã copy: ${picked.title}` : 'Copy thất bại');
+});
+/* =========================================================
+   TAB VIETSUB
+   Quy trình: chọn video -> trích khung hình theo mốc thời gian ->
+   OCR (Tesseract.js, tiếng Trung/Anh) -> gom thành các đoạn phụ đề ->
+   gọi API Claude để dịch sang tiếng Việt -> người dùng xem/sửa lại ->
+   ghép chữ tiếng Việt đè lên video bằng ffmpeg.wasm (chạy ngay trong
+   trình duyệt) -> xuất file .mp4 để tải về.
+========================================================= */
+const vsVideoInput   = document.getElementById('vsVideoInput');
+const vsDropzone     = document.getElementById('vsDropzone');
+const vsVideoPlayer  = document.getElementById('vsVideoPlayer');
+const vsModeOcr      = document.getElementById('vsModeOcr');
+const vsModeAudio    = document.getElementById('vsModeAudio');
+const vsOcrLangWrap  = document.getElementById('vsOcrLangWrap');
+const vsIntervalWrap = document.getElementById('vsIntervalWrap');
+const vsLangZh       = document.getElementById('vsLangZh');
+const vsLangEn       = document.getElementById('vsLangEn');
+const vsInterval     = document.getElementById('vsInterval');
+const vsBtnDetect    = document.getElementById('vsBtnDetect');
+const vsStatus       = document.getElementById('vsStatus');
+const vsCuesWrap     = document.getElementById('vsCuesWrap');
+const vsCuesList     = document.getElementById('vsCuesList');
+const vsBtnBurn      = document.getElementById('vsBtnBurn');
+const vsBtnSrt       = document.getElementById('vsBtnSrt');
+const vsResultWrap   = document.getElementById('vsResultWrap');
+const vsResultPlayer = document.getElementById('vsResultPlayer');
+const vsDownloadLink = document.getElementById('vsDownloadLink');
+let vsVideoFile = null;
+let vsCues = []; // { start, end, text, translated, source }
+let vsInputWritten = false; // đã ghi video vào bộ nhớ ffmpeg cho lần xử lý hiện tại chưa
+function vsUpdateModeVisibility(){
+  vsOcrLangWrap.style.display = vsModeOcr.checked ? 'block' : 'none';
+  vsIntervalWrap.style.display = vsModeOcr.checked ? 'block' : 'none';
+}
+vsModeOcr.addEventListener('change', vsUpdateModeVisibility);
+vsUpdateModeVisibility();
+vsDropzone.addEventListener('click', ()=> vsVideoInput.click());
+vsVideoInput.addEventListener('change', ()=>{
+  const file = vsVideoInput.files && vsVideoInput.files[0];
+  if(!file) return;
+  vsVideoFile = file;
+  vsVideoPlayer.src = URL.createObjectURL(file);
+  vsVideoPlayer.style.display = 'block';
+  vsCuesWrap.style.display = 'none';
+  vsResultWrap.style.display = 'none';
+  vsStatus.style.display = 'none';
+  vsCues = [];
+  vsInputWritten = false;
+});
+function vsSetStatus(msg){
+  vsStatus.style.display = 'block';
+  vsStatus.textContent = msg;
+}
+function vsWaitMeta(video){
+  return new Promise(resolve=>{
+    if(video.readyState >= 1) return resolve();
+    video.addEventListener('loadedmetadata', ()=> resolve(), { once:true });
+  });
+}
+function vsSeekTo(video, t){
+  return new Promise(resolve=>{
+    function onSeeked(){ video.removeEventListener('seeked', onSeeked); resolve(); }
+    video.addEventListener('seeked', onSeeked);
+    video.currentTime = Math.max(0, Math.min(t, (video.duration || t) - 0.05));
+  });
+}
+function vsNorm(s){ return (s || ').replace(/\s+/g,').trim(); }
+function vsFmtTime(t){
+  const m = Math.floor(t/60), s = Math.floor(t%60);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+async function vsDetectOcr(duration, langs, interval){
+  const canvas = document.createElement('canvas');
+  canvas.width = vsVideoPlayer.videoWidth || 640;
+  canvas.height = vsVideoPlayer.videoHeight || 360;
+  const ctx = canvas.getContext('2d');
+  vsSetStatus('Đang tải mô hình nhận diện chữ (lần đầu sẽ hơi lâu)...');
+  const worker = await Tesseract.createWorker(langs.join('+'));
+  const raw = [];
+  const steps = Math.min(120, Math.ceil(duration / interval));
+  for(let i=0; i<steps; i++){
+    const t = i * interval;
+    await vsSeekTo(vsVideoPlayer, t);
+    ctx.drawImage(vsVideoPlayer, 0, 0, canvas.width, canvas.height);
+    vsSetStatus(`Đang nhận diện chữ trên hình: khung ${i+1}/${steps} (${Math.round(((i+1)/steps)*100)}%)`);
+    const { data } = await worker.recognize(canvas);
+    const text = (data.text || ').trim();
+    if(text) raw.push({ time: t, text });
+  }
+  await worker.terminate();
+  // Gom các khung liên tiếp có chữ giống nhau thành 1 câu phụ đề
+  const grouped = [];
+  let cur = null;
+  for(const r of raw){
+    if(cur && vsNorm(cur.text) === vsNorm(r.text)){
+      cur.end = r.time + interval;
+    }else{
+      if(cur) grouped.push(cur);
+      cur = { start: r.time, end: r.time + interval, text: r.text, source: 'ocr' };
+    }
+  }
+  if(cur) grouped.push(cur);
+  return grouped;
+}
+let vsWhisperPipe = null;
+async function vsEnsureWhisper(){
+  if(vsWhisperPipe) return vsWhisperPipe;
+  vsSetStatus('Đang tải mô hình nhận diện giọng nói (lần đầu khá lâu, ~70-150MB)...');
+  const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js');
+  env.allowLocalModels = false;
+  vsWhisperPipe = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
+    progress_callback: (p)=>{
+      if(p && p.status === 'progress' && typeof p.progress === 'number'){
+        vsSetStatus(`Đang tải mô hình giọng nói: ${Math.round(p.progress)}%`);
+      }
+    }
+  });
+  return vsWhisperPipe;
+}
+async function vsWriteInputIfNeeded(ff){
+  if(vsInputWritten) return;
+  const { fetchFile } = FFmpegUtil;
+  await ff.writeFile('input.mp4', await fetchFile(vsVideoFile));
+  vsInputWritten = true;
+}
+async function vsDetectAudioSpeech(){
+  vsSetStatus('Đang tách âm thanh từ video...');
+  const ff = await vsEnsureFFmpeg();
+  await vsWriteInputIfNeeded(ff);
+  await ff.exec(['-i', 'input.mp4', '-vn', '-ac', '1', '-ar', '16000', '-f', 'wav', 'audio.wav']);
+  const wavBytes = await ff.readFile('audio.wav');
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const audioCtx = new AudioCtx({ sampleRate: 16000 });
+  const arrayBuf = wavBytes.buffer.slice(wavBytes.byteOffset, wavBytes.byteOffset + wavBytes.byteLength);
+  const audioBuffer = await audioCtx.decodeAudioData(arrayBuf);
+  const channelData = audioBuffer.getChannelData(0);
+  const transcriber = await vsEnsureWhisper();
+  vsSetStatus('Đang nhận diện giọng nói trong video...');
+  const output = await transcriber(channelData, {
+    chunk_length_s: 30,
+    stride_length_s: 5,
+    return_timestamps: true,
+  });
+  const chunks = (output && output.chunks) || [];
+  return chunks
+    .map(ch => {
+      const ts = ch.timestamp || [0, 0];
+      const start = ts[0] || 0;
+      const end = (ts[1] != null ? ts[1] : start + 3);
+      const text = (ch.text || ').trim();
+      return { start, end, text, source: 'audio' };
+    })
+    .filter(c => c.text);
+}
+async function vsRunDetect(){
+  if(!vsVideoFile){ showToast('Chưa chọn video'); return; }
+  const doOcr = vsModeOcr.checked;
+  const doAudio = vsModeAudio.checked;
+  if(!doOcr && !doAudio){ showToast('Chọn ít nhất 1 nguồn cần dịch'); return; }
+  const langs = [];
+  if(vsLangZh.checked) langs.push('chi_sim');
+  if(vsLangEn.checked) langs.push('eng');
+  if(doOcr && langs.length === 0){ showToast('Chọn ít nhất 1 ngôn ngữ cho chữ trên hình'); return; }
+  const interval = Math.max(0.5, parseFloat(vsInterval.value) || 2);
+  vsBtnDetect.disabled = true;
+  vsCuesWrap.style.display = 'none';
+  vsResultWrap.style.display = 'none';
+  try{
+    await vsWaitMeta(vsVideoPlayer);
+    const duration = vsVideoPlayer.duration;
+    if(!duration || !isFinite(duration)){
+      showToast('Không đọc được thời lượng video');
       return;
     }
-    if (!window.isSecureContext) {
-      envBanner.innerHTML = '<b>Trang chưa chạy trên kết nối an toàn (HTTPS).</b> Web Share API yêu cầu HTTPS, nếu không nút Chia sẻ sẽ không mở được app nào.';
-      envBanner.classList.add('show');
+    let ocrCues = [];
+    let audioCues = [];
+    if(doOcr){
+      ocrCues = await vsDetectOcr(duration, langs, interval);
+    }
+    if(doAudio){
+      audioCues = await vsDetectAudioSpeech();
+    }
+    let allCues = [...ocrCues, ...audioCues].sort((a,b)=> a.start - b.start);
+    if(allCues.length === 0){
+      vsSetStatus('Không tìm thấy chữ hoặc giọng nói nào. Thử đổi tuỳ chọn hoặc video khác.');
       return;
     }
-    if (!navigator.share) {
-      envBanner.innerHTML = '<b>Trình duyệt này không hỗ trợ chia sẻ trực tiếp.</b> Hãy dùng nút "Copy nội dung" / "Tải tệp về" bên dưới rồi đăng thủ công.';
-      envBanner.classList.add('show');
+    // Giới hạn tổng số câu để việc dịch + ghép phụ đề không quá nặng cho điện thoại
+    allCues = allCues.slice(0, 60);
+    vsSetStatus(`Tìm thấy ${allCues.length} đoạn. Đang dịch sang tiếng Việt...`);
+    try{
+      const translations = await vsTranslateCues(allCues);
+      allCues.forEach((c,i)=>{ c.translated = translations[i] || '; });
+      vsSetStatus(`Hoàn tất! ${allCues.length} đoạn phụ đề đã dịch — kiểm tra/sửa lại bên dưới rồi ghép vào video.`);
+    }catch(err){
+      console.error(err);
+      allCues.forEach(c=>{ c.translated = '; });
+      vsSetStatus(`Nhận diện xong ${allCues.length} đoạn, nhưng dịch tự động thất bại — hãy tự nhập tiếng Việt cho từng đoạn bên dưới.`);
     }
-  })();
-
-  caption.addEventListener('input', () => {
-    charNum.textContent = caption.value.length;
+    vsCues = allCues;
+    vsRenderCues();
+    vsCuesWrap.style.display = 'block';
+  }catch(err){
+    console.error(err);
+    showToast('Nhận diện thất bại, thử lại với video ngắn hơn hoặc bỏ bớt tuỳ chọn.');
+  }finally{
+    vsBtnDetect.disabled = false;
+  }
+}
+async function vsTranslateCues(cues){
+  const list = cues.map((c,i)=> `${i+1}. ${c.text}`).join('\n');
+  const prompt = `Đây là các đoạn chữ trích xuất từ video (có thể tiếng Trung hoặc tiếng Anh, có thể lẫn lỗi do nhận diện tự động). Hãy dịch từng đoạn sang tiếng Việt tự nhiên, ngắn gọn, phù hợp làm phụ đề video. Chỉ trả lời bằng một mảng JSON các chuỗi tiếng Việt, đúng thứ tự, không thêm chú thích hay markdown:\n\n${list}`;
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1000,
+      messages: [{ role: "user", content: prompt }]
+    })
   });
-
-  dropZone.addEventListener('click', () => fileInput.click());
-
-  ['dragover', 'dragenter'].forEach(evt => {
-    dropZone.addEventListener(evt, (e) => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
+  const data = await response.json();
+  const text = (data.content || []).map(b => b.text || ').join(').trim();
+  const clean = text.replace(/^```json/i,').replace(/^```/,').replace(/```$/,').trim();
+  const arr = JSON.parse(clean);
+  if(!Array.isArray(arr)) throw new Error('Kết quả dịch không hợp lệ');
+  return arr;
+}
+function vsRenderCues(){
+  vsCuesList.innerHTML = vsCues.map((c,i)=> `
+    <div class="cue-card">
+      <div class="cue-time">${vsFmtTime(c.start)} – ${vsFmtTime(c.end)} <span style="color:var(--muted);font-weight:600">· ${c.source === 'audio' ? 'giọng nói' : 'chữ trên hình'}</span></div>
+      <div class="cue-orig"><b>Gốc:</b> ${escapeHtml(c.text)}</div>
+      <textarea data-i="${i}" class="cue-input" placeholder="Nhập bản dịch tiếng Việt...">${escapeHtml(c.translated || ')}</textarea>
+    </div>
+  `).join(');
+  vsCuesList.querySelectorAll('.cue-input').forEach(ta=>{
+    ta.addEventListener('input', (e)=>{
+      const i = Number(e.target.dataset.i);
+      vsCues[i].translated = e.target.value;
     });
   });
-  ['dragleave', 'drop'].forEach(evt => {
-    dropZone.addEventListener(evt, (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
+}
+vsBtnDetect.addEventListener('click', vsRunDetect);
+// Xuất file .srt dự phòng — dùng được ngay trong CapCut hoặc trình dựng video khác
+function vsToSrtTime(t){
+  const h = Math.floor(t/3600);
+  const m = Math.floor((t%3600)/60);
+  const s = Math.floor(t%60);
+  const ms = Math.round((t - Math.floor(t)) * 1000);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+}
+function vsBuildSrt(){
+  return vsCues.map((c,i)=> `${i+1}\n${vsToSrtTime(c.start)} --> ${vsToSrtTime(c.end)}\n${c.translated || c.text}\n`).join('\n');
+}
+vsBtnSrt.addEventListener('click', ()=>{
+  if(vsCues.length === 0){ showToast('Chưa có phụ đề'); return; }
+  const blob = new Blob([vsBuildSrt()], { type:'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'vietsub.srt';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=> URL.revokeObjectURL(url), 4000);
+  showToast('Đã tải file .srt');
+});
+// Ghép phụ đề đè lên video bằng ffmpeg.wasm, xuất .mp4
+let vsFFmpeg = null;
+function vsEscapeDrawtext(text){
+  return text
+    .replace(/\\/g, '\\\\\\\\')
+    .replace(/:/g, '\\:')
+    .replace(/'/g, "\u2019")
+    .replace(/%/g, '\\%')
+    .replace(/\n/g, ' ');
+}
+async function vsEnsureFFmpeg(){
+  if(vsFFmpeg) return vsFFmpeg;
+  const { FFmpeg } = FFmpegWASM;
+  const { toBlobURL } = FFmpegUtil;
+  const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+  const ff = new FFmpeg();
+  ff.on('log', ({ message }) => vsSetStatus(message.slice(0, 90)));
+  await ff.load({
+    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+  });
+  vsFFmpeg = ff;
+  return ff;
+}
+vsBtnBurn.addEventListener('click', async ()=>{
+  if(!vsVideoFile || vsCues.length === 0){ showToast('Chưa có video hoặc phụ đề'); return; }
+  const drawtexts = vsCues
+    .filter(c => (c.translated || ').trim())
+    .map(c => {
+      const t = vsEscapeDrawtext(c.translated.trim());
+      return `drawtext=fontfile=font.ttf:text='${t}':fontcolor=white:fontsize=h/18:borderw=3:bordercolor=black:x=(w-text_w)/2:y=h-h/8:enable='between(t,${c.start.toFixed(2)},${c.end.toFixed(2)})'`;
     });
-  });
-  dropZone.addEventListener('drop', (e) => {
-    const dropped = Array.from(e.dataTransfer.files || []);
-    addFiles(dropped);
-  });
-
-  fileInput.addEventListener('change', () => {
-    addFiles(Array.from(fileInput.files));
-    fileInput.value = '';
-  });
-
-  function addFiles(files) {
-    for (const f of files) {
-      if (f.type.startsWith('image/') || f.type.startsWith('video/')) {
-        selectedFiles.push(f);
-      }
-    }
-    renderPreviews();
+  if(drawtexts.length === 0){ showToast('Chưa có nội dung tiếng Việt để ghép vào video'); return; }
+  vsBtnBurn.disabled = true;
+  try{
+    vsSetStatus('Đang tải bộ xử lý video (lần đầu sẽ hơi lâu, ~vài chục MB)...');
+    const ff = await vsEnsureFFmpeg();
+    vsSetStatus('Đang nạp video vào bộ xử lý...');
+    await vsWriteInputIfNeeded(ff);
+    vsSetStatus('Đang tải font tiếng Việt (có dấu)...');
+    const fontResp = await fetch('https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts/hinted/ttf/NotoSans/NotoSans-Bold.ttf');
+    const fontBuf = new Uint8Array(await fontResp.arrayBuffer());
+    await ff.writeFile('font.ttf', fontBuf);
+    const filter = drawtexts.join(',');
+    vsSetStatus('Đang ghép phụ đề vào video — có thể mất vài phút tuỳ độ dài video...');
+    await ff.exec(['-i', 'input.mp4', '-vf', filter, '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-c:a', 'copy', 'output.mp4']);
+    vsSetStatus('Đang xuất file...');
+    const data = await ff.readFile('output.mp4');
+    const blob = new Blob([data.buffer], { type: 'video/mp4' });
+    const url = URL.createObjectURL(blob);
+    vsResultPlayer.src = url;
+    vsDownloadLink.href = url;
+    vsResultWrap.style.display = 'block';
+    vsSetStatus('Hoàn tất! Xem trước và tải video bên dưới.');
+    showToast('Đã ghép phụ đề xong');
+  }catch(err){
+    console.error(err);
+    vsSetStatus('Ghép phụ đề thất bại: ' + (err && err.message ? err.message : 'lỗi không xác định'));
+    showToast('Thất bại — thử video ngắn hơn, hoặc dùng file .srt dự phòng ở trên.');
+  }finally{
+    vsBtnBurn.disabled = false;
   }
-
-  function renderPreviews() {
-    previews.innerHTML = '';
-    selectedFiles.forEach((file, idx) => {
-      const item = document.createElement('div');
-      item.className = 'preview-item';
-
-      const url = URL.createObjectURL(file);
-      if (file.type.startsWith('video/')) {
-        const vid = document.createElement('video');
-        vid.src = url;
-        vid.muted = true;
-        item.appendChild(vid);
-        const tag = document.createElement('div');
-        tag.className = 'tag';
-        tag.textContent = 'Video';
-        item.appendChild(tag);
-      } else {
-        const img = document.createElement('img');
-        img.src = url;
-        item.appendChild(img);
-      }
-
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'remove';
-      removeBtn.textContent = '✕';
-      removeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        selectedFiles.splice(idx, 1);
-        renderPreviews();
-      });
-      item.appendChild(removeBtn);
-
-      previews.appendChild(item);
-    });
-  }
-
-  platformEls.forEach(el => {
-    el.addEventListener('click', () => {
-      const p = el.dataset.p;
-      if (selectedPlatforms.has(p)) {
-        selectedPlatforms.delete(p);
-        el.classList.remove('active');
-      } else {
-        selectedPlatforms.add(p);
-        el.classList.add('active');
-      }
-    });
-  });
-
-  shareBtn.addEventListener('click', async () => {
-    const text = caption.value.trim();
-
-    if (!text && selectedFiles.length === 0) {
-      showStatus('Hãy nhập nội dung hoặc chọn ảnh/video.', 'err');
-      return;
-    }
-
-    const shareData = {};
-    if (text) shareData.text = text;
-    if (selectedFiles.length > 0) shareData.files = selectedFiles;
-
-    const platformNote = selectedPlatforms.size
-      ? ' Trong bảng chia sẻ, hãy chọn: ' + Array.from(selectedPlatforms).map(labelOf).join(', ') + '.'
-      : '';
-
-    // Kiểm tra hỗ trợ chia sẻ file
-    if (navigator.share) {
-      const canShareFiles = selectedFiles.length === 0 ||
-        (navigator.canShare && navigator.canShare({ files: selectedFiles }));
-
-      if (!canShareFiles) {
-        showStatus('Trình duyệt này không hỗ trợ chia sẻ tệp trực tiếp.' + platformNote, 'err');
-        return;
-      }
-
-      shareBtn.disabled = true;
-      try {
-        await navigator.share(shareData);
-        showStatus('Đã mở bảng chia sẻ.' + platformNote, 'ok');
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          showStatus('Không chia sẻ được: ' + err.message, 'err');
-        }
-      } finally {
-        shareBtn.disabled = false;
-      }
-    } else {
-      // Fallback: copy caption, gợi ý tải file thủ công
-      try {
-        if (text) await navigator.clipboard.writeText(text);
-        showStatus('Trình duyệt không hỗ trợ chia sẻ trực tiếp. Đã copy nội dung — hãy tải ảnh/video và đăng thủ công.' + platformNote, 'ok');
-      } catch (e) {
-        showStatus('Trình duyệt không hỗ trợ chia sẻ. Vui lòng thao tác thủ công.', 'err');
-      }
-    }
-  });
-
-  function labelOf(p) {
-    return { zalo: 'Zalo', tiktok: 'TikTok', facebook: 'Facebook Reels', youtube: 'YouTube' }[p] || p;
-  }
-
-  function showStatus(msg, cls) {
-    statusEl.textContent = msg;
-    statusEl.className = cls;
-  }
+});
 </script>
 </body>
 </html>
