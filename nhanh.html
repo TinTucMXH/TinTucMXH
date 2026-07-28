@@ -600,6 +600,20 @@ const hashtagPresets = {
   9:  ['#tinmoi24h','#24hnews','#news24','#tintuc24h','#tintucnong']
 };
 const hashtagGrid = document.getElementById('hashtagGrid');
+const LS_KEY_HASHTAGS = 'contentTool_hashtagPresets';
+(function loadHashtagPresets(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(LS_KEY_HASHTAGS) || 'null');
+    if(saved && typeof saved === 'object'){
+      HASHTAG_NUMBERS.forEach(n=>{
+        if(Array.isArray(saved[n]) && saved[n].length) hashtagPresets[n] = saved[n];
+      });
+    }
+  }catch(e){}
+})();
+function saveHashtagPresets(){
+  try{ localStorage.setItem(LS_KEY_HASHTAGS, JSON.stringify(hashtagPresets)); }catch(e){}
+}
 function joinHashtags(arr){ return arr.join(' '); }
 function renderHashtagGrid(){
   hashtagGrid.innerHTML = HASHTAG_NUMBERS.map(n => `
@@ -622,6 +636,7 @@ hashtagGrid.addEventListener('click', async (e)=>{
       while(list.length < 5) list.push('#hashtag');
       hashtagPresets[n] = list;
       renderHashtagGrid();
+      saveHashtagPresets();
     }
     return;
   }
