@@ -226,7 +226,6 @@
   .media-item .media-remove{
     position:absolute; top:4px; right:4px; width:20px; height:20px; border-radius:50%;
     border:none; background:rgba(0,0,0,.62); color:#fff; font-size:11px; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
   }
   .media-count{ font-size:11.5px; color:var(--muted); font-weight:600; margin-top:8px; }
   .btnrow{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
@@ -406,7 +405,7 @@
     background:var(--red); border:1.5px solid #fff;
   }
   .chat-header-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
-  /* ===== Xem trước nhiều file đính kèm khi chat + tiến trình % upload ===== */
+  /* ===== Xem trước nhiều file đính kèm khi chat + tiến trình % upload + huỷ tải ===== */
   .attach-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:8px; }
   .attach-item{
     position:relative; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;
@@ -416,6 +415,7 @@
   .attach-item .attach-remove{
     position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; border:none;
     background:rgba(0,0,0,.62); color:#fff; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    z-index:2;
   }
   .attach-progress{
     position:absolute; left:0; right:0; bottom:0; background:rgba(0,0,0,.55); color:#fff;
@@ -424,9 +424,26 @@
   .attach-progress-bar{
     position:absolute; left:0; bottom:0; height:3px; background:var(--primary); transition:width .15s ease;
   }
+  .attach-item.attach-error{ border-color:var(--red); }
+  .attach-error-badge{
+    position:absolute; left:0; right:0; bottom:0; background:rgba(239,68,68,.85); color:#fff;
+    font-size:9px; font-weight:700; text-align:center; padding:3px 2px;
+  }
+  .attach-retry{
+    position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; border:none;
+    background:rgba(0,0,0,.62); color:#fff; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    z-index:2;
+  }
   .chat-attachments{ display:grid; grid-template-columns:repeat(2, 1fr); gap:5px; margin-bottom:4px; }
   .chat-attachments.single{ grid-template-columns:1fr; }
+  .chat-att-wrap{ position:relative; }
   .chat-attachments img, .chat-attachments video{ width:100%; border-radius:9px; max-height:180px; object-fit:cover; display:block; }
+  .chat-att-download{
+    position:absolute; bottom:6px; right:6px; width:26px; height:26px; border-radius:50%;
+    background:rgba(0,0,0,.6); color:#fff; display:flex; align-items:center; justify-content:center;
+    text-decoration:none; font-size:13px; line-height:1;
+  }
+  .chat-att-download:active{ transform:scale(.92); }
   @media (max-width: 400px){
     .brand-title{ font-size:22px; }
     .tabbtn{ font-size:9px; }
@@ -613,7 +630,7 @@
     </div>
     <div class="card" id="groupChatCard" style="display:none">
       <div class="chat-header-row">
-        <h2 class="title" style="margin:0">HOI NHOM</h2>
+        <h2 class="title" style="margin:0">Group Chat</h2>
         <div style="display:flex;gap:6px">
           <button id="btnDeleteAllMsgs" class="btn btn-danger" style="flex:none;padding:8px 10px;font-size:12px;min-height:auto" title="Xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở">🗑</button>
           <button id="btnLogout" class="btn btn-ghost" style="flex:none;padding:8px 12px;font-size:12px;min-height:auto">Đăng xuất</button>
@@ -626,11 +643,11 @@
       </div>
       <div class="section-label" style="margin-top:0">Đang tham gia</div>
       <div id="onlineUsers" class="online-users"></div>
-      <div class="section-label">Boot đến</div>
+      <div class="section-label">Nhắn tin đến</div>
       <div id="targetRow" class="target-row"></div>
       <div id="chatSeenStatus" class="seen-status"></div>
       <div id="chatMessages" class="chat-messages">
-        <div class="chat-empty">Chưa có tin nào — hãy bắt đầu trò chuyện!</div>
+        <div class="chat-empty">Chưa có tin nhắn nào — hãy bắt đầu trò chuyện!</div>
       </div>
       <div id="chatMediaGrid" class="attach-grid" style="display:none;margin-top:10px"></div>
       <div class="chat-inputbar">
@@ -662,7 +679,7 @@
   <div id="profileModalOverlay" class="modal-overlay">
     <div class="modal-card">
       <button type="button" id="btnCloseProfileModal" class="modal-close">✕</button>
-      <div class="modal-icon" style="padding:0;overflow:hidden">
+      <div class="modal-icon" style="padding:0;overflow:hidden;position:relative">
         <img id="profileModalAvatarPreview" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none">
         <span id="profileModalAvatarFallback">👤</span>
       </div>
@@ -680,7 +697,7 @@
             <rect x="3" y="5.5" width="13" height="13" rx="2"/>
             <path d="m16 10.5 5-2.8v8.6l-5-2.8"/>
           </svg>
-          <span>Chọn ảnh đại diện mới (tùy chọn)</span>
+          <span id="profileAvatarDropzoneLabel">Chọn ảnh đại diện mới (tùy chọn)</span>
         </div>
       </div>
       <div id="profileModalError" class="hint" style="color:var(--red);display:none;margin-top:8px"></div>
@@ -763,6 +780,62 @@ async function copyText(text){
 }
 function escapeHtml(str){
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+/* Nén / thu nhỏ ảnh trước khi tải lên (không đụng vào video) — giúp giảm khả năng
+   tải lên thất bại do file quá nặng (ảnh chụp điện thoại hiện đại thường 5-15MB)
+   và giúp tải lên nhanh, ổn định hơn trên mạng di động. */
+function compressImageFile(file, maxDim, quality){
+  maxDim = maxDim || 1600;
+  quality = quality || 0.85;
+  return new Promise((resolve)=>{
+    if(!file || !file.type || !file.type.startsWith('image/') || file.type === 'image/gif'){
+      resolve(file);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      let { width, height } = img;
+      if(width <= maxDim && height <= maxDim){
+        URL.revokeObjectURL(url);
+        resolve(file);
+        return;
+      }
+      if(width > height){ height = Math.round(height * maxDim / width); width = maxDim; }
+      else{ width = Math.round(width * maxDim / height); height = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(blob=>{
+        URL.revokeObjectURL(url);
+        if(!blob){ resolve(file); return; }
+        const newName = file.name.replace(/\.\w+$/, '') + '.jpg';
+        const newFile = new File([blob], newName, { type: 'image/jpeg' });
+        resolve(newFile.size < file.size ? newFile : file);
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+/* Dịch mã lỗi Firebase Storage phổ biến sang câu tiếng Việt dễ hiểu, để khi
+   tải ảnh/video lên thất bại người dùng biết rõ nguyên nhân thay vì chỉ thấy
+   "thất bại" chung chung. */
+function describeStorageError(err){
+  const code = err && err.code;
+  const map = {
+    'storage/unauthorized': 'Không có quyền tải lên (kiểm tra lại đăng nhập hoặc quy tắc bảo mật Storage).',
+    'storage/canceled': 'Đã huỷ tải lên.',
+    'storage/quota-exceeded': 'Đã vượt dung lượng lưu trữ cho phép.',
+    'storage/unauthenticated': 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.',
+    'storage/retry-limit-exceeded': 'Mạng quá yếu/chập chờn, đã thử lại nhiều lần nhưng không thành công.',
+    'storage/invalid-checksum': 'File bị lỗi trong lúc truyền, vui lòng thử lại.',
+    'storage/server-file-wrong-size': 'File bị lỗi trong lúc truyền, vui lòng thử lại.'
+  };
+  if(code && map[code]) return map[code];
+  if(err && err.message) return err.message;
+  return 'Lỗi không xác định';
 }
 /* =========================================================
    CHUYỂN TAB
@@ -1137,7 +1210,7 @@ document.getElementById('btnRandomShoppe').addEventListener('click', async ()=>{
   showToast(ok ? `Đã copy: ${picked.title}` : 'Copy thất bại');
 });
 /* ---------- Popup thêm/sửa link Shopee (1 hoặc nhiều link cùng lúc) ---------- */
-const shoppeModalOverlay    = document.getElementById('shoppeModalOverlay');
+const shoppeModalOverlay = document.getElementById('shoppeModalOverlay');
 const btnCloseShoppeModal   = document.getElementById('btnCloseShoppeModal');
 const shoppeModalTitle      = document.getElementById('shoppeModalTitle');
 const shoppeModalDesc       = document.getElementById('shoppeModalDesc');
@@ -1561,7 +1634,9 @@ vsBtnBurn.addEventListener('click', async ()=>{
    - Danh sách "đang tham gia" (Realtime Database + onDisconnect)
    - Nhắn tin: gửi lên CẢ NHÓM (mặc định) hoặc chọn 1 người để
      NHẮN RIÊNG (1-1), có thể gửi kèm NHIỀU ảnh/video CÙNG LÚC
-     (upload song song, hiển thị % từng file) cùng với nội dung chữ.
+     (upload song song, hiển thị % từng file, có thể huỷ từng file)
+     cùng với nội dung chữ. Ảnh/video gửi lên đều có nút tải về cho
+     mọi người trong nhóm.
    - Badge số tin/cuộc trò chuyện chưa đọc trên nút tab Group.
    - Nút xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở, có popup
      xác nhận trước khi xóa.
@@ -1614,6 +1689,7 @@ const btnCloseProfileModal     = document.getElementById('btnCloseProfileModal')
 const profileNameInput         = document.getElementById('profileNameInput');
 const profileAvatarInput       = document.getElementById('profileAvatarInput');
 const profileAvatarDropzone    = document.getElementById('profileAvatarDropzone');
+const profileAvatarDropzoneLabel = document.getElementById('profileAvatarDropzoneLabel');
 const profileModalAvatarPreview  = document.getElementById('profileModalAvatarPreview');
 const profileModalAvatarFallback = document.getElementById('profileModalAvatarFallback');
 const profileModalError        = document.getElementById('profileModalError');
@@ -1642,10 +1718,13 @@ let privateReadsData = {};     // {otherUid: lastReadTimestamp}
 
 let groupMediaFiles = [];      // File[] — nhiều file được chọn cùng lúc, gửi song song
 let uploadProgressMap = {};    // {index: percent} — % tải lên của từng file trong lượt gửi hiện tại
+let uploadTasksMap = {};       // {index: firebase UploadTask} — cho phép huỷ tải lên từng file đang gửi
+let uploadErrorMap = {};       // {index: message} — lỗi tải lên riêng cho từng file (nếu có), cho phép thử lại
 
 let userProfile = null;        // {name, photoURL} — hồ sơ hiển thị đang dùng trong nhóm (tùy chỉnh hoặc mặc định Gmail)
 let userProfileRef = null;     // ref groupChat/userProfiles/{uid}
-let profileAvatarFile = null;  // ảnh đại diện mới chọn trong popup hồ sơ (chưa lưu)
+let profileAvatarFile = null;  // ảnh đại diện mới chọn trong popup hồ sơ (chưa lưu, đã nén nếu là ảnh)
+let profileAvatarUploadTask = null; // UploadTask đang chạy khi lưu hồ sơ (cho phép huỷ)
 
 /* ---------- Popup đăng nhập Google nhỏ gọn ---------- */
 function openLoginModal(){
@@ -1671,7 +1750,9 @@ function applyUserProfile(profile){
 }
 function openProfileModal(){
   profileAvatarFile = null;
+  if(profileAvatarUploadTask){ try{ profileAvatarUploadTask.cancel(); }catch(e){} profileAvatarUploadTask = null; }
   profileModalError.style.display = 'none';
+  profileAvatarDropzoneLabel.textContent = 'Chọn ảnh đại diện mới (tùy chọn)';
   profileNameInput.value = (userProfile && userProfile.name) || (currentUser ? getDefaultProfile(currentUser).name : '');
   const previewUrl = (userProfile && userProfile.photoURL) || '';
   if(previewUrl){
@@ -1689,11 +1770,16 @@ btnEditProfile.addEventListener('click', openProfileModal);
 btnCloseProfileModal.addEventListener('click', closeProfileModal);
 profileModalOverlay.addEventListener('click', e=>{ if(e.target === profileModalOverlay) closeProfileModal(); });
 profileAvatarDropzone.addEventListener('click', ()=> profileAvatarInput.click());
-profileAvatarInput.addEventListener('change', ()=>{
+profileAvatarInput.addEventListener('change', async ()=>{
   const file = profileAvatarInput.files && profileAvatarInput.files[0];
+  profileAvatarInput.value = ''; // cho phép chọn lại đúng file đó lần sau
   if(!file) return;
-  profileAvatarFile = file;
-  const url = URL.createObjectURL(file);
+  profileAvatarDropzoneLabel.textContent = 'Đang xử lý ảnh...';
+  // Nén ảnh trước để tránh tải lên thất bại vì file quá nặng (ảnh chụp điện thoại)
+  const compressed = await compressImageFile(file, 800, 0.85);
+  profileAvatarFile = compressed;
+  profileAvatarDropzoneLabel.textContent = 'Đã chọn: ' + compressed.name;
+  const url = URL.createObjectURL(compressed);
   profileModalAvatarPreview.src = url;
   profileModalAvatarPreview.style.display = 'block';
   profileModalAvatarFallback.style.display = 'none';
@@ -1709,7 +1795,7 @@ btnUseDefaultProfile.addEventListener('click', async ()=>{
     showToast('Đã dùng tên và ảnh mặc định từ Gmail');
   }catch(err){
     console.error(err);
-    profileModalError.textContent = 'Không lưu được, vui lòng thử lại';
+    profileModalError.textContent = 'Không lưu được: ' + describeStorageError(err);
     profileModalError.style.display = 'block';
   }finally{
     btnUseDefaultProfile.disabled = false;
@@ -1719,14 +1805,33 @@ btnSaveProfile.addEventListener('click', async ()=>{
   if(!currentUser || !userProfileRef) return;
   const name = profileNameInput.value.trim() || getDefaultProfile(currentUser).name;
   btnSaveProfile.disabled = true;
+  btnUseDefaultProfile.disabled = true;
   profileModalError.style.display = 'none';
   try{
     let photoURL = (userProfile && userProfile.photoURL) || currentUser.photoURL || '';
     if(profileAvatarFile){
       const safeName = profileAvatarFile.name.replace(/[^\w.\-]+/g, '_');
       const path = `group_avatars/${currentUser.uid}/${Date.now()}_${safeName}`;
-      const snap = await gStorage.ref().child(path).put(profileAvatarFile);
-      photoURL = await snap.ref.getDownloadURL();
+      photoURL = await new Promise((resolve, reject)=>{
+        const task = gStorage.ref().child(path).put(profileAvatarFile, {
+          contentType: profileAvatarFile.type || 'image/jpeg'
+        });
+        profileAvatarUploadTask = task;
+        task.on('state_changed',
+          snap=>{
+            const pct = snap.totalBytes ? Math.round((snap.bytesTransferred / snap.totalBytes) * 100) : 0;
+            profileAvatarDropzoneLabel.textContent = `Đang tải ảnh lên: ${pct}%`;
+          },
+          err=>{ profileAvatarUploadTask = null; reject(err); },
+          async ()=>{
+            profileAvatarUploadTask = null;
+            try{
+              const url = await task.snapshot.ref.getDownloadURL();
+              resolve(url);
+            }catch(e){ reject(e); }
+          }
+        );
+      });
     }
     const profile = { name, photoURL };
     await userProfileRef.set(profile);
@@ -1735,10 +1840,12 @@ btnSaveProfile.addEventListener('click', async ()=>{
     showToast('Đã lưu hồ sơ');
   }catch(err){
     console.error(err);
-    profileModalError.textContent = 'Lưu hồ sơ thất bại: ' + (err && err.message ? err.message : 'vui lòng thử lại');
+    profileModalError.textContent = 'Lưu hồ sơ thất bại: ' + describeStorageError(err);
     profileModalError.style.display = 'block';
+    profileAvatarDropzoneLabel.textContent = profileAvatarFile ? ('Đã chọn: ' + profileAvatarFile.name) : 'Chọn ảnh đại diện mới (tùy chọn)';
   }finally{
     btnSaveProfile.disabled = false;
+    btnUseDefaultProfile.disabled = false;
   }
 });
 
@@ -1827,7 +1934,7 @@ gAuth.onAuthStateChanged(user=>{
   activeTarget = null;
   publicMessages = []; publicLastRead = 0;
   privateThreadsData = {}; privateReadsData = {};
-  groupMediaFiles = []; uploadProgressMap = {};
+  groupMediaFiles = []; uploadProgressMap = {}; uploadTasksMap = {}; uploadErrorMap = {};
   userProfile = null; userProfileRef = null; profileAvatarFile = null;
 
   if(user){
@@ -1971,7 +2078,8 @@ targetRowEl.addEventListener('click', e=>{
 });
 function selectTarget(target){
   activeTarget = target;
-  groupMediaFiles = []; uploadProgressMap = {};
+  cancelAllPendingUploads();
+  groupMediaFiles = []; uploadProgressMap = {}; uploadErrorMap = {};
   renderGroupMediaGrid();
   renderTargetRow();
   subscribeActiveThread();
@@ -2055,18 +2163,21 @@ function markAsRead(){
   }
 }
 
-/* ---------- Ghép ảnh/video đính kèm (hỗ trợ nhiều file + dữ liệu tin nhắn cũ 1 file) ---------- */
+/* ---------- Ghép ảnh/video đính kèm + nút tải về cho mọi người trong nhóm ---------- */
 function buildAttachmentsHtml(m){
   const atts = [];
   if(Array.isArray(m.attachments)) atts.push(...m.attachments);
   if(m.mediaURL) atts.push({ url: m.mediaURL, type: m.mediaType });
   if(atts.length === 0) return '';
   const cls = atts.length === 1 ? 'chat-attachments single' : 'chat-attachments';
-  return `<div class="${cls}">${atts.map(a =>
-    a.type === 'video'
-      ? `<video src="${a.url}" controls playsinline></video>`
-      : `<img src="${a.url}" alt="">`
-  ).join('')}</div>`;
+  return `<div class="${cls}">${atts.map(a => `
+    <div class="chat-att-wrap">
+      ${a.type === 'video'
+        ? `<video src="${escapeHtml(a.url)}" controls playsinline></video>`
+        : `<img src="${escapeHtml(a.url)}" alt="">`}
+      <a class="chat-att-download" href="${escapeHtml(a.url)}" download target="_blank" rel="noopener noreferrer" title="Tải về máy">⬇</a>
+    </div>
+  `).join('')}</div>`;
 }
 function renderMessages(){
   if(allMessages.length === 0){
@@ -2146,17 +2257,20 @@ btnDeleteAllMsgs.addEventListener('click', async ()=>{
     showToast('Đã xóa toàn bộ tin nhắn');
   }catch(err){
     console.error(err);
-    showToast('Xóa thất bại: ' + (err && err.message ? err.message : 'vui lòng thử lại'));
+    showToast('Xóa thất bại: ' + describeStorageError(err));
   }
 });
 
-/* ---------- Đính kèm & gửi nhiều file song song, kèm % tiến trình từng file ---------- */
+/* ---------- Đính kèm & gửi nhiều file song song, kèm % tiến trình + huỷ từng file ---------- */
 btnGroupAttach.addEventListener('click', ()=> groupMediaInput.click());
-groupMediaInput.addEventListener('change', ()=>{
+groupMediaInput.addEventListener('change', async ()=>{
   const files = Array.from(groupMediaInput.files || []);
-  if(files.length === 0) return;
-  groupMediaFiles = groupMediaFiles.concat(files);
   groupMediaInput.value = ''; // cho phép chọn lại đúng file đó ở lần sau nếu cần
+  if(files.length === 0) return;
+  // Nén ảnh trước khi thêm vào danh sách để giảm khả năng tải lên thất bại
+  // (video giữ nguyên vì nén video phía trình duyệt không khả thi/quá nặng)
+  const processed = await Promise.all(files.map(f => compressImageFile(f, 1600, 0.85)));
+  groupMediaFiles = groupMediaFiles.concat(processed);
   renderGroupMediaGrid();
 });
 function renderGroupMediaGrid(){
@@ -2171,36 +2285,75 @@ function renderGroupMediaGrid(){
     const isVideo = f.type.startsWith('video/');
     const pct = uploadProgressMap[i];
     const uploading = pct != null;
-    return `<div class="attach-item">
+    const errorMsg = uploadErrorMap[i];
+    let overlay;
+    if(uploading){
+      overlay = `<div class="attach-progress-bar" style="width:${pct}%"></div><div class="attach-progress">${pct}%</div><button type="button" class="attach-remove" data-cancel="${i}" title="Huỷ tải lên">✕</button>`;
+    }else if(errorMsg){
+      overlay = `<button type="button" class="attach-retry" data-retry="${i}" title="Thử tải lại">↻</button><button type="button" class="attach-remove" data-remove="${i}">✕</button><div class="attach-error-badge">Lỗi, bấm ↻</div>`;
+    }else{
+      overlay = `<button type="button" class="attach-remove" data-remove="${i}">✕</button>`;
+    }
+    return `<div class="attach-item ${errorMsg ? 'attach-error' : ''}">
       ${isVideo ? `<video src="${url}" muted playsinline preload="metadata"></video>` : `<img src="${url}" alt="">`}
-      ${uploading
-        ? `<div class="attach-progress-bar" style="width:${pct}%"></div><div class="attach-progress">${pct}%</div>`
-        : `<button type="button" class="attach-remove" data-remove="${i}">✕</button>`}
+      ${overlay}
     </div>`;
   }).join('');
   chatMediaGrid.querySelectorAll('[data-remove]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const i = Number(btn.dataset.remove);
       groupMediaFiles.splice(i, 1);
+      delete uploadErrorMap[i];
       renderGroupMediaGrid();
     });
   });
+  chatMediaGrid.querySelectorAll('[data-cancel]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.cancel);
+      if(uploadTasksMap[i]){
+        try{ uploadTasksMap[i].cancel(); }catch(e){}
+      }
+    });
+  });
+  chatMediaGrid.querySelectorAll('[data-retry]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.retry);
+      delete uploadErrorMap[i];
+      sendGroupMessage(); // gửi lại — chỉ những file còn lỗi/chưa gửi sẽ được xử lý lại
+    });
+  });
 }
-// Tải 1 file lên Storage, báo % tiến trình theo thời gian thực qua state_changed
+function cancelAllPendingUploads(){
+  Object.values(uploadTasksMap).forEach(task=>{ try{ task.cancel(); }catch(e){} });
+  uploadTasksMap = {};
+}
+// Tải 1 file lên Storage, báo % tiến trình theo thời gian thực qua state_changed,
+// lưu lại UploadTask để có thể huỷ giữa chừng qua nút ✕ trên từng file.
 function uploadOneFile(file, uid, index){
+  const isVideo = file.type.startsWith('video/');
+  const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+  const path = `group_uploads/${uid}/${Date.now()}_${index}_${safeName}`;
+  const task = gStorage.ref().child(path).put(file, {
+    contentType: file.type || 'application/octet-stream'
+  });
+  uploadTasksMap[index] = task;
   return new Promise((resolve, reject)=>{
-    const isVideo = file.type.startsWith('video/');
-    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
-    const path = `group_uploads/${uid}/${Date.now()}_${index}_${safeName}`;
-    const task = gStorage.ref().child(path).put(file);
     task.on('state_changed',
       snap=>{
         const pct = snap.totalBytes ? Math.round((snap.bytesTransferred / snap.totalBytes) * 100) : 0;
         uploadProgressMap[index] = pct;
         renderGroupMediaGrid();
       },
-      err=> reject(err),
+      err=>{
+        delete uploadTasksMap[index];
+        if(err && err.code === 'storage/canceled'){
+          reject(Object.assign(new Error('CANCELED'), { canceled:true }));
+        }else{
+          reject(err);
+        }
+      },
       async ()=>{
+        delete uploadTasksMap[index];
         try{
           const url = await task.snapshot.ref.getDownloadURL();
           resolve({ url, type: isVideo ? 'video' : 'image' });
@@ -2215,7 +2368,7 @@ groupMsgInput.addEventListener('keydown', e=>{
     sendGroupMessage();
   }
 });
-btnGroupSend.addEventListener('click', sendGroupMessage);
+btnGroupSend.addEventListener('click', ()=> sendGroupMessage());
 async function sendGroupMessage(){
   if(!currentUser) return;
   const text = groupMsgInput.value.trim();
@@ -2224,14 +2377,38 @@ async function sendGroupMessage(){
   btnGroupSend.disabled = true;
   btnGroupAttach.disabled = true;
   uploadProgressMap = {};
+  uploadErrorMap = {};
   files.forEach((f,i)=>{ uploadProgressMap[i] = 0; });
   renderGroupMediaGrid();
   try{
     // Tải TẤT CẢ file lên song song cùng lúc (không chờ tuần tự), mỗi file tự
-    // cập nhật % riêng; văn bản vẫn được gửi kèm ngay khi upload xong.
-    const attachments = files.length > 0
-      ? await Promise.all(files.map((f, i) => uploadOneFile(f, currentUser.uid, i)))
-      : [];
+    // cập nhật % riêng và có thể bị huỷ riêng lẻ; file lỗi/huỷ không chặn các
+    // file còn lại — dùng allSettled thay vì all để tránh 1 file lỗi làm mất
+    // hết những file đã tải lên thành công.
+    const results = await Promise.allSettled(files.map((f, i) => uploadOneFile(f, currentUser.uid, i)));
+    const attachments = [];
+    const remainingFiles = [];
+    let canceledCount = 0, failedCount = 0;
+    results.forEach((r, i)=>{
+      if(r.status === 'fulfilled'){
+        attachments.push(r.value);
+      }else if(r.reason && r.reason.canceled){
+        canceledCount++;
+      }else{
+        failedCount++;
+        remainingFiles.push(files[i]);
+        uploadErrorMap[remainingFiles.length - 1] = describeStorageError(r.reason);
+      }
+    });
+
+    if(!text && attachments.length === 0){
+      groupMediaFiles = remainingFiles;
+      uploadProgressMap = {};
+      renderGroupMediaGrid();
+      if(canceledCount > 0) showToast('Đã huỷ tải lên');
+      if(failedCount > 0) showToast(`Tải lên thất bại: ${describeStorageError(results.find(r=>r.status==='rejected' && !r.reason.canceled)?.reason)}`);
+      return;
+    }
 
     const p = userProfile || getDefaultProfile(currentUser);
     const baseMsg = {
@@ -2263,12 +2440,15 @@ async function sendGroupMessage(){
     }
 
     groupMsgInput.value = '';
-    groupMediaFiles = [];
+    groupMediaFiles = remainingFiles;
     uploadProgressMap = {};
     renderGroupMediaGrid();
+
+    if(canceledCount > 0) showToast(`Đã gửi — ${canceledCount} tệp bị huỷ tải lên`);
+    else if(failedCount > 0) showToast(`Đã gửi — ${failedCount} tệp tải lên thất bại, có thể bấm ↻ để thử lại`);
   }catch(err){
     console.error(err);
-    showToast('Gửi thất bại: ' + (err && err.message ? err.message : 'vui lòng thử lại'));
+    showToast('Gửi thất bại: ' + describeStorageError(err));
   }finally{
     btnGroupSend.disabled = false;
     btnGroupAttach.disabled = false;
