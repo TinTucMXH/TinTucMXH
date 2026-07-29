@@ -59,7 +59,7 @@
   }
   .tabbar{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(5,1fr);
     gap:6px;
     background:var(--surface);
     border:1px solid var(--border);
@@ -72,6 +72,7 @@
     z-index:20;
   }
   .tabbtn{
+    position:relative;
     display:flex; flex-direction:column; align-items:center; gap:4px;
     border:none; background:transparent;
     padding:9px 2px 8px;
@@ -88,6 +89,13 @@
     background:linear-gradient(135deg, var(--primary), var(--primary-dark));
     color:#fff;
     box-shadow:0 6px 16px rgba(79,70,229,.32);
+  }
+  .tab-badge{
+    position:absolute; top:1px; right:8px;
+    background:var(--red); color:#fff; font-size:9px; font-weight:800;
+    min-width:16px; height:16px; line-height:16px; border-radius:999px;
+    display:none; align-items:center; justify-content:center; padding:0 4px;
+    border:1.5px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.2);
   }
   .page{ display:none; animation:fade .18s ease; }
   .page.active{ display:block; }
@@ -285,9 +293,143 @@
     padding:7px 12px; border-radius:999px; max-width:100%;
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer; border:none;
   }
+  /* ===== TAB GROUP CHAT ===== */
+  .online-users{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .online-chip{
+    display:flex; align-items:center; gap:5px; background:#fbfbfe; border:1px solid var(--border);
+    border-radius:999px; padding:4px 10px 4px 6px; font-size:11.5px; font-weight:600; color:var(--ink);
+  }
+  .online-dot{ width:8px; height:8px; border-radius:50%; background:var(--green); flex-shrink:0; box-shadow:0 0 0 2px rgba(22,163,74,.18); }
+  .online-avatar{ width:18px; height:18px; border-radius:50%; object-fit:cover; background:var(--border); }
+  .seen-status{ font-size:11px; color:var(--muted); text-align:right; margin-bottom:6px; font-weight:600; min-height:14px; }
+  .chat-messages{
+    display:flex; flex-direction:column; gap:10px; max-height:420px; overflow-y:auto; padding:6px 2px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .chat-empty{ text-align:center; color:var(--muted); font-size:12.5px; padding:24px 8px; }
+  .chat-msg{ display:flex; gap:8px; align-items:flex-end; }
+  .chat-msg.me{ flex-direction:row-reverse; }
+  .chat-avatar{ width:26px; height:26px; border-radius:50%; object-fit:cover; flex-shrink:0; background:var(--border); }
+  .chat-bubble-wrap{ max-width:75%; display:flex; flex-direction:column; }
+  .chat-msg.me .chat-bubble-wrap{ align-items:flex-end; }
+  .chat-name{ font-size:10.5px; font-weight:700; color:var(--primary); margin-bottom:2px; }
+  .chat-bubble{
+    background:#fbfbfe; border:1px solid var(--border); border-radius:14px; padding:8px 11px;
+  }
+  .chat-msg.me .chat-bubble{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  .chat-text{ font-size:14px; line-height:1.45; white-space:pre-wrap; word-break:break-word; }
+  .chat-media{ max-width:100%; border-radius:10px; display:block; margin-bottom:4px; max-height:220px; object-fit:cover; }
+  .chat-time{ font-size:9.5px; color:var(--muted); margin-top:2px; }
+  .chat-media-preview{
+    display:flex; align-items:center; gap:8px; background:#fbfbfe; border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:8px; margin-bottom:8px;
+  }
+  .chat-media-preview img, .chat-media-preview video{ width:40px; height:40px; object-fit:cover; border-radius:8px; flex-shrink:0; }
+  .media-preview-name{ flex:1; font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .chat-inputbar{ display:flex; align-items:flex-end; gap:8px; margin-top:4px; }
+  .chat-attach-btn, .chat-send-btn{
+    flex-shrink:0; width:42px; height:42px; border-radius:50%; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:17px;
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .chat-attach-btn:active, .chat-send-btn:active{ transform:scale(.92); }
+  .chat-attach-btn{ background:var(--primary-light); color:var(--primary-dark); }
+  .chat-send-btn{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; }
+  .chat-send-btn:disabled{ opacity:.5; pointer-events:none; }
+  #groupMsgInput{
+    flex:1; border:1px solid var(--border); background:#fbfbfe; border-radius:20px; padding:10px 14px;
+    font-size:15px; font-family:inherit; resize:none; max-height:100px; min-height:42px; line-height:1.4;
+  }
+  #groupMsgInput:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+  .group-user-badge{
+    display:flex; align-items:center; gap:8px; background:var(--primary-light); border-radius:var(--radius-sm);
+    padding:8px 10px; margin-bottom:10px;
+  }
+  .group-user-badge img{ width:28px; height:28px; border-radius:50%; object-fit:cover; }
+  .group-user-badge .name{ font-size:12.5px; font-weight:700; color:var(--navy); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* ===== Popup đăng nhập nhỏ & popup xác nhận dùng chung ===== */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(20,22,44,.55);
+    display:none; align-items:center; justify-content:center; z-index:100;
+    padding:20px; backdrop-filter:blur(2px);
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-card{
+    background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-md);
+    width:100%; max-width:320px; padding:22px 20px 20px; position:relative;
+    animation:modalPop .18s ease;
+  }
+  @keyframes modalPop{ from{opacity:0; transform:scale(.92) translateY(6px);} to{opacity:1; transform:none;} }
+  .modal-close{
+    position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%;
+    border:none; background:var(--primary-light); color:var(--primary-dark); font-size:13px; cursor:pointer;
+  }
+  .modal-icon{
+    width:46px; height:46px; border-radius:14px; background:linear-gradient(135deg, var(--primary), var(--primary-dark));
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; font-weight:800; margin-bottom:12px;
+  }
+  .modal-title{ font-family:'Fraunces', serif; font-style:italic; font-weight:600; font-size:17px; color:var(--navy); margin:0 0 6px; }
+  .modal-desc{ font-size:12.5px; color:var(--muted); line-height:1.55; margin:0 0 16px; }
+  .google-btn{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    width:100%; border:1px solid var(--border); background:#fff; color:var(--ink);
+    padding:12px 14px; border-radius:var(--radius-sm); font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .google-btn:active{ transform:scale(.98); }
+  .google-btn:disabled{ opacity:.6; pointer-events:none; }
+  .google-btn svg{ width:18px; height:18px; flex-shrink:0; }
+  .modal-note{ font-size:11px; color:var(--muted); margin-top:12px; line-height:1.5; text-align:center; }
+  .confirm-card{ max-width:300px; text-align:center; }
+  .confirm-icon{
+    width:44px; height:44px; border-radius:50%; background:#fde8ea; color:var(--red);
+    display:flex; align-items:center; justify-content:center; font-size:20px; margin:0 auto 12px;
+  }
+  .confirm-title{ font-weight:800; font-size:15px; color:var(--navy); margin:0 0 6px; }
+  .confirm-desc{ font-size:12.5px; color:var(--muted); line-height:1.55; margin:0 0 18px; }
+  .confirm-btnrow{ display:flex; gap:8px; }
+  /* ===== Chọn đối tượng nhắn tin (cả nhóm / nhắn riêng) ===== */
+  .target-row{
+    display:flex; gap:8px; overflow-x:auto; padding:2px 2px 10px; -webkit-overflow-scrolling:touch;
+  }
+  .target-row::-webkit-scrollbar{ display:none; }
+  .target-chip{
+    flex-shrink:0; display:flex; align-items:center; gap:6px; border:1px solid var(--border);
+    background:#fbfbfe; border-radius:999px; padding:6px 12px 6px 6px; font-size:12px; font-weight:700;
+    color:var(--ink); cursor:pointer; position:relative; white-space:nowrap;
+  }
+  .target-chip.everyone{ padding-left:12px; }
+  .target-chip img{ width:20px; height:20px; border-radius:50%; object-fit:cover; background:var(--border); }
+  .target-chip.active{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border-color:transparent; }
+  .target-chip .t-dot{ width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
+  .target-chip .t-unread{
+    position:absolute; top:-3px; right:-3px; width:14px; height:14px; border-radius:50%;
+    background:var(--red); border:1.5px solid #fff;
+  }
+  .chat-header-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+  /* ===== Xem trước nhiều file đính kèm khi chat + tiến trình % upload ===== */
+  .attach-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:8px; }
+  .attach-item{
+    position:relative; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;
+    background:#000; aspect-ratio:1/1;
+  }
+  .attach-item img, .attach-item video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .attach-item .attach-remove{
+    position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; border:none;
+    background:rgba(0,0,0,.62); color:#fff; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .attach-progress{
+    position:absolute; left:0; right:0; bottom:0; background:rgba(0,0,0,.55); color:#fff;
+    font-size:9.5px; font-weight:700; text-align:center; padding:3px 2px;
+  }
+  .attach-progress-bar{
+    position:absolute; left:0; bottom:0; height:3px; background:var(--primary); transition:width .15s ease;
+  }
+  .chat-attachments{ display:grid; grid-template-columns:repeat(2, 1fr); gap:5px; margin-bottom:4px; }
+  .chat-attachments.single{ grid-template-columns:1fr; }
+  .chat-attachments img, .chat-attachments video{ width:100%; border-radius:9px; max-height:180px; object-fit:cover; display:block; }
   @media (max-width: 400px){
     .brand-title{ font-size:22px; }
-    .tabbtn{ font-size:9.5px; }
+    .tabbtn{ font-size:9px; }
     .hashtag-btn{ padding:12px 4px; }
     .hashtag-btn .num{ font-size:17px; }
   }
@@ -330,6 +472,16 @@
         <path d="M6.5 10.5h3M6.5 13.5h5M12.5 10.5h5"/>
       </svg>
       Vietsub
+    </button>
+    <button class="tabbtn" data-tab="group">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19v-1a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v1"/>
+        <circle cx="9" cy="8" r="3"/>
+        <path d="M15.5 5.5a3 3 0 0 1 0 5.8"/>
+        <path d="M18 14.2a4 4 0 0 1 2.5 3.7V19"/>
+      </svg>
+      Group
+      <span id="groupBadge" class="tab-badge">0</span>
     </button>
   </div>
   <!-- ================= TAB 1: CONTENT ================= -->
@@ -448,6 +600,72 @@
       </div>
     </div>
   </section>
+  <!-- ================= TAB 5: GROUP CHAT ================= -->
+  <section id="page-group" class="page">
+    <div class="card" id="groupLoginCard">
+      <h2 class="title">Group Chat</h2>
+      <p class="hint">Đăng nhập bằng Gmail để tham gia nhóm, xem ai đang online, gửi tin nhắn (kèm nhiều ảnh/video cùng lúc) cho cả nhóm hoặc nhắn riêng cho từng người.</p>
+      <button id="btnGoogleLogin" class="btn btn-primary btn-full">Đăng nhập bằng Google</button>
+      <div id="groupLoginError" class="hint" style="color:var(--red);display:none;margin-top:10px"></div>
+    </div>
+    <div class="card" id="groupChatCard" style="display:none">
+      <div class="chat-header-row">
+        <h2 class="title" style="margin:0">Group Chat</h2>
+        <div style="display:flex;gap:6px">
+          <button id="btnDeleteAllMsgs" class="btn btn-danger" style="flex:none;padding:8px 10px;font-size:12px;min-height:auto" title="Xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở">🗑</button>
+          <button id="btnLogout" class="btn btn-ghost" style="flex:none;padding:8px 12px;font-size:12px;min-height:auto">Đăng xuất</button>
+        </div>
+      </div>
+      <div class="group-user-badge">
+        <img id="myAvatar" src="" alt="">
+        <span class="name" id="myName"></span>
+      </div>
+      <div class="section-label" style="margin-top:0">Đang tham gia</div>
+      <div id="onlineUsers" class="online-users"></div>
+      <div class="section-label">Nhắn tin đến</div>
+      <div id="targetRow" class="target-row"></div>
+      <div id="chatSeenStatus" class="seen-status"></div>
+      <div id="chatMessages" class="chat-messages">
+        <div class="chat-empty">Chưa có tin nhắn nào — hãy bắt đầu trò chuyện!</div>
+      </div>
+      <div id="chatMediaGrid" class="attach-grid" style="display:none;margin-top:10px"></div>
+      <div class="chat-inputbar">
+        <input type="file" id="groupMediaInput" accept="image/*,video/*" multiple style="display:none">
+        <button id="btnGroupAttach" class="chat-attach-btn" title="Đính kèm ảnh/video (chọn được nhiều file)">📎</button>
+        <textarea id="groupMsgInput" rows="1" placeholder="Nhập tin nhắn..."></textarea>
+        <button id="btnGroupSend" class="chat-send-btn" title="Gửi">➤</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ POPUP ĐĂNG NHẬP GOOGLE (nhỏ gọn) ============ -->
+  <div id="loginModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" id="btnCloseLoginModal" class="modal-close">✕</button>
+      <div class="modal-icon">G</div>
+      <h3 class="modal-title">Tham gia Group Chat</h3>
+      <p class="modal-desc">Đăng nhập bằng tài khoản Gmail để vào nhóm, xem ai đang online và trò chuyện.</p>
+      <button type="button" id="btnGoogleLoginModal" class="google-btn">
+        <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6 29.5 4 24 4c-7.5 0-14 4.2-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.1-2 13.7-5.4l-6.3-5.3C29.4 34.9 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.5l-6.5 5C9.9 39.8 16.4 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.3 5.3C41.2 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+        Tiếp tục với Google
+      </button>
+      <div id="loginModalError" class="hint" style="color:var(--red);display:none;margin-top:12px"></div>
+      <p class="modal-note">Trên điện thoại, một cửa sổ Google nhỏ sẽ mở ra — hãy chọn tài khoản rồi quay lại đây, ứng dụng sẽ tự động vào nhóm.</p>
+    </div>
+  </div>
+
+  <!-- ============ POPUP XÁC NHẬN DÙNG CHUNG (ví dụ: xóa tin nhắn) ============ -->
+  <div id="confirmModalOverlay" class="modal-overlay">
+    <div class="modal-card confirm-card">
+      <div class="confirm-icon">⚠️</div>
+      <h3 class="confirm-title" id="confirmModalTitle">Bạn có chắc chắn?</h3>
+      <p class="confirm-desc" id="confirmModalDesc"></p>
+      <div class="confirm-btnrow">
+        <button type="button" id="btnConfirmCancel" class="btn btn-ghost">Hủy</button>
+        <button type="button" id="btnConfirmOk" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
 </div>
 <div id="toast"></div>
 <!-- Thư viện OCR (nhận diện chữ trên khung hình) -->
@@ -455,6 +673,11 @@
 <!-- Thư viện xử lý video ngay trên trình duyệt (ghép phụ đề, xuất mp4) -->
 <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+<!-- Firebase (Auth + Realtime Database + Storage) cho tab Group -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script>
 /* =========================================================
    TIỆN ÍCH DÙNG CHUNG
@@ -496,6 +719,9 @@ document.querySelectorAll('.tabbtn').forEach(btn=>{
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('page-' + btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab === 'group' && typeof updateUnreadDisplay === 'function'){
+      updateUnreadDisplay();
+    }
   });
 });
 /* =========================================================
@@ -512,7 +738,7 @@ const syllableRegex = new RegExp(
 const WHITELIST = new Set([
   "shopee","zalo","facebook","tiktok","content","share","copy","hastag","hashtag",
   "sale","freeship","voucher","live","livestream","ok","wifi","admin","app","web",
-  "google","youtube","instagram","link","boy","girl","ib","inbox","vietsub"
+  "google","youtube","instagram","link","boy","girl","ib","inbox","vietsub","group","gmail"
 ]);
 function isValidVietnameseWord(word){
   const lower = word.toLowerCase();
@@ -894,7 +1120,7 @@ function vsSeekTo(video, t){
     video.currentTime = Math.max(0, Math.min(t, (video.duration || t) - 0.05));
   });
 }
-function vsNorm(s){ return (s || ').replace(/\s+/g,').trim(); }
+function vsNorm(s){ return (s || '').replace(/\s+/g,' ').trim(); }
 function vsFmtTime(t){
   const m = Math.floor(t/60), s = Math.floor(t%60);
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
@@ -1050,8 +1276,8 @@ async function vsTranslateCues(cues){
     })
   });
   const data = await response.json();
-  const text = (data.content || []).map(b => b.text || ').join(').trim();
-  const clean = text.replace(/^```json/i,').replace(/^```/,').replace(/```$/,'').trim();
+  const text = (data.content || []).map(b => b.text || '').join('').trim();
+  const clean = text.replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
   const arr = JSON.parse(clean);
   if(!Array.isArray(arr)) throw new Error('Kết quả dịch không hợp lệ');
   return arr;
@@ -1156,6 +1382,633 @@ vsBtnBurn.addEventListener('click', async ()=>{
     vsBtnBurn.disabled = false;
   }
 });
+/* =========================================================
+   TAB GROUP: Chat nhóm realtime bằng Firebase
+   - Đăng nhập Google qua popup nhỏ, có phương án dự phòng chuyển
+     sang redirect khi popup không hoạt động được trên trình duyệt
+     di động (Safari/Chrome iOS, WebView Android...) — đây là lý do
+     phổ biến khiến "đăng nhập xong nhưng không vào được chat" trên
+     điện thoại.
+   - Danh sách "đang tham gia" (Realtime Database + onDisconnect)
+   - Nhắn tin: gửi lên CẢ NHÓM (mặc định) hoặc chọn 1 người để
+     NHẮN RIÊNG (1-1), có thể gửi kèm NHIỀU ảnh/video CÙNG LÚC
+     (upload song song, hiển thị % từng file) cùng với nội dung chữ.
+   - Badge số tin/cuộc trò chuyện chưa đọc trên nút tab Group.
+   - Nút xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở, có popup
+     xác nhận trước khi xóa.
+========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyDIo90Fw0iGUVp5WXXw9tjIm1VkxTChc9k",
+  authDomain: "tintucmxh-groupchat.firebaseapp.com",
+  databaseURL: "https://tintucmxh-groupchat-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tintucmxh-groupchat",
+  storageBucket: "tintucmxh-groupchat.firebasestorage.app",
+  messagingSenderId: "1092111729472",
+  appId: "1:1092111729472:web:1cc0788db76c79bde9f0a5",
+  measurementId: "G-K2P8F34F0T"
+};
+firebase.initializeApp(firebaseConfig);
+const gAuth = firebase.auth();
+const gDb = firebase.database();
+const gStorage = firebase.storage();
+
+const groupLoginCard   = document.getElementById('groupLoginCard');
+const groupChatCard    = document.getElementById('groupChatCard');
+const groupLoginError  = document.getElementById('groupLoginError');
+const btnGoogleLogin   = document.getElementById('btnGoogleLogin');
+const btnLogout        = document.getElementById('btnLogout');
+const btnDeleteAllMsgs = document.getElementById('btnDeleteAllMsgs');
+const myAvatarEl       = document.getElementById('myAvatar');
+const myNameEl         = document.getElementById('myName');
+const onlineUsersEl    = document.getElementById('onlineUsers');
+const targetRowEl      = document.getElementById('targetRow');
+const chatMessagesEl   = document.getElementById('chatMessages');
+const chatSeenStatusEl = document.getElementById('chatSeenStatus');
+const groupMsgInput    = document.getElementById('groupMsgInput');
+const btnGroupSend     = document.getElementById('btnGroupSend');
+const btnGroupAttach   = document.getElementById('btnGroupAttach');
+const groupMediaInput  = document.getElementById('groupMediaInput');
+const chatMediaGrid    = document.getElementById('chatMediaGrid');
+const groupBadge       = document.getElementById('groupBadge');
+
+const loginModalOverlay  = document.getElementById('loginModalOverlay');
+const btnCloseLoginModal = document.getElementById('btnCloseLoginModal');
+const btnGoogleLoginModal= document.getElementById('btnGoogleLoginModal');
+const loginModalError    = document.getElementById('loginModalError');
+
+const confirmModalOverlay = document.getElementById('confirmModalOverlay');
+const confirmModalTitle   = document.getElementById('confirmModalTitle');
+const confirmModalDesc    = document.getElementById('confirmModalDesc');
+const btnConfirmCancel    = document.getElementById('btnConfirmCancel');
+const btnConfirmOk        = document.getElementById('btnConfirmOk');
+
+const messagesRef = gDb.ref('groupChat/messages');
+const presenceListRef = gDb.ref('groupChat/presence');
+
+let currentUser = null;
+let presenceRef = null;
+let connectedRef = null;
+let allMessages = [];          // tin nhắn của cuộc trò chuyện đang mở (nhóm chung hoặc riêng)
+let lastReadTimestamp = 0;     // mốc đã đọc của cuộc trò chuyện đang mở
+
+let activeTarget = null;       // null = Cả nhóm; hoặc {uid, name, photoURL} = đang nhắn riêng với ai
+let activeThreadRef = null;    // ref tin nhắn riêng đang lắng nghe (chỉ dùng khi activeTarget != null)
+let activeReadRef = null;      // ref "đã đọc" của cuộc trò chuyện riêng đang mở
+
+let publicMessages = [];       // luôn lắng nghe song song để tính badge kể cả khi đang xem 1 cuộc riêng
+let publicLastRead = 0;
+let publicReadRef = null;
+
+let onlinePresenceData = {};   // {uid: {name, photoURL, lastSeen}}
+let privateThreadsRef = null;
+let privateThreadsData = {};   // {otherUid: {name, photoURL, lastMessage, lastTimestamp, lastSenderUid}}
+let privateReadsAllRef = null;
+let privateReadsData = {};     // {otherUid: lastReadTimestamp}
+
+let groupMediaFiles = [];      // File[] — nhiều file được chọn cùng lúc, gửi song song
+let uploadProgressMap = {};    // {index: percent} — % tải lên của từng file trong lượt gửi hiện tại
+
+/* ---------- Tiện ích: popup xác nhận dùng chung ---------- */
+let confirmResolver = null;
+function showConfirmDialog(title, desc, okLabel){
+  confirmModalTitle.textContent = title;
+  confirmModalDesc.textContent = desc;
+  btnConfirmOk.textContent = okLabel || 'Xóa';
+  confirmModalOverlay.classList.add('show');
+  return new Promise(resolve=>{ confirmResolver = resolve; });
+}
+function closeConfirmDialog(result){
+  confirmModalOverlay.classList.remove('show');
+  if(confirmResolver){ confirmResolver(result); confirmResolver = null; }
+}
+btnConfirmCancel.addEventListener('click', ()=> closeConfirmDialog(false));
+btnConfirmOk.addEventListener('click', ()=> closeConfirmDialog(true));
+confirmModalOverlay.addEventListener('click', e=>{ if(e.target === confirmModalOverlay) closeConfirmDialog(false); });
+
+/* ---------- Popup đăng nhập Google nhỏ gọn ---------- */
+function openLoginModal(){
+  loginModalError.style.display = 'none';
+  loginModalOverlay.classList.add('show');
+}
+function closeLoginModal(){ loginModalOverlay.classList.remove('show'); }
+btnGoogleLogin.addEventListener('click', openLoginModal);
+btnCloseLoginModal.addEventListener('click', closeLoginModal);
+loginModalOverlay.addEventListener('click', e=>{ if(e.target === loginModalOverlay) closeLoginModal(); });
+
+/* ---------- Đăng nhập Google: chống lỗi "đăng nhập xong nhưng
+   không vào được chat" trên trình duyệt di động ----------
+   Nguyên nhân phổ biến nhất là trình duyệt di động (đặc biệt Safari
+   trên iOS, hoặc WebView trong app) chặn IndexedDB/localStorage của
+   khung popup vì lý do chống theo dõi, khiến Firebase không lưu lại
+   được phiên đăng nhập dù popup Google đã thành công. Cách khắc phục:
+   1) Luôn set persistence tường minh trước khi đăng nhập, có phương
+      án dự phòng (LOCAL -> SESSION -> NONE) nếu bước trước bị chặn.
+   2) Nếu signInWithPopup lỗi kiểu bị chặn/không hỗ trợ trên di động,
+      tự động chuyển sang signInWithRedirect và xử lý kết quả bằng
+      getRedirectResult() ngay khi trang tải lại. */
+const persistenceReady = (async ()=>{
+  try{ await gAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); }
+  catch(e1){
+    try{ await gAuth.setPersistence(firebase.auth.Auth.Persistence.SESSION); }
+    catch(e2){
+      try{ await gAuth.setPersistence(firebase.auth.Auth.Persistence.NONE); }
+      catch(e3){ console.error('Không thiết lập được persistence cho đăng nhập:', e3); }
+    }
+  }
+})();
+function isMobileUA(){
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+}
+async function doGoogleSignIn(){
+  await persistenceReady;
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  btnGoogleLoginModal.disabled = true;
+  loginModalError.style.display = 'none';
+  try{
+    await gAuth.signInWithPopup(provider);
+    closeLoginModal();
+  }catch(err){
+    console.error('Lỗi đăng nhập (popup):', err);
+    const code = err && err.code;
+    const fallbackCodes = [
+      'auth/popup-blocked',
+      'auth/operation-not-supported-in-this-environment',
+      'auth/web-storage-unsupported',
+      'auth/popup-closed-by-user',
+      'auth/cancelled-popup-request'
+    ];
+    if(isMobileUA() && fallbackCodes.includes(code)){
+      try{
+        await gAuth.signInWithRedirect(provider);
+        return; // trang sẽ chuyển hướng sang Google rồi quay lại — xử lý ở getRedirectResult() bên dưới
+      }catch(err2){
+        console.error('Lỗi đăng nhập (redirect):', err2);
+        loginModalError.textContent = 'Đăng nhập thất bại: ' + (err2 && err2.message ? err2.message : 'vui lòng thử lại');
+        loginModalError.style.display = 'block';
+      }
+    }else{
+      loginModalError.textContent = 'Đăng nhập thất bại: ' + (err && err.message ? err.message : 'vui lòng thử lại');
+      loginModalError.style.display = 'block';
+    }
+  }finally{
+    btnGoogleLoginModal.disabled = false;
+  }
+}
+btnGoogleLoginModal.addEventListener('click', doGoogleSignIn);
+// Xử lý kết quả khi quay lại từ luồng redirect (trường hợp dự phòng ở trên)
+gAuth.getRedirectResult().catch(err=>{
+  console.error('Lỗi xử lý kết quả đăng nhập redirect:', err);
+  if(err && err.code){
+    groupLoginError.textContent = 'Đăng nhập thất bại: ' + (err.message || '');
+    groupLoginError.style.display = 'block';
+  }
+});
+
+btnLogout.addEventListener('click', ()=> gAuth.signOut());
+
+gAuth.onAuthStateChanged(user=>{
+  teardownPresence();
+  messagesRef.off('value');
+  if(publicReadRef) publicReadRef.off('value');
+  if(activeThreadRef){ activeThreadRef.off('value'); activeThreadRef = null; }
+  if(activeReadRef){ activeReadRef.off('value'); activeReadRef = null; }
+  if(privateThreadsRef) privateThreadsRef.off('value');
+  if(privateReadsAllRef) privateReadsAllRef.off('value');
+
+  currentUser = user;
+  activeTarget = null;
+  publicMessages = []; publicLastRead = 0;
+  privateThreadsData = {}; privateReadsData = {};
+  groupMediaFiles = []; uploadProgressMap = {};
+
+  if(user){
+    groupLoginCard.style.display = 'none';
+    groupChatCard.style.display = 'block';
+    closeLoginModal();
+    myAvatarEl.src = user.photoURL || '';
+    myNameEl.textContent = user.displayName || user.email || 'Ẩn danh';
+    setupPresence(user);
+    setupPublicListeners();
+    setupPrivateThreadsListener(user.uid);
+    setupPrivateReadsAllListener(user.uid);
+    subscribeActiveThread();
+    renderTargetRow();
+    renderGroupMediaGrid();
+  }else{
+    groupLoginCard.style.display = 'block';
+    groupChatCard.style.display = 'none';
+    onlineUsersEl.innerHTML = '';
+    targetRowEl.innerHTML = '';
+    chatMessagesEl.innerHTML = '<div class="chat-empty">Chưa có tin nhắn nào — hãy bắt đầu trò chuyện!</div>';
+    groupBadge.style.display = 'none';
+    allMessages = [];
+    lastReadTimestamp = 0;
+  }
+});
+
+function setupPresence(user){
+  const uid = user.uid;
+  presenceRef = gDb.ref('groupChat/presence/' + uid);
+  connectedRef = gDb.ref('.info/connected');
+  connectedRef.on('value', snap=>{
+    if(snap.val() === true){
+      presenceRef.onDisconnect().remove();
+      presenceRef.set({
+        name: user.displayName || user.email || 'Ẩn danh',
+        photoURL: user.photoURL || '',
+        lastSeen: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+  });
+  presenceListRef.on('value', snap=>{
+    renderOnlineUsers(snap.val() || {});
+  });
+}
+function teardownPresence(){
+  if(connectedRef){ connectedRef.off('value'); connectedRef = null; }
+  presenceListRef.off('value');
+  if(presenceRef){
+    presenceRef.onDisconnect().cancel();
+    presenceRef.remove();
+    presenceRef = null;
+  }
+  onlinePresenceData = {};
+}
+function renderOnlineUsers(data){
+  onlinePresenceData = data || {};
+  const uids = Object.keys(onlinePresenceData);
+  if(uids.length === 0){ onlineUsersEl.innerHTML = '<div class="hint" style="margin:0">Chưa có ai đang tham gia</div>'; }
+  else{
+    onlineUsersEl.innerHTML = uids.map(uid=>{
+      const u = onlinePresenceData[uid];
+      const isMe = currentUser && uid === currentUser.uid;
+      return `<div class="online-chip">
+        <span class="online-dot"></span>
+        <img class="online-avatar" src="${u.photoURL || ''}" onerror="this.style.display='none'">
+        <span>${escapeHtml(u.name || 'Ẩn danh')}${isMe ? ' (Bạn)' : ''}</span>
+      </div>`;
+    }).join('');
+  }
+  renderTargetRow();
+}
+
+/* ---------- Chọn đối tượng nhắn tin: Cả nhóm / Nhắn riêng 1-1 ---------- */
+function pairKey(a, b){ return [a, b].sort().join('_'); }
+
+function renderTargetRow(){
+  if(!currentUser) return;
+  const others = {};
+  Object.keys(onlinePresenceData).forEach(uid=>{
+    if(uid === currentUser.uid) return;
+    const u = onlinePresenceData[uid];
+    others[uid] = { uid, name: u.name, photoURL: u.photoURL, online: true };
+  });
+  Object.keys(privateThreadsData).forEach(uid=>{
+    if(uid === currentUser.uid) return;
+    if(!others[uid]){
+      const t = privateThreadsData[uid];
+      others[uid] = { uid, name: t.name, photoURL: t.photoURL, online: false };
+    }
+  });
+  const list = Object.values(others).sort((a,b)=>{
+    const ta = (privateThreadsData[a.uid] && privateThreadsData[a.uid].lastTimestamp) || 0;
+    const tb = (privateThreadsData[b.uid] && privateThreadsData[b.uid].lastTimestamp) || 0;
+    return tb - ta;
+  });
+
+  let html = `<div class="target-chip everyone ${!activeTarget ? 'active' : ''}" data-target="">🌐 Cả nhóm</div>`;
+  html += list.map(u=>{
+    const isActive = activeTarget && activeTarget.uid === u.uid;
+    const t = privateThreadsData[u.uid];
+    const hasUnread = t && t.lastSenderUid !== currentUser.uid &&
+      (t.lastTimestamp || 0) > (privateReadsData[u.uid] || 0);
+    return `<div class="target-chip ${isActive?'active':''}" data-target="${u.uid}" data-name="${escapeHtml(u.name||'Ẩn danh')}" data-photo="${escapeHtml(u.photoURL||'')}">
+      ${u.online ? '<span class="t-dot"></span>' : ''}
+      <img src="${u.photoURL||''}" onerror="this.style.display='none'">
+      <span>${escapeHtml(u.name || 'Ẩn danh')}</span>
+      ${hasUnread ? '<span class="t-unread"></span>' : ''}
+    </div>`;
+  }).join('');
+  targetRowEl.innerHTML = html;
+  if(list.length === 0){
+    targetRowEl.insertAdjacentHTML('beforeend', '<div class="hint" style="margin:0;white-space:normal">Chưa có ai khác để nhắn riêng — mọi người cần online ít nhất 1 lần.</div>');
+  }
+}
+targetRowEl.addEventListener('click', e=>{
+  const chip = e.target.closest('.target-chip');
+  if(!chip) return;
+  const uid = chip.dataset.target;
+  if(!uid){
+    selectTarget(null);
+  }else{
+    selectTarget({ uid, name: chip.dataset.name, photoURL: chip.dataset.photo });
+  }
+});
+function selectTarget(target){
+  activeTarget = target;
+  groupMediaFiles = []; uploadProgressMap = {};
+  renderGroupMediaGrid();
+  renderTargetRow();
+  subscribeActiveThread();
+}
+
+/* ---------- Lắng nghe nhóm chung (luôn bật, phục vụ cả hiển thị lẫn tính badge) ---------- */
+function setupPublicListeners(){
+  messagesRef.limitToLast(200).on('value', snap=>{
+    const val = snap.val() || {};
+    publicMessages = Object.keys(val)
+      .map(k => ({ id:k, ...val[k] }))
+      .sort((a,b)=> (a.timestamp||0) - (b.timestamp||0));
+    if(!activeTarget){ allMessages = publicMessages; renderMessages(); }
+    updateUnreadDisplay();
+  });
+  publicReadRef = gDb.ref('groupChat/reads/' + currentUser.uid);
+  publicReadRef.on('value', snap=>{
+    publicLastRead = (snap.val() && snap.val().lastRead) || 0;
+    if(!activeTarget) lastReadTimestamp = publicLastRead;
+    updateUnreadDisplay();
+  });
+}
+/* ---------- Danh sách các cuộc nhắn riêng đã từng có (kể cả khi người kia offline) ---------- */
+function setupPrivateThreadsListener(uid){
+  privateThreadsRef = gDb.ref('groupChat/privateThreads/' + uid);
+  privateThreadsRef.on('value', snap=>{
+    privateThreadsData = snap.val() || {};
+    renderTargetRow();
+    updateUnreadDisplay();
+  });
+}
+function setupPrivateReadsAllListener(uid){
+  privateReadsAllRef = gDb.ref('groupChat/privateReads/' + uid);
+  privateReadsAllRef.on('value', snap=>{
+    const val = snap.val() || {};
+    privateReadsData = {};
+    Object.keys(val).forEach(otherUid=>{ privateReadsData[otherUid] = (val[otherUid] && val[otherUid].lastRead) || 0; });
+    renderTargetRow();
+    updateUnreadDisplay();
+  });
+}
+/* ---------- Chuyển đổi cuộc trò chuyện đang xem: Cả nhóm <-> 1 người cụ thể ---------- */
+function subscribeActiveThread(){
+  if(activeThreadRef){ activeThreadRef.off('value'); activeThreadRef = null; }
+  if(activeReadRef){ activeReadRef.off('value'); activeReadRef = null; }
+  if(!activeTarget){
+    allMessages = publicMessages;
+    lastReadTimestamp = publicLastRead;
+    renderMessages();
+    updateUnreadDisplay();
+    return;
+  }
+  const key = pairKey(currentUser.uid, activeTarget.uid);
+  activeThreadRef = gDb.ref('groupChat/privateMessages/' + key);
+  activeThreadRef.limitToLast(200).on('value', snap=>{
+    const val = snap.val() || {};
+    allMessages = Object.keys(val)
+      .map(k => ({ id:k, ...val[k] }))
+      .sort((a,b)=> (a.timestamp||0) - (b.timestamp||0));
+    renderMessages();
+    updateUnreadDisplay();
+  });
+  activeReadRef = gDb.ref('groupChat/privateReads/' + currentUser.uid + '/' + activeTarget.uid);
+  activeReadRef.on('value', snap=>{
+    lastReadTimestamp = (snap.val() && snap.val().lastRead) || 0;
+    updateUnreadDisplay();
+  });
+}
+function currentThreadRef(){
+  if(activeTarget){
+    return gDb.ref('groupChat/privateMessages/' + pairKey(currentUser.uid, activeTarget.uid));
+  }
+  return messagesRef;
+}
+function markAsRead(){
+  if(!currentUser) return;
+  if(activeTarget){
+    gDb.ref('groupChat/privateReads/' + currentUser.uid + '/' + activeTarget.uid).set({ lastRead: firebase.database.ServerValue.TIMESTAMP });
+  }else{
+    gDb.ref('groupChat/reads/' + currentUser.uid).set({ lastRead: firebase.database.ServerValue.TIMESTAMP });
+  }
+}
+
+/* ---------- Ghép ảnh/video đính kèm (hỗ trợ nhiều file + dữ liệu tin nhắn cũ 1 file) ---------- */
+function buildAttachmentsHtml(m){
+  const atts = [];
+  if(Array.isArray(m.attachments)) atts.push(...m.attachments);
+  if(m.mediaURL) atts.push({ url: m.mediaURL, type: m.mediaType });
+  if(atts.length === 0) return '';
+  const cls = atts.length === 1 ? 'chat-attachments single' : 'chat-attachments';
+  return `<div class="${cls}">${atts.map(a =>
+    a.type === 'video'
+      ? `<video src="${a.url}" controls playsinline></video>`
+      : `<img src="${a.url}" alt="">`
+  ).join('')}</div>`;
+}
+function renderMessages(){
+  if(allMessages.length === 0){
+    const emptyMsg = activeTarget
+      ? `Chưa có tin nhắn riêng nào với ${escapeHtml(activeTarget.name || 'Ẩn danh')} — hãy bắt đầu trò chuyện!`
+      : 'Chưa có tin nhắn nào — hãy bắt đầu trò chuyện!';
+    chatMessagesEl.innerHTML = `<div class="chat-empty">${emptyMsg}</div>`;
+    return;
+  }
+  chatMessagesEl.innerHTML = allMessages.map(m=>{
+    const isMe = currentUser && m.uid === currentUser.uid;
+    const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}) : '';
+    return `<div class="chat-msg ${isMe ? 'me' : 'other'}">
+      ${!isMe ? `<img class="chat-avatar" src="${m.photoURL || ''}" onerror="this.style.display='none'">` : ''}
+      <div class="chat-bubble-wrap">
+        ${!isMe ? `<div class="chat-name">${escapeHtml(m.name || 'Ẩn danh')}</div>` : ''}
+        <div class="chat-bubble">
+          ${buildAttachmentsHtml(m)}
+          ${m.text ? `<div class="chat-text">${escapeHtml(m.text)}</div>` : ''}
+        </div>
+        <div class="chat-time">${time}</div>
+      </div>
+    </div>`;
+  }).join('');
+  chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+}
+function updateUnreadDisplay(){
+  if(!currentUser) return;
+  const onGroupTab = document.getElementById('page-group').classList.contains('active');
+  const activeUnread = allMessages.filter(m => m.uid !== currentUser.uid && (m.timestamp||0) > lastReadTimestamp);
+
+  if(onGroupTab){
+    chatSeenStatusEl.textContent = 'Đã xem';
+    if(activeUnread.length > 0) markAsRead();
+  }else{
+    chatSeenStatusEl.textContent = '';
+  }
+
+  // Tổng số chưa đọc hiển thị trên badge của tab Group = tin chưa đọc ở nhóm chung
+  // (nếu không đang mở đúng nhóm chung) + số cuộc nhắn riêng đang có tin chưa đọc
+  let total = 0;
+  const viewingPublic = onGroupTab && !activeTarget;
+  if(!viewingPublic){
+    total += publicMessages.filter(m => m.uid !== currentUser.uid && (m.timestamp||0) > publicLastRead).length;
+  }
+  Object.keys(privateThreadsData).forEach(uid=>{
+    const t = privateThreadsData[uid];
+    if(!t || t.lastSenderUid === currentUser.uid) return;
+    const isOpenNow = onGroupTab && activeTarget && activeTarget.uid === uid;
+    if(isOpenNow) return;
+    const read = privateReadsData[uid] || 0;
+    if((t.lastTimestamp || 0) > read) total += 1;
+  });
+
+  if(total > 0){
+    groupBadge.style.display = 'flex';
+    groupBadge.textContent = total > 99 ? '99+' : String(total);
+  }else{
+    groupBadge.style.display = 'none';
+  }
+}
+
+/* ---------- Xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở (có xác nhận) ---------- */
+btnDeleteAllMsgs.addEventListener('click', async ()=>{
+  if(!currentUser) return;
+  const label = activeTarget
+    ? `cuộc trò chuyện riêng với ${activeTarget.name || 'Ẩn danh'}`
+    : 'TOÀN BỘ nhóm chung';
+  const ok = await showConfirmDialog(
+    'Xóa toàn bộ tin nhắn?',
+    `Bạn có chắc chắn muốn xóa toàn bộ tin nhắn trong ${label}? Hành động này không thể hoàn tác.`,
+    'Xóa tất cả'
+  );
+  if(!ok) return;
+  try{
+    await currentThreadRef().remove();
+    showToast('Đã xóa toàn bộ tin nhắn');
+  }catch(err){
+    console.error(err);
+    showToast('Xóa thất bại: ' + (err && err.message ? err.message : 'vui lòng thử lại'));
+  }
+});
+
+/* ---------- Đính kèm & gửi nhiều file song song, kèm % tiến trình từng file ---------- */
+btnGroupAttach.addEventListener('click', ()=> groupMediaInput.click());
+groupMediaInput.addEventListener('change', ()=>{
+  const files = Array.from(groupMediaInput.files || []);
+  if(files.length === 0) return;
+  groupMediaFiles = groupMediaFiles.concat(files);
+  groupMediaInput.value = ''; // cho phép chọn lại đúng file đó ở lần sau nếu cần
+  renderGroupMediaGrid();
+});
+function renderGroupMediaGrid(){
+  if(groupMediaFiles.length === 0){
+    chatMediaGrid.style.display = 'none';
+    chatMediaGrid.innerHTML = '';
+    return;
+  }
+  chatMediaGrid.style.display = 'grid';
+  chatMediaGrid.innerHTML = groupMediaFiles.map((f, i)=>{
+    const url = URL.createObjectURL(f);
+    const isVideo = f.type.startsWith('video/');
+    const pct = uploadProgressMap[i];
+    const uploading = pct != null;
+    return `<div class="attach-item">
+      ${isVideo ? `<video src="${url}" muted playsinline preload="metadata"></video>` : `<img src="${url}" alt="">`}
+      ${uploading
+        ? `<div class="attach-progress-bar" style="width:${pct}%"></div><div class="attach-progress">${pct}%</div>`
+        : `<button type="button" class="attach-remove" data-remove="${i}">✕</button>`}
+    </div>`;
+  }).join('');
+  chatMediaGrid.querySelectorAll('[data-remove]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.remove);
+      groupMediaFiles.splice(i, 1);
+      renderGroupMediaGrid();
+    });
+  });
+}
+// Tải 1 file lên Storage, báo % tiến trình theo thời gian thực qua state_changed
+function uploadOneFile(file, uid, index){
+  return new Promise((resolve, reject)=>{
+    const isVideo = file.type.startsWith('video/');
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = `group_uploads/${uid}/${Date.now()}_${index}_${safeName}`;
+    const task = gStorage.ref().child(path).put(file);
+    task.on('state_changed',
+      snap=>{
+        const pct = snap.totalBytes ? Math.round((snap.bytesTransferred / snap.totalBytes) * 100) : 0;
+        uploadProgressMap[index] = pct;
+        renderGroupMediaGrid();
+      },
+      err=> reject(err),
+      async ()=>{
+        try{
+          const url = await task.snapshot.ref.getDownloadURL();
+          resolve({ url, type: isVideo ? 'video' : 'image' });
+        }catch(e){ reject(e); }
+      }
+    );
+  });
+}
+groupMsgInput.addEventListener('keydown', e=>{
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendGroupMessage();
+  }
+});
+btnGroupSend.addEventListener('click', sendGroupMessage);
+async function sendGroupMessage(){
+  if(!currentUser) return;
+  const text = groupMsgInput.value.trim();
+  const files = groupMediaFiles.slice();
+  if(!text && files.length === 0) return;
+  btnGroupSend.disabled = true;
+  btnGroupAttach.disabled = true;
+  uploadProgressMap = {};
+  files.forEach((f,i)=>{ uploadProgressMap[i] = 0; });
+  renderGroupMediaGrid();
+  try{
+    // Tải TẤT CẢ file lên song song cùng lúc (không chờ tuần tự), mỗi file tự
+    // cập nhật % riêng; văn bản vẫn được gửi kèm ngay khi upload xong.
+    const attachments = files.length > 0
+      ? await Promise.all(files.map((f, i) => uploadOneFile(f, currentUser.uid, i)))
+      : [];
+
+    const baseMsg = {
+      uid: currentUser.uid,
+      name: currentUser.displayName || currentUser.email || 'Ẩn danh',
+      photoURL: currentUser.photoURL || '',
+      text: text,
+      attachments: attachments,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    if(activeTarget){
+      const key = pairKey(currentUser.uid, activeTarget.uid);
+      const newMsgKey = gDb.ref('groupChat/privateMessages/' + key).push().key;
+      const preview = text || (attachments.length ? `[${attachments.length} tệp đính kèm]` : '');
+      const updates = {};
+      updates['groupChat/privateMessages/' + key + '/' + newMsgKey] = { ...baseMsg, toUid: activeTarget.uid };
+      updates['groupChat/privateThreads/' + currentUser.uid + '/' + activeTarget.uid] = {
+        name: activeTarget.name || 'Ẩn danh', photoURL: activeTarget.photoURL || '',
+        lastMessage: preview, lastTimestamp: firebase.database.ServerValue.TIMESTAMP, lastSenderUid: currentUser.uid
+      };
+      updates['groupChat/privateThreads/' + activeTarget.uid + '/' + currentUser.uid] = {
+        name: baseMsg.name, photoURL: baseMsg.photoURL,
+        lastMessage: preview, lastTimestamp: firebase.database.ServerValue.TIMESTAMP, lastSenderUid: currentUser.uid
+      };
+      await gDb.ref().update(updates);
+    }else{
+      await messagesRef.push(baseMsg);
+    }
+
+    groupMsgInput.value = '';
+    groupMediaFiles = [];
+    uploadProgressMap = {};
+    renderGroupMediaGrid();
+  }catch(err){
+    console.error(err);
+    showToast('Gửi thất bại: ' + (err && err.message ? err.message : 'vui lòng thử lại'));
+  }finally{
+    btnGroupSend.disabled = false;
+    btnGroupAttach.disabled = false;
+  }
+}
 </script>
 </body>
 </html>
