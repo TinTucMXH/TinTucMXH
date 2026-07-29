@@ -529,9 +529,12 @@
   <section id="page-shoppe" class="page">
     <div class="card">
       <h2 class="title">Link Shopee</h2>
-      <p class="hint">Mỗi dòng nhập theo dạng <strong>Tiêu đề | Link</strong>. Bấm "Chia sẻ ngẫu nhiên" để copy random 1 link kèm tiêu đề mỗi lần bấm.</p>
+      <p class="hint">Mỗi dòng nhập theo dạng <strong>Tiêu đề | Link</strong>. Bấm "Chia sẻ ngẫu nhiên" để copy random 1 link kèm tiêu đề mỗi lần bấm. Bấm nút bút chì trên từng link để sửa, hoặc bấm "Thêm link mới" để mở cửa sổ nhập một hoặc nhiều link cùng lúc.</p>
       <div class="btnrow" style="margin-top:0">
         <button class="btn btn-primary btn-full" id="btnRandomShoppe">Chia sẻ ngẫu nhiên (Copy)</button>
+      </div>
+      <div class="btnrow">
+        <button class="btn btn-dark btn-full" id="btnAddShoppeLink">➕ Thêm link mới</button>
       </div>
       <div class="section-label">Danh sách link (mỗi dòng: Tiêu đề | Link)</div>
       <div class="field" style="margin-top:0">
@@ -619,6 +622,7 @@
       <div class="group-user-badge">
         <img id="myAvatar" src="" alt="">
         <span class="name" id="myName"></span>
+        <button type="button" id="btnEditProfile" class="edit-pin" style="position:static;flex-shrink:0" title="Sửa tên hiển thị / ảnh đại diện">✎</button>
       </div>
       <div class="section-label" style="margin-top:0">Đang tham gia</div>
       <div id="onlineUsers" class="online-users"></div>
@@ -651,6 +655,56 @@
       </button>
       <div id="loginModalError" class="hint" style="color:var(--red);display:none;margin-top:12px"></div>
       <p class="modal-note">Trên điện thoại, một cửa sổ Google nhỏ sẽ mở ra — hãy chọn tài khoản rồi quay lại đây, ứng dụng sẽ tự động vào nhóm.</p>
+    </div>
+  </div>
+
+  <!-- ============ POPUP HỒ SƠ NHÓM (tên hiển thị + ảnh đại diện) ============ -->
+  <div id="profileModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" id="btnCloseProfileModal" class="modal-close">✕</button>
+      <div class="modal-icon" style="padding:0;overflow:hidden">
+        <img id="profileModalAvatarPreview" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none">
+        <span id="profileModalAvatarFallback">👤</span>
+      </div>
+      <h3 class="modal-title">Hồ sơ của bạn trong nhóm</h3>
+      <p class="modal-desc">Đặt tên hiển thị và ảnh đại diện riêng cho nhóm chat, hoặc bỏ qua để dùng mặc định theo tài khoản Gmail.</p>
+      <div class="field" style="margin-top:0">
+        <label>Tên hiển thị</label>
+        <input type="text" id="profileNameInput" maxlength="40" placeholder="Tên hiển thị trong nhóm">
+      </div>
+      <div class="field">
+        <label>Ảnh đại diện</label>
+        <input type="file" id="profileAvatarInput" accept="image/*" style="display:none">
+        <div class="dropzone" id="profileAvatarDropzone" style="padding:12px">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5.5" width="13" height="13" rx="2"/>
+            <path d="m16 10.5 5-2.8v8.6l-5-2.8"/>
+          </svg>
+          <span>Chọn ảnh đại diện mới (tùy chọn)</span>
+        </div>
+      </div>
+      <div id="profileModalError" class="hint" style="color:var(--red);display:none;margin-top:8px"></div>
+      <div class="btnrow">
+        <button type="button" class="btn btn-primary" id="btnSaveProfile">Lưu hồ sơ</button>
+        <button type="button" class="btn btn-ghost" id="btnUseDefaultProfile">Dùng mặc định Gmail</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ POPUP QUẢN LÝ LINK SHOPEE (thêm/sửa 1 hoặc nhiều link) ============ -->
+  <div id="shoppeModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" id="btnCloseShoppeModal" class="modal-close">✕</button>
+      <div class="modal-icon">🛒</div>
+      <h3 class="modal-title" id="shoppeModalTitle">Thêm link Shopee</h3>
+      <p class="modal-desc" id="shoppeModalDesc">Mỗi dòng theo dạng Tiêu đề | Link. Có thể nhập nhiều dòng cùng lúc để thêm nhiều link.</p>
+      <div class="field" style="margin-top:0">
+        <textarea id="shoppeModalTextarea" style="min-height:140px" placeholder="Tiêu đề sản phẩm | https://s.shopee.vn/..."></textarea>
+      </div>
+      <div class="btnrow">
+        <button type="button" class="btn btn-primary" id="btnSaveShoppeModal">Lưu</button>
+        <button type="button" class="btn btn-danger" id="btnDeleteShoppeModal" style="display:none">Xóa link này</button>
+      </div>
     </div>
   </div>
 
@@ -724,6 +778,29 @@ document.querySelectorAll('.tabbtn').forEach(btn=>{
     }
   });
 });
+/* =========================================================
+   POPUP XÁC NHẬN DÙNG CHUNG (dùng lại cho nhiều tính năng: xóa tin nhắn, xóa link...)
+========================================================= */
+const confirmModalOverlay = document.getElementById('confirmModalOverlay');
+const confirmModalTitle   = document.getElementById('confirmModalTitle');
+const confirmModalDesc    = document.getElementById('confirmModalDesc');
+const btnConfirmCancel    = document.getElementById('btnConfirmCancel');
+const btnConfirmOk        = document.getElementById('btnConfirmOk');
+let confirmResolver = null;
+function showConfirmDialog(title, desc, okLabel){
+  confirmModalTitle.textContent = title;
+  confirmModalDesc.textContent = desc;
+  btnConfirmOk.textContent = okLabel || 'Xóa';
+  confirmModalOverlay.classList.add('show');
+  return new Promise(resolve=>{ confirmResolver = resolve; });
+}
+function closeConfirmDialog(result){
+  confirmModalOverlay.classList.remove('show');
+  if(confirmResolver){ confirmResolver(result); confirmResolver = null; }
+}
+btnConfirmCancel.addEventListener('click', ()=> closeConfirmDialog(false));
+btnConfirmOk.addEventListener('click', ()=> closeConfirmDialog(true));
+confirmModalOverlay.addEventListener('click', e=>{ if(e.target === confirmModalOverlay) closeConfirmDialog(false); });
 /* =========================================================
    TAB CONTENT: kiểm tra chính tả tiếng Việt cơ bản
 ========================================================= */
@@ -1036,9 +1113,14 @@ function getShoppeLinks(){
 function renderShoppeList(pickedIndex = -1){
   const items = getShoppeLinks();
   shoppeListbox.innerHTML = items.map((item, i) => `
-    <div class="listbox-item ${i===pickedIndex?'picked':''}">
-      <span class="item-title">${escapeHtml(item.title)}</span>
-      <span class="item-link">${escapeHtml(item.link)}</span>
+    <div class="listbox-item ${i===pickedIndex?'picked':''}" data-index="${i}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div style="min-width:0;flex:1">
+          <span class="item-title">${escapeHtml(item.title)}</span>
+          <span class="item-link">${escapeHtml(item.link)}</span>
+        </div>
+        <button type="button" class="edit-pin" data-edit-index="${i}" title="Sửa link này" style="position:static;flex-shrink:0">✎</button>
+      </div>
     </div>
   `).join('') || '<div class="listbox-item">Chưa có link nào</div>';
 }
@@ -1053,6 +1135,89 @@ document.getElementById('btnRandomShoppe').addEventListener('click', async ()=>{
   const textToCopy = `${picked.title}\n${picked.link}`;
   const ok = await copyText(textToCopy);
   showToast(ok ? `Đã copy: ${picked.title}` : 'Copy thất bại');
+});
+/* ---------- Popup thêm/sửa link Shopee (1 hoặc nhiều link cùng lúc) ---------- */
+const shoppeModalOverlay    = document.getElementById('shoppeModalOverlay');
+const btnCloseShoppeModal   = document.getElementById('btnCloseShoppeModal');
+const shoppeModalTitle      = document.getElementById('shoppeModalTitle');
+const shoppeModalDesc       = document.getElementById('shoppeModalDesc');
+const shoppeModalTextarea   = document.getElementById('shoppeModalTextarea');
+const btnSaveShoppeModal    = document.getElementById('btnSaveShoppeModal');
+const btnDeleteShoppeModal  = document.getElementById('btnDeleteShoppeModal');
+const btnAddShoppeLink      = document.getElementById('btnAddShoppeLink');
+let shoppeEditIndex = -1; // -1 = đang thêm mới (nhiều dòng), >=0 = đang sửa đúng 1 link ở vị trí này
+
+function openShoppeModal(mode, index){
+  if(mode === 'edit'){
+    const items = getShoppeLinks();
+    const item = items[index];
+    shoppeEditIndex = index;
+    shoppeModalTitle.textContent = 'Sửa link Shopee';
+    shoppeModalDesc.textContent = 'Sửa tiêu đề hoặc link bên dưới, dạng Tiêu đề | Link, rồi bấm Lưu.';
+    shoppeModalTextarea.value = item ? `${item.title} | ${item.link}` : '';
+    btnDeleteShoppeModal.style.display = 'block';
+  }else{
+    shoppeEditIndex = -1;
+    shoppeModalTitle.textContent = 'Thêm link Shopee';
+    shoppeModalDesc.textContent = 'Mỗi dòng theo dạng Tiêu đề | Link. Có thể nhập nhiều dòng cùng lúc để thêm nhiều link.';
+    shoppeModalTextarea.value = '';
+    btnDeleteShoppeModal.style.display = 'none';
+  }
+  shoppeModalOverlay.classList.add('show');
+  setTimeout(()=> shoppeModalTextarea.focus(), 60);
+}
+function closeShoppeModal(){ shoppeModalOverlay.classList.remove('show'); }
+btnAddShoppeLink.addEventListener('click', ()=> openShoppeModal('add'));
+btnCloseShoppeModal.addEventListener('click', closeShoppeModal);
+shoppeModalOverlay.addEventListener('click', e=>{ if(e.target === shoppeModalOverlay) closeShoppeModal(); });
+shoppeListbox.addEventListener('click', e=>{
+  const editBtn = e.target.closest('[data-edit-index]');
+  if(!editBtn) return;
+  openShoppeModal('edit', Number(editBtn.dataset.editIndex));
+});
+// Vì getShoppeLinks() bỏ qua các dòng trống trong ô textarea gốc, cần map lại
+// đúng chỉ số dòng thật trong textarea ứng với 1 link đã lọc (dùng khi sửa/xóa).
+function mapShoppeIndexToRawLine(index){
+  const rawLines = shoppeLinksInput.value.split('\n');
+  const nonEmptyIdx = [];
+  rawLines.forEach((l, idx)=>{ if(l.trim()) nonEmptyIdx.push(idx); });
+  return { rawLines, targetIdx: nonEmptyIdx[index] };
+}
+btnSaveShoppeModal.addEventListener('click', ()=>{
+  const lines = shoppeModalTextarea.value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(lines.length === 0){ showToast('Chưa nhập nội dung'); return; }
+  if(shoppeEditIndex >= 0){
+    const { rawLines, targetIdx } = mapShoppeIndexToRawLine(shoppeEditIndex);
+    if(targetIdx != null){
+      rawLines[targetIdx] = lines[0];
+      shoppeLinksInput.value = rawLines.join('\n');
+    }
+  }else{
+    const existing = shoppeLinksInput.value.trim();
+    shoppeLinksInput.value = existing ? existing + '\n' + lines.join('\n') : lines.join('\n');
+  }
+  saveShoppeLinks();
+  renderShoppeList();
+  closeShoppeModal();
+  showToast(shoppeEditIndex >= 0 ? 'Đã lưu link' : `Đã thêm ${lines.length} link mới`);
+});
+btnDeleteShoppeModal.addEventListener('click', async ()=>{
+  if(shoppeEditIndex < 0) return;
+  const ok = await showConfirmDialog(
+    'Xóa link này?',
+    'Bạn có chắc chắn muốn xóa link này khỏi danh sách? Hành động này không thể hoàn tác.',
+    'Xóa'
+  );
+  if(!ok) return;
+  const { rawLines, targetIdx } = mapShoppeIndexToRawLine(shoppeEditIndex);
+  if(targetIdx != null){
+    rawLines.splice(targetIdx, 1);
+    shoppeLinksInput.value = rawLines.join('\n');
+    saveShoppeLinks();
+    renderShoppeList();
+  }
+  closeShoppeModal();
+  showToast('Đã xóa link');
 });
 /* =========================================================
    TAB VIETSUB
@@ -1389,6 +1554,10 @@ vsBtnBurn.addEventListener('click', async ()=>{
      di động (Safari/Chrome iOS, WebView Android...) — đây là lý do
      phổ biến khiến "đăng nhập xong nhưng không vào được chat" trên
      điện thoại.
+   - Sau khi đăng nhập thành công, cho phép đặt TÊN HIỂN THỊ và ẢNH
+     ĐẠI DIỆN riêng cho nhóm (lưu ở groupChat/userProfiles/{uid}),
+     hoặc bấm "Dùng mặc định Gmail" để lấy tên/ảnh từ tài khoản Google.
+     Có thể mở lại bất cứ lúc nào bằng nút ✎ cạnh tên trong khung chat.
    - Danh sách "đang tham gia" (Realtime Database + onDisconnect)
    - Nhắn tin: gửi lên CẢ NHÓM (mặc định) hoặc chọn 1 người để
      NHẮN RIÊNG (1-1), có thể gửi kèm NHIỀU ảnh/video CÙNG LÚC
@@ -1411,6 +1580,8 @@ firebase.initializeApp(firebaseConfig);
 const gAuth = firebase.auth();
 const gDb = firebase.database();
 const gStorage = firebase.storage();
+const messagesRef = gDb.ref('groupChat/messages');
+const presenceListRef = gDb.ref('groupChat/presence');
 
 const groupLoginCard   = document.getElementById('groupLoginCard');
 const groupChatCard    = document.getElementById('groupChatCard');
@@ -1430,20 +1601,24 @@ const btnGroupAttach   = document.getElementById('btnGroupAttach');
 const groupMediaInput  = document.getElementById('groupMediaInput');
 const chatMediaGrid    = document.getElementById('chatMediaGrid');
 const groupBadge       = document.getElementById('groupBadge');
+const btnEditProfile   = document.getElementById('btnEditProfile');
 
 const loginModalOverlay  = document.getElementById('loginModalOverlay');
 const btnCloseLoginModal = document.getElementById('btnCloseLoginModal');
 const btnGoogleLoginModal= document.getElementById('btnGoogleLoginModal');
 const loginModalError    = document.getElementById('loginModalError');
 
-const confirmModalOverlay = document.getElementById('confirmModalOverlay');
-const confirmModalTitle   = document.getElementById('confirmModalTitle');
-const confirmModalDesc    = document.getElementById('confirmModalDesc');
-const btnConfirmCancel    = document.getElementById('btnConfirmCancel');
-const btnConfirmOk        = document.getElementById('btnConfirmOk');
-
-const messagesRef = gDb.ref('groupChat/messages');
-const presenceListRef = gDb.ref('groupChat/presence');
+/* ---------- Popup hồ sơ nhóm: tên hiển thị + ảnh đại diện riêng ---------- */
+const profileModalOverlay      = document.getElementById('profileModalOverlay');
+const btnCloseProfileModal     = document.getElementById('btnCloseProfileModal');
+const profileNameInput         = document.getElementById('profileNameInput');
+const profileAvatarInput       = document.getElementById('profileAvatarInput');
+const profileAvatarDropzone    = document.getElementById('profileAvatarDropzone');
+const profileModalAvatarPreview  = document.getElementById('profileModalAvatarPreview');
+const profileModalAvatarFallback = document.getElementById('profileModalAvatarFallback');
+const profileModalError        = document.getElementById('profileModalError');
+const btnSaveProfile           = document.getElementById('btnSaveProfile');
+const btnUseDefaultProfile     = document.getElementById('btnUseDefaultProfile');
 
 let currentUser = null;
 let presenceRef = null;
@@ -1468,22 +1643,9 @@ let privateReadsData = {};     // {otherUid: lastReadTimestamp}
 let groupMediaFiles = [];      // File[] — nhiều file được chọn cùng lúc, gửi song song
 let uploadProgressMap = {};    // {index: percent} — % tải lên của từng file trong lượt gửi hiện tại
 
-/* ---------- Tiện ích: popup xác nhận dùng chung ---------- */
-let confirmResolver = null;
-function showConfirmDialog(title, desc, okLabel){
-  confirmModalTitle.textContent = title;
-  confirmModalDesc.textContent = desc;
-  btnConfirmOk.textContent = okLabel || 'Xóa';
-  confirmModalOverlay.classList.add('show');
-  return new Promise(resolve=>{ confirmResolver = resolve; });
-}
-function closeConfirmDialog(result){
-  confirmModalOverlay.classList.remove('show');
-  if(confirmResolver){ confirmResolver(result); confirmResolver = null; }
-}
-btnConfirmCancel.addEventListener('click', ()=> closeConfirmDialog(false));
-btnConfirmOk.addEventListener('click', ()=> closeConfirmDialog(true));
-confirmModalOverlay.addEventListener('click', e=>{ if(e.target === confirmModalOverlay) closeConfirmDialog(false); });
+let userProfile = null;        // {name, photoURL} — hồ sơ hiển thị đang dùng trong nhóm (tùy chỉnh hoặc mặc định Gmail)
+let userProfileRef = null;     // ref groupChat/userProfiles/{uid}
+let profileAvatarFile = null;  // ảnh đại diện mới chọn trong popup hồ sơ (chưa lưu)
 
 /* ---------- Popup đăng nhập Google nhỏ gọn ---------- */
 function openLoginModal(){
@@ -1494,6 +1656,91 @@ function closeLoginModal(){ loginModalOverlay.classList.remove('show'); }
 btnGoogleLogin.addEventListener('click', openLoginModal);
 btnCloseLoginModal.addEventListener('click', closeLoginModal);
 loginModalOverlay.addEventListener('click', e=>{ if(e.target === loginModalOverlay) closeLoginModal(); });
+
+/* ---------- Popup hồ sơ nhóm: mở/đóng, chọn ảnh, lưu hoặc dùng mặc định ---------- */
+function getDefaultProfile(user){
+  return { name: user.displayName || user.email || 'Ẩn danh', photoURL: user.photoURL || '' };
+}
+function applyUserProfile(profile){
+  userProfile = profile;
+  myAvatarEl.src = profile.photoURL || '';
+  myNameEl.textContent = profile.name || 'Ẩn danh';
+  if(presenceRef){
+    presenceRef.update({ name: profile.name || 'Ẩn danh', photoURL: profile.photoURL || '' }).catch(()=>{});
+  }
+}
+function openProfileModal(){
+  profileAvatarFile = null;
+  profileModalError.style.display = 'none';
+  profileNameInput.value = (userProfile && userProfile.name) || (currentUser ? getDefaultProfile(currentUser).name : '');
+  const previewUrl = (userProfile && userProfile.photoURL) || '';
+  if(previewUrl){
+    profileModalAvatarPreview.src = previewUrl;
+    profileModalAvatarPreview.style.display = 'block';
+    profileModalAvatarFallback.style.display = 'none';
+  }else{
+    profileModalAvatarPreview.style.display = 'none';
+    profileModalAvatarFallback.style.display = 'block';
+  }
+  profileModalOverlay.classList.add('show');
+}
+function closeProfileModal(){ profileModalOverlay.classList.remove('show'); }
+btnEditProfile.addEventListener('click', openProfileModal);
+btnCloseProfileModal.addEventListener('click', closeProfileModal);
+profileModalOverlay.addEventListener('click', e=>{ if(e.target === profileModalOverlay) closeProfileModal(); });
+profileAvatarDropzone.addEventListener('click', ()=> profileAvatarInput.click());
+profileAvatarInput.addEventListener('change', ()=>{
+  const file = profileAvatarInput.files && profileAvatarInput.files[0];
+  if(!file) return;
+  profileAvatarFile = file;
+  const url = URL.createObjectURL(file);
+  profileModalAvatarPreview.src = url;
+  profileModalAvatarPreview.style.display = 'block';
+  profileModalAvatarFallback.style.display = 'none';
+});
+btnUseDefaultProfile.addEventListener('click', async ()=>{
+  if(!currentUser || !userProfileRef) return;
+  btnUseDefaultProfile.disabled = true;
+  try{
+    const def = getDefaultProfile(currentUser);
+    await userProfileRef.set(def);
+    applyUserProfile(def);
+    closeProfileModal();
+    showToast('Đã dùng tên và ảnh mặc định từ Gmail');
+  }catch(err){
+    console.error(err);
+    profileModalError.textContent = 'Không lưu được, vui lòng thử lại';
+    profileModalError.style.display = 'block';
+  }finally{
+    btnUseDefaultProfile.disabled = false;
+  }
+});
+btnSaveProfile.addEventListener('click', async ()=>{
+  if(!currentUser || !userProfileRef) return;
+  const name = profileNameInput.value.trim() || getDefaultProfile(currentUser).name;
+  btnSaveProfile.disabled = true;
+  profileModalError.style.display = 'none';
+  try{
+    let photoURL = (userProfile && userProfile.photoURL) || currentUser.photoURL || '';
+    if(profileAvatarFile){
+      const safeName = profileAvatarFile.name.replace(/[^\w.\-]+/g, '_');
+      const path = `group_avatars/${currentUser.uid}/${Date.now()}_${safeName}`;
+      const snap = await gStorage.ref().child(path).put(profileAvatarFile);
+      photoURL = await snap.ref.getDownloadURL();
+    }
+    const profile = { name, photoURL };
+    await userProfileRef.set(profile);
+    applyUserProfile(profile);
+    closeProfileModal();
+    showToast('Đã lưu hồ sơ');
+  }catch(err){
+    console.error(err);
+    profileModalError.textContent = 'Lưu hồ sơ thất bại: ' + (err && err.message ? err.message : 'vui lòng thử lại');
+    profileModalError.style.display = 'block';
+  }finally{
+    btnSaveProfile.disabled = false;
+  }
+});
 
 /* ---------- Đăng nhập Google: chống lỗi "đăng nhập xong nhưng
    không vào được chat" trên trình duyệt di động ----------
@@ -1581,20 +1828,36 @@ gAuth.onAuthStateChanged(user=>{
   publicMessages = []; publicLastRead = 0;
   privateThreadsData = {}; privateReadsData = {};
   groupMediaFiles = []; uploadProgressMap = {};
+  userProfile = null; userProfileRef = null; profileAvatarFile = null;
 
   if(user){
     groupLoginCard.style.display = 'none';
     groupChatCard.style.display = 'block';
     closeLoginModal();
-    myAvatarEl.src = user.photoURL || '';
-    myNameEl.textContent = user.displayName || user.email || 'Ẩn danh';
-    setupPresence(user);
     setupPublicListeners();
     setupPrivateThreadsListener(user.uid);
     setupPrivateReadsAllListener(user.uid);
     subscribeActiveThread();
     renderTargetRow();
     renderGroupMediaGrid();
+
+    // Đọc hồ sơ đã tùy chỉnh trước đó (nếu có); nếu chưa từng đặt, dùng mặc định
+    // Gmail và mời người dùng tùy chỉnh tên/ảnh ngay sau khi đăng nhập lần đầu.
+    userProfileRef = gDb.ref('groupChat/userProfiles/' + user.uid);
+    userProfileRef.once('value').then(snap=>{
+      const saved = snap.val();
+      if(saved && (saved.name || saved.photoURL)){
+        applyUserProfile(saved);
+      }else{
+        applyUserProfile(getDefaultProfile(user));
+        openProfileModal();
+      }
+      setupPresence(user);
+    }).catch(err=>{
+      console.error('Không đọc được hồ sơ nhóm:', err);
+      applyUserProfile(getDefaultProfile(user));
+      setupPresence(user);
+    });
   }else{
     groupLoginCard.style.display = 'block';
     groupChatCard.style.display = 'none';
@@ -1614,9 +1877,10 @@ function setupPresence(user){
   connectedRef.on('value', snap=>{
     if(snap.val() === true){
       presenceRef.onDisconnect().remove();
+      const p = userProfile || getDefaultProfile(user);
       presenceRef.set({
-        name: user.displayName || user.email || 'Ẩn danh',
-        photoURL: user.photoURL || '',
+        name: p.name || 'Ẩn danh',
+        photoURL: p.photoURL || '',
         lastSeen: firebase.database.ServerValue.TIMESTAMP
       });
     }
@@ -1969,10 +2233,11 @@ async function sendGroupMessage(){
       ? await Promise.all(files.map((f, i) => uploadOneFile(f, currentUser.uid, i)))
       : [];
 
+    const p = userProfile || getDefaultProfile(currentUser);
     const baseMsg = {
       uid: currentUser.uid,
-      name: currentUser.displayName || currentUser.email || 'Ẩn danh',
-      photoURL: currentUser.photoURL || '',
+      name: p.name || 'Ẩn danh',
+      photoURL: p.photoURL || '',
       text: text,
       attachments: attachments,
       timestamp: firebase.database.ServerValue.TIMESTAMP
