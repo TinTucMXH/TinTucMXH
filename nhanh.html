@@ -59,7 +59,7 @@
   }
   .tabbar{
     display:grid;
-    grid-template-columns:repeat(5,1fr);
+    grid-template-columns:repeat(6,1fr);
     gap:6px;
     background:var(--surface);
     border:1px solid var(--border);
@@ -143,12 +143,12 @@
   }
   .field{ margin-top:12px; }
   .field label{ display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:6px; }
-  .field input[type=text], .field textarea{
+  .field input[type=text], .field input[type=password], .field textarea{
     width:100%; border:1px solid var(--border); background:#fbfbfe;
     border-radius:var(--radius-sm); padding:11px 12px;
     font-size:16px; font-family:inherit; color:var(--ink);
   }
-  .field input[type=text]:focus, .field textarea:focus{
+  .field input[type=text]:focus, .field input[type=password]:focus, .field textarea:focus{
     outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light);
   }
   .field textarea{ resize:vertical; min-height:80px; line-height:1.5; -webkit-appearance:none; }
@@ -444,6 +444,12 @@
     text-decoration:none; font-size:13px; line-height:1;
   }
   .chat-att-download:active{ transform:scale(.92); }
+  /* ===== TAB QUẢN TRỊ (Admin) ===== */
+  #adminMap{ background:#e5e7ef; }
+  .leaflet-popup-content{ font-family:'Inter', system-ui, sans-serif; font-size:12.5px; line-height:1.5; }
+  .admin-legend{ display:flex; gap:14px; margin-top:10px; font-size:11.5px; color:var(--muted); font-weight:600; }
+  .admin-legend span{ display:flex; align-items:center; gap:6px; }
+  .admin-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
   @media (max-width: 400px){
     .brand-title{ font-size:22px; }
     .tabbtn{ font-size:9px; }
@@ -455,7 +461,7 @@
 <body>
 <div class="app">
   <div class="brand">
-    <div class="brand-eyebrow">Bộ công cụ nội dung</div>
+    <div class="brand-eyebrow">Bộ công cụ nội dung của H</div>
     <div class="brand-title">Content Studio</div>
   </div>
   <!-- ================= THANH TAB ================= -->
@@ -499,6 +505,13 @@
       </svg>
       Group
       <span id="groupBadge" class="tab-badge">0</span>
+    </button>
+    <button class="tabbtn" data-tab="admin">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3.5 5 6.2v5.3c0 4.4 2.9 8.1 7 9 4.1-.9 7-4.6 7-9V6.2L12 3.5z"/>
+        <path d="m9.3 12.2 1.9 1.9 3.5-3.9"/>
+      </svg>
+      Quản trị
     </button>
   </div>
   <!-- ================= TAB 1: CONTENT ================= -->
@@ -658,6 +671,51 @@
       </div>
     </div>
   </section>
+  <!-- ================= TAB 6: QUẢN TRỊ (ADMIN) ================= -->
+  <section id="page-admin" class="page">
+    <div class="card" id="adminLoginCard">
+      <h2 class="title">Quản trị</h2>
+      <p class="hint">Đăng nhập bằng tài khoản quản trị viên được cấp quyền để xem bản đồ vị trí các thành viên đã đăng nhập nhóm (đang online hoặc vị trí lần cuối nếu offline). Tài khoản quản trị được cấu hình trên Firebase Realtime Database, không nằm cố định trong mã nguồn — xem hướng dẫn bên dưới nếu chưa đăng nhập được.</p>
+      <div class="field" style="margin-top:0">
+        <label>Tên đăng nhập</label>
+        <input type="text" id="adminUserInput" placeholder="Tên đăng nhập" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Mật khẩu</label>
+        <input type="password" id="adminPassInput" placeholder="Mật khẩu" autocomplete="current-password">
+      </div>
+      <div id="adminLoginError" class="hint" style="color:var(--red);display:none;margin-top:8px"></div>
+      <div class="btnrow">
+        <button class="btn btn-primary btn-full" id="btnAdminLogin">Đăng nhập</button>
+      </div>
+      <p class="hint" style="margin-top:14px">
+        <strong>Cách thiết lập tài khoản quản trị trên Firebase:</strong><br>
+        1. Mở Firebase Console → chọn project → mục <strong>Realtime Database</strong>.<br>
+        2. Tạo (hoặc sửa) node <strong>groupChat/adminConfig</strong> với 2 trường:
+        <strong>username</strong> (tên đăng nhập) và <strong>password</strong> (mật khẩu).<br>
+        3. Lưu lại — trang này sẽ đọc trực tiếp 2 giá trị đó mỗi lần đăng nhập, không cần sửa mã nguồn.<br>
+        Lưu ý: đây vẫn là kiểm tra phía trình duyệt, chỉ phù hợp hạn chế truy cập nội bộ; nếu cần bảo mật chặt hơn nên chuyển sang Firebase Auth + Security Rules.
+      </p>
+    </div>
+    <div class="card" id="adminMapCard" style="display:none">
+      <div class="chat-header-row">
+        <h2 class="title" style="margin:0">Bản đồ thành viên</h2>
+        <button id="btnAdminLogout" class="btn btn-ghost" style="flex:none;padding:8px 12px;font-size:12px;min-height:auto">Đăng xuất</button>
+      </div>
+      <p class="hint" style="margin-bottom:8px">Chỉ hiển thị vị trí của những thành viên đã đồng ý chia sẻ vị trí trong nhóm chat.</p>
+      <div id="adminMap" style="width:100%;height:320px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border)"></div>
+      <div class="admin-legend">
+        <span><span class="admin-dot" style="background:var(--green)"></span>Đang online</span>
+        <span><span class="admin-dot" style="background:var(--muted)"></span>Offline (vị trí lần cuối)</span>
+      </div>
+      <div class="section-label">Danh sách thành viên (bấm để xem lịch sử vị trí)</div>
+      <div id="adminUserList" class="listbox"></div>
+      <div class="section-label" id="adminHistoryLabel">Lịch sử vị trí</div>
+      <div id="adminHistoryList" class="listbox">
+        <div class="listbox-item">Chọn 1 thành viên ở danh sách trên để xem lịch sử vị trí</div>
+      </div>
+    </div>
+  </section>
 
   <!-- ============ POPUP ĐĂNG NHẬP GOOGLE (nhỏ gọn) ============ -->
   <div id="loginModalOverlay" class="modal-overlay">
@@ -708,6 +766,20 @@
     </div>
   </div>
 
+  <!-- ============ POPUP XIN CHIA SẺ VỊ TRÍ ============ -->
+  <div id="locationModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon">📍</div>
+      <h3 class="modal-title">Chia sẻ vùng làm việc?</h3>
+      <p class="modal-desc">Chia sẻ để nhận diện vùng bạn đang làm việc để thích hợp hỗ trợ; bạn có thể tắt bất cứ lúc nào bằng cách đăng xuất.</p>
+      <div id="locationModalError" class="hint" style="color:var(--red);display:none;margin-bottom:10px"></div>
+      <div class="btnrow" style="margin-top:0">
+        <button type="button" class="btn btn-primary" id="btnLocationAllow">Cho phép</button>
+        <button type="button" class="btn btn-ghost" id="btnLocationDeny">Không, cảm ơn</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ POPUP QUẢN LÝ LINK SHOPEE (thêm/sửa 1 hoặc nhiều link) ============ -->
   <div id="shoppeModalOverlay" class="modal-overlay">
     <div class="modal-card">
@@ -749,6 +821,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<!-- Leaflet (bản đồ OpenStreetMap, không cần API key) cho tab Quản trị -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* =========================================================
    TIỆN ÍCH DÙNG CHUNG
@@ -848,6 +923,9 @@ document.querySelectorAll('.tabbtn').forEach(btn=>{
     document.getElementById('page-' + btn.dataset.tab).classList.add('active');
     if(btn.dataset.tab === 'group' && typeof updateUnreadDisplay === 'function'){
       updateUnreadDisplay();
+    }
+    if(btn.dataset.tab === 'admin' && typeof adminMap !== 'undefined' && adminMap){
+      setTimeout(()=> adminMap.invalidateSize(), 60);
     }
   });
 });
@@ -1640,6 +1718,15 @@ vsBtnBurn.addEventListener('click', async ()=>{
    - Badge số tin/cuộc trò chuyện chưa đọc trên nút tab Group.
    - Nút xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở, có popup
      xác nhận trước khi xóa.
+   - Sau khi đăng nhập/thiết lập hồ sơ xong, hỏi người dùng có đồng ý
+     chia sẻ vị trí hay không (CHỈ HỎI 1 LẦN MỖI LẦN ĐĂNG NHẬP nếu
+     trước đó chưa từng đồng ý — hễ đã đồng ý 1 lần thì từ nay không
+     hỏi lại nữa, tự động chia sẻ ngầm); nếu đồng ý sẽ liên tục cập
+     nhật vị trí hiện tại lên groupChat/userLocations/{uid} (vị trí
+     mới nhất) VÀ ghi thêm vào groupChat/userLocationHistory/{uid}
+     (lịch sử các vị trí theo thời gian, có throttle để không ghi
+     quá dày) để tab Quản trị hiển thị trên bản đồ và xem lại lịch sử
+     (xem thêm phần "CHIA SẺ VỊ TRÍ" bên dưới).
 ========================================================= */
 const firebaseConfig = {
   apiKey: "AIzaSyDIo90Fw0iGUVp5WXXw9tjIm1VkxTChc9k",
@@ -1849,6 +1936,108 @@ btnSaveProfile.addEventListener('click', async ()=>{
   }
 });
 
+/* ---------- CHIA SẺ VỊ TRÍ ----------
+   Quy tắc hỏi quyền vị trí: MỖI LẦN ĐĂNG NHẬP chỉ hỏi 1 lần.
+   - Nếu người dùng CHƯA TỪNG đồng ý (kể cả trước đó đã bấm "Không,
+     cảm ơn" ở lần đăng nhập trước), sẽ hiện lại popup hỏi vào lần
+     đăng nhập tiếp theo (không ghi nhớ việc từ chối).
+   - Nếu người dùng ĐÃ TỪNG đồng ý và lấy vị trí thành công ít nhất
+     1 lần, từ đó về sau sẽ KHÔNG hỏi lại nữa — tự động chia sẻ vị
+     trí ngầm mỗi khi đăng nhập.
+   Sau khi đồng ý: dùng navigator.geolocation.watchPosition để liên
+   tục cập nhật VỊ TRÍ HIỆN TẠI lên groupChat/userLocations/{uid}
+   (giữ lại vĩnh viễn làm "vị trí lần cuối" cho tab Quản trị xem khi
+   offline), đồng thời ghi thêm từng mốc vào
+   groupChat/userLocationHistory/{uid} (có throttle theo thời gian
+   để tránh ghi quá dày) để tab Quản trị có thể xem lại lịch sử di
+   chuyển của từng tài khoản. */
+const locationModalOverlay = document.getElementById('locationModalOverlay');
+const locationModalError   = document.getElementById('locationModalError');
+const btnLocationAllow     = document.getElementById('btnLocationAllow');
+const btnLocationDeny      = document.getElementById('btnLocationDeny');
+const LS_KEY_LOCATION_GRANTED = 'contentTool_locationGranted';
+const HISTORY_PUSH_INTERVAL_MS = 5 * 60 * 1000; // ghi thêm 1 mốc lịch sử tối đa mỗi 5 phút
+let locationWatchId = null;
+let lastHistoryPushTime = 0;
+
+function openLocationModal(){
+  locationModalError.style.display = 'none';
+  locationModalOverlay.classList.add('show');
+}
+function closeLocationModal(){ locationModalOverlay.classList.remove('show'); }
+function maybeAskLocationPermission(){
+  if(!navigator.geolocation) return;
+  if(locationWatchId != null) return; // đã đang chia sẻ rồi thì không hỏi lại
+  let granted = false;
+  try{ granted = localStorage.getItem(LS_KEY_LOCATION_GRANTED) === '1'; }catch(e){}
+  if(granted){
+    // Đã từng đồng ý ở lần đăng nhập trước -> tự động chia sẻ lại, không hỏi nữa
+    startSharingLocation();
+    return;
+  }
+  // Chưa từng đồng ý (hoặc lần đăng nhập trước đã từ chối) -> hỏi lại đúng 1 lần cho lần đăng nhập này
+  openLocationModal();
+}
+btnLocationDeny.addEventListener('click', ()=>{
+  closeLocationModal();
+  // Không lưu lại việc từ chối -> lần đăng nhập kế tiếp sẽ hỏi lại
+});
+btnLocationAllow.addEventListener('click', ()=>{
+  closeLocationModal();
+  startSharingLocation(err=>{
+    showToast('Không lấy được vị trí: ' + (err && err.message ? err.message : 'trình duyệt từ chối quyền truy cập vị trí'));
+  });
+});
+function startSharingLocation(onError){
+  if(!currentUser || !navigator.geolocation) return;
+  if(locationWatchId != null) return; // đã đang theo dõi rồi
+  let firstSuccessHandled = false;
+  locationWatchId = navigator.geolocation.watchPosition(
+    pos=>{
+      if(!currentUser) return;
+      if(!firstSuccessHandled){
+        firstSuccessHandled = true;
+        // Lấy vị trí thành công lần đầu -> ghi nhớ đã đồng ý, từ nay không hỏi lại nữa
+        try{ localStorage.setItem(LS_KEY_LOCATION_GRANTED, '1'); }catch(e){}
+      }
+      const p = userProfile || getDefaultProfile(currentUser);
+      const uid = currentUser.uid;
+      // Cập nhật vị trí hiện tại (luôn ghi đè, dùng làm "vị trí lần cuối")
+      gDb.ref('groupChat/userLocations/' + uid).set({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracy: pos.coords.accuracy || null,
+        name: p.name || 'Ẩn danh',
+        photoURL: p.photoURL || '',
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      }).catch(err=> console.error('Không cập nhật được vị trí:', err));
+      // Ghi thêm 1 mốc vào lịch sử vị trí, có throttle để không ghi quá dày
+      const now = Date.now();
+      if(now - lastHistoryPushTime > HISTORY_PUSH_INTERVAL_MS){
+        lastHistoryPushTime = now;
+        gDb.ref('groupChat/userLocationHistory/' + uid).push({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy || null,
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        }).catch(err=> console.error('Không ghi được lịch sử vị trí:', err));
+      }
+    },
+    err=>{
+      console.error('Lỗi lấy vị trí:', err);
+      locationWatchId = null;
+      if(typeof onError === 'function') onError(err);
+    },
+    { enableHighAccuracy:false, maximumAge:15000, timeout:20000 }
+  );
+}
+function stopSharingLocation(){
+  if(locationWatchId != null){
+    navigator.geolocation.clearWatch(locationWatchId);
+    locationWatchId = null;
+  }
+}
+
 /* ---------- Đăng nhập Google: chống lỗi "đăng nhập xong nhưng
    không vào được chat" trên trình duyệt di động ----------
    Nguyên nhân phổ biến nhất là trình duyệt di động (đặc biệt Safari
@@ -1923,6 +2112,7 @@ btnLogout.addEventListener('click', ()=> gAuth.signOut());
 
 gAuth.onAuthStateChanged(user=>{
   teardownPresence();
+  stopSharingLocation();
   messagesRef.off('value');
   if(publicReadRef) publicReadRef.off('value');
   if(activeThreadRef){ activeThreadRef.off('value'); activeThreadRef = null; }
@@ -1936,6 +2126,7 @@ gAuth.onAuthStateChanged(user=>{
   privateThreadsData = {}; privateReadsData = {};
   groupMediaFiles = []; uploadProgressMap = {}; uploadTasksMap = {}; uploadErrorMap = {};
   userProfile = null; userProfileRef = null; profileAvatarFile = null;
+  lastHistoryPushTime = 0;
 
   if(user){
     groupLoginCard.style.display = 'none';
@@ -1960,10 +2151,12 @@ gAuth.onAuthStateChanged(user=>{
         openProfileModal();
       }
       setupPresence(user);
+      maybeAskLocationPermission();
     }).catch(err=>{
       console.error('Không đọc được hồ sơ nhóm:', err);
       applyUserProfile(getDefaultProfile(user));
       setupPresence(user);
+      maybeAskLocationPermission();
     });
   }else{
     groupLoginCard.style.display = 'block';
@@ -2254,6 +2447,14 @@ btnDeleteAllMsgs.addEventListener('click', async ()=>{
   if(!ok) return;
   try{
     await currentThreadRef().remove();
+    if(activeTarget){
+      const otherUid = activeTarget.uid;
+      const updates = {};
+      updates['groupChat/privateThreads/' + currentUser.uid + '/' + otherUid] = null;
+      updates['groupChat/privateThreads/' + otherUid + '/' + currentUser.uid] = null;
+      await gDb.ref().update(updates);
+      selectTarget(null); // quay lại nhóm chung, đóng luôn thẻ chat riêng này
+    }
     showToast('Đã xóa toàn bộ tin nhắn');
   }catch(err){
     console.error(err);
@@ -2453,6 +2654,269 @@ async function sendGroupMessage(){
     btnGroupSend.disabled = false;
     btnGroupAttach.disabled = false;
   }
+}
+
+/* =========================================================
+   TAB QUẢN TRỊ (ADMIN)
+   - Đăng nhập bằng tài khoản quản trị viên được CẤU HÌNH TRÊN
+     FIREBASE (không hardcode trong mã nguồn nữa). Khi bấm "Đăng
+     nhập", trang sẽ đọc node groupChat/adminConfig (gồm 2 trường
+     "username" và "password") trên Realtime Database rồi so khớp
+     với ô nhập. Cách tạo/sửa tài khoản quản trị: vào Firebase
+     Console → Realtime Database → tạo/sửa node groupChat/adminConfig
+     với 2 trường username, password.
+     LƯU Ý BẢO MẬT: đây vẫn là xác thực phía trình duyệt (client-side)
+     — giá trị mật khẩu vẫn được tải về và so sánh ngay trên máy
+     người dùng, nên chỉ phù hợp để hạn chế truy cập thông thường
+     trong nội bộ nhóm, KHÔNG đủ an toàn để bảo vệ dữ liệu nhạy cảm.
+     Nếu cần bảo mật chặt hơn, nên chuyển sang xác thực quản trị
+     viên bằng Firebase Auth (ví dụ: gán custom claim "admin" cho 1
+     tài khoản Gmail cụ thể) kết hợp Firebase Security Rules để
+     chặn đọc dữ liệu vị trí từ phía server thay vì chỉ ẩn ở giao diện.
+   - Sau khi đăng nhập, hiển thị bản đồ (Leaflet + OpenStreetMap,
+     không cần API key) với các chấm vị trí của mọi thành viên đã
+     từng đồng ý chia sẻ vị trí trong groupChat/userLocations/{uid}:
+     chấm XANH nếu đang online (groupChat/presence/{uid} tồn tại),
+     chấm XÁM nếu offline (hiển thị vị trí + thời gian lần cuối).
+   - Bấm vào 1 thành viên trong danh sách sẽ tải và hiển thị LỊCH SỬ
+     VỊ TRÍ của tài khoản đó (từ groupChat/userLocationHistory/{uid}),
+     mỗi dòng trong danh sách lịch sử có thể bấm vào để mở/định tâm
+     vị trí đó ngay trên bản đồ.
+========================================================= */
+const ADMIN_CONFIG_PATH = 'groupChat/userProfiles'; // node Firebase chứa {username, password}
+const LS_KEY_ADMIN_SESSION = 'contentTool_adminLoggedIn';
+
+const adminLoginCard   = document.getElementById('adminLoginCard');
+const adminMapCard     = document.getElementById('adminMapCard');
+const adminUserInput   = document.getElementById('adminUserInput');
+const adminPassInput   = document.getElementById('adminPassInput');
+const adminLoginError  = document.getElementById('adminLoginError');
+const btnAdminLogin    = document.getElementById('btnAdminLogin');
+const btnAdminLogout   = document.getElementById('btnAdminLogout');
+const adminUserListEl  = document.getElementById('adminUserList');
+const adminHistoryListEl  = document.getElementById('adminHistoryList');
+const adminHistoryLabelEl = document.getElementById('adminHistoryLabel');
+
+let adminMap = null;
+let adminMarkers = {};          // {uid: L.marker}
+let adminLocationsData = {};    // groupChat/userLocations
+let adminPresenceData = {};     // groupChat/presence
+let adminLocationsRef = null;
+let adminPresenceRefForMap = null;
+let adminHistoryRef = null;     // ref lịch sử vị trí của thành viên đang được chọn xem
+let adminSelectedUid = null;    // uid thành viên đang được chọn để xem lịch sử vị trí
+let adminHistoryMarker = null;  // marker tạm dùng để đánh dấu 1 điểm lịch sử khi bấm vào danh sách
+
+function showAdminMapView(){
+  adminLoginCard.style.display = 'none';
+  adminMapCard.style.display = 'block';
+  initAdminMap();
+  subscribeAdminData();
+}
+function showAdminLoginView(){
+  adminLoginCard.style.display = 'block';
+  adminMapCard.style.display = 'none';
+  unsubscribeAdminData();
+}
+btnAdminLogin.addEventListener('click', async ()=>{
+  const u = adminUserInput.value.trim();
+  const p = adminPassInput.value;
+  if(!u || !p){
+    adminLoginError.textContent = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
+    adminLoginError.style.display = 'block';
+    return;
+  }
+  btnAdminLogin.disabled = true;
+  adminLoginError.style.display = 'none';
+  try{
+    const snap = await gDb.ref(ADMIN_CONFIG_PATH).once('value');
+    const cfg = snap.val();
+    if(!cfg || !cfg.username || !cfg.password){
+      adminLoginError.textContent = 'Chưa cấu hình tài khoản quản trị trên Firebase. Vào Firebase Console → Realtime Database → tạo node "' + ADMIN_CONFIG_PATH + '" gồm 2 trường "username" và "password" rồi thử lại.';
+      adminLoginError.style.display = 'block';
+      return;
+    }
+    if(u === String(cfg.username) && p === String(cfg.password)){
+      try{ sessionStorage.setItem(LS_KEY_ADMIN_SESSION, '1'); }catch(e){}
+      showAdminMapView();
+    }else{
+      adminLoginError.textContent = 'Sai tên đăng nhập hoặc mật khẩu.';
+      adminLoginError.style.display = 'block';
+    }
+  }catch(err){
+    console.error(err);
+    adminLoginError.textContent = 'Không đọc được cấu hình quản trị từ Firebase: ' + describeStorageError(err);
+    adminLoginError.style.display = 'block';
+  }finally{
+    btnAdminLogin.disabled = false;
+  }
+});
+adminPassInput.addEventListener('keydown', e=>{
+  if(e.key === 'Enter') btnAdminLogin.click();
+});
+btnAdminLogout.addEventListener('click', ()=>{
+  try{ sessionStorage.removeItem(LS_KEY_ADMIN_SESSION); }catch(e){}
+  adminUserInput.value = '';
+  adminPassInput.value = '';
+  showAdminLoginView();
+});
+(function initAdminAutoLogin(){
+  try{
+    if(sessionStorage.getItem(LS_KEY_ADMIN_SESSION) === '1') showAdminMapView();
+  }catch(e){}
+})();
+
+function initAdminMap(){
+  if(adminMap){ setTimeout(()=> adminMap.invalidateSize(), 60); return; }
+  adminMap = L.map('adminMap').setView([16.0471, 108.2062], 5); // mặc định trung tâm Việt Nam
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(adminMap);
+  setTimeout(()=> adminMap.invalidateSize(), 100);
+}
+function subscribeAdminData(){
+  adminLocationsRef = gDb.ref('groupChat/userLocations');
+  adminLocationsRef.on('value', snap=>{
+    adminLocationsData = snap.val() || {};
+    renderAdminMarkers();
+  });
+  adminPresenceRefForMap = gDb.ref('groupChat/presence');
+  adminPresenceRefForMap.on('value', snap=>{
+    adminPresenceData = snap.val() || {};
+    renderAdminMarkers();
+  });
+}
+function unsubscribeAdminData(){
+  if(adminLocationsRef){ adminLocationsRef.off('value'); adminLocationsRef = null; }
+  if(adminPresenceRefForMap){ adminPresenceRefForMap.off('value'); adminPresenceRefForMap = null; }
+  unsubscribeAdminHistory();
+}
+function fmtAdminTime(ts){
+  if(!ts) return 'Không rõ thời điểm';
+  return new Date(ts).toLocaleString('vi-VN');
+}
+function renderAdminMarkers(){
+  if(!adminMap) return;
+  const uids = Object.keys(adminLocationsData);
+  // Xóa marker của những user không còn dữ liệu vị trí
+  Object.keys(adminMarkers).forEach(uid=>{
+    if(!adminLocationsData[uid]){ adminMap.removeLayer(adminMarkers[uid]); delete adminMarkers[uid]; }
+  });
+  const bounds = [];
+  uids.forEach(uid=>{
+    const loc = adminLocationsData[uid];
+    if(!loc || typeof loc.lat !== 'number' || typeof loc.lng !== 'number') return;
+    const isOnline = !!adminPresenceData[uid];
+    const color = isOnline ? '#16a34a' : '#8b8da6';
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="width:16px;height:16px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>`,
+      iconSize: [16,16], iconAnchor: [8,8]
+    });
+    const statusHtml = isOnline
+      ? 'Đang online'
+      : 'Offline · vị trí lần cuối: ' + fmtAdminTime(loc.timestamp);
+    const popupHtml = `<b>${escapeHtml(loc.name || 'Ẩn danh')}</b><br>${statusHtml}`;
+    if(adminMarkers[uid]){
+      adminMarkers[uid].setLatLng([loc.lat, loc.lng]);
+      adminMarkers[uid].setIcon(icon);
+      adminMarkers[uid].setPopupContent(popupHtml);
+    }else{
+      adminMarkers[uid] = L.marker([loc.lat, loc.lng], { icon }).addTo(adminMap).bindPopup(popupHtml);
+    }
+    bounds.push([loc.lat, loc.lng]);
+  });
+  if(bounds.length > 0){
+    try{ adminMap.fitBounds(bounds, { padding: [30,30], maxZoom: 14 }); }catch(e){}
+  }
+  renderAdminUserList();
+}
+function renderAdminUserList(){
+  const uids = Object.keys(adminLocationsData);
+  if(uids.length === 0){
+    adminUserListEl.innerHTML = '<div class="listbox-item">Chưa có thành viên nào chia sẻ vị trí</div>';
+    return;
+  }
+  // Online lên trước, mới nhất lên trước
+  const sorted = uids.slice().sort((a,b)=>{
+    const onlineA = !!adminPresenceData[a], onlineB = !!adminPresenceData[b];
+    if(onlineA !== onlineB) return onlineA ? -1 : 1;
+    return (adminLocationsData[b].timestamp||0) - (adminLocationsData[a].timestamp||0);
+  });
+  adminUserListEl.innerHTML = sorted.map(uid=>{
+    const loc = adminLocationsData[uid];
+    const isOnline = !!adminPresenceData[uid];
+    const isSelected = uid === adminSelectedUid;
+    return `<div class="listbox-item ${isSelected ? 'picked' : ''}" data-focus-uid="${uid}" style="cursor:pointer">
+      <span class="item-title">${escapeHtml(loc.name || 'Ẩn danh')} ${isOnline ? '🟢' : '⚪'}</span>
+      <span class="item-link">${isOnline ? 'Đang online' : 'Offline · lần cuối: ' + fmtAdminTime(loc.timestamp)}</span>
+    </div>`;
+  }).join('');
+  adminUserListEl.querySelectorAll('[data-focus-uid]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const uid = el.dataset.focusUid;
+      const marker = adminMarkers[uid];
+      if(marker && adminMap){
+        adminMap.setView(marker.getLatLng(), 15);
+        marker.openPopup();
+      }
+      const loc = adminLocationsData[uid];
+      loadAdminHistory(uid, loc && loc.name);
+    });
+  });
+}
+/* ---------- Lịch sử vị trí của 1 thành viên (chọn từ danh sách bên trên) ---------- */
+function unsubscribeAdminHistory(){
+  if(adminHistoryRef){ adminHistoryRef.off('value'); adminHistoryRef = null; }
+  adminSelectedUid = null;
+  if(adminHistoryMarker && adminMap){ adminMap.removeLayer(adminHistoryMarker); adminHistoryMarker = null; }
+}
+function loadAdminHistory(uid, name){
+  if(adminHistoryRef){ adminHistoryRef.off('value'); adminHistoryRef = null; }
+  adminSelectedUid = uid;
+  renderAdminUserList(); // để tô sáng dòng đang được chọn
+  adminHistoryLabelEl.textContent = 'Lịch sử vị trí của ' + (name || 'Ẩn danh');
+  adminHistoryListEl.innerHTML = '<div class="listbox-item">Đang tải lịch sử vị trí...</div>';
+  adminHistoryRef = gDb.ref('groupChat/userLocationHistory/' + uid).limitToLast(100);
+  adminHistoryRef.on('value', snap=>{
+    const val = snap.val() || {};
+    const list = Object.keys(val)
+      .map(k => ({ id:k, ...val[k] }))
+      .filter(h => typeof h.lat === 'number' && typeof h.lng === 'number')
+      .sort((a,b)=> (b.timestamp||0) - (a.timestamp||0));
+    renderAdminHistoryList(list, name);
+  });
+}
+function renderAdminHistoryList(list, name){
+  if(list.length === 0){
+    adminHistoryListEl.innerHTML = `<div class="listbox-item">Chưa có lịch sử vị trí nào cho ${escapeHtml(name || 'Ẩn danh')}</div>`;
+    return;
+  }
+  adminHistoryListEl.innerHTML = list.map(h => `
+    <div class="listbox-item" data-hist-lat="${h.lat}" data-hist-lng="${h.lng}" data-hist-time="${h.timestamp || ''}" style="cursor:pointer">
+      <span class="item-title">${fmtAdminTime(h.timestamp)}</span>
+      <span class="item-link">${h.lat.toFixed(5)}, ${h.lng.toFixed(5)}</span>
+    </div>
+  `).join('');
+  adminHistoryListEl.querySelectorAll('[data-hist-lat]').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const lat = parseFloat(row.dataset.histLat);
+      const lng = parseFloat(row.dataset.histLng);
+      const ts = row.dataset.histTime ? Number(row.dataset.histTime) : null;
+      if(!adminMap) return;
+      adminMap.setView([lat, lng], 16);
+      if(adminHistoryMarker){ adminMap.removeLayer(adminHistoryMarker); }
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="width:14px;height:14px;border-radius:50%;background:#f59e0b;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>`,
+        iconSize: [14,14], iconAnchor: [7,7]
+      });
+      adminHistoryMarker = L.marker([lat, lng], { icon }).addTo(adminMap)
+        .bindPopup(`<b>${escapeHtml(name || 'Ẩn danh')}</b><br>Vị trí lúc: ${fmtAdminTime(ts)}`)
+        .openPopup();
+    });
+  });
 }
 </script>
 </body>
