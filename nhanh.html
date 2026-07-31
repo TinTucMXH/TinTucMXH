@@ -441,27 +441,40 @@
   .chat-att-download{
     position:absolute; bottom:6px; right:6px; width:26px; height:26px; border-radius:50%;
     background:rgba(0,0,0,.6); color:#fff; display:flex; align-items:center; justify-content:center;
-    text-decoration:none; font-size:13px; line-height:1;
+    text-decoration:none; font-size:13px; line-height:1; border:none; cursor:pointer;
   }
   .chat-att-download:active{ transform:scale(.92); }
+  .chat-att-download.downloading{ opacity:.6; pointer-events:none; }
   /* ===== TAB QUẢN TRỊ (Admin) ===== */
   #adminMap{ background:#e5e7ef; }
   .leaflet-popup-content{ font-family:'Inter', system-ui, sans-serif; font-size:12.5px; line-height:1.5; }
   .admin-legend{ display:flex; gap:14px; margin-top:10px; font-size:11.5px; color:var(--muted); font-weight:600; }
   .admin-legend span{ display:flex; align-items:center; gap:6px; }
   .admin-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+  /* ===== Chọn avatar ngộ nghĩnh có sẵn (popup hồ sơ) ===== */
+  .preset-avatar-grid{
+    display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; margin-top:8px;
+  }
+  .preset-avatar-btn{
+    position:relative; border:2px solid transparent; border-radius:50%; aspect-ratio:1/1;
+    display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer;
+    padding:0; overflow:hidden;
+  }
+  .preset-avatar-btn:active{ transform:scale(.92); }
+  .preset-avatar-btn.selected{ border-color:var(--primary); box-shadow:0 0 0 2px var(--primary-light); }
   @media (max-width: 400px){
     .brand-title{ font-size:22px; }
     .tabbtn{ font-size:9px; }
     .hashtag-btn{ padding:12px 4px; }
     .hashtag-btn .num{ font-size:17px; }
+    .preset-avatar-grid{ grid-template-columns:repeat(5, 1fr); }
   }
 </style>
 </head>
 <body>
 <div class="app">
   <div class="brand">
-    <div class="brand-eyebrow">Bộ công cụ nội dung của H</div>
+    <div class="brand-eyebrow">Bộ công cụ nội dung</div>
     <div class="brand-title">Content Studio</div>
   </div>
   <!-- ================= THANH TAB ================= -->
@@ -675,7 +688,7 @@
   <section id="page-admin" class="page">
     <div class="card" id="adminLoginCard">
       <h2 class="title">Quản trị</h2>
-      <p class="hint">Đăng nhập bằng tài khoản quản trị viên được cấp quyền để cấu hình trên Firebase Realtime Database, không nằm cố định trong mã nguồn — xem hướng dẫn bên dưới nếu chưa đăng nhập được.</p>
+      <p class="hint">Đăng nhập bằng tài khoản quản trị viên được cấp quyền để xem bản đồ vị trí các thành viên đã đăng nhập nhóm (đang online hoặc vị trí lần cuối nếu offline). Tài khoản quản trị được cấu hình trên Firebase Realtime Database, không nằm cố định trong mã nguồn — xem hướng dẫn bên dưới nếu chưa đăng nhập được.</p>
       <div class="field" style="margin-top:0">
         <label>Tên đăng nhập</label>
         <input type="text" id="adminUserInput" placeholder="Tên đăng nhập" autocomplete="username">
@@ -757,6 +770,10 @@
           </svg>
           <span id="profileAvatarDropzoneLabel">Chọn ảnh đại diện mới (tùy chọn)</span>
         </div>
+      </div>
+      <div class="field">
+        <label>Hoặc chọn 1 icon ngộ nghĩnh có sẵn</label>
+        <div id="presetAvatarGrid" class="preset-avatar-grid"></div>
       </div>
       <div id="profileModalError" class="hint" style="color:var(--red);display:none;margin-top:8px"></div>
       <div class="btnrow">
@@ -855,6 +872,34 @@ async function copyText(text){
 }
 function escapeHtml(str){
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+/* Tải 1 file về máy từ 1 URL bất kỳ (kể cả URL khác domain như Firebase
+   Storage) — thuộc tính "download" trên thẻ <a> thường KHÔNG hoạt động với
+   URL khác domain (trình duyệt sẽ mở file thay vì tải về), nên ở đây tải nội
+   dung file về dưới dạng blob rồi tạo link blob CÙNG DOMAIN để tải về đúng
+   nghĩa (lưu vào máy / thư viện ảnh). Nếu vì lý do nào đó (mạng, CORS...)
+   không tải được blob, sẽ tự động mở file trong tab mới để người dùng có thể
+   tự lưu lại theo cách thủ công (vd: nhấn giữ ảnh > Lưu ảnh trên điện thoại).
+*/
+async function downloadFileFromUrl(url, filename){
+  try{
+    const resp = await fetch(url);
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const blob = await resp.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename || 'tai-ve';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=> URL.revokeObjectURL(blobUrl), 8000);
+    return true;
+  }catch(err){
+    console.error('Không tải được file về dạng blob, mở tab mới thay thế:', err);
+    window.open(url, '_blank', 'noopener');
+    return false;
+  }
 }
 /* Nén / thu nhỏ ảnh trước khi tải lên (không đụng vào video) — giúp giảm khả năng
    tải lên thất bại do file quá nặng (ảnh chụp điện thoại hiện đại thường 5-15MB)
@@ -1782,6 +1827,49 @@ const profileModalAvatarFallback = document.getElementById('profileModalAvatarFa
 const profileModalError        = document.getElementById('profileModalError');
 const btnSaveProfile           = document.getElementById('btnSaveProfile');
 const btnUseDefaultProfile     = document.getElementById('btnUseDefaultProfile');
+const presetAvatarGrid         = document.getElementById('presetAvatarGrid');
+
+/* ---------- Bộ icon avatar ngộ nghĩnh có sẵn để chọn nhanh ----------
+   Mỗi icon là 1 emoji đặt trên nền màu tròn, được vẽ thành ảnh SVG dạng
+   data URI (không cần tải lên Storage) nên chọn xong là dùng ngay, không
+   tốn dung lượng lưu trữ và hiển thị y hệt ảnh đại diện bình thường ở
+   mọi nơi trong app (khung chat, danh sách online, bản đồ quản trị...). */
+const PRESET_AVATARS = [
+  { emoji:'🐶', bg:'#FDE68A' }, { emoji:'🐱', bg:'#FBCFE8' }, { emoji:'🐻', bg:'#DDD6FE' },
+  { emoji:'🐼', bg:'#BFDBFE' }, { emoji:'🦊', bg:'#FED7AA' }, { emoji:'🐯', bg:'#FCA5A5' },
+  { emoji:'🦁', bg:'#FDE68A' }, { emoji:'🐨', bg:'#D1D5DB' }, { emoji:'🐵', bg:'#FED7AA' },
+  { emoji:'🐸', bg:'#BBF7D0' }, { emoji:'🐷', bg:'#FBCFE8' }, { emoji:'🐰', bg:'#E9D5FF' },
+  { emoji:'🦄', bg:'#FBCFE8' }, { emoji:'🐔', bg:'#FEF08A' }, { emoji:'🐙', bg:'#C4B5FD' },
+  { emoji:'🦉', bg:'#FDBA74' }, { emoji:'🐢', bg:'#A7F3D0' }, { emoji:'🦋', bg:'#93C5FD' }
+];
+function makePresetAvatarDataUrl(emoji, bg){
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">`
+    + `<circle cx="48" cy="48" r="48" fill="${bg}"/>`
+    + `<text x="48" y="58" font-size="46" text-anchor="middle" dominant-baseline="middle">${emoji}</text>`
+    + `</svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+let profileSelectedPresetUrl = null; // dataURL của icon ngộ nghĩnh đang được chọn trong popup (nếu có)
+function renderPresetAvatarGrid(){
+  presetAvatarGrid.innerHTML = PRESET_AVATARS.map((a, i)=>{
+    const url = makePresetAvatarDataUrl(a.emoji, a.bg);
+    const isSelected = profileSelectedPresetUrl === url;
+    return `<button type="button" class="preset-avatar-btn ${isSelected?'selected':''}" data-preset-i="${i}" style="background:${a.bg}" title="Dùng icon ${a.emoji}">${a.emoji}</button>`;
+  }).join('');
+}
+presetAvatarGrid.addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-preset-i]');
+  if(!btn) return;
+  const a = PRESET_AVATARS[Number(btn.dataset.presetI)];
+  const url = makePresetAvatarDataUrl(a.emoji, a.bg);
+  profileSelectedPresetUrl = url;
+  profileAvatarFile = null; // ưu tiên icon vừa chọn, bỏ ảnh file (nếu trước đó có chọn)
+  profileAvatarDropzoneLabel.textContent = 'Chọn ảnh đại diện mới (tùy chọn)';
+  profileModalAvatarPreview.src = url;
+  profileModalAvatarPreview.style.display = 'block';
+  profileModalAvatarFallback.style.display = 'none';
+  renderPresetAvatarGrid();
+});
 
 let currentUser = null;
 let presenceRef = null;
@@ -1837,6 +1925,7 @@ function applyUserProfile(profile){
 }
 function openProfileModal(){
   profileAvatarFile = null;
+  profileSelectedPresetUrl = null;
   if(profileAvatarUploadTask){ try{ profileAvatarUploadTask.cancel(); }catch(e){} profileAvatarUploadTask = null; }
   profileModalError.style.display = 'none';
   profileAvatarDropzoneLabel.textContent = 'Chọn ảnh đại diện mới (tùy chọn)';
@@ -1850,6 +1939,7 @@ function openProfileModal(){
     profileModalAvatarPreview.style.display = 'none';
     profileModalAvatarFallback.style.display = 'block';
   }
+  renderPresetAvatarGrid();
   profileModalOverlay.classList.add('show');
 }
 function closeProfileModal(){ profileModalOverlay.classList.remove('show'); }
@@ -1861,6 +1951,8 @@ profileAvatarInput.addEventListener('change', async ()=>{
   const file = profileAvatarInput.files && profileAvatarInput.files[0];
   profileAvatarInput.value = ''; // cho phép chọn lại đúng file đó lần sau
   if(!file) return;
+  profileSelectedPresetUrl = null; // chọn ảnh thật thì bỏ icon ngộ nghĩnh (nếu trước đó có chọn)
+  renderPresetAvatarGrid();
   profileAvatarDropzoneLabel.textContent = 'Đang xử lý ảnh...';
   // Nén ảnh trước để tránh tải lên thất bại vì file quá nặng (ảnh chụp điện thoại)
   const compressed = await compressImageFile(file, 800, 0.85);
@@ -1896,7 +1988,10 @@ btnSaveProfile.addEventListener('click', async ()=>{
   profileModalError.style.display = 'none';
   try{
     let photoURL = (userProfile && userProfile.photoURL) || currentUser.photoURL || '';
-    if(profileAvatarFile){
+    if(profileSelectedPresetUrl){
+      // Đã chọn 1 icon ngộ nghĩnh có sẵn -> dùng thẳng data URL, không cần tải lên Storage
+      photoURL = profileSelectedPresetUrl;
+    }else if(profileAvatarFile){
       const safeName = profileAvatarFile.name.replace(/[^\w.\-]+/g, '_');
       const path = `group_avatars/${currentUser.uid}/${Date.now()}_${safeName}`;
       photoURL = await new Promise((resolve, reject)=>{
@@ -2356,19 +2451,23 @@ function markAsRead(){
   }
 }
 
-/* ---------- Ghép ảnh/video đính kèm + nút tải về cho mọi người trong nhóm ---------- */
-function buildAttachmentsHtml(m){
+/* ---------- Ghép ảnh/video đính kèm + nút tải về máy cho mọi người trong nhóm ----------
+   Nút tải về dùng downloadFileFromUrl() (fetch -> blob -> link cùng domain) thay vì chỉ
+   dựa vào thuộc tính "download" trên thẻ <a> (không hoạt động với URL Firebase Storage
+   khác domain trên nhiều trình duyệt/điện thoại), để đảm bảo file thực sự được lưu vào
+   máy / thư viện ảnh thay vì chỉ mở xem online. */
+function buildAttachmentsHtml(m, msgId){
   const atts = [];
   if(Array.isArray(m.attachments)) atts.push(...m.attachments);
   if(m.mediaURL) atts.push({ url: m.mediaURL, type: m.mediaType });
   if(atts.length === 0) return '';
   const cls = atts.length === 1 ? 'chat-attachments single' : 'chat-attachments';
-  return `<div class="${cls}">${atts.map(a => `
+  return `<div class="${cls}">${atts.map((a, i) => `
     <div class="chat-att-wrap">
       ${a.type === 'video'
         ? `<video src="${escapeHtml(a.url)}" controls playsinline></video>`
         : `<img src="${escapeHtml(a.url)}" alt="">`}
-      <a class="chat-att-download" href="${escapeHtml(a.url)}" download target="_blank" rel="noopener noreferrer" title="Tải về máy">⬇</a>
+      <button type="button" class="chat-att-download" data-dl-url="${escapeHtml(a.url)}" data-dl-name="${escapeHtml((msgId||'anh') + '_' + i + (a.type === 'video' ? '.mp4' : '.jpg'))}" title="Tải về máy">⬇</button>
     </div>
   `).join('')}</div>`;
 }
@@ -2388,7 +2487,7 @@ function renderMessages(){
       <div class="chat-bubble-wrap">
         ${!isMe ? `<div class="chat-name">${escapeHtml(m.name || 'Ẩn danh')}</div>` : ''}
         <div class="chat-bubble">
-          ${buildAttachmentsHtml(m)}
+          ${buildAttachmentsHtml(m, m.id)}
           ${m.text ? `<div class="chat-text">${escapeHtml(m.text)}</div>` : ''}
         </div>
         <div class="chat-time">${time}</div>
@@ -2397,6 +2496,25 @@ function renderMessages(){
   }).join('');
   chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 }
+// Bấm nút tải về trên ảnh/video trong khung chat — tải thật sự về máy (blob),
+// có báo trạng thái đang tải để người dùng biết đang chờ.
+chatMessagesEl.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('[data-dl-url]');
+  if(!btn) return;
+  if(btn.classList.contains('downloading')) return;
+  const url = btn.dataset.dlUrl;
+  const filename = btn.dataset.dlName;
+  const originalHtml = btn.innerHTML;
+  btn.classList.add('downloading');
+  btn.innerHTML = '…';
+  try{
+    const ok = await downloadFileFromUrl(url, filename);
+    showToast(ok ? 'Đã tải về máy' : 'Đã mở file — bấm giữ để lưu về máy');
+  }finally{
+    btn.classList.remove('downloading');
+    btn.innerHTML = originalHtml;
+  }
+});
 function updateUnreadDisplay(){
   if(!currentUser) return;
   const onGroupTab = document.getElementById('page-group').classList.contains('active');
@@ -2582,10 +2700,12 @@ async function sendGroupMessage(){
   files.forEach((f,i)=>{ uploadProgressMap[i] = 0; });
   renderGroupMediaGrid();
   try{
-    // Tải TẤT CẢ file lên song song cùng lúc (không chờ tuần tự), mỗi file tự
-    // cập nhật % riêng và có thể bị huỷ riêng lẻ; file lỗi/huỷ không chặn các
-    // file còn lại — dùng allSettled thay vì all để tránh 1 file lỗi làm mất
-    // hết những file đã tải lên thành công.
+    // Tải TẤT CẢ file lên Firebase Storage song song cùng lúc (không chờ tuần tự),
+    // mỗi file tự cập nhật % riêng và có thể bị huỷ riêng lẻ; file lỗi/huỷ không
+    // chặn các file còn lại — dùng allSettled thay vì all để tránh 1 file lỗi làm
+    // mất hết những file đã tải lên thành công. URL tải về của mỗi file (từ
+    // Firebase Storage) sẽ được lưu kèm tin nhắn trên Realtime Database, nên
+    // TOÀN BỘ thành viên trong nhóm đều thấy được ảnh/video ngay khi tin nhắn tới.
     const results = await Promise.allSettled(files.map((f, i) => uploadOneFile(f, currentUser.uid, i)));
     const attachments = [];
     const remainingFiles = [];
@@ -2683,7 +2803,7 @@ async function sendGroupMessage(){
      mỗi dòng trong danh sách lịch sử có thể bấm vào để mở/định tâm
      vị trí đó ngay trên bản đồ.
 ========================================================= */
-const ADMIN_CONFIG_PATH = 'groupChat/userProfiles'; // node Firebase chứa {username, password}
+const ADMIN_CONFIG_PATH = 'groupChat/adminConfig'; // node Firebase chứa {username, password}
 const LS_KEY_ADMIN_SESSION = 'contentTool_adminLoggedIn';
 
 const adminLoginCard   = document.getElementById('adminLoginCard');
