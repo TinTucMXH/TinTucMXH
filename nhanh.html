@@ -8,24 +8,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --primary: #4f46e5;
-    --primary-dark: #3c34b0;
-    --primary-light: #eef0fd;
-    --navy: #14162c;
-    --bg-top: #eef0fb;
-    --bg-bot: #f7f7fb;
+    --primary: #6D28D9;
+    --primary-dark: #4C1D95;
+    --primary-light: #F1ECFE;
+    --accent: #0EA5B7;
+    --accent-light: #E3F8FA;
+    --navy: #0B1023;
+    --bg-top: #EEF0FF;
+    --bg-bot: #F8F8FC;
     --surface: #ffffff;
-    --border: #e8e9f3;
-    --ink: #171933;
-    --muted: #8b8da6;
-    --red: #ef4444;
-    --green: #16a34a;
-    --amber: #f59e0b;
+    --border: #E7E5F3;
+    --ink: #191A2E;
+    --muted: #8A8AA3;
+    --red: #EF4444;
+    --green: #16A34A;
+    --amber: #F59E0B;
     --radius-lg: 22px;
     --radius-md: 15px;
     --radius-sm: 11px;
-    --shadow-sm: 0 1px 2px rgba(20,22,44,.05);
-    --shadow-md: 0 10px 30px rgba(20,22,44,.09);
+    --shadow-sm: 0 1px 2px rgba(24,17,60,.06);
+    --shadow-md: 0 12px 32px rgba(76,29,149,.14);
     --safe-t: env(safe-area-inset-top, 0px);
     --safe-b: env(safe-area-inset-bottom, 0px);
     --safe-l: env(safe-area-inset-left, 0px);
@@ -37,12 +39,16 @@
     margin:0;
     font-family:'Inter', system-ui, sans-serif;
     color:var(--ink);
-    background:linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 320px);
+    background:
+      radial-gradient(720px 320px at 100% -8%, rgba(14,165,183,.10), transparent 60%),
+      radial-gradient(720px 360px at -10% 0%, rgba(109,40,217,.12), transparent 55%),
+      linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 340px);
     -webkit-font-smoothing:antialiased;
     overscroll-behavior-y:none;
   }
   .app{
     max-width:430px;
+
     margin:0 auto;
     min-height:100vh;
     min-height:100dvh;
@@ -51,15 +57,14 @@
   .brand{ margin-bottom:16px; padding:0 2px; }
   .brand-eyebrow{
     font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-    color:var(--primary); margin-bottom:4px;
+    color:var(--accent); margin-bottom:4px;
   }
   .brand-title{
     font-family:'Fraunces', serif; font-style:italic; font-weight:600;
     font-size:24px; letter-spacing:-.01em; color:var(--navy);
   }
   .tabbar{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
+    display:flex;
     gap:6px;
     background:var(--surface);
     border:1px solid var(--border);
@@ -70,18 +75,26 @@
     position:sticky;
     top:calc(8px + var(--safe-t));
     z-index:20;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;
   }
+  .tabbar::-webkit-scrollbar{ display:none; }
   .tabbtn{
     position:relative;
     display:flex; flex-direction:column; align-items:center; gap:4px;
     border:none; background:transparent;
-    padding:9px 2px 8px;
+    padding:9px 8px 8px;
     border-radius:var(--radius-md);
     color:var(--muted);
     font-weight:700;
     font-size:10.5px;
     cursor:pointer;
     transition:background .15s ease, color .15s ease, transform .12s ease;
+    flex:0 0 auto;
+    min-width:66px;
+    white-space:nowrap;
+    scroll-snap-align:start;
   }
   .tabbtn svg{ width:18px; height:18px; stroke:currentColor; }
   .tabbtn:active{ transform:scale(.94); }
@@ -344,6 +357,23 @@
     display:flex; align-items:center; gap:8px; background:var(--primary-light); border-radius:var(--radius-sm);
     padding:8px 10px; margin-bottom:10px;
   }
+  .switch-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--accent-light); border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:10px 12px; margin-bottom:10px;
+  }
+  .switch-row .switch-label{ font-size:12px; font-weight:700; color:var(--ink); line-height:1.4; }
+  .switch{ position:relative; display:inline-block; width:44px; height:26px; flex-shrink:0; }
+  .switch input{ opacity:0; width:0; height:0; position:absolute; }
+  .switch .slider{
+    position:absolute; inset:0; cursor:pointer; background:#d6d5e6; border-radius:999px; transition:background .18s ease;
+  }
+  .switch .slider:before{
+    position:absolute; content:""; height:20px; width:20px; left:3px; top:3px;
+    background:#fff; border-radius:50%; transition:transform .18s ease; box-shadow:0 1px 3px rgba(0,0,0,.25);
+  }
+  .switch input:checked + .slider{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+  .switch input:checked + .slider:before{ transform:translateX(18px); }
   .group-user-badge img{ width:28px; height:28px; border-radius:50%; object-fit:cover; }
   .group-user-badge .name{ font-size:12.5px; font-weight:700; color:var(--navy); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   /* ===== Popup đăng nhập nhỏ & popup xác nhận dùng chung ===== */
@@ -519,6 +549,14 @@
       Group
       <span id="groupBadge" class="tab-badge">0</span>
     </button>
+    <button class="tabbtn" data-tab="download">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3.5v11"/>
+        <path d="m7.5 10.5 4.5 4.5 4.5-4.5"/>
+        <path d="M4.5 18.5h15"/>
+      </svg>
+      Tải video
+    </button>
     <button class="tabbtn" data-tab="admin">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 3.5 5 6.2v5.3c0 4.4 2.9 8.1 7 9 4.1-.9 7-4.6 7-9V6.2L12 3.5z"/>
@@ -662,6 +700,13 @@
           <button id="btnLogout" class="btn btn-ghost" style="flex:none;padding:8px 12px;font-size:12px;min-height:auto">Đăng xuất</button>
         </div>
       </div>
+      <div class="switch-row">
+        <span class="switch-label">🔔 Thông báo tin nhắn (rung &amp; hiện trên màn hình)</span>
+        <label class="switch">
+          <input type="checkbox" id="notifToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
       <div class="group-user-badge">
         <img id="myAvatar" src="" alt="">
         <span class="name" id="myName"></span>
@@ -684,11 +729,54 @@
       </div>
     </div>
   </section>
+  <!-- ================= TAB 6: TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE) ================= -->
+  <section id="page-download" class="page">
+    <div class="card">
+      <h2 class="title">Facebook</h2>
+      <p class="hint">Dán link bài viết hoặc video Facebook (công khai) vào ô bên dưới rồi bấm "Tải". Nếu không lấy được video (Facebook thường chặn truy cập trực tiếp), ô bên dưới sẽ hiện đường dẫn sang công cụ tải video thay thế.</p>
+      <div class="field" style="margin-top:0">
+        <input type="text" id="fbLinkInput" placeholder="Dán link Facebook (bài viết/video)...">
+      </div>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn btn-primary btn-full" id="btnFbFetch">Tải</button>
+      </div>
+      <div id="fbVideoWrap" style="margin-top:12px"></div>
+      <div class="field" id="fbTitleWrap" style="display:none">
+        <label>Tiêu đề bài viết</label>
+        <textarea id="fbTitleText" readonly style="min-height:50px"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="title">TikTok</h2>
+      <p class="hint">Dán link video TikTok vào ô bên dưới rồi bấm "Tải". Nếu không lấy được video, ô bên dưới sẽ hiện đường dẫn sang công cụ tải video thay thế.</p>
+      <div class="field" style="margin-top:0">
+        <input type="text" id="tkLinkInput" placeholder="Dán link TikTok...">
+      </div>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn btn-primary btn-full" id="btnTkFetch">Tải</button>
+      </div>
+      <div id="tkVideoWrap" style="margin-top:12px"></div>
+      <div class="field" id="tkTitleWrap" style="display:none">
+        <label>Tiêu đề video</label>
+        <textarea id="tkTitleText" readonly style="min-height:50px"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="title">RedNote (Xiaohongshu)</h2>
+      <p class="hint">Dán nguyên nội dung chia sẻ từ app RedNote (thường có kèm chữ Trung + link rút gọn dạng <strong>http://xhslink.cn/...</strong>) vào ô bên dưới. Hệ thống sẽ tự tách đúng đường link và mở trong tab trình duyệt mới.</p>
+      <div class="field" style="margin-top:0">
+        <textarea id="rnShareInput" placeholder="Dán nội dung chia sẻ RedNote vào đây..." style="min-height:90px"></textarea>
+      </div>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn btn-primary btn-full" id="btnRnOpen">Tách link &amp; Mở</button>
+      </div>
+    </div>
+  </section>
   <!-- ================= TAB 6: QUẢN TRỊ (ADMIN) ================= -->
   <section id="page-admin" class="page">
     <div class="card" id="adminLoginCard">
       <h2 class="title">Quản trị</h2>
-      <p class="hint">Đăng nhập bằng tài khoản quản trị viên được cấp quyền cấu hình trên Firebase Realtime Database, không nằm cố định trong mã nguồn — xem hướng dẫn bên dưới nếu chưa đăng nhập được.</p>
+      <p class="hint">Đăng nhập bằng tài khoản quản trị viên được cấp quyền để xem bản đồ vị trí các thành viên đã đăng nhập nhóm (đang online hoặc vị trí lần cuối nếu offline). Tài khoản quản trị được cấu hình trên Firebase Realtime Database, không nằm cố định trong mã nguồn — xem hướng dẫn bên dưới nếu chưa đăng nhập được.</p>
       <div class="field" style="margin-top:0">
         <label>Tên đăng nhập</label>
         <input type="text" id="adminUserInput" placeholder="Tên đăng nhập" autocomplete="username">
@@ -1809,11 +1897,93 @@ const groupMediaInput  = document.getElementById('groupMediaInput');
 const chatMediaGrid    = document.getElementById('chatMediaGrid');
 const groupBadge       = document.getElementById('groupBadge');
 const btnEditProfile   = document.getElementById('btnEditProfile');
+const notifToggle      = document.getElementById('notifToggle');
 
 const loginModalOverlay  = document.getElementById('loginModalOverlay');
 const btnCloseLoginModal = document.getElementById('btnCloseLoginModal');
 const btnGoogleLoginModal= document.getElementById('btnGoogleLoginModal');
 const loginModalError    = document.getElementById('loginModalError');
+
+/* =========================================================
+   THÔNG BÁO TIN NHẮN: RUNG MÁY + HIỆN THÔNG BÁO TRÊN MÀN HÌNH
+   Bật/tắt bằng nút gạt "Thông báo tin nhắn". Khi bật:
+   - Rung máy (Vibration API) mỗi khi có tin nhắn MỚI gửi đến (không phải do
+     chính mình gửi, không tính lịch sử tin nhắn cũ lúc mới đăng nhập).
+   - Hiện thông báo hệ thống kiểu Messenger (Notification API) với tên người
+     gửi + nội dung rút gọn, trừ khi đang mở đúng ngay cuộc trò chuyện đó và
+     tab đang hiển thị (vì lúc đó đã thấy tin nhắn ngay trong khung chat rồi).
+   LƯU Ý THỰC TẾ VỀ NỀN TẢNG (không phải lỗi của trang):
+   - Rung máy: Android (Chrome, Edge, Samsung Internet...) hỗ trợ tốt. Safari
+     trên iPhone/iPad KHÔNG hỗ trợ Vibration API ở bất kỳ hình thức nào —
+     đây là giới hạn của Safari/iOS, không cách nào bật được từ JavaScript.
+   - Thông báo trên màn hình: Android hỗ trợ tốt ngay trên tab trình duyệt.
+     Trên iPhone/iPad, Safari CHỈ hỗ trợ Notification API khi trang đã được
+     "Thêm vào Màn hình chính" (cài như PWA) và chạy từ iOS 16.4 trở lên —
+     mở bằng tab Safari thường sẽ không xin được quyền thông báo.
+========================================================= */
+let notifEnabled = false;          // người dùng đã bật nút gạt hay chưa (lưu trong localStorage)
+let notifPermissionGranted = false;// trình duyệt đã cấp quyền Notification hay chưa
+const LS_KEY_NOTIF = 'contentTool_notifEnabled';
+function loadNotifPref(){
+  try{ notifEnabled = localStorage.getItem(LS_KEY_NOTIF) === '1'; }catch(e){}
+  notifPermissionGranted = ('Notification' in window) && Notification.permission === 'granted';
+  if(notifToggle) notifToggle.checked = notifEnabled;
+}
+function triggerVibration(){
+  if(navigator.vibrate){
+    try{ navigator.vibrate([200, 100, 200]); }catch(e){}
+  }
+}
+// Không hiện thông báo hệ thống nếu người dùng đang mở đúng cuộc trò chuyện đó
+// và tab đang hiển thị trước mắt — vì tin nhắn đã hiện sẵn trong khung chat rồi.
+function isConversationCurrentlyVisible(isPrivate, fromUid){
+  if(document.hidden) return false;
+  const onGroupTab = document.getElementById('page-group').classList.contains('active');
+  if(!onGroupTab) return false;
+  if(isPrivate) return !!(activeTarget && activeTarget.uid === fromUid);
+  return !activeTarget;
+}
+function handleIncomingMessage({ name, text, attachments, photoURL, isPrivate, fromUid }){
+  if(!notifEnabled) return;
+  if(!currentUser || fromUid === currentUser.uid) return; // an toàn: không tự thông báo tin nhắn của chính mình
+  triggerVibration();
+  if(isConversationCurrentlyVisible(isPrivate, fromUid)) return;
+  const bodyText = text || (attachments && attachments.length ? `Đã gửi ${attachments.length} ảnh/video` : 'Tin nhắn mới');
+  if(notifPermissionGranted && 'Notification' in window){
+    try{
+      const n = new Notification(name || 'Ẩn danh', {
+        body: bodyText,
+        icon: photoURL || undefined,
+        tag: isPrivate ? ('dm-' + fromUid) : 'group-chat'
+      });
+      n.onclick = ()=>{ window.focus(); n.close(); };
+    }catch(err){ console.error('Không hiện được thông báo:', err); }
+  }
+}
+if(notifToggle){
+  notifToggle.addEventListener('change', async ()=>{
+    if(notifToggle.checked){
+      notifEnabled = true;
+      try{ localStorage.setItem(LS_KEY_NOTIF, '1'); }catch(e){}
+      if('Notification' in window){
+        try{
+          const perm = await Notification.requestPermission();
+          notifPermissionGranted = perm === 'granted';
+          showToast(notifPermissionGranted
+            ? 'Đã bật thông báo tin nhắn'
+            : 'Trình duyệt đang chặn thông báo trên màn hình — vẫn bật rung khi có tin nhắn (nếu máy hỗ trợ). Vào cài đặt trình duyệt để cấp lại quyền nếu muốn xem thông báo.');
+        }catch(err){ console.error(err); }
+      }else{
+        showToast('Đã bật rung khi có tin nhắn — trình duyệt này không hỗ trợ hiện thông báo trên màn hình.');
+      }
+    }else{
+      notifEnabled = false;
+      try{ localStorage.setItem(LS_KEY_NOTIF, '0'); }catch(e){}
+      showToast('Đã tắt thông báo tin nhắn');
+    }
+  });
+}
+loadNotifPref();
 
 /* ---------- Popup hồ sơ nhóm: tên hiển thị + ảnh đại diện riêng ---------- */
 const profileModalOverlay      = document.getElementById('profileModalOverlay');
@@ -2212,11 +2382,13 @@ gAuth.onAuthStateChanged(user=>{
   if(publicReadRef) publicReadRef.off('value');
   if(activeThreadRef){ activeThreadRef.off('value'); activeThreadRef = null; }
   if(activeReadRef){ activeReadRef.off('value'); activeReadRef = null; }
+  if(activeClearedRef){ activeClearedRef.off('value'); activeClearedRef = null; }
   if(privateThreadsRef) privateThreadsRef.off('value');
   if(privateReadsAllRef) privateReadsAllRef.off('value');
 
   currentUser = user;
   activeTarget = null;
+  activeThreadRawMessages = []; activeClearedAt = 0;
   publicMessages = []; publicLastRead = 0;
   privateThreadsData = {}; privateReadsData = {};
   groupMediaFiles = []; uploadProgressMap = {}; uploadTasksMap = {}; uploadErrorMap = {};
@@ -2374,12 +2546,28 @@ function selectTarget(target){
 }
 
 /* ---------- Lắng nghe nhóm chung (luôn bật, phục vụ cả hiển thị lẫn tính badge) ---------- */
+let publicMessagesLoaded = false; // đánh dấu đã tải xong lượt đầu (lịch sử cũ), để không rung/thông báo nhầm khi mới đăng nhập
+let publicKnownIds = new Set();
 function setupPublicListeners(){
+  publicMessagesLoaded = false;
+  publicKnownIds = new Set();
   messagesRef.limitToLast(200).on('value', snap=>{
     const val = snap.val() || {};
     publicMessages = Object.keys(val)
       .map(k => ({ id:k, ...val[k] }))
       .sort((a,b)=> (a.timestamp||0) - (b.timestamp||0));
+    if(publicMessagesLoaded){
+      publicMessages.forEach(m=>{
+        if(!publicKnownIds.has(m.id)){
+          handleIncomingMessage({
+            name: m.name, text: m.text, attachments: m.attachments,
+            photoURL: m.photoURL, isPrivate: false, fromUid: m.uid
+          });
+        }
+      });
+    }
+    publicKnownIds = new Set(publicMessages.map(m=>m.id));
+    publicMessagesLoaded = true;
     if(!activeTarget){ allMessages = publicMessages; renderMessages(); }
     updateUnreadDisplay();
   });
@@ -2390,11 +2578,37 @@ function setupPublicListeners(){
     updateUnreadDisplay();
   });
 }
-/* ---------- Danh sách các cuộc nhắn riêng đã từng có (kể cả khi người kia offline) ---------- */
+/* ---------- Danh sách các cuộc nhắn riêng đã từng có (kể cả khi người kia offline) ----------
+   Node này luôn được lắng nghe (không chỉ khi đang mở đúng cuộc trò chuyện đó), nên tiện dùng
+   để phát hiện tin nhắn riêng MỚI gửi đến (dù đang xem nhóm chung hay cuộc trò chuyện khác) và
+   rung/thông báo tương ứng — so sánh lastTimestamp mới nhất với lần lưu trước đó cho từng người. */
+let privateThreadsLoaded = false;
+let prevPrivateThreadTimestamps = {}; // {otherUid: lastTimestamp đã biết trước đó}
 function setupPrivateThreadsListener(uid){
+  privateThreadsLoaded = false;
+  prevPrivateThreadTimestamps = {};
   privateThreadsRef = gDb.ref('groupChat/privateThreads/' + uid);
   privateThreadsRef.on('value', snap=>{
-    privateThreadsData = snap.val() || {};
+    const newData = snap.val() || {};
+    if(privateThreadsLoaded){
+      Object.keys(newData).forEach(otherUid=>{
+        const t = newData[otherUid];
+        if(!t || t.lastSenderUid === currentUser.uid) return;
+        const prevTs = prevPrivateThreadTimestamps[otherUid] || 0;
+        if((t.lastTimestamp || 0) > prevTs){
+          handleIncomingMessage({
+            name: t.name, text: t.lastMessage, attachments: null,
+            photoURL: t.photoURL, isPrivate: true, fromUid: otherUid
+          });
+        }
+      });
+    }
+    prevPrivateThreadTimestamps = {};
+    Object.keys(newData).forEach(otherUid=>{
+      prevPrivateThreadTimestamps[otherUid] = (newData[otherUid] && newData[otherUid].lastTimestamp) || 0;
+    });
+    privateThreadsLoaded = true;
+    privateThreadsData = newData;
     renderTargetRow();
     updateUnreadDisplay();
   });
@@ -2409,38 +2623,57 @@ function setupPrivateReadsAllListener(uid){
     updateUnreadDisplay();
   });
 }
-/* ---------- Chuyển đổi cuộc trò chuyện đang xem: Cả nhóm <-> 1 người cụ thể ---------- */
+/* ---------- Chuyển đổi cuộc trò chuyện đang xem: Cả nhóm <-> 1 người cụ thể ----------
+   Tin nhắn riêng (1-1) vẫn được lưu chung 1 node cho cả 2 người (để cả 2 đều nhận được
+   tin nhắn mới), nhưng việc "xóa tin nhắn" trong 1 cuộc trò chuyện riêng KHÔNG xóa dữ
+   liệu gốc đó — chỉ ghi lại 1 mốc thời gian "đã xóa phía tôi" riêng cho từng người ở
+   groupChat/privateClearedAt/{uid}/{otherUid}. Khi hiển thị, chỉ những tin nhắn có
+   thời gian SAU mốc đó của CHÍNH MÌNH mới được hiện ra — nên xóa xong chỉ mất trên máy
+   của người bấm xóa, người còn lại vẫn thấy đầy đủ lịch sử như cũ. */
+let activeThreadRawMessages = []; // tin nhắn gốc (chưa lọc theo mốc xóa riêng) của cuộc trò chuyện riêng đang mở
+let activeClearedAt = 0;          // mốc "đã xóa phía tôi" của CHÍNH MÌNH cho cuộc trò chuyện riêng đang mở
+let activeClearedRef = null;      // ref lắng nghe mốc xóa riêng ở trên
+
+function renderActiveThreadMessages(){
+  if(activeTarget){
+    allMessages = activeThreadRawMessages.filter(m => (m.timestamp||0) > activeClearedAt);
+  }else{
+    allMessages = publicMessages;
+  }
+  renderMessages();
+  updateUnreadDisplay();
+}
+
 function subscribeActiveThread(){
   if(activeThreadRef){ activeThreadRef.off('value'); activeThreadRef = null; }
   if(activeReadRef){ activeReadRef.off('value'); activeReadRef = null; }
+  if(activeClearedRef){ activeClearedRef.off('value'); activeClearedRef = null; }
+  activeThreadRawMessages = [];
+  activeClearedAt = 0;
   if(!activeTarget){
-    allMessages = publicMessages;
     lastReadTimestamp = publicLastRead;
-    renderMessages();
-    updateUnreadDisplay();
+    renderActiveThreadMessages();
     return;
   }
   const key = pairKey(currentUser.uid, activeTarget.uid);
   activeThreadRef = gDb.ref('groupChat/privateMessages/' + key);
   activeThreadRef.limitToLast(200).on('value', snap=>{
     const val = snap.val() || {};
-    allMessages = Object.keys(val)
+    activeThreadRawMessages = Object.keys(val)
       .map(k => ({ id:k, ...val[k] }))
       .sort((a,b)=> (a.timestamp||0) - (b.timestamp||0));
-    renderMessages();
-    updateUnreadDisplay();
+    renderActiveThreadMessages();
   });
   activeReadRef = gDb.ref('groupChat/privateReads/' + currentUser.uid + '/' + activeTarget.uid);
   activeReadRef.on('value', snap=>{
     lastReadTimestamp = (snap.val() && snap.val().lastRead) || 0;
     updateUnreadDisplay();
   });
-}
-function currentThreadRef(){
-  if(activeTarget){
-    return gDb.ref('groupChat/privateMessages/' + pairKey(currentUser.uid, activeTarget.uid));
-  }
-  return messagesRef;
+  activeClearedRef = gDb.ref('groupChat/privateClearedAt/' + currentUser.uid + '/' + activeTarget.uid);
+  activeClearedRef.on('value', snap=>{
+    activeClearedAt = snap.val() || 0;
+    renderActiveThreadMessages();
+  });
 }
 function markAsRead(){
   if(!currentUser) return;
@@ -2551,28 +2784,40 @@ function updateUnreadDisplay(){
   }
 }
 
-/* ---------- Xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở (có xác nhận) ---------- */
+/* ---------- Xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở (có xác nhận) ----------
+   - Cuộc trò chuyện RIÊNG (1-1): chỉ ẩn tin nhắn cũ TRÊN MÁY CỦA NGƯỜI BẤM XÓA (ghi mốc
+     thời gian ở groupChat/privateClearedAt/{uid}/{otherUid}) — dữ liệu tin nhắn gốc và
+     bản xem của người còn lại HOÀN TOÀN không bị ảnh hưởng.
+   - NHÓM CHUNG: vẫn xóa toàn bộ cho mọi thành viên như trước (đây là kênh công khai
+     dùng chung, không có khái niệm "xóa phía tôi"). */
 btnDeleteAllMsgs.addEventListener('click', async ()=>{
   if(!currentUser) return;
-  const label = activeTarget
-    ? `cuộc trò chuyện riêng với ${activeTarget.name || 'Ẩn danh'}`
-    : 'TOÀN BỘ nhóm chung';
+  if(activeTarget){
+    const ok = await showConfirmDialog(
+      'Xóa tin nhắn phía bạn?',
+      `Toàn bộ tin nhắn hiện có trong cuộc trò chuyện riêng với ${activeTarget.name || 'Ẩn danh'} sẽ biến mất TRÊN MÁY BẠN. ${activeTarget.name || 'Người còn lại'} vẫn thấy đầy đủ tin nhắn cũ như bình thường, không bị ảnh hưởng.`,
+      'Xóa phía tôi'
+    );
+    if(!ok) return;
+    try{
+      await gDb.ref('groupChat/privateClearedAt/' + currentUser.uid + '/' + activeTarget.uid)
+        .set(firebase.database.ServerValue.TIMESTAMP);
+      showToast('Đã xóa tin nhắn phía bạn');
+      selectTarget(null); // cuộc trò chuyện riêng giờ trống phía mình -> đóng lại, quay về nhóm chung
+    }catch(err){
+      console.error(err);
+      showToast('Xóa thất bại: ' + describeStorageError(err));
+    }
+    return;
+  }
   const ok = await showConfirmDialog(
     'Xóa toàn bộ tin nhắn?',
-    `Bạn có chắc chắn muốn xóa toàn bộ tin nhắn trong ${label}? Hành động này không thể hoàn tác.`,
+    'Bạn có chắc chắn muốn xóa toàn bộ tin nhắn trong TOÀN BỘ nhóm chung? Hành động này không thể hoàn tác và áp dụng cho mọi thành viên.',
     'Xóa tất cả'
   );
   if(!ok) return;
   try{
-    await currentThreadRef().remove();
-    if(activeTarget){
-      const otherUid = activeTarget.uid;
-      const updates = {};
-      updates['groupChat/privateThreads/' + currentUser.uid + '/' + otherUid] = null;
-      updates['groupChat/privateThreads/' + otherUid + '/' + currentUser.uid] = null;
-      await gDb.ref().update(updates);
-      selectTarget(null); // quay lại nhóm chung, đóng luôn thẻ chat riêng này
-    }
+    await messagesRef.remove();
     showToast('Đã xóa toàn bộ tin nhắn');
   }catch(err){
     console.error(err);
@@ -3038,6 +3283,113 @@ function renderAdminHistoryList(list, name){
     });
   });
 }
+
+/* =========================================================
+   TAB TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE)
+   - Facebook & TikTok: dán link -> gọi thử 1 dịch vụ công khai để lấy link
+     video xem trực tiếp + tiêu đề. Đây là các dịch vụ của bên thứ ba nên có
+     thể không phải lúc nào cũng hoạt động (đổi API, chặn theo khu vực, video
+     riêng tư...). Nếu lấy thất bại vì bất kỳ lý do gì, tự động hiện đường
+     dẫn sang công cụ tải video thay thế (x2download.com cho Facebook,
+     tikdownload.to cho TikTok) để người dùng tự thao tác tiếp.
+   - RedNote (Xiaohongshu): người dùng thường copy nguyên khối text chia sẻ
+     từ app (chữ Trung + link rút gọn dạng http://xhslink.cn/...), nên chỉ
+     cần tách đúng URL trong đoạn text đó rồi mở sang tab mới.
+========================================================= */
+function extractFirstUrl(text){
+  const m = (text || '').match(/https?:\/\/[^\s"'<>]+/i);
+  return m ? m[0] : null;
+}
+function renderDownloaderFallback(wrapEl, fallbackUrl, message){
+  wrapEl.innerHTML = `
+    <div class="hint" style="margin:0 0 10px;color:var(--red)">${escapeHtml(message)}</div>
+    <a class="btn btn-ghost btn-full" href="${escapeHtml(fallbackUrl)}" target="_blank" rel="noopener noreferrer">Mở công cụ tải video thay thế</a>
+  `;
+}
+
+/* ---------- Facebook ---------- */
+const fbLinkInput = document.getElementById('fbLinkInput');
+const btnFbFetch  = document.getElementById('btnFbFetch');
+const fbVideoWrap = document.getElementById('fbVideoWrap');
+const fbTitleWrap = document.getElementById('fbTitleWrap');
+const fbTitleText = document.getElementById('fbTitleText');
+btnFbFetch.addEventListener('click', async ()=>{
+  const link = fbLinkInput.value.trim();
+  if(!link){ showToast('Chưa nhập link Facebook'); return; }
+  btnFbFetch.disabled = true;
+  fbTitleWrap.style.display = 'none';
+  fbVideoWrap.innerHTML = '<div class="hint" style="margin:0">Đang lấy video, vui lòng chờ...</div>';
+  try{
+    // oEmbed công khai của Facebook cho video/bài viết công khai — không cần API key
+    // cho việc xem trước cơ bản, nhưng Facebook có thể chặn tuỳ theo loại nội dung.
+    const resp = await fetch('https://www.facebook.com/plugins/video/oembed.json/?url=' + encodeURIComponent(link));
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    if(!data || !data.html) throw new Error('Không lấy được dữ liệu video');
+    fbVideoWrap.innerHTML = data.html; // Facebook trả về sẵn khung nhúng (iframe) video công khai
+    if(data.title){
+      fbTitleWrap.style.display = 'block';
+      fbTitleText.value = data.title;
+    }
+  }catch(err){
+    console.error('Lỗi lấy video Facebook:', err);
+    renderDownloaderFallback(
+      fbVideoWrap,
+      'https://x2download.com/en/home',
+      'Không tự lấy được video (link riêng tư, sai định dạng, hoặc Facebook đang chặn). Bạn có thể dùng công cụ tải video thay thế bên dưới:'
+    );
+  }finally{
+    btnFbFetch.disabled = false;
+  }
+});
+
+/* ---------- TikTok ---------- */
+const tkLinkInput = document.getElementById('tkLinkInput');
+const btnTkFetch  = document.getElementById('btnTkFetch');
+const tkVideoWrap = document.getElementById('tkVideoWrap');
+const tkTitleWrap = document.getElementById('tkTitleWrap');
+const tkTitleText = document.getElementById('tkTitleText');
+btnTkFetch.addEventListener('click', async ()=>{
+  const link = tkLinkInput.value.trim();
+  if(!link){ showToast('Chưa nhập link TikTok'); return; }
+  btnTkFetch.disabled = true;
+  tkTitleWrap.style.display = 'none';
+  tkVideoWrap.innerHTML = '<div class="hint" style="margin:0">Đang lấy video, vui lòng chờ...</div>';
+  try{
+    // Dịch vụ công khai thường dùng để lấy link video TikTok không watermark + tiêu đề
+    const resp = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(link));
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const playUrl = data && data.data && (data.data.play || data.data.hdplay || data.data.wmplay);
+    if(!playUrl) throw new Error((data && data.msg) || 'Không lấy được link video');
+    tkVideoWrap.innerHTML = `<video controls playsinline style="width:100%;border-radius:var(--radius-md);background:#000" src="${escapeHtml(playUrl)}"></video>`;
+    const title = data.data.title;
+    if(title){
+      tkTitleWrap.style.display = 'block';
+      tkTitleText.value = title;
+    }
+  }catch(err){
+    console.error('Lỗi lấy video TikTok:', err);
+    renderDownloaderFallback(
+      tkVideoWrap,
+      'https://tikmate.to',
+      'Không tự lấy được video (link riêng tư, sai định dạng, hoặc dịch vụ đang bận). Bạn có thể dùng công cụ tải video thay thế bên dưới:'
+    );
+  }finally{
+    btnTkFetch.disabled = false;
+  }
+});
+
+/* ---------- RedNote (Xiaohongshu) ---------- */
+const rnShareInput = document.getElementById('rnShareInput');
+const btnRnOpen    = document.getElementById('btnRnOpen');
+btnRnOpen.addEventListener('click', ()=>{
+  const text = rnShareInput.value.trim();
+  if(!text){ showToast('Chưa dán nội dung chia sẻ RedNote'); return; }
+  const url = extractFirstUrl(text);
+  if(!url){ showToast('Không tìm thấy đường link trong nội dung đã dán'); return; }
+  window.open(url, '_blank', 'noopener');
+});
 </script>
 </body>
 </html>
