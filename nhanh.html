@@ -3445,6 +3445,242 @@ function renderAdminHistoryList(list, name){
     });
   });
 }
+/* =========================================================
+   TAB TẢI VIDEO — TỆP ĐÃ TẢI VỀ (lịch sử + kiểu hiển thị + lưu vào thư viện ảnh)
+   - Mỗi khi lấy được 1 video/ảnh trực tiếp từ TikTok hoặc RedNote (có URL file
+     thật, xem trước được ngay trong trang), người dùng bấm nút "Lưu vào Tệp đã
+     tải" trên khung xem trước để thêm vào danh sách này (lưu trong localStorage,
+     tồn tại lâu dài trên máy, không cần đăng nhập).
+     Facebook chỉ nhúng bằng iframe công khai (không có URL file trực tiếp do giới
+     hạn của Facebook) nên không có nút này — vẫn dùng công cụ tải thay thế như cũ.
+   - Danh sách hỗ trợ 2 kiểu hiển thị: LƯỚI (ảnh/video lớn, dễ duyệt nhanh) và
+     DANH SÁCH (dòng ngang, dễ đọc tiêu đề dài) — lựa chọn được ghi nhớ lại.
+   - Chọn 1 hoặc nhiều mục (bấm vào thẻ để chọn, hoặc "Chọn tất cả"), rồi:
+     • "Lưu về thư viện": với TỪNG mục đã chọn, tải file về dạng blob rồi ưu tiên
+       mở khung chia sẻ hệ thống (Web Share API, navigator.share với files) —
+       đây là cách chuẩn để mời người dùng "Lưu ảnh/video" vào thư viện ảnh trên
+       iOS Safari, hoặc "Lưu vào bộ sưu tập/Files" trên Android Chrome. Nếu máy
+       không hỗ trợ chia sẻ file (máy tính, trình duyệt cũ...), tự động chuyển
+       sang tải file .jpg/.mp4 về thư mục Downloads như bình thường.
+     • "Xóa mục đã chọn": xóa khỏi danh sách đã lưu (không ảnh hưởng file đã lưu
+       trước đó trên máy, chỉ xóa khỏi lịch sử trong app này).
+========================================================= */
+const LS_KEY_DOWNLOADED_FILES = 'contentTool_downloadedFiles';
+const LS_KEY_DL_VIEW_MODE = 'contentTool_dlViewMode';
+const dlContainer      = document.getElementById('dlContainer');
+const dlViewToggle     = document.getElementById('dlViewToggle');
+const dlSelectAll      = document.getElementById('dlSelectAll');
+const dlSelectAllLabel = document.getElementById('dlSelectAllLabel');
+const btnDlSaveSelected   = document.getElementById('btnDlSaveSelected');
+const btnDlDeleteSelected = document.getElementById('btnDlDeleteSelected');
+
+let downloadedFiles = [];        // [{id, title, url, mediaType:'video'|'image', source, addedAt}]
+let dlViewMode = 'grid';         // 'grid' | 'list'
+let dlSelectedIds = new Set();
+
+function loadDownloadedFiles(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(LS_KEY_DOWNLOADED_FILES) || '[]');
+    downloadedFiles = Array.isArray(saved) ? saved : [];
+  }catch(e){ downloadedFiles = []; }
+  try{
+    const savedView = localStorage.getItem(LS_KEY_DL_VIEW_MODE);
+    if(savedView === 'grid' || savedView === 'list') dlViewMode = savedView;
+  }catch(e){}
+}
+function persistDownloadedFiles(){
+  try{ localStorage.setItem(LS_KEY_DOWNLOADED_FILES, JSON.stringify(downloadedFiles)); }catch(e){}
+}
+function addDownloadedFile({ title, url, mediaType, source }){
+  if(!url) return;
+  // Tránh thêm trùng: cùng URL thì cập nhật lại (đưa lên đầu) thay vì thêm bản mới
+  downloadedFiles = downloadedFiles.filter(f => f.url !== url);
+  downloadedFiles.unshift({
+    id: 'dl_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
+    title: title || 'Không có tiêu đề',
+    url,
+    mediaType: mediaType === 'video' ? 'video' : 'image',
+    source: source || 'khác',
+    addedAt: Date.now()
+  });
+  // Giới hạn số lượng lưu lại để tránh localStorage quá tải
+  if(downloadedFiles.length > 150) downloadedFiles = downloadedFiles.slice(0, 150);
+  persistDownloadedFiles();
+  renderDownloadedFiles();
+  showToast('Đã thêm vào Tệp đã tải');
+}
+function sourceLabel(src){
+  if(src === 'tiktok') return 'TikTok';
+  if(src === 'rednote') return 'RedNote';
+  if(src === 'facebook') return 'Facebook';
+  return 'Khác';
+}
+function fmtDlTime(ts){
+  if(!ts) return '';
+  return new Date(ts).toLocaleString('vi-VN');
+}
+function dlUpdateSelectAllLabel(){
+  const total = downloadedFiles.length;
+  const selectedCount = dlSelectedIds.size;
+  dlSelectAllLabel.textContent = `Chọn tất cả (${selectedCount}/${total})`;
+  dlSelectAll.checked = total > 0 && selectedCount === total;
+}
+function renderDownloadedFiles(){
+  // Bỏ các id đã chọn nhưng không còn tồn tại trong danh sách (vd sau khi xóa)
+  const existingIds = new Set(downloadedFiles.map(f=>f.id));
+  dlSelectedIds.forEach(id=>{ if(!existingIds.has(id)) dlSelectedIds.delete(id); });
+
+  if(downloadedFiles.length === 0){
+    dlContainer.innerHTML = '<div class="dl-empty">Chưa có tệp nào được lưu — hãy tải 1 video ở bên dưới rồi bấm "Lưu vào Tệp đã tải".</div>';
+    dlUpdateSelectAllLabel();
+    return;
+  }
+
+  if(dlViewMode === 'list'){
+    dlContainer.innerHTML = `<div class="dl-list">${downloadedFiles.map(f=>{
+      const selected = dlSelectedIds.has(f.id);
+      const thumb = f.mediaType === 'video'
+        ? `<video src="${escapeHtml(f.url)}" muted playsinline preload="metadata"></video>`
+        : `<img src="${escapeHtml(f.url)}" alt="">`;
+      return `<div class="dl-row ${selected ? 'selected' : ''}" data-id="${f.id}">
+        <div class="dl-check">${selected ? '✓' : ''}</div>
+        <div class="dl-row-thumb">${thumb}</div>
+        <div class="dl-row-body">
+          <div class="dl-row-title">${escapeHtml(f.title)}</div>
+          <div class="dl-row-meta">${sourceLabel(f.source)} · ${f.mediaType === 'video' ? 'Video' : 'Ảnh'} · ${fmtDlTime(f.addedAt)}</div>
+        </div>
+        <button type="button" class="dl-save-item" data-save-one="${f.id}" title="Lưu về thư viện">⬇</button>
+      </div>`;
+    }).join('')}</div>`;
+  }else{
+    dlContainer.innerHTML = `<div class="dl-grid">${downloadedFiles.map(f=>{
+      const selected = dlSelectedIds.has(f.id);
+      const media = f.mediaType === 'video'
+        ? `<video src="${escapeHtml(f.url)}" muted playsinline preload="metadata"></video>`
+        : `<img src="${escapeHtml(f.url)}" alt="">`;
+      return `<div class="dl-card ${selected ? 'selected' : ''}" data-id="${f.id}">
+        ${media}
+        <div class="dl-check">${selected ? '✓' : ''}</div>
+        <div class="dl-src-badge">${sourceLabel(f.source)}</div>
+        <div class="dl-caption">${escapeHtml(f.title)}</div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+  dlUpdateSelectAllLabel();
+}
+// Bấm vào thẻ/dòng (ngoài nút lưu riêng) để chọn/bỏ chọn mục đó
+dlContainer.addEventListener('click', (e)=>{
+  const saveOneBtn = e.target.closest('[data-save-one]');
+  if(saveOneBtn){
+    const f = downloadedFiles.find(x => x.id === saveOneBtn.dataset.saveOne);
+    if(f) saveFilesToLibrary([f]);
+    return;
+  }
+  const card = e.target.closest('[data-id]');
+  if(!card) return;
+  const id = card.dataset.id;
+  if(dlSelectedIds.has(id)) dlSelectedIds.delete(id); else dlSelectedIds.add(id);
+  renderDownloadedFiles();
+});
+dlSelectAll.addEventListener('change', ()=>{
+  if(dlSelectAll.checked){
+    dlSelectedIds = new Set(downloadedFiles.map(f=>f.id));
+  }else{
+    dlSelectedIds.clear();
+  }
+  renderDownloadedFiles();
+});
+dlViewToggle.addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-view]');
+  if(!btn) return;
+  dlViewMode = btn.dataset.view;
+  try{ localStorage.setItem(LS_KEY_DL_VIEW_MODE, dlViewMode); }catch(err){}
+  dlViewToggle.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b === btn));
+  renderDownloadedFiles();
+});
+(function initDlViewToggleButtons(){
+  dlViewToggle.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.dataset.view === dlViewMode));
+})();
+
+/* ---------- Lưu 1 hoặc nhiều mục vào thư viện ảnh của điện thoại ----------
+   Ưu tiên Web Share API (navigator.share với mảng files): đây là cách duy nhất
+   trên web mở được đúng khung "Lưu vào thư viện ảnh" của hệ điều hành —
+   iOS Safari hiện nút "Lưu ảnh/Lưu video" ngay trong khung chia sẻ, Android
+   Chrome hiện tùy chọn lưu vào Files/bộ sưu tập tương tự. Nếu trình duyệt/máy
+   không hỗ trợ chia sẻ file (thường là máy tính), tự động chuyển sang tải file
+   .jpg/.mp4 thẳng về thư mục Downloads bằng downloadFileFromUrl() như cũ. */
+async function urlToFile(url, filename, mediaType){
+  const resp = await fetch(url);
+  if(!resp.ok) throw new Error('HTTP ' + resp.status);
+  const blob = await resp.blob();
+  const type = blob.type || (mediaType === 'video' ? 'video/mp4' : 'image/jpeg');
+  return new File([blob], filename, { type });
+}
+async function saveFilesToLibrary(items){
+  if(!items || items.length === 0) return;
+  btnDlSaveSelected.disabled = true;
+  let savedCount = 0, failedCount = 0;
+  try{
+    for(const f of items){
+      const ext = f.mediaType === 'video' ? '.mp4' : '.jpg';
+      const filename = (f.title || 'tai-ve').replace(/[\\/:*?"<>|]+/g, '_').slice(0, 60) + ext;
+      try{
+        const file = await urlToFile(f.url, filename, f.mediaType);
+        const canShareFile = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+        if(navigator.share && canShareFile){
+          try{
+            await navigator.share({ files: [file], title: f.title || undefined });
+            savedCount++;
+          }catch(shareErr){
+            if(shareErr && shareErr.name === 'AbortError'){
+              // Người dùng tự đóng khung chia sẻ — không tính là lỗi
+            }else{
+              // Chia sẻ thất bại vì lý do khác -> vẫn tải file về Downloads để không mất công
+              await downloadFileFromUrl(f.url, filename);
+              savedCount++;
+            }
+          }
+        }else{
+          await downloadFileFromUrl(f.url, filename);
+          savedCount++;
+        }
+      }catch(err){
+        console.error('Lỗi lưu tệp về thư viện:', err);
+        failedCount++;
+      }
+    }
+  }finally{
+    btnDlSaveSelected.disabled = false;
+  }
+  if(savedCount > 0 && failedCount === 0){
+    showToast(items.length === 1 ? 'Đã mở khung lưu về thư viện' : `Đã xử lý ${savedCount} tệp — làm theo khung chia sẻ để lưu vào thư viện ảnh`);
+  }else if(savedCount > 0 && failedCount > 0){
+    showToast(`Đã xử lý ${savedCount} tệp, ${failedCount} tệp thất bại`);
+  }else{
+    showToast('Lưu về thư viện thất bại, vui lòng thử lại');
+  }
+}
+btnDlSaveSelected.addEventListener('click', ()=>{
+  const items = downloadedFiles.filter(f => dlSelectedIds.has(f.id));
+  if(items.length === 0){ showToast('Chưa chọn tệp nào'); return; }
+  saveFilesToLibrary(items);
+});
+btnDlDeleteSelected.addEventListener('click', async ()=>{
+  if(dlSelectedIds.size === 0){ showToast('Chưa chọn tệp nào'); return; }
+  const ok = await showConfirmDialog(
+    'Xóa các tệp đã chọn?',
+    `Sẽ xóa ${dlSelectedIds.size} tệp khỏi danh sách "Tệp đã tải về" trong app này (không xóa file đã lưu trước đó trên máy bạn).`,
+    'Xóa'
+  );
+  if(!ok) return;
+  downloadedFiles = downloadedFiles.filter(f => !dlSelectedIds.has(f.id));
+  dlSelectedIds.clear();
+  persistDownloadedFiles();
+  renderDownloadedFiles();
+  showToast('Đã xóa các tệp đã chọn');
+});
+loadDownloadedFiles();
+renderDownloadedFiles();
 
 /* =========================================================
    TAB TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE)
