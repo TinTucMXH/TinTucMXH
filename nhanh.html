@@ -165,6 +165,7 @@
     outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light);
   }
   .field textarea{ resize:vertical; min-height:80px; line-height:1.5; -webkit-appearance:none; }
+  .field textarea.autosize{ resize:none; overflow:hidden; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; cursor:default; }
   .checkrow{ display:flex; gap:16px; font-size:13px; color:var(--ink); flex-wrap:wrap; }
   .checkrow label{ display:flex; align-items:center; gap:6px; font-weight:500; }
   .hashtag-grid{
@@ -733,7 +734,7 @@
   <section id="page-download" class="page">
     <div class="card">
       <h2 class="title">Facebook</h2>
-      <p class="hint">Dán link bài viết hoặc video Facebook (công khai) vào ô bên dưới rồi bấm "Tải". Nếu không lấy được video (Facebook thường chặn truy cập trực tiếp), ô bên dưới sẽ hiện đường dẫn sang công cụ tải video thay thế.</p>
+      <p class="hint">Dán link bài viết hoặc video Facebook (công khai) vào ô bên dưới rồi bấm "Tải". Video sẽ được nhúng trực tiếp để xem trước; nếu không hiện được (video riêng tư, bị chặn nhúng...) hãy dùng công cụ tải video thay thế bên dưới khung xem trước.</p>
       <div class="field" style="margin-top:0">
         <input type="text" id="fbLinkInput" placeholder="Dán link Facebook (bài viết/video)...">
       </div>
@@ -742,8 +743,8 @@
       </div>
       <div id="fbVideoWrap" style="margin-top:12px"></div>
       <div class="field" id="fbTitleWrap" style="display:none">
-        <label>Tiêu đề bài viết</label>
-        <textarea id="fbTitleText" readonly style="min-height:50px"></textarea>
+        <label>Tiêu đề bài viết (bấm đúp để copy toàn bộ)</label>
+        <textarea id="fbTitleText" class="autosize" readonly style="min-height:50px"></textarea>
       </div>
     </div>
     <div class="card">
@@ -757,18 +758,23 @@
       </div>
       <div id="tkVideoWrap" style="margin-top:12px"></div>
       <div class="field" id="tkTitleWrap" style="display:none">
-        <label>Tiêu đề video</label>
-        <textarea id="tkTitleText" readonly style="min-height:50px"></textarea>
+        <label>Tiêu đề video (bấm đúp để copy toàn bộ)</label>
+        <textarea id="tkTitleText" class="autosize" readonly style="min-height:50px"></textarea>
       </div>
     </div>
     <div class="card">
       <h2 class="title">RedNote (Xiaohongshu)</h2>
-      <p class="hint">Dán nguyên nội dung chia sẻ từ app RedNote (thường có kèm chữ Trung + link rút gọn dạng <strong>http://xhslink.cn/...</strong>) vào ô bên dưới. Hệ thống sẽ tự tách đúng đường link và mở trong tab trình duyệt mới.</p>
+      <p class="hint">Dán nguyên nội dung chia sẻ từ app RedNote (thường có kèm chữ Trung + link rút gọn dạng <strong>http://xhslink.cn/...</strong>) vào ô bên dưới. Hệ thống sẽ thử lấy video để xem trước ngay trong trang giống như TikTok; nếu không lấy được sẽ tự động mở link trong tab trình duyệt mới.</p>
       <div class="field" style="margin-top:0">
         <textarea id="rnShareInput" placeholder="Dán nội dung chia sẻ RedNote vào đây..." style="min-height:90px"></textarea>
       </div>
       <div class="btnrow" style="margin-top:12px">
-        <button class="btn btn-primary btn-full" id="btnRnOpen">Tách link &amp; Mở</button>
+        <button class="btn btn-primary btn-full" id="btnRnOpen">Tách link &amp; Xem trước</button>
+      </div>
+      <div id="rnVideoWrap" style="margin-top:12px"></div>
+      <div class="field" id="rnTitleWrap" style="display:none">
+        <label>Tiêu đề bài viết (bấm đúp để copy toàn bộ)</label>
+        <textarea id="rnTitleText" class="autosize" readonly style="min-height:50px"></textarea>
       </div>
     </div>
   </section>
@@ -776,7 +782,7 @@
   <section id="page-admin" class="page">
     <div class="card" id="adminLoginCard">
       <h2 class="title">Quản trị</h2>
-      <p class="hint">Đăng nhập bằng tài khoản quản trị viên được cấp quyền để cấu hình trên Firebase Realtime Database, không nằm cố định trong mã nguồn — xem hướng dẫn bên dưới nếu chưa đăng nhập được.</p>
+      <p class="hint">Đăng nhập bằng tài khoản quản trị viên được cấp quyền cấu hình trên Firebase Realtime Database, không nằm cố định trong mã nguồn — xem hướng dẫn bên dưới nếu chưa đăng nhập được.</p>
       <div class="field" style="margin-top:0">
         <label>Tên đăng nhập</label>
         <input type="text" id="adminUserInput" placeholder="Tên đăng nhập" autocomplete="username">
@@ -803,7 +809,7 @@
         <h2 class="title" style="margin:0">Bản đồ thành viên</h2>
         <button id="btnAdminLogout" class="btn btn-ghost" style="flex:none;padding:8px 12px;font-size:12px;min-height:auto">Đăng xuất</button>
       </div>
-      <p class="hint" style="margin-bottom:8px">Chỉ hiển thị vị trí của những thành viên đã đồng ý chia sẻ vị trí trong nhóm chat.</p>
+      <p class="hint" style="margin-bottom:8px">Map của những thành viên đã đồng ý chia sẻ vị trí trong nhóm chat.</p>
       <div id="adminMap" style="width:100%;height:320px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border)"></div>
       <div class="admin-legend">
         <span><span class="admin-dot" style="background:var(--green)"></span>Đang online</span>
@@ -874,7 +880,7 @@
   <!-- ============ POPUP XIN CHIA SẺ VỊ TRÍ ============ -->
   <div id="locationModalOverlay" class="modal-overlay">
     <div class="modal-card">
-      <div class="modal-icon">☁️🐉</div>
+      <div class="modal-icon">📍</div>
       <h3 class="modal-title">Chia sẻ vùng làm việc?</h3>
       <p class="modal-desc">Chia sẻ để nhận diện vùng bạn đang làm việc để thích hợp hỗ trợ; bạn có thể tắt bất cứ lúc nào bằng cách đăng xuất.</p>
       <div id="locationModalError" class="hint" style="color:var(--red);display:none;margin-bottom:10px"></div>
@@ -960,6 +966,29 @@ async function copyText(text){
 }
 function escapeHtml(str){
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+/* ---------- Tự động co giãn chiều cao textarea theo đúng nội dung (không thừa/thiếu
+   khoảng trống) + bấm đúp (double click) để copy toàn bộ nội dung bên trong. Dùng
+   chung cho các ô hiển thị tiêu đề chỉ đọc (Facebook / TikTok / RedNote). ---------- */
+function autoResizeTextarea(el){
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+function setAutoTitleText(el, text){
+  el.value = text || '';
+  autoResizeTextarea(el);
+}
+function enableDblClickCopy(el){
+  if(!el || el.dataset.dblclickCopyBound) return;
+  el.dataset.dblclickCopyBound = '1';
+  el.addEventListener('dblclick', async (e)=>{
+    e.preventDefault();
+    if(!el.value){ return; }
+    el.focus();
+    el.select();
+    const ok = await copyText(el.value);
+    showToast(ok ? 'Đã copy toàn bộ nội dung' : 'Copy thất bại, vui lòng thử lại');
+  });
 }
 /* Tải 1 file về máy từ 1 URL bất kỳ (kể cả URL khác domain như Firebase
    Storage) — thuộc tính "download" trên thẻ <a> thường KHÔNG hoạt động với
@@ -3286,15 +3315,25 @@ function renderAdminHistoryList(list, name){
 
 /* =========================================================
    TAB TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE)
-   - Facebook & TikTok: dán link -> gọi thử 1 dịch vụ công khai để lấy link
-     video xem trực tiếp + tiêu đề. Đây là các dịch vụ của bên thứ ba nên có
-     thể không phải lúc nào cũng hoạt động (đổi API, chặn theo khu vực, video
-     riêng tư...). Nếu lấy thất bại vì bất kỳ lý do gì, tự động hiện đường
-     dẫn sang công cụ tải video thay thế (x2download.com cho Facebook,
-     tikdownload.to cho TikTok) để người dùng tự thao tác tiếp.
-   - RedNote (Xiaohongshu): người dùng thường copy nguyên khối text chia sẻ
-     từ app (chữ Trung + link rút gọn dạng http://xhslink.cn/...), nên chỉ
-     cần tách đúng URL trong đoạn text đó rồi mở sang tab mới.
+   - Facebook: nhúng video trực tiếp bằng iframe công khai
+     (facebook.com/plugins/video.php) — cách này KHÔNG cần gọi
+     fetch() sang facebook.com nên không bị chặn bởi CORS như khi
+     dùng endpoint oEmbed cũ (đây chính là lý do video cũ không
+     hiển thị được). Vẫn thử lấy thêm tiêu đề qua oEmbed ở chế độ
+     "cố gắng hết sức" — nếu bị chặn/lỗi thì bỏ qua, không ảnh
+     hưởng tới khung video đã nhúng.
+   - TikTok: dán link -> gọi 1 dịch vụ công khai để lấy link video
+     xem trực tiếp (không watermark) + tiêu đề. Nếu lấy thất bại vì
+     bất kỳ lý do gì, tự động hiện đường dẫn sang công cụ tải video
+     thay thế (tikdownload.to).
+   - RedNote (Xiaohongshu): người dùng thường copy nguyên khối text
+     chia sẻ từ app (chữ Trung + link rút gọn dạng http://xhslink.cn/...).
+     Hệ thống tách đúng URL, rồi CỐ GẮNG lấy trực tiếp link video gốc
+     từ trang RedNote (qua 1 CORS proxy công khai) để xem trước ngay
+     trong trang, giống cách làm với TikTok. Đây là cách làm không
+     chính thức nên có thể ngừng hoạt động bất cứ lúc nào nếu RedNote
+     đổi cấu trúc trang hoặc chặn proxy — hễ thất bại ở bất kỳ bước
+     nào, hệ thống tự động chuyển sang MỞ LINK TRONG TAB MỚI.
 ========================================================= */
 function extractFirstUrl(text){
   const m = (text || '').match(/https?:\/\/[^\s"'<>]+/i);
@@ -3313,31 +3352,41 @@ const btnFbFetch  = document.getElementById('btnFbFetch');
 const fbVideoWrap = document.getElementById('fbVideoWrap');
 const fbTitleWrap = document.getElementById('fbTitleWrap');
 const fbTitleText = document.getElementById('fbTitleText');
+enableDblClickCopy(fbTitleText);
+// Nhúng video Facebook bằng iframe công khai plugins/video.php — không cần fetch()
+// sang facebook.com nên không bị CORS chặn, hiển thị ổn định hơn nhiều so với cách
+// dựa vào oEmbed JSON trước đây (oEmbed hay bị trình duyệt chặn hoặc bị Facebook
+// giới hạn theo loại link).
+function buildFbEmbedIframe(link){
+  const src = 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(link) + '&show_text=false&width=560&height=314';
+  return `<div style="position:relative;width:100%;padding-bottom:75%;background:#000;border-radius:var(--radius-md);overflow:hidden">
+    <iframe src="${src}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+  </div>`;
+}
 btnFbFetch.addEventListener('click', async ()=>{
   const link = fbLinkInput.value.trim();
   if(!link){ showToast('Chưa nhập link Facebook'); return; }
+  if(!/^https?:\/\//i.test(link)){ showToast('Link không hợp lệ, cần bắt đầu bằng http(s)://'); return; }
   btnFbFetch.disabled = true;
   fbTitleWrap.style.display = 'none';
-  fbVideoWrap.innerHTML = '<div class="hint" style="margin:0">Đang lấy video, vui lòng chờ...</div>';
+  fbTitleText.value = '';
+  fbVideoWrap.innerHTML = buildFbEmbedIframe(link) + `
+    <p class="hint" style="margin:10px 0 0">Nếu khung video phía trên không hiện được (video ở chế độ riêng tư, sai định dạng link, hoặc Facebook chặn nhúng), dùng công cụ tải video thay thế bên dưới:</p>
+    <a class="btn btn-ghost btn-full" style="margin-top:10px" href="https://x2download.com/en/home" target="_blank" rel="noopener noreferrer">Mở công cụ tải video thay thế</a>
+  `;
+  // Cố gắng lấy thêm tiêu đề bài viết qua oEmbed — không bắt buộc, nếu lỗi/bị
+  // chặn CORS thì bỏ qua lặng lẽ, khung video ở trên không phụ thuộc bước này.
   try{
-    // oEmbed công khai của Facebook cho video/bài viết công khai — không cần API key
-    // cho việc xem trước cơ bản, nhưng Facebook có thể chặn tuỳ theo loại nội dung.
     const resp = await fetch('https://www.facebook.com/plugins/video/oembed.json/?url=' + encodeURIComponent(link));
-    if(!resp.ok) throw new Error('HTTP ' + resp.status);
-    const data = await resp.json();
-    if(!data || !data.html) throw new Error('Không lấy được dữ liệu video');
-    fbVideoWrap.innerHTML = data.html; // Facebook trả về sẵn khung nhúng (iframe) video công khai
-    if(data.title){
-      fbTitleWrap.style.display = 'block';
-      fbTitleText.value = data.title;
+    if(resp.ok){
+      const data = await resp.json();
+      if(data && data.title){
+        fbTitleWrap.style.display = 'block';
+        setAutoTitleText(fbTitleText, data.title);
+      }
     }
   }catch(err){
-    console.error('Lỗi lấy video Facebook:', err);
-    renderDownloaderFallback(
-      fbVideoWrap,
-      'https://x2download.com/en/home',
-      'Không tự lấy được video (link riêng tư, sai định dạng, hoặc Facebook đang chặn). Bạn có thể dùng công cụ tải video thay thế bên dưới:'
-    );
+    console.error('Không lấy được tiêu đề Facebook (bỏ qua, khung video vẫn hiển thị bình thường):', err);
   }finally{
     btnFbFetch.disabled = false;
   }
@@ -3349,6 +3398,7 @@ const btnTkFetch  = document.getElementById('btnTkFetch');
 const tkVideoWrap = document.getElementById('tkVideoWrap');
 const tkTitleWrap = document.getElementById('tkTitleWrap');
 const tkTitleText = document.getElementById('tkTitleText');
+enableDblClickCopy(tkTitleText);
 btnTkFetch.addEventListener('click', async ()=>{
   const link = tkLinkInput.value.trim();
   if(!link){ showToast('Chưa nhập link TikTok'); return; }
@@ -3366,13 +3416,13 @@ btnTkFetch.addEventListener('click', async ()=>{
     const title = data.data.title;
     if(title){
       tkTitleWrap.style.display = 'block';
-      tkTitleText.value = title;
+      setAutoTitleText(tkTitleText, title);
     }
   }catch(err){
     console.error('Lỗi lấy video TikTok:', err);
     renderDownloaderFallback(
       tkVideoWrap,
-      'https://tikmate.to',
+      'https://tikdownload.to',
       'Không tự lấy được video (link riêng tư, sai định dạng, hoặc dịch vụ đang bận). Bạn có thể dùng công cụ tải video thay thế bên dưới:'
     );
   }finally{
@@ -3380,6 +3430,7 @@ btnTkFetch.addEventListener('click', async ()=>{
   }
 });
 
+/* ---------- RedNote (Xiaohongshu) ---------- */
 /* ---------- RedNote (Xiaohongshu) ---------- */
 const rnShareInput = document.getElementById('rnShareInput');
 const btnRnOpen    = document.getElementById('btnRnOpen');
