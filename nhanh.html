@@ -500,6 +500,66 @@
     .hashtag-btn .num{ font-size:17px; }
     .preset-avatar-grid{ grid-template-columns:repeat(5, 1fr); }
   }
+  /* =========================================================
+     RESPONSIVE NÂNG CAO: MÁY TÍNH BẢNG / MÁY TÍNH ĐỂ BÀN
+     Thiết kế gốc là mobile-first (cột đơn, rộng tối đa 430px).
+     Từ đây trở xuống, các mốc breakpoint mở rộng bố cục một
+     cách có kiểm soát: tăng max-width, tăng khoảng đệm, tăng số
+     cột lưới, tăng cỡ chữ nhẹ nhàng — giữ đúng ngôn ngữ thiết kế
+     gốc (card bo tròn, tông tím-ngọc) nhưng thoáng và cân đối
+     hơn khi xem trên màn hình lớn, đúng chuẩn UI/UX quốc tế
+     (rộng rãi có kiểm soát, không kéo giãn nội dung vô hạn).
+  ========================================================= */
+  @media (min-width: 640px){
+    .app{ max-width:640px; padding-left:28px; padding-right:28px; }
+    .brand-title{ font-size:26px; }
+    .card{ padding:20px 22px; }
+    .hashtag-grid{ grid-template-columns:repeat(4, 1fr); gap:11px; }
+    .media-list{ grid-template-columns:repeat(4, 1fr); }
+    .attach-grid{ grid-template-columns:repeat(5, 1fr); }
+    .preset-avatar-grid{ grid-template-columns:repeat(6, 1fr); }
+  }
+  @media (min-width: 900px){
+    .app{ max-width:900px; padding-top:calc(28px + var(--safe-t)); }
+    .brand{ margin-bottom:22px; }
+    .brand-title{ font-size:30px; }
+    .brand-eyebrow{ font-size:12px; }
+    .tabbar{ padding:8px; gap:8px; border-radius:calc(var(--radius-lg) + 4px); overflow-x:visible; flex-wrap:wrap; justify-content:center; }
+    .tabbtn{ min-width:92px; font-size:12px; padding:12px 12px 11px; }
+    .tabbtn svg{ width:20px; height:20px; }
+    .card{ padding:26px 28px; border-radius:calc(var(--radius-lg) + 4px); margin-bottom:18px; }
+    h2.title{ font-size:21px; }
+    .hint{ font-size:13px; }
+    .hashtag-grid{ grid-template-columns:repeat(5, 1fr); gap:14px; }
+    .hashtag-btn{ padding:18px 8px; border-radius:calc(var(--radius-md) + 3px); }
+    .hashtag-btn .num{ font-size:22px; }
+    .hashtag-btn .label{ font-size:10.5px; }
+    .media-list{ grid-template-columns:repeat(6, 1fr); }
+    .attach-grid{ grid-template-columns:repeat(6, 1fr); }
+    .editor-wrap{ min-height:230px; }
+    .chat-messages{ max-height:520px; }
+    .btn{ font-size:15px; }
+    .modal-card{ max-width:400px; padding:26px 26px 24px; }
+    .confirm-card{ max-width:360px; }
+    /* Bố cục 2 cột cho các thẻ chỉ có 1 khối nội dung độc lập (Facebook/TikTok/RedNote)
+       để tận dụng không gian ngang rộng, vẫn giữ thứ tự đọc tự nhiên trên di động */
+    #page-download{ display:grid; grid-template-columns:1fr; gap:0; }
+  }
+  @media (min-width: 1180px){
+    .app{ max-width:1080px; }
+    .hashtag-grid{ grid-template-columns:repeat(6, 1fr); }
+  }
+  /* Chỉ bật hiệu ứng hover cho thiết bị có chuột thật (tránh trạng thái hover
+     bị "dính" trên cảm ứng — vấn đề UX phổ biến khi copy CSS desktop sang mobile) */
+  @media (hover:hover) and (pointer:fine){
+    .btn-primary:hover{ filter:brightness(1.06); box-shadow:0 10px 22px rgba(79,70,229,.34); }
+    .btn-dark:hover{ filter:brightness(1.15); }
+    .btn-ghost:hover{ filter:brightness(0.97); }
+    .btn-danger:hover{ filter:brightness(0.97); }
+    .hashtag-btn:hover{ transform:translateY(-2px); }
+    .tabbtn:not(.active):hover{ background:var(--primary-light); color:var(--primary-dark); }
+    .target-chip:not(.active):hover{ border-color:var(--primary); }
+  }
 </style>
 </head>
 <body>
@@ -908,6 +968,28 @@
     </div>
   </div>
 
+  <!-- ============ POPUP SỬA BỘ HASTAG (tên nhãn + 5 hastag) ============ -->
+  <div id="hashtagModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" id="btnCloseHashtagModal" class="modal-close">✕</button>
+      <div class="modal-icon">#</div>
+      <h3 class="modal-title">Sửa bộ hastag <span id="hashtagModalNum"></span></h3>
+      <p class="modal-desc">Đặt tên gợi nhớ cho bộ này và chỉnh sửa 5 hastag đi kèm — có thể cách nhau bằng dấu cách hoặc xuống dòng.</p>
+      <div class="field" style="margin-top:0">
+        <label>Tên nhãn hiển thị</label>
+        <input type="text" id="hashtagModalLabelInput" maxlength="40" placeholder="Vd: Tin tức mxh">
+      </div>
+      <div class="field">
+        <label>5 hastag</label>
+        <textarea id="hashtagModalTagsInput" style="min-height:110px" placeholder="#hastag1 #hastag2 #hastag3 #hastag4 #hastag5"></textarea>
+      </div>
+      <div id="hashtagModalError" class="hint" style="color:var(--red);display:none;margin-top:8px"></div>
+      <div class="btnrow">
+        <button type="button" class="btn btn-primary btn-full" id="btnSaveHashtagModal">Lưu bộ hastag</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ POPUP XÁC NHẬN DÙNG CHUNG (ví dụ: xóa tin nhắn) ============ -->
   <div id="confirmModalOverlay" class="modal-overlay">
     <div class="modal-card confirm-card">
@@ -1190,7 +1272,8 @@ document.getElementById('btnClearContent').addEventListener('click', ()=>{
   saveContentInput();
 });
 /* =========================================================
-   LƯỚI NÚT HASTAG ĐÁNH SỐ (1..9)
+   LƯỚI NÚT HASTAG ĐÁNH SỐ (1..9) — có thể sửa cả TÊN NHÃN và 5 HASTAG
+   qua popup riêng (thay vì prompt() cũ chỉ sửa được hastag).
 ========================================================= */
 const HASHTAG_NUMBERS = [1,2,3,4,5,6,7,8,9];
 const hashtagLabels = {
@@ -1217,6 +1300,7 @@ const hashtagPresets = {
 };
 const hashtagGrid = document.getElementById('hashtagGrid');
 const LS_KEY_HASHTAGS = 'contentTool_hashtagPresets';
+const LS_KEY_HASHTAG_LABELS = 'contentTool_hashtagLabels';
 (function loadHashtagPresets(){
   try{
     const saved = JSON.parse(localStorage.getItem(LS_KEY_HASHTAGS) || 'null');
@@ -1227,33 +1311,82 @@ const LS_KEY_HASHTAGS = 'contentTool_hashtagPresets';
     }
   }catch(e){}
 })();
+(function loadHashtagLabels(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(LS_KEY_HASHTAG_LABELS) || 'null');
+    if(saved && typeof saved === 'object'){
+      HASHTAG_NUMBERS.forEach(n=>{
+        if(typeof saved[n] === 'string' && saved[n].trim()) hashtagLabels[n] = saved[n];
+      });
+    }
+  }catch(e){}
+})();
 function saveHashtagPresets(){
   try{ localStorage.setItem(LS_KEY_HASHTAGS, JSON.stringify(hashtagPresets)); }catch(e){}
+}
+function saveHashtagLabels(){
+  try{ localStorage.setItem(LS_KEY_HASHTAG_LABELS, JSON.stringify(hashtagLabels)); }catch(e){}
 }
 function joinHashtags(arr){ return arr.join(' '); }
 function renderHashtagGrid(){
   hashtagGrid.innerHTML = HASHTAG_NUMBERS.map(n => `
     <div class="hashtag-btn" data-n="${n}" title="Bấm để copy kèm 5 hastag của nút ${n}">
-      <button class="edit-pin" data-edit="${n}" title="Sửa 5 hastag">✎</button>
+      <button class="edit-pin" data-edit="${n}" title="Sửa tên nhãn &amp; 5 hastag">✎</button>
       <span class="num">${n}</span>
       <span class="label">${escapeHtml(hashtagLabels[n] || '')}</span>
     </div>
   `).join('');
 }
 renderHashtagGrid();
+/* ---------- Popup sửa bộ hastag (tên nhãn + 5 hastag cùng lúc) ---------- */
+const hashtagModalOverlay      = document.getElementById('hashtagModalOverlay');
+const btnCloseHashtagModal     = document.getElementById('btnCloseHashtagModal');
+const hashtagModalNum          = document.getElementById('hashtagModalNum');
+const hashtagModalLabelInput   = document.getElementById('hashtagModalLabelInput');
+const hashtagModalTagsInput    = document.getElementById('hashtagModalTagsInput');
+const hashtagModalError        = document.getElementById('hashtagModalError');
+const btnSaveHashtagModal      = document.getElementById('btnSaveHashtagModal');
+let hashtagEditingN = null;
+function openHashtagModal(n){
+  hashtagEditingN = n;
+  hashtagModalNum.textContent = '#' + n;
+  hashtagModalError.style.display = 'none';
+  hashtagModalLabelInput.value = hashtagLabels[n] || '';
+  hashtagModalTagsInput.value = joinHashtags(hashtagPresets[n] || []);
+  hashtagModalOverlay.classList.add('show');
+  setTimeout(()=> hashtagModalLabelInput.focus(), 60);
+}
+function closeHashtagModal(){ hashtagModalOverlay.classList.remove('show'); }
+btnCloseHashtagModal.addEventListener('click', closeHashtagModal);
+hashtagModalOverlay.addEventListener('click', e=>{ if(e.target === hashtagModalOverlay) closeHashtagModal(); });
+btnSaveHashtagModal.addEventListener('click', ()=>{
+  const n = hashtagEditingN;
+  if(n == null) return;
+  const label = hashtagModalLabelInput.value.trim();
+  if(!label){
+    hashtagModalError.textContent = 'Vui lòng nhập tên nhãn hiển thị.';
+    hashtagModalError.style.display = 'block';
+    return;
+  }
+  let list = hashtagModalTagsInput.value.trim().split(/\s+/).filter(Boolean).slice(0, 5);
+  if(list.length === 0){
+    hashtagModalError.textContent = 'Vui lòng nhập ít nhất 1 hastag.';
+    hashtagModalError.style.display = 'block';
+    return;
+  }
+  while(list.length < 5) list.push('#hashtag');
+  hashtagLabels[n] = label;
+  hashtagPresets[n] = list;
+  renderHashtagGrid();
+  saveHashtagPresets();
+  saveHashtagLabels();
+  closeHashtagModal();
+  showToast(`Đã lưu bộ hastag ${n}: ${label}`);
+});
 hashtagGrid.addEventListener('click', async (e)=>{
   const editBtn = e.target.closest('[data-edit]');
   if(editBtn){
-    const n = editBtn.dataset.edit;
-    const current = joinHashtags(hashtagPresets[n]);
-    const next = prompt(`Sửa 5 hastag cho nút ${n} (cách nhau bằng dấu cách):`, current);
-    if(next !== null && next.trim() !== ''){
-      let list = next.trim().split(/\s+/).filter(Boolean).slice(0, 5);
-      while(list.length < 5) list.push('#hashtag');
-      hashtagPresets[n] = list;
-      renderHashtagGrid();
-      saveHashtagPresets();
-    }
+    openHashtagModal(editBtn.dataset.edit);
     return;
   }
   const card = e.target.closest('.hashtag-btn');
@@ -3430,7 +3563,6 @@ btnTkFetch.addEventListener('click', async ()=>{
   }
 });
 
-/* ---------- RedNote (Xiaohongshu) ---------- */
 /* ---------- RedNote (Xiaohongshu) ---------- */
 const rnShareInput = document.getElementById('rnShareInput');
 const btnRnOpen    = document.getElementById('btnRnOpen');
