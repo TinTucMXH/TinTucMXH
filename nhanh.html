@@ -8,26 +8,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --primary: #6D28D9;
-    --primary-dark: #4C1D95;
-    --primary-light: #F1ECFE;
-    --accent: #0EA5B7;
-    --accent-light: #E3F8FA;
-    --navy: #0B1023;
-    --bg-top: #EEF0FF;
-    --bg-bot: #F8F8FC;
-    --surface: #ffffff;
-    --border: #E7E5F3;
-    --ink: #191A2E;
-    --muted: #8A8AA3;
-    --red: #EF4444;
-    --green: #16A34A;
-    --amber: #F59E0B;
+    --primary: #9B7CFA;
+    --primary-dark: #5B21B6;
+    --primary-light: #241D3E;
+    --primary-text: #D9CCFF;
+    --accent: #2DD4E0;
+    --accent-light: #10262C;
+    --navy: #242A46;
+    --heading: #FFFFFF;
+    --bg-top: #12141F;
+    --bg-bot: #0A0B12;
+    --surface: #181B2C;
+    --surface-2: #20243B;
+    --border: #2E3350;
+    --ink: #EEEFFA;
+    --muted: #9DA1C0;
+    --red: #FB7185;
+    --green: #34D399;
+    --amber: #FBBF24;
     --radius-lg: 22px;
     --radius-md: 15px;
     --radius-sm: 11px;
-    --shadow-sm: 0 1px 2px rgba(24,17,60,.06);
-    --shadow-md: 0 12px 32px rgba(76,29,149,.14);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
+    --shadow-md: 0 16px 40px rgba(0,0,0,.55);
     --safe-t: env(safe-area-inset-top, 0px);
     --safe-b: env(safe-area-inset-bottom, 0px);
     --safe-l: env(safe-area-inset-left, 0px);
@@ -39,9 +42,10 @@
     margin:0;
     font-family:'Inter', system-ui, sans-serif;
     color:var(--ink);
+    font-weight:500;
     background:
-      radial-gradient(720px 320px at 100% -8%, rgba(14,165,183,.10), transparent 60%),
-      radial-gradient(720px 360px at -10% 0%, rgba(109,40,217,.12), transparent 55%),
+      radial-gradient(720px 320px at 100% -8%, rgba(45,212,224,.09), transparent 60%),
+      radial-gradient(720px 360px at -10% 0%, rgba(155,124,250,.16), transparent 55%),
       linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 340px);
     -webkit-font-smoothing:antialiased;
     overscroll-behavior-y:none;
@@ -61,7 +65,7 @@
   }
   .brand-title{
     font-family:'Fraunces', serif; font-style:italic; font-weight:600;
-    font-size:24px; letter-spacing:-.01em; color:var(--navy);
+    font-size:24px; letter-spacing:-.01em; color:var(--heading);
   }
   .tabbar{
     display:flex;
@@ -123,7 +127,7 @@
   }
   h2.title{
     font-family:'Fraunces', serif; font-style:italic; font-weight:600;
-    font-size:18px; margin:0 0 6px; color:var(--navy);
+    font-size:18px; margin:0 0 6px; color:var(--heading);
   }
   .hint{ font-size:12px; color:var(--muted); margin:0 0 14px; line-height:1.55; }
   .section-label{
@@ -135,7 +139,7 @@
     width:100%;
     min-height:180px;
     border-radius:var(--radius-md);
-    background:#fbfbfe;
+    background:var(--surface-2);
     border:1px solid var(--border);
     overflow:hidden;
   }
@@ -157,7 +161,7 @@
   .field{ margin-top:12px; }
   .field label{ display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:6px; }
   .field input[type=text], .field input[type=password], .field textarea{
-    width:100%; border:1px solid var(--border); background:#fbfbfe;
+    width:100%; border:1px solid var(--border); background:var(--surface-2);
     border-radius:var(--radius-sm); padding:11px 12px;
     font-size:16px; font-family:inherit; color:var(--ink);
   }
@@ -176,7 +180,7 @@
   .hashtag-btn{
     position:relative;
     border:1px solid var(--border);
-    background:#fbfbfe;
+    background:var(--surface-2);
     border-radius:var(--radius-md);
     padding:14px 6px;
     text-align:center;
@@ -191,7 +195,7 @@
   }
   .hashtag-btn .label{
     display:block; margin-top:4px; font-size:10px; font-weight:700;
-    letter-spacing:.03em; color:var(--navy); text-transform:uppercase;
+    letter-spacing:.03em; color:var(--heading); text-transform:uppercase;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
   .hashtag-btn .edit-pin{
@@ -204,11 +208,11 @@
   .dropzone{
     display:flex; align-items:center; justify-content:center; gap:8px;
     border:1.5px dashed var(--border); border-radius:var(--radius-md);
-    background:#fbfbfe; color:var(--muted); font-size:13px; font-weight:600;
+    background:var(--surface-2); color:var(--muted); font-size:13px; font-weight:600;
     padding:16px 12px; cursor:pointer; transition:border-color .15s ease, color .15s ease, background .15s ease;
   }
   .dropzone svg{ width:19px; height:19px; stroke:currentColor; flex-shrink:0; }
-  .dropzone:hover{ border-color:var(--primary); color:var(--primary-dark); background:var(--primary-light); }
+  .dropzone:hover{ border-color:var(--primary); color:var(--primary-text); background:var(--primary-light); }
   .video-preview{
     margin-top:10px; border:1px solid var(--border); border-radius:var(--radius-md);
     overflow:hidden; background:#000;
@@ -220,7 +224,7 @@
   }
   .video-meta span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .remove-video{
-    flex-shrink:0; border:none; background:#fde8ea; color:var(--red);
+    flex-shrink:0; border:none; background:#3B1620; color:var(--red);
     width:22px; height:22px; border-radius:50%; font-size:12px; cursor:pointer;
   }
   /* ===== Lưới xem trước nhiều file ảnh/video (tab Share) ===== */
@@ -242,6 +246,16 @@
     border:none; background:rgba(0,0,0,.62); color:#fff; font-size:11px; cursor:pointer;
   }
   .media-count{ font-size:11.5px; color:var(--muted); font-weight:600; margin-top:8px; }
+  /* ===== Chọn nhiều file để chia sẻ (Thư mục Tải về) ===== */
+  .dl-pick-item{ position:relative; }
+  .dl-pick-item .dl-check{
+    position:absolute; top:4px; left:4px; width:20px; height:20px; border-radius:50%;
+    background:rgba(0,0,0,.55); color:#fff; font-size:12px; font-weight:800;
+    display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(255,255,255,.5);
+    transition:background .12s ease, border-color .12s ease;
+  }
+  .dl-pick-item.dl-selected{ outline:2px solid var(--primary); outline-offset:-2px; }
+  .dl-pick-item.dl-selected .dl-check{ background:var(--primary); border-color:var(--primary); }
   .btnrow{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
   .btn{
     flex:1; border:none; padding:14px 14px; border-radius:var(--radius-sm);
@@ -256,12 +270,12 @@
     box-shadow:0 8px 18px rgba(79,70,229,.28);
   }
   .btn-dark{ background:var(--navy); color:#fff; }
-  .btn-ghost{ background:var(--primary-light); color:var(--primary-dark); }
-  .btn-danger{ background:#fde8ea; color:var(--red); }
+  .btn-ghost{ background:var(--primary-light); color:var(--primary-text); }
+  .btn-danger{ background:#3B1620; color:var(--red); }
   .btn-full{ width:100%; }
   a.btn{ display:flex; align-items:center; justify-content:center; text-decoration:none; }
   .listbox{
-    background:#fbfbfe; border:1px solid var(--border); border-radius:var(--radius-md);
+    background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md);
     max-height:240px; overflow-y:auto;
     -webkit-overflow-scrolling:touch;
   }
@@ -273,22 +287,22 @@
   .listbox-item.picked{
     background:var(--primary-light); border-left:3px solid var(--primary); font-weight:600;
   }
-  .listbox-item .item-title{ display:block; font-weight:700; color:var(--navy); margin-bottom:2px; }
+  .listbox-item .item-title{ display:block; font-weight:700; color:var(--heading); margin-bottom:2px; }
   .listbox-item .item-link{ display:block; font-size:11.5px; color:var(--muted); font-weight:400; }
   .cue-card{
     margin-top:10px; padding:11px; border:1px solid var(--border); border-radius:var(--radius-sm);
-    background:#fbfbfe;
+    background:var(--surface-2);
   }
   .cue-time{ font-size:11.5px; font-weight:700; color:var(--primary); }
   .cue-orig{ font-size:11.5px; color:var(--muted); margin:4px 0 8px; line-height:1.4; word-break:break-word; }
   .cue-orig b{ color:var(--ink); font-weight:600; }
   .cue-input{
-    width:100%; border:1px solid var(--border); background:#fff; border-radius:var(--radius-sm);
+    width:100%; border:1px solid var(--border); background:var(--surface-2); border-radius:var(--radius-sm);
     padding:9px 10px; font-size:14.5px; font-family:inherit; min-height:44px; resize:vertical;
   }
   .cue-input:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
   #vsStatus{
-    background:var(--primary-light); color:var(--primary-dark); border-radius:var(--radius-sm);
+    background:var(--primary-light); color:var(--primary-text); border-radius:var(--radius-sm);
     padding:10px 12px; font-weight:600;
   }
   #toast{
@@ -309,7 +323,7 @@
   /* ===== TAB GROUP CHAT ===== */
   .online-users{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
   .online-chip{
-    display:flex; align-items:center; gap:5px; background:#fbfbfe; border:1px solid var(--border);
+    display:flex; align-items:center; gap:5px; background:var(--surface-2); border:1px solid var(--border);
     border-radius:999px; padding:4px 10px 4px 6px; font-size:11.5px; font-weight:600; color:var(--ink);
   }
   .online-dot{ width:8px; height:8px; border-radius:50%; background:var(--green); flex-shrink:0; box-shadow:0 0 0 2px rgba(22,163,74,.18); }
@@ -327,14 +341,14 @@
   .chat-msg.me .chat-bubble-wrap{ align-items:flex-end; }
   .chat-name{ font-size:10.5px; font-weight:700; color:var(--primary); margin-bottom:2px; }
   .chat-bubble{
-    background:#fbfbfe; border:1px solid var(--border); border-radius:14px; padding:8px 11px;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:8px 11px;
   }
   .chat-msg.me .chat-bubble{ background:var(--primary); border-color:var(--primary); color:#fff; }
   .chat-text{ font-size:14px; line-height:1.45; white-space:pre-wrap; word-break:break-word; }
   .chat-media{ max-width:100%; border-radius:10px; display:block; margin-bottom:4px; max-height:220px; object-fit:cover; }
   .chat-time{ font-size:9.5px; color:var(--muted); margin-top:2px; }
   .chat-media-preview{
-    display:flex; align-items:center; gap:8px; background:#fbfbfe; border:1px solid var(--border); border-radius:var(--radius-sm);
+    display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm);
     padding:8px; margin-bottom:8px;
   }
   .chat-media-preview img, .chat-media-preview video{ width:40px; height:40px; object-fit:cover; border-radius:8px; flex-shrink:0; }
@@ -346,11 +360,11 @@
     transition:transform .12s ease, opacity .12s ease;
   }
   .chat-attach-btn:active, .chat-send-btn:active{ transform:scale(.92); }
-  .chat-attach-btn{ background:var(--primary-light); color:var(--primary-dark); }
+  .chat-attach-btn{ background:var(--primary-light); color:var(--primary-text); }
   .chat-send-btn{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; }
   .chat-send-btn:disabled{ opacity:.5; pointer-events:none; }
   #groupMsgInput{
-    flex:1; border:1px solid var(--border); background:#fbfbfe; border-radius:20px; padding:10px 14px;
+    flex:1; border:1px solid var(--border); background:var(--surface-2); border-radius:20px; padding:10px 14px;
     font-size:15px; font-family:inherit; resize:none; max-height:100px; min-height:42px; line-height:1.4;
   }
   #groupMsgInput:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
@@ -367,7 +381,7 @@
   .switch{ position:relative; display:inline-block; width:44px; height:26px; flex-shrink:0; }
   .switch input{ opacity:0; width:0; height:0; position:absolute; }
   .switch .slider{
-    position:absolute; inset:0; cursor:pointer; background:#d6d5e6; border-radius:999px; transition:background .18s ease;
+    position:absolute; inset:0; cursor:pointer; background:#3A3F5C; border-radius:999px; transition:background .18s ease;
   }
   .switch .slider:before{
     position:absolute; content:""; height:20px; width:20px; left:3px; top:3px;
@@ -376,10 +390,10 @@
   .switch input:checked + .slider{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); }
   .switch input:checked + .slider:before{ transform:translateX(18px); }
   .group-user-badge img{ width:28px; height:28px; border-radius:50%; object-fit:cover; }
-  .group-user-badge .name{ font-size:12.5px; font-weight:700; color:var(--navy); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .group-user-badge .name{ font-size:12.5px; font-weight:700; color:var(--heading); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   /* ===== Popup đăng nhập nhỏ & popup xác nhận dùng chung ===== */
   .modal-overlay{
-    position:fixed; inset:0; background:rgba(20,22,44,.55);
+    position:fixed; inset:0; background:rgba(4,5,10,.72);
     display:none; align-items:center; justify-content:center; z-index:100;
     padding:20px; backdrop-filter:blur(2px);
   }
@@ -392,17 +406,17 @@
   @keyframes modalPop{ from{opacity:0; transform:scale(.92) translateY(6px);} to{opacity:1; transform:none;} }
   .modal-close{
     position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%;
-    border:none; background:var(--primary-light); color:var(--primary-dark); font-size:13px; cursor:pointer;
+    border:none; background:var(--primary-light); color:var(--primary-text); font-size:13px; cursor:pointer;
   }
   .modal-icon{
     width:46px; height:46px; border-radius:14px; background:linear-gradient(135deg, var(--primary), var(--primary-dark));
     display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; font-weight:800; margin-bottom:12px;
   }
-  .modal-title{ font-family:'Fraunces', serif; font-style:italic; font-weight:600; font-size:17px; color:var(--navy); margin:0 0 6px; }
+  .modal-title{ font-family:'Fraunces', serif; font-style:italic; font-weight:600; font-size:17px; color:var(--heading); margin:0 0 6px; }
   .modal-desc{ font-size:12.5px; color:var(--muted); line-height:1.55; margin:0 0 16px; }
   .google-btn{
     display:flex; align-items:center; justify-content:center; gap:9px;
-    width:100%; border:1px solid var(--border); background:#fff; color:var(--ink);
+    width:100%; border:1px solid var(--border); background:#fff; color:#191A2E;
     padding:12px 14px; border-radius:var(--radius-sm); font-weight:700; font-size:14px; cursor:pointer;
   }
   .google-btn:active{ transform:scale(.98); }
@@ -411,10 +425,10 @@
   .modal-note{ font-size:11px; color:var(--muted); margin-top:12px; line-height:1.5; text-align:center; }
   .confirm-card{ max-width:300px; text-align:center; }
   .confirm-icon{
-    width:44px; height:44px; border-radius:50%; background:#fde8ea; color:var(--red);
+    width:44px; height:44px; border-radius:50%; background:#3B1620; color:var(--red);
     display:flex; align-items:center; justify-content:center; font-size:20px; margin:0 auto 12px;
   }
-  .confirm-title{ font-weight:800; font-size:15px; color:var(--navy); margin:0 0 6px; }
+  .confirm-title{ font-weight:800; font-size:15px; color:var(--heading); margin:0 0 6px; }
   .confirm-desc{ font-size:12.5px; color:var(--muted); line-height:1.55; margin:0 0 18px; }
   .confirm-btnrow{ display:flex; gap:8px; }
   /* ===== Chọn đối tượng nhắn tin (cả nhóm / nhắn riêng) ===== */
@@ -424,7 +438,7 @@
   .target-row::-webkit-scrollbar{ display:none; }
   .target-chip{
     flex-shrink:0; display:flex; align-items:center; gap:6px; border:1px solid var(--border);
-    background:#fbfbfe; border-radius:999px; padding:6px 12px 6px 6px; font-size:12px; font-weight:700;
+    background:var(--surface-2); border-radius:999px; padding:6px 12px 6px 6px; font-size:12px; font-weight:700;
     color:var(--ink); cursor:pointer; position:relative; white-space:nowrap;
   }
   .target-chip.everyone{ padding-left:12px; }
@@ -477,7 +491,7 @@
   .chat-att-download:active{ transform:scale(.92); }
   .chat-att-download.downloading{ opacity:.6; pointer-events:none; }
   /* ===== TAB QUẢN TRỊ (Admin) ===== */
-  #adminMap{ background:#e5e7ef; }
+  #adminMap{ background:#12142a; }
   .leaflet-popup-content{ font-family:'Inter', system-ui, sans-serif; font-size:12.5px; line-height:1.5; }
   .admin-legend{ display:flex; gap:14px; margin-top:10px; font-size:11.5px; color:var(--muted); font-weight:600; }
   .admin-legend span{ display:flex; align-items:center; gap:6px; }
@@ -557,7 +571,7 @@
     .btn-ghost:hover{ filter:brightness(0.97); }
     .btn-danger:hover{ filter:brightness(0.97); }
     .hashtag-btn:hover{ transform:translateY(-2px); }
-    .tabbtn:not(.active):hover{ background:var(--primary-light); color:var(--primary-dark); }
+    .tabbtn:not(.active):hover{ background:var(--primary-light); color:var(--primary-text); }
     .target-chip:not(.active):hover{ border-color:var(--primary); }
   }
 </style>
@@ -792,6 +806,25 @@
   </section>
   <!-- ================= TAB 6: TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE) ================= -->
   <section id="page-download" class="page">
+    <div class="card">
+      <h2 class="title">Thư mục Tải về</h2>
+      <p class="hint">
+        Vì lý do bảo mật, trình duyệt (Chrome, Cốc Cốc, Safari...) <strong>không cho phép trang web tự liệt kê</strong> các file đã có sẵn trong thư mục Tải về — bạn cần chủ động bấm chọn mỗi lần. Bấm nút bên dưới: trên Chrome/Cốc Cốc <strong>máy tính</strong> hộp thoại sẽ tự mở ngay tại thư mục Tải về (Downloads); trên điện thoại hoặc trình duyệt khác, hãy tự điều hướng tới thư mục Tải về/Downloads trong hộp thoại hiện ra. Có thể chọn <strong>nhiều ảnh/video cùng lúc</strong>, xem trước bên dưới, bấm vào từng file để chọn/bỏ chọn, rồi chia sẻ thẳng các file đã chọn về <strong>Thư viện ảnh</strong> trên iOS/Android qua khung chia sẻ của hệ điều hành.
+      </p>
+      <input type="file" id="dlFolderInput" accept="image/*,video/*" multiple style="display:none">
+      <div id="dlFolderDropzone" class="dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3.5 7.2c0-.94.76-1.7 1.7-1.7h4l1.6 2h7.5c.94 0 1.7.76 1.7 1.7v8.6c0 .94-.76 1.7-1.7 1.7H5.2c-.94 0-1.7-.76-1.7-1.7V7.2z"/>
+        </svg>
+        <span>Chọn ảnh / video từ thư mục Tải về</span>
+      </div>
+      <div id="dlFolderList" class="media-list" style="display:none"></div>
+      <div id="dlFolderCount" class="media-count" style="display:none"></div>
+      <div class="btnrow" id="dlFolderBtnRow" style="display:none">
+        <button class="btn btn-primary" id="btnDlFolderShare">Chia sẻ vào Thư viện ảnh</button>
+        <button class="btn btn-danger" id="btnDlFolderClear">Bỏ chọn hết</button>
+      </div>
+    </div>
     <div class="card">
       <h2 class="title">Facebook</h2>
       <p class="hint">Dán link bài viết hoặc video Facebook (công khai) vào ô bên dưới rồi bấm "Tải". Video sẽ được nhúng trực tiếp để xem trước; nếu không hiện được (video riêng tư, bị chặn nhúng...) hãy dùng công cụ tải video thay thế bên dưới khung xem trước.</p>
@@ -3445,242 +3478,6 @@ function renderAdminHistoryList(list, name){
     });
   });
 }
-/* =========================================================
-   TAB TẢI VIDEO — TỆP ĐÃ TẢI VỀ (lịch sử + kiểu hiển thị + lưu vào thư viện ảnh)
-   - Mỗi khi lấy được 1 video/ảnh trực tiếp từ TikTok hoặc RedNote (có URL file
-     thật, xem trước được ngay trong trang), người dùng bấm nút "Lưu vào Tệp đã
-     tải" trên khung xem trước để thêm vào danh sách này (lưu trong localStorage,
-     tồn tại lâu dài trên máy, không cần đăng nhập).
-     Facebook chỉ nhúng bằng iframe công khai (không có URL file trực tiếp do giới
-     hạn của Facebook) nên không có nút này — vẫn dùng công cụ tải thay thế như cũ.
-   - Danh sách hỗ trợ 2 kiểu hiển thị: LƯỚI (ảnh/video lớn, dễ duyệt nhanh) và
-     DANH SÁCH (dòng ngang, dễ đọc tiêu đề dài) — lựa chọn được ghi nhớ lại.
-   - Chọn 1 hoặc nhiều mục (bấm vào thẻ để chọn, hoặc "Chọn tất cả"), rồi:
-     • "Lưu về thư viện": với TỪNG mục đã chọn, tải file về dạng blob rồi ưu tiên
-       mở khung chia sẻ hệ thống (Web Share API, navigator.share với files) —
-       đây là cách chuẩn để mời người dùng "Lưu ảnh/video" vào thư viện ảnh trên
-       iOS Safari, hoặc "Lưu vào bộ sưu tập/Files" trên Android Chrome. Nếu máy
-       không hỗ trợ chia sẻ file (máy tính, trình duyệt cũ...), tự động chuyển
-       sang tải file .jpg/.mp4 về thư mục Downloads như bình thường.
-     • "Xóa mục đã chọn": xóa khỏi danh sách đã lưu (không ảnh hưởng file đã lưu
-       trước đó trên máy, chỉ xóa khỏi lịch sử trong app này).
-========================================================= */
-const LS_KEY_DOWNLOADED_FILES = 'contentTool_downloadedFiles';
-const LS_KEY_DL_VIEW_MODE = 'contentTool_dlViewMode';
-const dlContainer      = document.getElementById('dlContainer');
-const dlViewToggle     = document.getElementById('dlViewToggle');
-const dlSelectAll      = document.getElementById('dlSelectAll');
-const dlSelectAllLabel = document.getElementById('dlSelectAllLabel');
-const btnDlSaveSelected   = document.getElementById('btnDlSaveSelected');
-const btnDlDeleteSelected = document.getElementById('btnDlDeleteSelected');
-
-let downloadedFiles = [];        // [{id, title, url, mediaType:'video'|'image', source, addedAt}]
-let dlViewMode = 'grid';         // 'grid' | 'list'
-let dlSelectedIds = new Set();
-
-function loadDownloadedFiles(){
-  try{
-    const saved = JSON.parse(localStorage.getItem(LS_KEY_DOWNLOADED_FILES) || '[]');
-    downloadedFiles = Array.isArray(saved) ? saved : [];
-  }catch(e){ downloadedFiles = []; }
-  try{
-    const savedView = localStorage.getItem(LS_KEY_DL_VIEW_MODE);
-    if(savedView === 'grid' || savedView === 'list') dlViewMode = savedView;
-  }catch(e){}
-}
-function persistDownloadedFiles(){
-  try{ localStorage.setItem(LS_KEY_DOWNLOADED_FILES, JSON.stringify(downloadedFiles)); }catch(e){}
-}
-function addDownloadedFile({ title, url, mediaType, source }){
-  if(!url) return;
-  // Tránh thêm trùng: cùng URL thì cập nhật lại (đưa lên đầu) thay vì thêm bản mới
-  downloadedFiles = downloadedFiles.filter(f => f.url !== url);
-  downloadedFiles.unshift({
-    id: 'dl_' + Date.now() + '_' + Math.random().toString(36).slice(2,8),
-    title: title || 'Không có tiêu đề',
-    url,
-    mediaType: mediaType === 'video' ? 'video' : 'image',
-    source: source || 'khác',
-    addedAt: Date.now()
-  });
-  // Giới hạn số lượng lưu lại để tránh localStorage quá tải
-  if(downloadedFiles.length > 150) downloadedFiles = downloadedFiles.slice(0, 150);
-  persistDownloadedFiles();
-  renderDownloadedFiles();
-  showToast('Đã thêm vào Tệp đã tải');
-}
-function sourceLabel(src){
-  if(src === 'tiktok') return 'TikTok';
-  if(src === 'rednote') return 'RedNote';
-  if(src === 'facebook') return 'Facebook';
-  return 'Khác';
-}
-function fmtDlTime(ts){
-  if(!ts) return '';
-  return new Date(ts).toLocaleString('vi-VN');
-}
-function dlUpdateSelectAllLabel(){
-  const total = downloadedFiles.length;
-  const selectedCount = dlSelectedIds.size;
-  dlSelectAllLabel.textContent = `Chọn tất cả (${selectedCount}/${total})`;
-  dlSelectAll.checked = total > 0 && selectedCount === total;
-}
-function renderDownloadedFiles(){
-  // Bỏ các id đã chọn nhưng không còn tồn tại trong danh sách (vd sau khi xóa)
-  const existingIds = new Set(downloadedFiles.map(f=>f.id));
-  dlSelectedIds.forEach(id=>{ if(!existingIds.has(id)) dlSelectedIds.delete(id); });
-
-  if(downloadedFiles.length === 0){
-    dlContainer.innerHTML = '<div class="dl-empty">Chưa có tệp nào được lưu — hãy tải 1 video ở bên dưới rồi bấm "Lưu vào Tệp đã tải".</div>';
-    dlUpdateSelectAllLabel();
-    return;
-  }
-
-  if(dlViewMode === 'list'){
-    dlContainer.innerHTML = `<div class="dl-list">${downloadedFiles.map(f=>{
-      const selected = dlSelectedIds.has(f.id);
-      const thumb = f.mediaType === 'video'
-        ? `<video src="${escapeHtml(f.url)}" muted playsinline preload="metadata"></video>`
-        : `<img src="${escapeHtml(f.url)}" alt="">`;
-      return `<div class="dl-row ${selected ? 'selected' : ''}" data-id="${f.id}">
-        <div class="dl-check">${selected ? '✓' : ''}</div>
-        <div class="dl-row-thumb">${thumb}</div>
-        <div class="dl-row-body">
-          <div class="dl-row-title">${escapeHtml(f.title)}</div>
-          <div class="dl-row-meta">${sourceLabel(f.source)} · ${f.mediaType === 'video' ? 'Video' : 'Ảnh'} · ${fmtDlTime(f.addedAt)}</div>
-        </div>
-        <button type="button" class="dl-save-item" data-save-one="${f.id}" title="Lưu về thư viện">⬇</button>
-      </div>`;
-    }).join('')}</div>`;
-  }else{
-    dlContainer.innerHTML = `<div class="dl-grid">${downloadedFiles.map(f=>{
-      const selected = dlSelectedIds.has(f.id);
-      const media = f.mediaType === 'video'
-        ? `<video src="${escapeHtml(f.url)}" muted playsinline preload="metadata"></video>`
-        : `<img src="${escapeHtml(f.url)}" alt="">`;
-      return `<div class="dl-card ${selected ? 'selected' : ''}" data-id="${f.id}">
-        ${media}
-        <div class="dl-check">${selected ? '✓' : ''}</div>
-        <div class="dl-src-badge">${sourceLabel(f.source)}</div>
-        <div class="dl-caption">${escapeHtml(f.title)}</div>
-      </div>`;
-    }).join('')}</div>`;
-  }
-  dlUpdateSelectAllLabel();
-}
-// Bấm vào thẻ/dòng (ngoài nút lưu riêng) để chọn/bỏ chọn mục đó
-dlContainer.addEventListener('click', (e)=>{
-  const saveOneBtn = e.target.closest('[data-save-one]');
-  if(saveOneBtn){
-    const f = downloadedFiles.find(x => x.id === saveOneBtn.dataset.saveOne);
-    if(f) saveFilesToLibrary([f]);
-    return;
-  }
-  const card = e.target.closest('[data-id]');
-  if(!card) return;
-  const id = card.dataset.id;
-  if(dlSelectedIds.has(id)) dlSelectedIds.delete(id); else dlSelectedIds.add(id);
-  renderDownloadedFiles();
-});
-dlSelectAll.addEventListener('change', ()=>{
-  if(dlSelectAll.checked){
-    dlSelectedIds = new Set(downloadedFiles.map(f=>f.id));
-  }else{
-    dlSelectedIds.clear();
-  }
-  renderDownloadedFiles();
-});
-dlViewToggle.addEventListener('click', (e)=>{
-  const btn = e.target.closest('[data-view]');
-  if(!btn) return;
-  dlViewMode = btn.dataset.view;
-  try{ localStorage.setItem(LS_KEY_DL_VIEW_MODE, dlViewMode); }catch(err){}
-  dlViewToggle.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b === btn));
-  renderDownloadedFiles();
-});
-(function initDlViewToggleButtons(){
-  dlViewToggle.querySelectorAll('button').forEach(b=> b.classList.toggle('active', b.dataset.view === dlViewMode));
-})();
-
-/* ---------- Lưu 1 hoặc nhiều mục vào thư viện ảnh của điện thoại ----------
-   Ưu tiên Web Share API (navigator.share với mảng files): đây là cách duy nhất
-   trên web mở được đúng khung "Lưu vào thư viện ảnh" của hệ điều hành —
-   iOS Safari hiện nút "Lưu ảnh/Lưu video" ngay trong khung chia sẻ, Android
-   Chrome hiện tùy chọn lưu vào Files/bộ sưu tập tương tự. Nếu trình duyệt/máy
-   không hỗ trợ chia sẻ file (thường là máy tính), tự động chuyển sang tải file
-   .jpg/.mp4 thẳng về thư mục Downloads bằng downloadFileFromUrl() như cũ. */
-async function urlToFile(url, filename, mediaType){
-  const resp = await fetch(url);
-  if(!resp.ok) throw new Error('HTTP ' + resp.status);
-  const blob = await resp.blob();
-  const type = blob.type || (mediaType === 'video' ? 'video/mp4' : 'image/jpeg');
-  return new File([blob], filename, { type });
-}
-async function saveFilesToLibrary(items){
-  if(!items || items.length === 0) return;
-  btnDlSaveSelected.disabled = true;
-  let savedCount = 0, failedCount = 0;
-  try{
-    for(const f of items){
-      const ext = f.mediaType === 'video' ? '.mp4' : '.jpg';
-      const filename = (f.title || 'tai-ve').replace(/[\\/:*?"<>|]+/g, '_').slice(0, 60) + ext;
-      try{
-        const file = await urlToFile(f.url, filename, f.mediaType);
-        const canShareFile = !!(navigator.canShare && navigator.canShare({ files: [file] }));
-        if(navigator.share && canShareFile){
-          try{
-            await navigator.share({ files: [file], title: f.title || undefined });
-            savedCount++;
-          }catch(shareErr){
-            if(shareErr && shareErr.name === 'AbortError'){
-              // Người dùng tự đóng khung chia sẻ — không tính là lỗi
-            }else{
-              // Chia sẻ thất bại vì lý do khác -> vẫn tải file về Downloads để không mất công
-              await downloadFileFromUrl(f.url, filename);
-              savedCount++;
-            }
-          }
-        }else{
-          await downloadFileFromUrl(f.url, filename);
-          savedCount++;
-        }
-      }catch(err){
-        console.error('Lỗi lưu tệp về thư viện:', err);
-        failedCount++;
-      }
-    }
-  }finally{
-    btnDlSaveSelected.disabled = false;
-  }
-  if(savedCount > 0 && failedCount === 0){
-    showToast(items.length === 1 ? 'Đã mở khung lưu về thư viện' : `Đã xử lý ${savedCount} tệp — làm theo khung chia sẻ để lưu vào thư viện ảnh`);
-  }else if(savedCount > 0 && failedCount > 0){
-    showToast(`Đã xử lý ${savedCount} tệp, ${failedCount} tệp thất bại`);
-  }else{
-    showToast('Lưu về thư viện thất bại, vui lòng thử lại');
-  }
-}
-btnDlSaveSelected.addEventListener('click', ()=>{
-  const items = downloadedFiles.filter(f => dlSelectedIds.has(f.id));
-  if(items.length === 0){ showToast('Chưa chọn tệp nào'); return; }
-  saveFilesToLibrary(items);
-});
-btnDlDeleteSelected.addEventListener('click', async ()=>{
-  if(dlSelectedIds.size === 0){ showToast('Chưa chọn tệp nào'); return; }
-  const ok = await showConfirmDialog(
-    'Xóa các tệp đã chọn?',
-    `Sẽ xóa ${dlSelectedIds.size} tệp khỏi danh sách "Tệp đã tải về" trong app này (không xóa file đã lưu trước đó trên máy bạn).`,
-    'Xóa'
-  );
-  if(!ok) return;
-  downloadedFiles = downloadedFiles.filter(f => !dlSelectedIds.has(f.id));
-  dlSelectedIds.clear();
-  persistDownloadedFiles();
-  renderDownloadedFiles();
-  showToast('Đã xóa các tệp đã chọn');
-});
-loadDownloadedFiles();
-renderDownloadedFiles();
 
 /* =========================================================
    TAB TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE)
@@ -3808,6 +3605,156 @@ btnRnOpen.addEventListener('click', ()=>{
   const url = extractFirstUrl(text);
   if(!url){ showToast('Không tìm thấy đường link trong nội dung đã dán'); return; }
   window.open(url, '_blank', 'noopener');
+});
+
+/* =========================================================
+   THƯ MỤC TẢI VỀ: chọn nhiều ảnh/video từ thư mục Tải về của máy,
+   xem trước, chọn/bỏ chọn từng file, rồi chia sẻ các file đã chọn
+   thẳng vào Thư viện ảnh (Photos/Gallery) trên điện thoại qua khung
+   chia sẻ gốc của hệ điều hành (Web Share API).
+   -------------------------------------------------------------
+   GIỚI HẠN THỰC TẾ (không phải lỗi của trang):
+   - KHÔNG có API web nào cho phép trang tự động "liệt kê" file có
+     sẵn trong thư mục Tải về mà không cần người dùng thao tác — đây
+     là giới hạn bảo mật/riêng tư áp dụng cho MỌI trình duyệt. Người
+     dùng luôn phải chủ động mở hộp thoại chọn file.
+   - Trên máy tính, các trình duyệt nền Chromium (Chrome, Cốc Cốc,
+     Edge...) hỗ trợ File System Access API (window.showOpenFilePicker)
+     kèm gợi ý "startIn: downloads" giúp hộp thoại tự mở ngay tại
+     thư mục Tải về — đây là điểm khác biệt hiển thị giữa các trình
+     duyệt mà người dùng hay thấy. Safari, Firefox và hầu hết trình
+     duyệt di động không hỗ trợ API này nên sẽ tự động dùng
+     <input type="file"> thông thường, người dùng tự bấm vào mục
+     "Tải về/Downloads" trong hộp thoại hệ điều hành hiện ra.
+   - Chia sẻ nhiều file cùng lúc dùng navigator.share({files:[...]}) —
+     được Chrome/Android và Safari/iOS (15+) hỗ trợ tốt, cho phép
+     chọn thẳng "Lưu vào Ảnh" ở khung chia sẻ hệ thống. Trình duyệt
+     không hỗ trợ sẽ được báo để lưu thủ công (bấm giữ ảnh > Lưu ảnh).
+========================================================= */
+const dlFolderInput    = document.getElementById('dlFolderInput');
+const dlFolderDropzone = document.getElementById('dlFolderDropzone');
+const dlFolderList     = document.getElementById('dlFolderList');
+const dlFolderCount    = document.getElementById('dlFolderCount');
+const dlFolderBtnRow   = document.getElementById('dlFolderBtnRow');
+const btnDlFolderShare = document.getElementById('btnDlFolderShare');
+const btnDlFolderClear = document.getElementById('btnDlFolderClear');
+let dlFolderFiles = [];              // File[] — toàn bộ file đã thêm vào danh sách xem trước
+let dlFolderSelected = new Set();    // chỉ số các file đang được CHỌN để chia sẻ
+
+async function openDownloadsPicker(){
+  if(window.showOpenFilePicker){
+    try{
+      const handles = await window.showOpenFilePicker({
+        multiple: true,
+        startIn: 'downloads',
+        types: [{
+          description: 'Ảnh/Video',
+          accept: {
+            'image/*': ['.png','.jpg','.jpeg','.webp','.gif','.heic'],
+            'video/*': ['.mp4','.mov','.webm','.mkv']
+          }
+        }]
+      });
+      const files = await Promise.all(handles.map(h => h.getFile()));
+      addDlFolderFiles(files);
+      return;
+    }catch(err){
+      if(err && err.name === 'AbortError') return; // người dùng tự bấm huỷ hộp thoại
+      console.error('File System Access API lỗi, chuyển sang input file thường:', err);
+    }
+  }
+  // Trình duyệt không hỗ trợ mở thẳng thư mục Tải về (Safari, Firefox, di động...)
+  // -> dùng input file thường, người dùng tự điều hướng tới Tải về/Downloads.
+  dlFolderInput.click();
+}
+dlFolderDropzone.addEventListener('click', openDownloadsPicker);
+dlFolderInput.addEventListener('change', ()=>{
+  const files = Array.from(dlFolderInput.files || []);
+  dlFolderInput.value = ''; // cho phép chọn lại đúng file đó ở lần sau nếu cần
+  if(files.length) addDlFolderFiles(files);
+});
+function addDlFolderFiles(files){
+  const startIdx = dlFolderFiles.length;
+  dlFolderFiles = dlFolderFiles.concat(files);
+  files.forEach((_, i)=> dlFolderSelected.add(startIdx + i)); // mặc định chọn sẵn file vừa thêm
+  renderDlFolderList();
+  showToast(`Đã thêm ${files.length} file — bấm vào từng ảnh/video để chọn hoặc bỏ chọn`);
+}
+function renderDlFolderList(){
+  if(dlFolderFiles.length === 0){
+    dlFolderList.style.display = 'none';
+    dlFolderList.innerHTML = '';
+    dlFolderCount.style.display = 'none';
+    dlFolderBtnRow.style.display = 'none';
+    return;
+  }
+  dlFolderList.style.display = 'grid';
+  dlFolderList.innerHTML = dlFolderFiles.map((f, i) => {
+    const url = URL.createObjectURL(f);
+    const isVideo = f.type.startsWith('video/');
+    const selected = dlFolderSelected.has(i);
+    const preview = isVideo
+      ? `<video src="${url}" muted playsinline preload="metadata"></video>`
+      : `<img src="${url}" alt="">`;
+    return `
+      <div class="media-item dl-pick-item ${selected ? 'dl-selected' : ''}" data-i="${i}" style="cursor:pointer">
+        ${preview}
+        <span class="media-badge">${isVideo ? 'Video' : 'Ảnh'}</span>
+        <span class="dl-check">${selected ? '✓' : ''}</span>
+        <button type="button" class="media-remove" data-remove-i="${i}" title="Bỏ khỏi danh sách">✕</button>
+      </div>
+    `;
+  }).join('');
+  const selectedCount = dlFolderSelected.size;
+  dlFolderCount.style.display = 'block';
+  dlFolderCount.textContent = `${dlFolderFiles.length} file trong danh sách — đã chọn ${selectedCount} file để chia sẻ (bấm vào ảnh/video để chọn/bỏ chọn)`;
+  dlFolderBtnRow.style.display = 'flex';
+  dlFolderList.querySelectorAll('.dl-pick-item').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if(e.target.closest('[data-remove-i]')) return;
+      const i = Number(el.dataset.i);
+      if(dlFolderSelected.has(i)) dlFolderSelected.delete(i); else dlFolderSelected.add(i);
+      renderDlFolderList();
+    });
+  });
+  dlFolderList.querySelectorAll('[data-remove-i]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const i = Number(btn.dataset.removeI);
+      dlFolderFiles.splice(i, 1);
+      dlFolderSelected = new Set(Array.from(dlFolderSelected)
+        .filter(x => x !== i)
+        .map(x => x > i ? x - 1 : x));
+      renderDlFolderList();
+    });
+  });
+}
+btnDlFolderClear.addEventListener('click', ()=>{
+  dlFolderFiles = [];
+  dlFolderSelected = new Set();
+  renderDlFolderList();
+});
+btnDlFolderShare.addEventListener('click', async ()=>{
+  const files = dlFolderFiles.filter((_, i) => dlFolderSelected.has(i));
+  if(files.length === 0){ showToast('Chưa chọn file nào để chia sẻ'); return; }
+  const shareData = { files };
+  const canShare = !!navigator.share && (!navigator.canShare || navigator.canShare(shareData));
+  if(canShare){
+    btnDlFolderShare.disabled = true;
+    try{
+      await navigator.share(shareData);
+      showToast('Đã mở khung chia sẻ — chọn "Lưu vào Ảnh" / "Lưu vào thư viện" để lưu về Thư viện ảnh');
+    }catch(err){
+      if(!err || err.name !== 'AbortError'){
+        console.error(err);
+        showToast('Không mở được khung chia sẻ trên trình duyệt này.');
+      }
+    }finally{
+      btnDlFolderShare.disabled = false;
+    }
+  }else{
+    showToast('Trình duyệt này chưa hỗ trợ chia sẻ nhiều file cùng lúc — hãy bấm giữ từng ảnh/video ở trên rồi chọn "Lưu ảnh" để lưu thủ công.');
+  }
 });
 </script>
 </body>
