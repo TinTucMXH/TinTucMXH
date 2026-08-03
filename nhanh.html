@@ -246,16 +246,6 @@
     border:none; background:rgba(0,0,0,.62); color:#fff; font-size:11px; cursor:pointer;
   }
   .media-count{ font-size:11.5px; color:var(--muted); font-weight:600; margin-top:8px; }
-  /* ===== Chọn nhiều file để chia sẻ (Thư mục Tải về) ===== */
-  .dl-pick-item{ position:relative; }
-  .dl-pick-item .dl-check{
-    position:absolute; top:4px; left:4px; width:20px; height:20px; border-radius:50%;
-    background:rgba(0,0,0,.55); color:#fff; font-size:12px; font-weight:800;
-    display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(255,255,255,.5);
-    transition:background .12s ease, border-color .12s ease;
-  }
-  .dl-pick-item.dl-selected{ outline:2px solid var(--primary); outline-offset:-2px; }
-  .dl-pick-item.dl-selected .dl-check{ background:var(--primary); border-color:var(--primary); }
   .btnrow{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
   .btn{
     flex:1; border:none; padding:14px 14px; border-radius:var(--radius-sm);
@@ -364,9 +354,10 @@
   .chat-send-btn{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; }
   .chat-send-btn:disabled{ opacity:.5; pointer-events:none; }
   #groupMsgInput{
-    flex:1; border:1px solid var(--border); background:var(--surface-2); border-radius:20px; padding:10px 14px;
+    flex:1; border:1px solid var(--border); background:#FFFFFF; color:#191A2E; border-radius:20px; padding:10px 14px;
     font-size:15px; font-family:inherit; resize:none; max-height:100px; min-height:42px; line-height:1.4;
   }
+  #groupMsgInput::placeholder{ color:#6B6E85; }
   #groupMsgInput:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
   .group-user-badge{
     display:flex; align-items:center; gap:8px; background:var(--primary-light); border-radius:var(--radius-sm);
@@ -807,25 +798,6 @@
   <!-- ================= TAB 6: TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE) ================= -->
   <section id="page-download" class="page">
     <div class="card">
-      <h2 class="title">Thư mục Tải về</h2>
-      <p class="hint">
-        Đang phát triển
-      </p>
-      <input type="file" id="dlFolderInput" accept="image/*,video/*" multiple style="display:none">
-      <div id="dlFolderDropzone" class="dropzone">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3.5 7.2c0-.94.76-1.7 1.7-1.7h4l1.6 2h7.5c.94 0 1.7.76 1.7 1.7v8.6c0 .94-.76 1.7-1.7 1.7H5.2c-.94 0-1.7-.76-1.7-1.7V7.2z"/>
-        </svg>
-        <span>Chọn ảnh / video từ thư mục Tải về</span>
-      </div>
-      <div id="dlFolderList" class="media-list" style="display:none"></div>
-      <div id="dlFolderCount" class="media-count" style="display:none"></div>
-      <div class="btnrow" id="dlFolderBtnRow" style="display:none">
-        <button class="btn btn-primary" id="btnDlFolderShare">Chia sẻ vào Thư viện ảnh</button>
-        <button class="btn btn-danger" id="btnDlFolderClear">Bỏ chọn hết</button>
-      </div>
-    </div>
-    <div class="card">
       <h2 class="title">Facebook</h2>
       <p class="hint">Dán link bài viết hoặc video Facebook (công khai) vào ô bên dưới rồi bấm "Tải". Video sẽ được nhúng trực tiếp để xem trước; nếu không hiện được (video riêng tư, bị chặn nhúng...) hãy dùng công cụ tải video thay thế bên dưới khung xem trước.</p>
       <div class="field" style="margin-top:0">
@@ -902,7 +874,7 @@
         <h2 class="title" style="margin:0">Bản đồ thành viên</h2>
         <button id="btnAdminLogout" class="btn btn-ghost" style="flex:none;padding:8px 12px;font-size:12px;min-height:auto">Đăng xuất</button>
       </div>
-      <p class="hint" style="margin-bottom:8px">Map của những thành viên đã đồng ý chia sẻ.</p>
+      <p class="hint" style="margin-bottom:8px">Map của những thành viên đã đồng ý chia sẻ vị trí trong nhóm chat.</p>
       <div id="adminMap" style="width:100%;height:320px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border)"></div>
       <div class="admin-legend">
         <span><span class="admin-dot" style="background:var(--green)"></span>Đang online</span>
@@ -3605,156 +3577,6 @@ btnRnOpen.addEventListener('click', ()=>{
   const url = extractFirstUrl(text);
   if(!url){ showToast('Không tìm thấy đường link trong nội dung đã dán'); return; }
   window.open(url, '_blank', 'noopener');
-});
-
-/* =========================================================
-   THƯ MỤC TẢI VỀ: chọn nhiều ảnh/video từ thư mục Tải về của máy,
-   xem trước, chọn/bỏ chọn từng file, rồi chia sẻ các file đã chọn
-   thẳng vào Thư viện ảnh (Photos/Gallery) trên điện thoại qua khung
-   chia sẻ gốc của hệ điều hành (Web Share API).
-   -------------------------------------------------------------
-   GIỚI HẠN THỰC TẾ (không phải lỗi của trang):
-   - KHÔNG có API web nào cho phép trang tự động "liệt kê" file có
-     sẵn trong thư mục Tải về mà không cần người dùng thao tác — đây
-     là giới hạn bảo mật/riêng tư áp dụng cho MỌI trình duyệt. Người
-     dùng luôn phải chủ động mở hộp thoại chọn file.
-   - Trên máy tính, các trình duyệt nền Chromium (Chrome, Cốc Cốc,
-     Edge...) hỗ trợ File System Access API (window.showOpenFilePicker)
-     kèm gợi ý "startIn: downloads" giúp hộp thoại tự mở ngay tại
-     thư mục Tải về — đây là điểm khác biệt hiển thị giữa các trình
-     duyệt mà người dùng hay thấy. Safari, Firefox và hầu hết trình
-     duyệt di động không hỗ trợ API này nên sẽ tự động dùng
-     <input type="file"> thông thường, người dùng tự bấm vào mục
-     "Tải về/Downloads" trong hộp thoại hệ điều hành hiện ra.
-   - Chia sẻ nhiều file cùng lúc dùng navigator.share({files:[...]}) —
-     được Chrome/Android và Safari/iOS (15+) hỗ trợ tốt, cho phép
-     chọn thẳng "Lưu vào Ảnh" ở khung chia sẻ hệ thống. Trình duyệt
-     không hỗ trợ sẽ được báo để lưu thủ công (bấm giữ ảnh > Lưu ảnh).
-========================================================= */
-const dlFolderInput    = document.getElementById('dlFolderInput');
-const dlFolderDropzone = document.getElementById('dlFolderDropzone');
-const dlFolderList     = document.getElementById('dlFolderList');
-const dlFolderCount    = document.getElementById('dlFolderCount');
-const dlFolderBtnRow   = document.getElementById('dlFolderBtnRow');
-const btnDlFolderShare = document.getElementById('btnDlFolderShare');
-const btnDlFolderClear = document.getElementById('btnDlFolderClear');
-let dlFolderFiles = [];              // File[] — toàn bộ file đã thêm vào danh sách xem trước
-let dlFolderSelected = new Set();    // chỉ số các file đang được CHỌN để chia sẻ
-
-async function openDownloadsPicker(){
-  if(window.showOpenFilePicker){
-    try{
-      const handles = await window.showOpenFilePicker({
-        multiple: true,
-        startIn: 'downloads',
-        types: [{
-          description: 'Ảnh/Video',
-          accept: {
-            'image/*': ['.png','.jpg','.jpeg','.webp','.gif','.heic'],
-            'video/*': ['.mp4','.mov','.webm','.mkv']
-          }
-        }]
-      });
-      const files = await Promise.all(handles.map(h => h.getFile()));
-      addDlFolderFiles(files);
-      return;
-    }catch(err){
-      if(err && err.name === 'AbortError') return; // người dùng tự bấm huỷ hộp thoại
-      console.error('File System Access API lỗi, chuyển sang input file thường:', err);
-    }
-  }
-  // Trình duyệt không hỗ trợ mở thẳng thư mục Tải về (Safari, Firefox, di động...)
-  // -> dùng input file thường, người dùng tự điều hướng tới Tải về/Downloads.
-  dlFolderInput.click();
-}
-dlFolderDropzone.addEventListener('click', openDownloadsPicker);
-dlFolderInput.addEventListener('change', ()=>{
-  const files = Array.from(dlFolderInput.files || []);
-  dlFolderInput.value = ''; // cho phép chọn lại đúng file đó ở lần sau nếu cần
-  if(files.length) addDlFolderFiles(files);
-});
-function addDlFolderFiles(files){
-  const startIdx = dlFolderFiles.length;
-  dlFolderFiles = dlFolderFiles.concat(files);
-  files.forEach((_, i)=> dlFolderSelected.add(startIdx + i)); // mặc định chọn sẵn file vừa thêm
-  renderDlFolderList();
-  showToast(`Đã thêm ${files.length} file — bấm vào từng ảnh/video để chọn hoặc bỏ chọn`);
-}
-function renderDlFolderList(){
-  if(dlFolderFiles.length === 0){
-    dlFolderList.style.display = 'none';
-    dlFolderList.innerHTML = '';
-    dlFolderCount.style.display = 'none';
-    dlFolderBtnRow.style.display = 'none';
-    return;
-  }
-  dlFolderList.style.display = 'grid';
-  dlFolderList.innerHTML = dlFolderFiles.map((f, i) => {
-    const url = URL.createObjectURL(f);
-    const isVideo = f.type.startsWith('video/');
-    const selected = dlFolderSelected.has(i);
-    const preview = isVideo
-      ? `<video src="${url}" muted playsinline preload="metadata"></video>`
-      : `<img src="${url}" alt="">`;
-    return `
-      <div class="media-item dl-pick-item ${selected ? 'dl-selected' : ''}" data-i="${i}" style="cursor:pointer">
-        ${preview}
-        <span class="media-badge">${isVideo ? 'Video' : 'Ảnh'}</span>
-        <span class="dl-check">${selected ? '✓' : ''}</span>
-        <button type="button" class="media-remove" data-remove-i="${i}" title="Bỏ khỏi danh sách">✕</button>
-      </div>
-    `;
-  }).join('');
-  const selectedCount = dlFolderSelected.size;
-  dlFolderCount.style.display = 'block';
-  dlFolderCount.textContent = `${dlFolderFiles.length} file trong danh sách — đã chọn ${selectedCount} file để chia sẻ (bấm vào ảnh/video để chọn/bỏ chọn)`;
-  dlFolderBtnRow.style.display = 'flex';
-  dlFolderList.querySelectorAll('.dl-pick-item').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      if(e.target.closest('[data-remove-i]')) return;
-      const i = Number(el.dataset.i);
-      if(dlFolderSelected.has(i)) dlFolderSelected.delete(i); else dlFolderSelected.add(i);
-      renderDlFolderList();
-    });
-  });
-  dlFolderList.querySelectorAll('[data-remove-i]').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      const i = Number(btn.dataset.removeI);
-      dlFolderFiles.splice(i, 1);
-      dlFolderSelected = new Set(Array.from(dlFolderSelected)
-        .filter(x => x !== i)
-        .map(x => x > i ? x - 1 : x));
-      renderDlFolderList();
-    });
-  });
-}
-btnDlFolderClear.addEventListener('click', ()=>{
-  dlFolderFiles = [];
-  dlFolderSelected = new Set();
-  renderDlFolderList();
-});
-btnDlFolderShare.addEventListener('click', async ()=>{
-  const files = dlFolderFiles.filter((_, i) => dlFolderSelected.has(i));
-  if(files.length === 0){ showToast('Chưa chọn file nào để chia sẻ'); return; }
-  const shareData = { files };
-  const canShare = !!navigator.share && (!navigator.canShare || navigator.canShare(shareData));
-  if(canShare){
-    btnDlFolderShare.disabled = true;
-    try{
-      await navigator.share(shareData);
-      showToast('Đã mở khung chia sẻ — chọn "Lưu vào Ảnh" / "Lưu vào thư viện" để lưu về Thư viện ảnh');
-    }catch(err){
-      if(!err || err.name !== 'AbortError'){
-        console.error(err);
-        showToast('Không mở được khung chia sẻ trên trình duyệt này.');
-      }
-    }finally{
-      btnDlFolderShare.disabled = false;
-    }
-  }else{
-    showToast('Trình duyệt này chưa hỗ trợ chia sẻ nhiều file cùng lúc — hãy bấm giữ từng ảnh/video ở trên rồi chọn "Lưu ảnh" để lưu thủ công.');
-  }
 });
 </script>
 </body>
