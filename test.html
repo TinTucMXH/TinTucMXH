@@ -246,16 +246,6 @@
     border:none; background:rgba(0,0,0,.62); color:#fff; font-size:11px; cursor:pointer;
   }
   .media-count{ font-size:11.5px; color:var(--muted); font-weight:600; margin-top:8px; }
-  /* ===== Chọn nhiều file để chia sẻ (Thư mục Tải về) ===== */
-  .dl-pick-item{ position:relative; }
-  .dl-pick-item .dl-check{
-    position:absolute; top:4px; left:4px; width:20px; height:20px; border-radius:50%;
-    background:rgba(0,0,0,.55); color:#fff; font-size:12px; font-weight:800;
-    display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(255,255,255,.5);
-    transition:background .12s ease, border-color .12s ease;
-  }
-  .dl-pick-item.dl-selected{ outline:2px solid var(--primary); outline-offset:-2px; }
-  .dl-pick-item.dl-selected .dl-check{ background:var(--primary); border-color:var(--primary); }
   .btnrow{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
   .btn{
     flex:1; border:none; padding:14px 14px; border-radius:var(--radius-sm);
@@ -363,11 +353,12 @@
   .chat-attach-btn{ background:var(--primary-light); color:var(--primary-text); }
   .chat-send-btn{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; }
   .chat-send-btn:disabled{ opacity:.5; pointer-events:none; }
-  #groupMsgInput{
-    flex:1; border:1px solid var(--border); background:var(--surface-2); border-radius:20px; padding:10px 14px;
+  .chat-text-input{
+    flex:1; border:1px solid var(--border); background:#FFFFFF; color:#191A2E; border-radius:20px; padding:10px 14px;
     font-size:15px; font-family:inherit; resize:none; max-height:100px; min-height:42px; line-height:1.4;
   }
-  #groupMsgInput:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+  .chat-text-input::placeholder{ color:#6B6E85; }
+  .chat-text-input:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
   .group-user-badge{
     display:flex; align-items:center; gap:8px; background:var(--primary-light); border-radius:var(--radius-sm);
     padding:8px 10px; margin-bottom:10px;
@@ -450,6 +441,38 @@
     background:var(--red); border:1.5px solid #fff;
   }
   .chat-header-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+  /* ===== Cửa sổ chat riêng nổi, kéo-thả được (kiểu Messenger) ===== */
+  #floatingChatsContainer{ position:fixed; inset:0; pointer-events:none; z-index:90; }
+  .floating-chat{
+    position:fixed;
+    width:min(320px, calc(100vw - 24px));
+    max-height:min(460px, calc(100vh - 24px));
+    display:flex; flex-direction:column;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-md);
+    pointer-events:auto;
+    overflow:hidden;
+  }
+  .floating-chat.dragging{ opacity:.94; box-shadow:0 26px 52px rgba(0,0,0,.6); }
+  .floating-chat-header{
+    display:flex; align-items:center; gap:8px; padding:9px 8px 9px 12px;
+    background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff;
+    cursor:grab; touch-action:none; user-select:none; flex-shrink:0;
+  }
+  .floating-chat-header:active{ cursor:grabbing; }
+  .floating-chat-avatar{ width:28px; height:28px; border-radius:50%; object-fit:cover; background:rgba(255,255,255,.3); flex-shrink:0; }
+  .floating-chat-title{ flex:1; min-width:0; }
+  .floating-chat-name{ font-size:13px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .floating-chat-seen{ font-size:10px; opacity:.85; }
+  .floating-chat-header button{
+    flex-shrink:0; border:none; background:rgba(255,255,255,.18); color:#fff;
+    width:25px; height:25px; border-radius:50%; cursor:pointer; font-size:11.5px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .floating-chat-header button:hover{ background:rgba(255,255,255,.32); }
+  .floating-chat-messages{ background:var(--bg-bot); max-height:280px; min-height:160px; padding:10px; }
+  .floating-chat-inputbar{ border-top:1px solid var(--border); padding:8px 10px; margin-top:0; flex-shrink:0; }
+  .floating-chat-media-grid{ padding:0 10px 8px; flex-shrink:0; }
   /* ===== Xem trước nhiều file đính kèm khi chat + tiến trình % upload + huỷ tải ===== */
   .attach-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:8px; }
   .attach-item{
@@ -771,7 +794,7 @@
       <div class="chat-header-row">
         <h2 class="title" style="margin:0">Group Chat</h2>
         <div style="display:flex;gap:6px">
-          <button id="btnDeleteAllMsgs" class="btn btn-danger" style="flex:none;padding:8px 10px;font-size:12px;min-height:auto" title="Xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở">🗑</button>
+          <button id="btnDeleteAllMsgs" class="btn btn-danger" style="flex:none;padding:8px 10px;font-size:12px;min-height:auto" title="Xóa toàn bộ tin nhắn nhóm chung">🗑</button>
           <button id="btnLogout" class="btn btn-ghost" style="flex:none;padding:8px 12px;font-size:12px;min-height:auto">Đăng xuất</button>
         </div>
       </div>
@@ -789,7 +812,7 @@
       </div>
       <div class="section-label" style="margin-top:0">Đang tham gia</div>
       <div id="onlineUsers" class="online-users"></div>
-      <div class="section-label">Nhắn tin đến</div>
+      <div class="section-label">Nhắn riêng (bấm để mở cửa sổ chat)</div>
       <div id="targetRow" class="target-row"></div>
       <div id="chatSeenStatus" class="seen-status"></div>
       <div id="chatMessages" class="chat-messages">
@@ -799,32 +822,13 @@
       <div class="chat-inputbar">
         <input type="file" id="groupMediaInput" accept="image/*,video/*" multiple style="display:none">
         <button id="btnGroupAttach" class="chat-attach-btn" title="Đính kèm ảnh/video (chọn được nhiều file)">📎</button>
-        <textarea id="groupMsgInput" rows="1" placeholder="Nhập tin nhắn..."></textarea>
+        <textarea id="groupMsgInput" class="chat-text-input" rows="1" placeholder="Nhập tin nhắn..."></textarea>
         <button id="btnGroupSend" class="chat-send-btn" title="Gửi">➤</button>
       </div>
     </div>
   </section>
   <!-- ================= TAB 6: TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE) ================= -->
   <section id="page-download" class="page">
-    <div class="card">
-      <h2 class="title">Thư mục Tải về</h2>
-      <p class="hint">
-        Vì lý do bảo mật, trình duyệt (Chrome, Cốc Cốc, Safari...) <strong>không cho phép trang web tự liệt kê</strong> các file đã có sẵn trong thư mục Tải về — bạn cần chủ động bấm chọn mỗi lần. Bấm nút bên dưới: trên Chrome/Cốc Cốc <strong>máy tính</strong> hộp thoại sẽ tự mở ngay tại thư mục Tải về (Downloads); trên điện thoại hoặc trình duyệt khác, hãy tự điều hướng tới thư mục Tải về/Downloads trong hộp thoại hiện ra. Có thể chọn <strong>nhiều ảnh/video cùng lúc</strong>, xem trước bên dưới, bấm vào từng file để chọn/bỏ chọn, rồi chia sẻ thẳng các file đã chọn về <strong>Thư viện ảnh</strong> trên iOS/Android qua khung chia sẻ của hệ điều hành.
-      </p>
-      <input type="file" id="dlFolderInput" accept="image/*,video/*" multiple style="display:none">
-      <div id="dlFolderDropzone" class="dropzone">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3.5 7.2c0-.94.76-1.7 1.7-1.7h4l1.6 2h7.5c.94 0 1.7.76 1.7 1.7v8.6c0 .94-.76 1.7-1.7 1.7H5.2c-.94 0-1.7-.76-1.7-1.7V7.2z"/>
-        </svg>
-        <span>Chọn ảnh / video từ thư mục Tải về</span>
-      </div>
-      <div id="dlFolderList" class="media-list" style="display:none"></div>
-      <div id="dlFolderCount" class="media-count" style="display:none"></div>
-      <div class="btnrow" id="dlFolderBtnRow" style="display:none">
-        <button class="btn btn-primary" id="btnDlFolderShare">Chia sẻ vào Thư viện ảnh</button>
-        <button class="btn btn-danger" id="btnDlFolderClear">Bỏ chọn hết</button>
-      </div>
-    </div>
     <div class="card">
       <h2 class="title">Facebook</h2>
       <p class="hint">Dán link bài viết hoặc video Facebook (công khai) vào ô bên dưới rồi bấm "Tải". Video sẽ được nhúng trực tiếp để xem trước; nếu không hiện được (video riêng tư, bị chặn nhúng...) hãy dùng công cụ tải video thay thế bên dưới khung xem trước.</p>
@@ -990,9 +994,16 @@
       <button type="button" id="btnCloseShoppeModal" class="modal-close">✕</button>
       <div class="modal-icon">🛒</div>
       <h3 class="modal-title" id="shoppeModalTitle">Thêm link Shopee</h3>
-      <p class="modal-desc" id="shoppeModalDesc">Mỗi dòng theo dạng Tiêu đề | Link. Có thể nhập nhiều dòng cùng lúc để thêm nhiều link.</p>
+      <p class="modal-desc" id="shoppeModalDesc">Mỗi dòng theo dạng Tiêu đề | Link. Có thể nhập nhiều dòng cùng lúc để thêm nhiều link. Dòng chỉ dán link (không có dấu |) sẽ được tự động tìm tiêu đề nếu bật tuỳ chọn bên dưới.</p>
       <div class="field" style="margin-top:0">
-        <textarea id="shoppeModalTextarea" style="min-height:140px" placeholder="Tiêu đề sản phẩm | https://s.shopee.vn/..."></textarea>
+        <textarea id="shoppeModalTextarea" style="min-height:140px" placeholder="Tiêu đề sản phẩm | https://s.shopee.vn/...&#10;hoặc chỉ dán link: https://s.shopee.vn/..."></textarea>
+      </div>
+      <div class="switch-row" id="shoppeAutoTitleRow">
+        <span class="switch-label">🏷️ Tự động tìm tiêu đề cho dòng chỉ có link<br><span style="font-weight:400;color:var(--muted)">Dò theo link rút gọn → trang sản phẩm → đọc thẻ OG, giống cách Facebook lấy tiêu đề khi dán link. Chạy ngầm, không làm treo trang. Nếu không tìm được, tự dùng câu "Mỗi lượt click là một lần ủng hộ page".</span></span>
+        <label class="switch">
+          <input type="checkbox" id="shoppeAutoTitleToggle" checked>
+          <span class="slider"></span>
+        </label>
       </div>
       <div class="btnrow">
         <button type="button" class="btn btn-primary" id="btnSaveShoppeModal">Lưu</button>
@@ -1037,6 +1048,7 @@
   </div>
 </div>
 <div id="toast"></div>
+<div id="floatingChatsContainer"></div>
 <!-- Thư viện OCR (nhận diện chữ trên khung hình) -->
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <!-- Thư viện xử lý video ngay trên trình duyệt (ghép phụ đề, xuất mp4) -->
@@ -1621,6 +1633,7 @@ const btnCloseShoppeModal   = document.getElementById('btnCloseShoppeModal');
 const shoppeModalTitle      = document.getElementById('shoppeModalTitle');
 const shoppeModalDesc       = document.getElementById('shoppeModalDesc');
 const shoppeModalTextarea   = document.getElementById('shoppeModalTextarea');
+const shoppeAutoTitleToggle = document.getElementById('shoppeAutoTitleToggle');
 const btnSaveShoppeModal    = document.getElementById('btnSaveShoppeModal');
 const btnDeleteShoppeModal  = document.getElementById('btnDeleteShoppeModal');
 const btnAddShoppeLink      = document.getElementById('btnAddShoppeLink');
@@ -1662,23 +1675,91 @@ function mapShoppeIndexToRawLine(index){
   rawLines.forEach((l, idx)=>{ if(l.trim()) nonEmptyIdx.push(idx); });
   return { rawLines, targetIdx: nonEmptyIdx[index] };
 }
+/* ---------- Tự động tìm tiêu đề cho link Shopee (Auto Title) ----------
+   Mô phỏng cách Facebook lấy ảnh/tiêu đề khi dán link: theo link rút gọn
+   (s.shopee.vn/...) → trình duyệt của Shopee tự chuyển hướng (301/302) tới
+   trang sản phẩm thật → đọc thẻ <meta property="og:title"> trên trang đó.
+   Vì Shopee không cho phép trang khác gọi fetch() thẳng vào tên miền của họ
+   (chặn CORS), phải đi qua 1 dịch vụ proxy đọc HTML công khai — dịch vụ này
+   tự follow redirect rồi trả về HTML của trang đích để đọc thẻ OG.
+   Luôn chạy NGẦM (không await trước khi đóng modal) để không làm treo giao
+   diện: link được thêm vào danh sách ngay với tiêu đề tạm, sau đó tự cập
+   nhật lại đúng dòng đó khi tra cứu xong (nhiều link tra cứu song song). */
+const SHOPPE_FALLBACK_TITLE = 'Mỗi lượt click là một lần ủng hộ page';
+const SHOPPE_TITLE_PLACEHOLDER = 'Đang tìm tiêu đề...';
+async function fetchShopeeTitle(url){
+  const proxied = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+  const resp = await fetch(proxied);
+  if(!resp.ok) throw new Error('HTTP ' + resp.status);
+  const html = await resp.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  let title = doc.querySelector('meta[property="og:title"]')?.getAttribute('content')
+    || doc.querySelector('title')?.textContent
+    || '';
+  title = title.trim();
+  if(!title) throw new Error('Không tìm thấy tiêu đề trên trang đích');
+  return title;
+}
+// Tra cứu tiêu đề thật cho 1 link Shopee ở chế độ nền, rồi thay đúng dòng
+// placeholder (khớp theo nội dung dòng) bằng dòng đã có tiêu đề thật/dự phòng.
+async function resolveShoppeTitleInBackground(link, placeholderLine){
+  let title = SHOPPE_FALLBACK_TITLE;
+  try{
+    const found = await fetchShopeeTitle(link);
+    if(found) title = found;
+  }catch(err){
+    console.error('Không tự tìm được tiêu đề Shopee cho', link, err);
+  }
+  const finalLine = `${title} | ${link}`;
+  const rawLines = shoppeLinksInput.value.split('\n');
+  const idx = rawLines.indexOf(placeholderLine);
+  if(idx !== -1){
+    rawLines[idx] = finalLine;
+    shoppeLinksInput.value = rawLines.join('\n');
+    saveShoppeLinks();
+    renderShoppeList();
+  }
+}
 btnSaveShoppeModal.addEventListener('click', ()=>{
   const lines = shoppeModalTextarea.value.split('\n').map(s=>s.trim()).filter(Boolean);
   if(lines.length === 0){ showToast('Chưa nhập nội dung'); return; }
+  const autoTitle = shoppeAutoTitleToggle.checked;
+
+  // Dòng có "|" giữ nguyên tiêu đề người dùng tự nhập; dòng chỉ có link (không "|")
+  // sẽ được gắn tiêu đề tạm rồi tự tìm tiêu đề thật ở chế độ nền phía dưới.
+  const parsedLines = lines.map(line=>{
+    const sepIndex = line.indexOf('|');
+    if(sepIndex === -1) return { hasTitle: false, link: line };
+    return { hasTitle: true, title: line.slice(0, sepIndex).trim(), link: line.slice(sepIndex + 1).trim() };
+  });
+  const finalLines = parsedLines.map(p=>{
+    if(p.hasTitle) return `${p.title} | ${p.link}`;
+    return `${autoTitle ? SHOPPE_TITLE_PLACEHOLDER : SHOPPE_FALLBACK_TITLE} | ${p.link}`;
+  });
+
   if(shoppeEditIndex >= 0){
     const { rawLines, targetIdx } = mapShoppeIndexToRawLine(shoppeEditIndex);
     if(targetIdx != null){
-      rawLines[targetIdx] = lines[0];
+      rawLines[targetIdx] = finalLines[0];
       shoppeLinksInput.value = rawLines.join('\n');
     }
   }else{
     const existing = shoppeLinksInput.value.trim();
-    shoppeLinksInput.value = existing ? existing + '\n' + lines.join('\n') : lines.join('\n');
+    shoppeLinksInput.value = existing ? existing + '\n' + finalLines.join('\n') : finalLines.join('\n');
   }
   saveShoppeLinks();
   renderShoppeList();
   closeShoppeModal();
-  showToast(shoppeEditIndex >= 0 ? 'Đã lưu link' : `Đã thêm ${lines.length} link mới`);
+  showToast(shoppeEditIndex >= 0 ? 'Đã lưu link' : `Đã thêm ${finalLines.length} link mới`);
+
+  // Tra cứu tiêu đề thật ở chế độ nền cho các dòng chưa có tiêu đề — không await ở đây
+  // nên giao diện không bị treo; nhiều link được tra song song, mỗi link tự cập nhật
+  // đúng dòng của mình khi xong.
+  if(autoTitle){
+    parsedLines.forEach((p, i)=>{
+      if(!p.hasTitle) resolveShoppeTitleInBackground(p.link, finalLines[i]);
+    });
+  }
 });
 btnDeleteShoppeModal.addEventListener('click', async ()=>{
   if(shoppeEditIndex < 0) return;
@@ -2133,10 +2214,9 @@ function triggerVibration(){
 // và tab đang hiển thị trước mắt — vì tin nhắn đã hiện sẵn trong khung chat rồi.
 function isConversationCurrentlyVisible(isPrivate, fromUid){
   if(document.hidden) return false;
+  if(isPrivate) return floatingChats.has(fromUid); // cửa sổ nổi hiển thị bất kể đang ở tab nào
   const onGroupTab = document.getElementById('page-group').classList.contains('active');
-  if(!onGroupTab) return false;
-  if(isPrivate) return !!(activeTarget && activeTarget.uid === fromUid);
-  return !activeTarget;
+  return onGroupTab;
 }
 function handleIncomingMessage({ name, text, attachments, photoURL, isPrivate, fromUid }){
   if(!notifEnabled) return;
@@ -2239,14 +2319,10 @@ presetAvatarGrid.addEventListener('click', (e)=>{
 let currentUser = null;
 let presenceRef = null;
 let connectedRef = null;
-let allMessages = [];          // tin nhắn của cuộc trò chuyện đang mở (nhóm chung hoặc riêng)
-let lastReadTimestamp = 0;     // mốc đã đọc của cuộc trò chuyện đang mở
+let allMessages = [];          // tin nhắn nhóm chung — khung chat chính giờ luôn hiển thị nhóm chung
+let lastReadTimestamp = 0;     // mốc đã đọc của nhóm chung
 
-let activeTarget = null;       // null = Cả nhóm; hoặc {uid, name, photoURL} = đang nhắn riêng với ai
-let activeThreadRef = null;    // ref tin nhắn riêng đang lắng nghe (chỉ dùng khi activeTarget != null)
-let activeReadRef = null;      // ref "đã đọc" của cuộc trò chuyện riêng đang mở
-
-let publicMessages = [];       // luôn lắng nghe song song để tính badge kể cả khi đang xem 1 cuộc riêng
+let publicMessages = [];       // luôn lắng nghe song song để tính badge kể cả khi đang mở cửa sổ chat riêng
 let publicLastRead = 0;
 let publicReadRef = null;
 
@@ -2256,10 +2332,12 @@ let privateThreadsData = {};   // {otherUid: {name, photoURL, lastMessage, lastT
 let privateReadsAllRef = null;
 let privateReadsData = {};     // {otherUid: lastReadTimestamp}
 
-let groupMediaFiles = [];      // File[] — nhiều file được chọn cùng lúc, gửi song song
+let groupMediaFiles = [];      // File[] — nhiều file được chọn cùng lúc, gửi song song (nhóm chung)
 let uploadProgressMap = {};    // {index: percent} — % tải lên của từng file trong lượt gửi hiện tại
 let uploadTasksMap = {};       // {index: firebase UploadTask} — cho phép huỷ tải lên từng file đang gửi
 let uploadErrorMap = {};       // {index: message} — lỗi tải lên riêng cho từng file (nếu có), cho phép thử lại
+
+let floatingChats = new Map(); // uid -> trạng thái cửa sổ chat riêng nổi đang mở (xem "CỬA SỔ CHAT RIÊNG NỔI" bên dưới)
 
 let userProfile = null;        // {name, photoURL} — hồ sơ hiển thị đang dùng trong nhóm (tùy chỉnh hoặc mặc định Gmail)
 let userProfileRef = null;     // ref groupChat/userProfiles/{uid}
@@ -2573,17 +2651,13 @@ btnLogout.addEventListener('click', ()=> gAuth.signOut());
 gAuth.onAuthStateChanged(user=>{
   teardownPresence();
   stopSharingLocation();
+  closeAllFloatingChats();
   messagesRef.off('value');
   if(publicReadRef) publicReadRef.off('value');
-  if(activeThreadRef){ activeThreadRef.off('value'); activeThreadRef = null; }
-  if(activeReadRef){ activeReadRef.off('value'); activeReadRef = null; }
-  if(activeClearedRef){ activeClearedRef.off('value'); activeClearedRef = null; }
   if(privateThreadsRef) privateThreadsRef.off('value');
   if(privateReadsAllRef) privateReadsAllRef.off('value');
 
   currentUser = user;
-  activeTarget = null;
-  activeThreadRawMessages = []; activeClearedAt = 0;
   publicMessages = []; publicLastRead = 0;
   privateThreadsData = {}; privateReadsData = {};
   groupMediaFiles = []; uploadProgressMap = {}; uploadTasksMap = {}; uploadErrorMap = {};
@@ -2597,7 +2671,6 @@ gAuth.onAuthStateChanged(user=>{
     setupPublicListeners();
     setupPrivateThreadsListener(user.uid);
     setupPrivateReadsAllListener(user.uid);
-    subscribeActiveThread();
     renderTargetRow();
     renderGroupMediaGrid();
 
@@ -2703,44 +2776,31 @@ function renderTargetRow(){
     return tb - ta;
   });
 
-  let html = `<div class="target-chip everyone ${!activeTarget ? 'active' : ''}" data-target="">🌐 Cả nhóm</div>`;
-  html += list.map(u=>{
-    const isActive = activeTarget && activeTarget.uid === u.uid;
+  targetRowEl.innerHTML = list.map(u=>{
+    const isOpen = floatingChats.has(u.uid);
     const t = privateThreadsData[u.uid];
     const hasUnread = t && t.lastSenderUid !== currentUser.uid &&
       (t.lastTimestamp || 0) > (privateReadsData[u.uid] || 0);
-    return `<div class="target-chip ${isActive?'active':''}" data-target="${u.uid}" data-name="${escapeHtml(u.name||'Ẩn danh')}" data-photo="${escapeHtml(u.photoURL||'')}">
+    return `<div class="target-chip ${isOpen?'active':''}" data-target="${u.uid}" data-name="${escapeHtml(u.name||'Ẩn danh')}" data-photo="${escapeHtml(u.photoURL||'')}">
       ${u.online ? '<span class="t-dot"></span>' : ''}
       <img src="${u.photoURL||''}" onerror="this.style.display='none'">
       <span>${escapeHtml(u.name || 'Ẩn danh')}</span>
-      ${hasUnread ? '<span class="t-unread"></span>' : ''}
+      ${hasUnread && !isOpen ? '<span class="t-unread"></span>' : ''}
     </div>`;
   }).join('');
-  targetRowEl.innerHTML = html;
   if(list.length === 0){
-    targetRowEl.insertAdjacentHTML('beforeend', '<div class="hint" style="margin:0;white-space:normal">Chưa có ai khác để nhắn riêng — mọi người cần online ít nhất 1 lần.</div>');
+    targetRowEl.innerHTML = '<div class="hint" style="margin:0;white-space:normal">Chưa có ai khác để nhắn riêng — mọi người cần online ít nhất 1 lần.</div>';
   }
 }
 targetRowEl.addEventListener('click', e=>{
   const chip = e.target.closest('.target-chip');
   if(!chip) return;
   const uid = chip.dataset.target;
-  if(!uid){
-    selectTarget(null);
-  }else{
-    selectTarget({ uid, name: chip.dataset.name, photoURL: chip.dataset.photo });
-  }
+  if(!uid) return;
+  openFloatingChat({ uid, name: chip.dataset.name, photoURL: chip.dataset.photo });
 });
-function selectTarget(target){
-  activeTarget = target;
-  cancelAllPendingUploads();
-  groupMediaFiles = []; uploadProgressMap = {}; uploadErrorMap = {};
-  renderGroupMediaGrid();
-  renderTargetRow();
-  subscribeActiveThread();
-}
 
-/* ---------- Lắng nghe nhóm chung (luôn bật, phục vụ cả hiển thị lẫn tính badge) ---------- */
+/* ---------- Lắng nghe nhóm chung (khung chat chính luôn hiển thị nhóm chung) ---------- */
 let publicMessagesLoaded = false; // đánh dấu đã tải xong lượt đầu (lịch sử cũ), để không rung/thông báo nhầm khi mới đăng nhập
 let publicKnownIds = new Set();
 function setupPublicListeners(){
@@ -2763,20 +2823,21 @@ function setupPublicListeners(){
     }
     publicKnownIds = new Set(publicMessages.map(m=>m.id));
     publicMessagesLoaded = true;
-    if(!activeTarget){ allMessages = publicMessages; renderMessages(); }
+    allMessages = publicMessages;
+    renderMessages();
     updateUnreadDisplay();
   });
   publicReadRef = gDb.ref('groupChat/reads/' + currentUser.uid);
   publicReadRef.on('value', snap=>{
     publicLastRead = (snap.val() && snap.val().lastRead) || 0;
-    if(!activeTarget) lastReadTimestamp = publicLastRead;
+    lastReadTimestamp = publicLastRead;
     updateUnreadDisplay();
   });
 }
 /* ---------- Danh sách các cuộc nhắn riêng đã từng có (kể cả khi người kia offline) ----------
-   Node này luôn được lắng nghe (không chỉ khi đang mở đúng cuộc trò chuyện đó), nên tiện dùng
-   để phát hiện tin nhắn riêng MỚI gửi đến (dù đang xem nhóm chung hay cuộc trò chuyện khác) và
-   rung/thông báo tương ứng — so sánh lastTimestamp mới nhất với lần lưu trước đó cho từng người. */
+   Node này luôn được lắng nghe (không chỉ khi có cửa sổ chat riêng đang mở), nên tiện dùng
+   để phát hiện tin nhắn riêng MỚI gửi đến (dù đang ở tab nào) và rung/thông báo tương ứng —
+   so sánh lastTimestamp mới nhất với lần lưu trước đó cho từng người. */
 let privateThreadsLoaded = false;
 let prevPrivateThreadTimestamps = {}; // {otherUid: lastTimestamp đã biết trước đó}
 function setupPrivateThreadsListener(uid){
@@ -2818,65 +2879,9 @@ function setupPrivateReadsAllListener(uid){
     updateUnreadDisplay();
   });
 }
-/* ---------- Chuyển đổi cuộc trò chuyện đang xem: Cả nhóm <-> 1 người cụ thể ----------
-   Tin nhắn riêng (1-1) vẫn được lưu chung 1 node cho cả 2 người (để cả 2 đều nhận được
-   tin nhắn mới), nhưng việc "xóa tin nhắn" trong 1 cuộc trò chuyện riêng KHÔNG xóa dữ
-   liệu gốc đó — chỉ ghi lại 1 mốc thời gian "đã xóa phía tôi" riêng cho từng người ở
-   groupChat/privateClearedAt/{uid}/{otherUid}. Khi hiển thị, chỉ những tin nhắn có
-   thời gian SAU mốc đó của CHÍNH MÌNH mới được hiện ra — nên xóa xong chỉ mất trên máy
-   của người bấm xóa, người còn lại vẫn thấy đầy đủ lịch sử như cũ. */
-let activeThreadRawMessages = []; // tin nhắn gốc (chưa lọc theo mốc xóa riêng) của cuộc trò chuyện riêng đang mở
-let activeClearedAt = 0;          // mốc "đã xóa phía tôi" của CHÍNH MÌNH cho cuộc trò chuyện riêng đang mở
-let activeClearedRef = null;      // ref lắng nghe mốc xóa riêng ở trên
-
-function renderActiveThreadMessages(){
-  if(activeTarget){
-    allMessages = activeThreadRawMessages.filter(m => (m.timestamp||0) > activeClearedAt);
-  }else{
-    allMessages = publicMessages;
-  }
-  renderMessages();
-  updateUnreadDisplay();
-}
-
-function subscribeActiveThread(){
-  if(activeThreadRef){ activeThreadRef.off('value'); activeThreadRef = null; }
-  if(activeReadRef){ activeReadRef.off('value'); activeReadRef = null; }
-  if(activeClearedRef){ activeClearedRef.off('value'); activeClearedRef = null; }
-  activeThreadRawMessages = [];
-  activeClearedAt = 0;
-  if(!activeTarget){
-    lastReadTimestamp = publicLastRead;
-    renderActiveThreadMessages();
-    return;
-  }
-  const key = pairKey(currentUser.uid, activeTarget.uid);
-  activeThreadRef = gDb.ref('groupChat/privateMessages/' + key);
-  activeThreadRef.limitToLast(200).on('value', snap=>{
-    const val = snap.val() || {};
-    activeThreadRawMessages = Object.keys(val)
-      .map(k => ({ id:k, ...val[k] }))
-      .sort((a,b)=> (a.timestamp||0) - (b.timestamp||0));
-    renderActiveThreadMessages();
-  });
-  activeReadRef = gDb.ref('groupChat/privateReads/' + currentUser.uid + '/' + activeTarget.uid);
-  activeReadRef.on('value', snap=>{
-    lastReadTimestamp = (snap.val() && snap.val().lastRead) || 0;
-    updateUnreadDisplay();
-  });
-  activeClearedRef = gDb.ref('groupChat/privateClearedAt/' + currentUser.uid + '/' + activeTarget.uid);
-  activeClearedRef.on('value', snap=>{
-    activeClearedAt = snap.val() || 0;
-    renderActiveThreadMessages();
-  });
-}
 function markAsRead(){
   if(!currentUser) return;
-  if(activeTarget){
-    gDb.ref('groupChat/privateReads/' + currentUser.uid + '/' + activeTarget.uid).set({ lastRead: firebase.database.ServerValue.TIMESTAMP });
-  }else{
-    gDb.ref('groupChat/reads/' + currentUser.uid).set({ lastRead: firebase.database.ServerValue.TIMESTAMP });
-  }
+  gDb.ref('groupChat/reads/' + currentUser.uid).set({ lastRead: firebase.database.ServerValue.TIMESTAMP });
 }
 
 /* ---------- Ghép ảnh/video đính kèm + nút tải về máy cho mọi người trong nhóm ----------
@@ -2901,10 +2906,7 @@ function buildAttachmentsHtml(m, msgId){
 }
 function renderMessages(){
   if(allMessages.length === 0){
-    const emptyMsg = activeTarget
-      ? `Chưa có tin nhắn riêng nào với ${escapeHtml(activeTarget.name || 'Ẩn danh')} — hãy bắt đầu trò chuyện!`
-      : 'Chưa có tin nhắn nào — hãy bắt đầu trò chuyện!';
-    chatMessagesEl.innerHTML = `<div class="chat-empty">${emptyMsg}</div>`;
+    chatMessagesEl.innerHTML = `<div class="chat-empty">Chưa có tin nhắn nào — hãy bắt đầu trò chuyện!</div>`;
     return;
   }
   chatMessagesEl.innerHTML = allMessages.map(m=>{
@@ -2925,8 +2927,9 @@ function renderMessages(){
   chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 }
 // Bấm nút tải về trên ảnh/video trong khung chat — tải thật sự về máy (blob),
-// có báo trạng thái đang tải để người dùng biết đang chờ.
-chatMessagesEl.addEventListener('click', async (e)=>{
+// có báo trạng thái đang tải để người dùng biết đang chờ. Dùng uỷ quyền sự kiện
+// trên document nên hoạt động cho cả khung chat chính lẫn mọi cửa sổ chat riêng nổi.
+document.addEventListener('click', async (e)=>{
   const btn = e.target.closest('[data-dl-url]');
   if(!btn) return;
   if(btn.classList.contains('downloading')) return;
@@ -2946,27 +2949,27 @@ chatMessagesEl.addEventListener('click', async (e)=>{
 function updateUnreadDisplay(){
   if(!currentUser) return;
   const onGroupTab = document.getElementById('page-group').classList.contains('active');
-  const activeUnread = allMessages.filter(m => m.uid !== currentUser.uid && (m.timestamp||0) > lastReadTimestamp);
 
   if(onGroupTab){
     chatSeenStatusEl.textContent = 'Đã xem';
-    if(activeUnread.length > 0) markAsRead();
+    const unread = allMessages.filter(m => m.uid !== currentUser.uid && (m.timestamp||0) > lastReadTimestamp);
+    if(unread.length > 0) markAsRead();
   }else{
     chatSeenStatusEl.textContent = '';
   }
 
   // Tổng số chưa đọc hiển thị trên badge của tab Group = tin chưa đọc ở nhóm chung
-  // (nếu không đang mở đúng nhóm chung) + số cuộc nhắn riêng đang có tin chưa đọc
+  // (nếu không đang mở đúng tab Group) + số cuộc nhắn riêng đang có tin chưa đọc mà
+  // KHÔNG có cửa sổ nổi đang mở (cửa sổ nổi hiển thị bất kể đang ở tab nào nên luôn
+  // coi là "đã xem" khi đang mở).
   let total = 0;
-  const viewingPublic = onGroupTab && !activeTarget;
-  if(!viewingPublic){
+  if(!onGroupTab){
     total += publicMessages.filter(m => m.uid !== currentUser.uid && (m.timestamp||0) > publicLastRead).length;
   }
   Object.keys(privateThreadsData).forEach(uid=>{
     const t = privateThreadsData[uid];
     if(!t || t.lastSenderUid === currentUser.uid) return;
-    const isOpenNow = onGroupTab && activeTarget && activeTarget.uid === uid;
-    if(isOpenNow) return;
+    if(floatingChats.has(uid)) return;
     const read = privateReadsData[uid] || 0;
     if((t.lastTimestamp || 0) > read) total += 1;
   });
@@ -2979,32 +2982,12 @@ function updateUnreadDisplay(){
   }
 }
 
-/* ---------- Xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở (có xác nhận) ----------
-   - Cuộc trò chuyện RIÊNG (1-1): chỉ ẩn tin nhắn cũ TRÊN MÁY CỦA NGƯỜI BẤM XÓA (ghi mốc
-     thời gian ở groupChat/privateClearedAt/{uid}/{otherUid}) — dữ liệu tin nhắn gốc và
-     bản xem của người còn lại HOÀN TOÀN không bị ảnh hưởng.
-   - NHÓM CHUNG: vẫn xóa toàn bộ cho mọi thành viên như trước (đây là kênh công khai
-     dùng chung, không có khái niệm "xóa phía tôi"). */
+/* ---------- Xóa toàn bộ tin nhắn nhóm chung (có xác nhận) ----------
+   Xóa tin nhắn của TỪNG cuộc trò chuyện riêng giờ nằm ở nút 🗑 trên mỗi cửa sổ
+   chat nổi (xem "CỬA SỔ CHAT RIÊNG NỔI" bên dưới). Nút này trong khung chính chỉ
+   còn xóa NHÓM CHUNG — kênh công khai dùng chung, áp dụng cho mọi thành viên. */
 btnDeleteAllMsgs.addEventListener('click', async ()=>{
   if(!currentUser) return;
-  if(activeTarget){
-    const ok = await showConfirmDialog(
-      'Xóa tin nhắn phía bạn?',
-      `Toàn bộ tin nhắn hiện có trong cuộc trò chuyện riêng với ${activeTarget.name || 'Ẩn danh'} sẽ biến mất TRÊN MÁY BẠN. ${activeTarget.name || 'Người còn lại'} vẫn thấy đầy đủ tin nhắn cũ như bình thường, không bị ảnh hưởng.`,
-      'Xóa phía tôi'
-    );
-    if(!ok) return;
-    try{
-      await gDb.ref('groupChat/privateClearedAt/' + currentUser.uid + '/' + activeTarget.uid)
-        .set(firebase.database.ServerValue.TIMESTAMP);
-      showToast('Đã xóa tin nhắn phía bạn');
-      selectTarget(null); // cuộc trò chuyện riêng giờ trống phía mình -> đóng lại, quay về nhóm chung
-    }catch(err){
-      console.error(err);
-      showToast('Xóa thất bại: ' + describeStorageError(err));
-    }
-    return;
-  }
   const ok = await showConfirmDialog(
     'Xóa toàn bộ tin nhắn?',
     'Bạn có chắc chắn muốn xóa toàn bộ tin nhắn trong TOÀN BỘ nhóm chung? Hành động này không thể hoàn tác và áp dụng cho mọi thành viên.',
@@ -3082,29 +3065,30 @@ function renderGroupMediaGrid(){
     });
   });
 }
-function cancelAllPendingUploads(){
-  Object.values(uploadTasksMap).forEach(task=>{ try{ task.cancel(); }catch(e){} });
-  uploadTasksMap = {};
+function cancelPendingUploads(tasksMap){
+  Object.values(tasksMap).forEach(task=>{ try{ task.cancel(); }catch(e){} });
+  Object.keys(tasksMap).forEach(k => delete tasksMap[k]);
 }
 // Tải 1 file lên Storage, báo % tiến trình theo thời gian thực qua state_changed,
-// lưu lại UploadTask để có thể huỷ giữa chừng qua nút ✕ trên từng file.
-function uploadOneFile(file, uid, index){
+// lưu lại UploadTask (trong tasksMap do nơi gọi cung cấp) để có thể huỷ giữa chừng.
+// onProgress(pct) do nơi gọi cung cấp để tự vẽ lại đúng khung xem trước của mình
+// (khung chat chính hoặc 1 cửa sổ chat riêng nổi).
+function uploadOneFile(file, uid, index, tasksMap, onProgress){
   const isVideo = file.type.startsWith('video/');
   const safeName = file.name.replace(/[^\w.\-]+/g, '_');
   const path = `group_uploads/${uid}/${Date.now()}_${index}_${safeName}`;
   const task = gStorage.ref().child(path).put(file, {
     contentType: file.type || 'application/octet-stream'
   });
-  uploadTasksMap[index] = task;
+  tasksMap[index] = task;
   return new Promise((resolve, reject)=>{
     task.on('state_changed',
       snap=>{
         const pct = snap.totalBytes ? Math.round((snap.bytesTransferred / snap.totalBytes) * 100) : 0;
-        uploadProgressMap[index] = pct;
-        renderGroupMediaGrid();
+        onProgress(pct);
       },
       err=>{
-        delete uploadTasksMap[index];
+        delete tasksMap[index];
         if(err && err.code === 'storage/canceled'){
           reject(Object.assign(new Error('CANCELED'), { canceled:true }));
         }else{
@@ -3112,7 +3096,7 @@ function uploadOneFile(file, uid, index){
         }
       },
       async ()=>{
-        delete uploadTasksMap[index];
+        delete tasksMap[index];
         try{
           const url = await task.snapshot.ref.getDownloadURL();
           resolve({ url, type: isVideo ? 'video' : 'image' });
@@ -3146,7 +3130,9 @@ async function sendGroupMessage(){
     // mất hết những file đã tải lên thành công. URL tải về của mỗi file (từ
     // Firebase Storage) sẽ được lưu kèm tin nhắn trên Realtime Database, nên
     // TOÀN BỘ thành viên trong nhóm đều thấy được ảnh/video ngay khi tin nhắn tới.
-    const results = await Promise.allSettled(files.map((f, i) => uploadOneFile(f, currentUser.uid, i)));
+    const results = await Promise.allSettled(files.map((f, i) =>
+      uploadOneFile(f, currentUser.uid, i, uploadTasksMap, pct=>{ uploadProgressMap[i] = pct; renderGroupMediaGrid(); })
+    ));
     const attachments = [];
     const remainingFiles = [];
     let canceledCount = 0, failedCount = 0;
@@ -3181,24 +3167,7 @@ async function sendGroupMessage(){
       timestamp: firebase.database.ServerValue.TIMESTAMP
     };
 
-    if(activeTarget){
-      const key = pairKey(currentUser.uid, activeTarget.uid);
-      const newMsgKey = gDb.ref('groupChat/privateMessages/' + key).push().key;
-      const preview = text || (attachments.length ? `[${attachments.length} tệp đính kèm]` : '');
-      const updates = {};
-      updates['groupChat/privateMessages/' + key + '/' + newMsgKey] = { ...baseMsg, toUid: activeTarget.uid };
-      updates['groupChat/privateThreads/' + currentUser.uid + '/' + activeTarget.uid] = {
-        name: activeTarget.name || 'Ẩn danh', photoURL: activeTarget.photoURL || '',
-        lastMessage: preview, lastTimestamp: firebase.database.ServerValue.TIMESTAMP, lastSenderUid: currentUser.uid
-      };
-      updates['groupChat/privateThreads/' + activeTarget.uid + '/' + currentUser.uid] = {
-        name: baseMsg.name, photoURL: baseMsg.photoURL,
-        lastMessage: preview, lastTimestamp: firebase.database.ServerValue.TIMESTAMP, lastSenderUid: currentUser.uid
-      };
-      await gDb.ref().update(updates);
-    }else{
-      await messagesRef.push(baseMsg);
-    }
+    await messagesRef.push(baseMsg);
 
     groupMsgInput.value = '';
     groupMediaFiles = remainingFiles;
@@ -3213,6 +3182,365 @@ async function sendGroupMessage(){
   }finally{
     btnGroupSend.disabled = false;
     btnGroupAttach.disabled = false;
+  }
+}
+
+/* =========================================================
+   CỬA SỔ CHAT RIÊNG NỔI (kiểu Messenger) — kéo-thả được, đóng/mở độc lập
+   -------------------------------------------------------------
+   Mỗi người được nhắn riêng mở 1 cửa sổ nhỏ nổi cố định trên màn hình
+   (position:fixed, nằm trong #floatingChatsContainer ở cấp cao nhất nên
+   hiển thị xuyên suốt mọi tab, giống các cửa sổ chat nhỏ của Messenger).
+   Kéo bằng cách giữ vào thanh tiêu đề (header) và di chuyển — dùng Pointer
+   Events nên hoạt động cho cả chuột lẫn cảm ứng. Mỗi cửa sổ tự quản lý
+   trạng thái riêng (tin nhắn, file đính kèm, tiến trình tải lên) trong
+   1 object lưu ở Map floatingChats (khoá theo uid người được nhắn riêng).
+   Khi bấm "Xoá tin nhắn" trong 1 cửa sổ: chỉ ẩn tin nhắn cũ TRÊN MÁY của
+   người bấm xoá (ghi mốc thời gian riêng, không đụng dữ liệu gốc hay bản
+   xem của người kia) — và vì sau khi xoá cuộc trò chuyện luôn trống phía
+   mình, cửa sổ đó sẽ TỰ ĐÓNG LẠI ngay sau khi xoá xong.
+========================================================= */
+const floatingChatsContainer = document.getElementById('floatingChatsContainer');
+
+function makeFloatingChatDraggable(handleEl, windowEl){
+  let dragging = false, startX = 0, startY = 0, origLeft = 0, origTop = 0;
+  handleEl.addEventListener('pointerdown', (e)=>{
+    if(e.target.closest('button')) return; // đừng kéo khi đang bấm nút đóng/xoá trên header
+    dragging = true;
+    try{ handleEl.setPointerCapture(e.pointerId); }catch(err){}
+    startX = e.clientX; startY = e.clientY;
+    const rect = windowEl.getBoundingClientRect();
+    origLeft = rect.left; origTop = rect.top;
+    windowEl.style.right = 'auto'; windowEl.style.bottom = 'auto';
+    windowEl.style.left = origLeft + 'px';
+    windowEl.style.top = origTop + 'px';
+    windowEl.classList.add('dragging');
+  });
+  handleEl.addEventListener('pointermove', (e)=>{
+    if(!dragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    const maxLeft = window.innerWidth - windowEl.offsetWidth - 4;
+    const maxTop = window.innerHeight - windowEl.offsetHeight - 4;
+    const newLeft = Math.min(Math.max(4, origLeft + dx), Math.max(4, maxLeft));
+    const newTop = Math.min(Math.max(4, origTop + dy), Math.max(4, maxTop));
+    windowEl.style.left = newLeft + 'px';
+    windowEl.style.top = newTop + 'px';
+  });
+  function endDrag(e){
+    if(!dragging) return;
+    dragging = false;
+    try{ handleEl.releasePointerCapture(e.pointerId); }catch(err){}
+    windowEl.classList.remove('dragging');
+  }
+  handleEl.addEventListener('pointerup', endDrag);
+  handleEl.addEventListener('pointercancel', endDrag);
+}
+
+function openFloatingChat(target){
+  if(!currentUser || !target || !target.uid) return;
+  if(floatingChats.has(target.uid)){
+    // Đã mở sẵn — đưa cửa sổ đó lên trên cùng và focus vào ô nhập.
+    const existing = floatingChats.get(target.uid);
+    floatingChatsContainer.appendChild(existing.el);
+    existing.input.focus();
+    return;
+  }
+  const index = floatingChats.size;
+  const el = document.createElement('div');
+  el.className = 'floating-chat';
+  const offset = index * 16;
+  el.style.right = (16 + offset) + 'px';
+  el.style.bottom = (16 + offset) + 'px';
+  el.innerHTML = `
+    <div class="floating-chat-header">
+      <img class="floating-chat-avatar" src="${escapeHtml(target.photoURL || '')}" onerror="this.style.visibility='hidden'">
+      <div class="floating-chat-title">
+        <div class="floating-chat-name">${escapeHtml(target.name || 'Ẩn danh')}</div>
+        <div class="floating-chat-seen"></div>
+      </div>
+      <button type="button" class="floating-chat-clear" title="Xoá tin nhắn phía bạn">🗑</button>
+      <button type="button" class="floating-chat-close" title="Đóng">✕</button>
+    </div>
+    <div class="chat-messages floating-chat-messages"><div class="chat-empty">Đang tải...</div></div>
+    <div class="attach-grid floating-chat-media-grid" style="display:none"></div>
+    <div class="chat-inputbar floating-chat-inputbar">
+      <input type="file" class="floating-chat-media-input" accept="image/*,video/*" multiple style="display:none">
+      <button type="button" class="chat-attach-btn floating-chat-attach-btn" title="Đính kèm ảnh/video">📎</button>
+      <textarea class="chat-text-input floating-chat-input" rows="1" placeholder="Nhập tin nhắn..."></textarea>
+      <button type="button" class="chat-send-btn floating-chat-send-btn" title="Gửi">➤</button>
+    </div>
+  `;
+  floatingChatsContainer.appendChild(el);
+
+  const state = {
+    target,
+    el,
+    messagesEl: el.querySelector('.floating-chat-messages'),
+    seenEl: el.querySelector('.floating-chat-seen'),
+    mediaGridEl: el.querySelector('.floating-chat-media-grid'),
+    input: el.querySelector('.floating-chat-input'),
+    mediaInput: el.querySelector('.floating-chat-media-input'),
+    rawMessages: [],
+    clearedAt: 0,
+    lastRead: 0,
+    mediaFiles: [],
+    uploadProgressMap: {},
+    uploadTasksMap: {},
+    uploadErrorMap: {},
+    threadRef: null,
+    readRef: null,
+    clearedRef: null
+  };
+  floatingChats.set(target.uid, state);
+  wireFloatingChat(state);
+  subscribeFloatingChat(state);
+  renderTargetRow();
+}
+
+function closeFloatingChat(uid){
+  const state = floatingChats.get(uid);
+  if(!state) return;
+  if(state.threadRef) state.threadRef.off('value');
+  if(state.readRef) state.readRef.off('value');
+  if(state.clearedRef) state.clearedRef.off('value');
+  cancelPendingUploads(state.uploadTasksMap);
+  state.el.remove();
+  floatingChats.delete(uid);
+  renderTargetRow();
+  updateUnreadDisplay();
+}
+function closeAllFloatingChats(){
+  Array.from(floatingChats.keys()).forEach(closeFloatingChat);
+}
+
+function wireFloatingChat(state){
+  const el = state.el;
+  const uid = state.target.uid;
+  makeFloatingChatDraggable(el.querySelector('.floating-chat-header'), el);
+
+  el.querySelector('.floating-chat-close').addEventListener('click', ()=> closeFloatingChat(uid));
+
+  el.querySelector('.floating-chat-clear').addEventListener('click', async ()=>{
+    const ok = await showConfirmDialog(
+      'Xoá tin nhắn phía bạn?',
+      `Toàn bộ tin nhắn hiện có trong cuộc trò chuyện riêng với ${state.target.name || 'Ẩn danh'} sẽ biến mất TRÊN MÁY BẠN. ${state.target.name || 'Người còn lại'} vẫn thấy đầy đủ tin nhắn cũ như bình thường, không bị ảnh hưởng.`,
+      'Xoá phía tôi'
+    );
+    if(!ok) return;
+    try{
+      await gDb.ref('groupChat/privateClearedAt/' + currentUser.uid + '/' + uid)
+        .set(firebase.database.ServerValue.TIMESTAMP);
+      showToast('Đã xoá tin nhắn phía bạn');
+      // Cuộc trò chuyện luôn trống phía mình ngay sau khi xoá -> tự đóng cửa sổ này.
+      closeFloatingChat(uid);
+    }catch(err){
+      console.error(err);
+      showToast('Xoá thất bại: ' + describeStorageError(err));
+    }
+  });
+
+  state.input.addEventListener('keydown', e=>{
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendFloatingMessage(state);
+    }
+  });
+  el.querySelector('.floating-chat-send-btn').addEventListener('click', ()=> sendFloatingMessage(state));
+  el.querySelector('.floating-chat-attach-btn').addEventListener('click', ()=> state.mediaInput.click());
+  state.mediaInput.addEventListener('change', async ()=>{
+    const files = Array.from(state.mediaInput.files || []);
+    state.mediaInput.value = '';
+    if(files.length === 0) return;
+    const processed = await Promise.all(files.map(f => compressImageFile(f, 1600, 0.85)));
+    state.mediaFiles = state.mediaFiles.concat(processed);
+    renderFloatingMediaGrid(state);
+  });
+}
+
+function pairKeyFor(state){ return pairKey(currentUser.uid, state.target.uid); }
+
+function subscribeFloatingChat(state){
+  const uid = state.target.uid;
+  const key = pairKey(currentUser.uid, uid);
+  state.threadRef = gDb.ref('groupChat/privateMessages/' + key);
+  state.threadRef.limitToLast(200).on('value', snap=>{
+    const val = snap.val() || {};
+    state.rawMessages = Object.keys(val)
+      .map(k => ({ id:k, ...val[k] }))
+      .sort((a,b)=> (a.timestamp||0) - (b.timestamp||0));
+    renderFloatingMessages(state);
+  });
+  state.readRef = gDb.ref('groupChat/privateReads/' + currentUser.uid + '/' + uid);
+  state.readRef.on('value', snap=>{
+    state.lastRead = (snap.val() && snap.val().lastRead) || 0;
+    renderFloatingMessages(state);
+  });
+  state.clearedRef = gDb.ref('groupChat/privateClearedAt/' + currentUser.uid + '/' + uid);
+  state.clearedRef.on('value', snap=>{
+    state.clearedAt = snap.val() || 0;
+    renderFloatingMessages(state);
+  });
+}
+
+function renderFloatingMessages(state){
+  const messages = state.rawMessages.filter(m => (m.timestamp||0) > state.clearedAt);
+  if(messages.length === 0){
+    state.messagesEl.innerHTML = `<div class="chat-empty">Chưa có tin nhắn riêng nào với ${escapeHtml(state.target.name || 'Ẩn danh')} — hãy bắt đầu trò chuyện!</div>`;
+  }else{
+    state.messagesEl.innerHTML = messages.map(m=>{
+      const isMe = currentUser && m.uid === currentUser.uid;
+      const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}) : '';
+      return `<div class="chat-msg ${isMe ? 'me' : 'other'}">
+        ${!isMe ? `<img class="chat-avatar" src="${m.photoURL || ''}" onerror="this.style.display='none'">` : ''}
+        <div class="chat-bubble-wrap">
+          <div class="chat-bubble">
+            ${buildAttachmentsHtml(m, m.id)}
+            ${m.text ? `<div class="chat-text">${escapeHtml(m.text)}</div>` : ''}
+          </div>
+          <div class="chat-time">${time}</div>
+        </div>
+      </div>`;
+    }).join('');
+    state.messagesEl.scrollTop = state.messagesEl.scrollHeight;
+  }
+  state.seenEl.textContent = 'Đã xem';
+  // Cửa sổ đang mở nghĩa là đang hiển thị trước mắt -> tự đánh dấu đã đọc.
+  const hasUnread = messages.some(m => m.uid !== currentUser.uid && (m.timestamp||0) > state.lastRead);
+  if(hasUnread){
+    gDb.ref('groupChat/privateReads/' + currentUser.uid + '/' + state.target.uid)
+      .set({ lastRead: firebase.database.ServerValue.TIMESTAMP });
+  }
+  updateUnreadDisplay();
+}
+
+function renderFloatingMediaGrid(state){
+  const grid = state.mediaGridEl;
+  if(state.mediaFiles.length === 0){
+    grid.style.display = 'none';
+    grid.innerHTML = '';
+    return;
+  }
+  grid.style.display = 'grid';
+  grid.innerHTML = state.mediaFiles.map((f, i)=>{
+    const url = URL.createObjectURL(f);
+    const isVideo = f.type.startsWith('video/');
+    const pct = state.uploadProgressMap[i];
+    const uploading = pct != null;
+    const errorMsg = state.uploadErrorMap[i];
+    let overlay;
+    if(uploading){
+      overlay = `<div class="attach-progress-bar" style="width:${pct}%"></div><div class="attach-progress">${pct}%</div><button type="button" class="attach-remove" data-cancel="${i}" title="Huỷ tải lên">✕</button>`;
+    }else if(errorMsg){
+      overlay = `<button type="button" class="attach-retry" data-retry="${i}" title="Thử tải lại">↻</button><button type="button" class="attach-remove" data-remove="${i}">✕</button><div class="attach-error-badge">Lỗi, bấm ↻</div>`;
+    }else{
+      overlay = `<button type="button" class="attach-remove" data-remove="${i}">✕</button>`;
+    }
+    return `<div class="attach-item ${errorMsg ? 'attach-error' : ''}">
+      ${isVideo ? `<video src="${url}" muted playsinline preload="metadata"></video>` : `<img src="${url}" alt="">`}
+      ${overlay}
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('[data-remove]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.remove);
+      state.mediaFiles.splice(i, 1);
+      delete state.uploadErrorMap[i];
+      renderFloatingMediaGrid(state);
+    });
+  });
+  grid.querySelectorAll('[data-cancel]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.cancel);
+      if(state.uploadTasksMap[i]){
+        try{ state.uploadTasksMap[i].cancel(); }catch(e){}
+      }
+    });
+  });
+  grid.querySelectorAll('[data-retry]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.retry);
+      delete state.uploadErrorMap[i];
+      sendFloatingMessage(state);
+    });
+  });
+}
+
+async function sendFloatingMessage(state){
+  if(!currentUser) return;
+  const text = state.input.value.trim();
+  const files = state.mediaFiles.slice();
+  if(!text && files.length === 0) return;
+  const sendBtn = state.el.querySelector('.floating-chat-send-btn');
+  const attachBtn = state.el.querySelector('.floating-chat-attach-btn');
+  sendBtn.disabled = true; attachBtn.disabled = true;
+  state.uploadProgressMap = {};
+  state.uploadErrorMap = {};
+  files.forEach((f,i)=>{ state.uploadProgressMap[i] = 0; });
+  renderFloatingMediaGrid(state);
+  try{
+    const results = await Promise.allSettled(files.map((f, i) =>
+      uploadOneFile(f, currentUser.uid, i, state.uploadTasksMap, pct=>{ state.uploadProgressMap[i] = pct; renderFloatingMediaGrid(state); })
+    ));
+    const attachments = [];
+    const remainingFiles = [];
+    let canceledCount = 0, failedCount = 0;
+    results.forEach((r, i)=>{
+      if(r.status === 'fulfilled'){
+        attachments.push(r.value);
+      }else if(r.reason && r.reason.canceled){
+        canceledCount++;
+      }else{
+        failedCount++;
+        remainingFiles.push(files[i]);
+        state.uploadErrorMap[remainingFiles.length - 1] = describeStorageError(r.reason);
+      }
+    });
+
+    if(!text && attachments.length === 0){
+      state.mediaFiles = remainingFiles;
+      state.uploadProgressMap = {};
+      renderFloatingMediaGrid(state);
+      if(canceledCount > 0) showToast('Đã huỷ tải lên');
+      return;
+    }
+
+    const p = userProfile || getDefaultProfile(currentUser);
+    const baseMsg = {
+      uid: currentUser.uid,
+      name: p.name || 'Ẩn danh',
+      photoURL: p.photoURL || '',
+      text: text,
+      attachments: attachments,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+    const key = pairKeyFor(state);
+    const newMsgKey = gDb.ref('groupChat/privateMessages/' + key).push().key;
+    const preview = text || (attachments.length ? `[${attachments.length} tệp đính kèm]` : '');
+    const updates = {};
+    updates['groupChat/privateMessages/' + key + '/' + newMsgKey] = { ...baseMsg, toUid: state.target.uid };
+    updates['groupChat/privateThreads/' + currentUser.uid + '/' + state.target.uid] = {
+      name: state.target.name || 'Ẩn danh', photoURL: state.target.photoURL || '',
+      lastMessage: preview, lastTimestamp: firebase.database.ServerValue.TIMESTAMP, lastSenderUid: currentUser.uid
+    };
+    updates['groupChat/privateThreads/' + state.target.uid + '/' + currentUser.uid] = {
+      name: baseMsg.name, photoURL: baseMsg.photoURL,
+      lastMessage: preview, lastTimestamp: firebase.database.ServerValue.TIMESTAMP, lastSenderUid: currentUser.uid
+    };
+    await gDb.ref().update(updates);
+
+    state.input.value = '';
+    state.mediaFiles = remainingFiles;
+    state.uploadProgressMap = {};
+    renderFloatingMediaGrid(state);
+
+    if(canceledCount > 0) showToast(`Đã gửi — ${canceledCount} tệp bị huỷ tải lên`);
+    else if(failedCount > 0) showToast(`Đã gửi — ${failedCount} tệp tải lên thất bại, có thể bấm ↻ để thử lại`);
+  }catch(err){
+    console.error(err);
+    showToast('Gửi thất bại: ' + describeStorageError(err));
+  }finally{
+    sendBtn.disabled = false; attachBtn.disabled = false;
   }
 }
 
@@ -3605,156 +3933,6 @@ btnRnOpen.addEventListener('click', ()=>{
   const url = extractFirstUrl(text);
   if(!url){ showToast('Không tìm thấy đường link trong nội dung đã dán'); return; }
   window.open(url, '_blank', 'noopener');
-});
-
-/* =========================================================
-   THƯ MỤC TẢI VỀ: chọn nhiều ảnh/video từ thư mục Tải về của máy,
-   xem trước, chọn/bỏ chọn từng file, rồi chia sẻ các file đã chọn
-   thẳng vào Thư viện ảnh (Photos/Gallery) trên điện thoại qua khung
-   chia sẻ gốc của hệ điều hành (Web Share API).
-   -------------------------------------------------------------
-   GIỚI HẠN THỰC TẾ (không phải lỗi của trang):
-   - KHÔNG có API web nào cho phép trang tự động "liệt kê" file có
-     sẵn trong thư mục Tải về mà không cần người dùng thao tác — đây
-     là giới hạn bảo mật/riêng tư áp dụng cho MỌI trình duyệt. Người
-     dùng luôn phải chủ động mở hộp thoại chọn file.
-   - Trên máy tính, các trình duyệt nền Chromium (Chrome, Cốc Cốc,
-     Edge...) hỗ trợ File System Access API (window.showOpenFilePicker)
-     kèm gợi ý "startIn: downloads" giúp hộp thoại tự mở ngay tại
-     thư mục Tải về — đây là điểm khác biệt hiển thị giữa các trình
-     duyệt mà người dùng hay thấy. Safari, Firefox và hầu hết trình
-     duyệt di động không hỗ trợ API này nên sẽ tự động dùng
-     <input type="file"> thông thường, người dùng tự bấm vào mục
-     "Tải về/Downloads" trong hộp thoại hệ điều hành hiện ra.
-   - Chia sẻ nhiều file cùng lúc dùng navigator.share({files:[...]}) —
-     được Chrome/Android và Safari/iOS (15+) hỗ trợ tốt, cho phép
-     chọn thẳng "Lưu vào Ảnh" ở khung chia sẻ hệ thống. Trình duyệt
-     không hỗ trợ sẽ được báo để lưu thủ công (bấm giữ ảnh > Lưu ảnh).
-========================================================= */
-const dlFolderInput    = document.getElementById('dlFolderInput');
-const dlFolderDropzone = document.getElementById('dlFolderDropzone');
-const dlFolderList     = document.getElementById('dlFolderList');
-const dlFolderCount    = document.getElementById('dlFolderCount');
-const dlFolderBtnRow   = document.getElementById('dlFolderBtnRow');
-const btnDlFolderShare = document.getElementById('btnDlFolderShare');
-const btnDlFolderClear = document.getElementById('btnDlFolderClear');
-let dlFolderFiles = [];              // File[] — toàn bộ file đã thêm vào danh sách xem trước
-let dlFolderSelected = new Set();    // chỉ số các file đang được CHỌN để chia sẻ
-
-async function openDownloadsPicker(){
-  if(window.showOpenFilePicker){
-    try{
-      const handles = await window.showOpenFilePicker({
-        multiple: true,
-        startIn: 'downloads',
-        types: [{
-          description: 'Ảnh/Video',
-          accept: {
-            'image/*': ['.png','.jpg','.jpeg','.webp','.gif','.heic'],
-            'video/*': ['.mp4','.mov','.webm','.mkv']
-          }
-        }]
-      });
-      const files = await Promise.all(handles.map(h => h.getFile()));
-      addDlFolderFiles(files);
-      return;
-    }catch(err){
-      if(err && err.name === 'AbortError') return; // người dùng tự bấm huỷ hộp thoại
-      console.error('File System Access API lỗi, chuyển sang input file thường:', err);
-    }
-  }
-  // Trình duyệt không hỗ trợ mở thẳng thư mục Tải về (Safari, Firefox, di động...)
-  // -> dùng input file thường, người dùng tự điều hướng tới Tải về/Downloads.
-  dlFolderInput.click();
-}
-dlFolderDropzone.addEventListener('click', openDownloadsPicker);
-dlFolderInput.addEventListener('change', ()=>{
-  const files = Array.from(dlFolderInput.files || []);
-  dlFolderInput.value = ''; // cho phép chọn lại đúng file đó ở lần sau nếu cần
-  if(files.length) addDlFolderFiles(files);
-});
-function addDlFolderFiles(files){
-  const startIdx = dlFolderFiles.length;
-  dlFolderFiles = dlFolderFiles.concat(files);
-  files.forEach((_, i)=> dlFolderSelected.add(startIdx + i)); // mặc định chọn sẵn file vừa thêm
-  renderDlFolderList();
-  showToast(`Đã thêm ${files.length} file — bấm vào từng ảnh/video để chọn hoặc bỏ chọn`);
-}
-function renderDlFolderList(){
-  if(dlFolderFiles.length === 0){
-    dlFolderList.style.display = 'none';
-    dlFolderList.innerHTML = '';
-    dlFolderCount.style.display = 'none';
-    dlFolderBtnRow.style.display = 'none';
-    return;
-  }
-  dlFolderList.style.display = 'grid';
-  dlFolderList.innerHTML = dlFolderFiles.map((f, i) => {
-    const url = URL.createObjectURL(f);
-    const isVideo = f.type.startsWith('video/');
-    const selected = dlFolderSelected.has(i);
-    const preview = isVideo
-      ? `<video src="${url}" muted playsinline preload="metadata"></video>`
-      : `<img src="${url}" alt="">`;
-    return `
-      <div class="media-item dl-pick-item ${selected ? 'dl-selected' : ''}" data-i="${i}" style="cursor:pointer">
-        ${preview}
-        <span class="media-badge">${isVideo ? 'Video' : 'Ảnh'}</span>
-        <span class="dl-check">${selected ? '✓' : ''}</span>
-        <button type="button" class="media-remove" data-remove-i="${i}" title="Bỏ khỏi danh sách">✕</button>
-      </div>
-    `;
-  }).join('');
-  const selectedCount = dlFolderSelected.size;
-  dlFolderCount.style.display = 'block';
-  dlFolderCount.textContent = `${dlFolderFiles.length} file trong danh sách — đã chọn ${selectedCount} file để chia sẻ (bấm vào ảnh/video để chọn/bỏ chọn)`;
-  dlFolderBtnRow.style.display = 'flex';
-  dlFolderList.querySelectorAll('.dl-pick-item').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      if(e.target.closest('[data-remove-i]')) return;
-      const i = Number(el.dataset.i);
-      if(dlFolderSelected.has(i)) dlFolderSelected.delete(i); else dlFolderSelected.add(i);
-      renderDlFolderList();
-    });
-  });
-  dlFolderList.querySelectorAll('[data-remove-i]').forEach(btn=>{
-    btn.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      const i = Number(btn.dataset.removeI);
-      dlFolderFiles.splice(i, 1);
-      dlFolderSelected = new Set(Array.from(dlFolderSelected)
-        .filter(x => x !== i)
-        .map(x => x > i ? x - 1 : x));
-      renderDlFolderList();
-    });
-  });
-}
-btnDlFolderClear.addEventListener('click', ()=>{
-  dlFolderFiles = [];
-  dlFolderSelected = new Set();
-  renderDlFolderList();
-});
-btnDlFolderShare.addEventListener('click', async ()=>{
-  const files = dlFolderFiles.filter((_, i) => dlFolderSelected.has(i));
-  if(files.length === 0){ showToast('Chưa chọn file nào để chia sẻ'); return; }
-  const shareData = { files };
-  const canShare = !!navigator.share && (!navigator.canShare || navigator.canShare(shareData));
-  if(canShare){
-    btnDlFolderShare.disabled = true;
-    try{
-      await navigator.share(shareData);
-      showToast('Đã mở khung chia sẻ — chọn "Lưu vào Ảnh" / "Lưu vào thư viện" để lưu về Thư viện ảnh');
-    }catch(err){
-      if(!err || err.name !== 'AbortError'){
-        console.error(err);
-        showToast('Không mở được khung chia sẻ trên trình duyệt này.');
-      }
-    }finally{
-      btnDlFolderShare.disabled = false;
-    }
-  }else{
-    showToast('Trình duyệt này chưa hỗ trợ chia sẻ nhiều file cùng lúc — hãy bấm giữ từng ảnh/video ở trên rồi chọn "Lưu ảnh" để lưu thủ công.');
-  }
 });
 </script>
 </body>
