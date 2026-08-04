@@ -1,720 +1,3761 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,
-initial-scale=1,
-maximum-scale=1,
-user-scalable=no">
-
-<title>Tool Copy Nội Dung</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<title>Content Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-
-/* RESET */
-
-*{
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
-}
-
-/* BODY */
-
-body{
-
-font-family:Arial, Helvetica, sans-serif;
-
-margin:0;
-
-padding:12px;
-
-background:
-linear-gradient(135deg,#e6f0ff,#f5faff);
-
-min-height:100vh;
-
-}
-
-/* CONTAINER */
-
-.container{
-
-max-width:720px;
-
-margin:auto;
-
-background:rgba(255,255,255,0.88);
-
-backdrop-filter:blur(10px);
-
-border-radius:18px;
-
-padding:14px;
-
-box-shadow:
-0 10px 30px rgba(0,0,0,0.08);
-
-}
-
-/* TITLE */
-
-h2{
-
-text-align:center;
-
-color:#0a6fd6;
-
-margin-top:4px;
-
-margin-bottom:10px;
-
-font-size:clamp(18px,4vw,24px);
-
-}
-
-/* TAB */
-
-.tabs{
-
-display:flex;
-
-gap:6px;
-
-margin-bottom:10px;
-
-flex-wrap:wrap;
-
-}
-
-.tabbtn{
-
-flex:1;
-
-padding:12px;
-
-border:none;
-
-border-radius:12px;
-
-background:#d9e4f5;
-
-font-weight:bold;
-
-font-size:clamp(13px,3vw,15px);
-
-transition:0.25s;
-
-box-shadow:
-0 4px 10px rgba(0,0,0,0.05);
-
-}
-
-.tabbtn.active{
-
-background:
-linear-gradient(
-135deg,
-#2ecc71,
-#27ae60
-);
-
-color:white;
-
-box-shadow:
-0 6px 16px rgba(0,0,0,0.12);
-
-}
-
-/* TAB CONTENT */
-
-.tabcontent{
-
-display:none;
-
-animation:fade 0.25s ease;
-
-}
-
-.tabcontent.active{
-
-display:block;
-
-}
-
-@keyframes fade{
-
-from{opacity:0;transform:translateY(8px);}
-
-to{opacity:1;transform:none;}
-
-}
-
-/* TEXTAREA */
-
-.textbox-wrap{
-
-position:relative;
-
-}
-
-textarea{
-
-width:100%;
-
-height:150px;
-
-padding:12px;
-
-margin-top:8px;
-
-border-radius:14px;
-
-border:1px solid #cfd9e6;
-
-resize:none;
-
-font-size:15px;
-
-background:white;
-
-box-shadow:
-inset 0 2px 6px rgba(0,0,0,0.05);
-
-}
-
-textarea.dark{
-
-background:#1a1a1a;
-
-color:white;
-
-border:1px solid #333;
-
-}
-
-/* ICON */
-
-.iconbox{
-
-position:absolute;
-
-top:10px;
-
-right:10px;
-
-display:flex;
-
-gap:6px;
-
-}
-
-.iconbtn{
-
-width:32px;
-
-height:32px;
-
-border:none;
-
-border-radius:8px;
-
-background:#2ecc71;
-
-color:white;
-
-font-size:16px;
-
-box-shadow:
-0 3px 8px rgba(0,0,0,0.12);
-
-}
-
-/* GRID */
-
-.grid{
-
-margin-top:12px;
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:10px;
-
-}
-
-/* BUTTON */
-
-button{
-
-padding:13px;
-
-border:none;
-
-border-radius:12px;
-
-font-size:14px;
-
-font-weight:bold;
-
-background:#4da3ff;
-
-color:white;
-
-cursor:pointer;
-
-transition:0.2s;
-
-box-shadow:
-0 5px 12px rgba(0,0,0,0.1);
-
-}
-
-button:active{
-
-transform:scale(0.97);
-
-}
-
-.bluebtn{
-
-background:
-linear-gradient(
-135deg,
-#0d3b66,
-#5fa8ff
-);
-
-}
-
-/* MAIL */
-
-.mail-row{
-
-margin-top:10px;
-
-padding:8px;
-
-background:rgba(255,255,255,0.9);
-
-border-radius:12px;
-
-box-shadow:
-0 3px 8px rgba(0,0,0,0.06);
-
-}
-
-.mail-row input{
-
-width:100%;
-
-padding:9px;
-
-margin-top:4px;
-
-border-radius:8px;
-
-border:1px solid #ccc;
-
-font-size:13px;
-
-}
-
-.go{
-
-width:100%;
-
-margin-top:6px;
-
-background:#2ecc71;
-
-}
-
-/* GROUP */
-
-.groupbox{
-
-background:rgba(255,255,255,0.9);
-
-padding:10px;
-
-border-radius:14px;
-
-box-shadow:
-0 3px 10px rgba(0,0,0,0.06);
-
-}
-
-/* SALARY */
-
-.salary-box{
-
-margin-top:14px;
-
-padding:12px;
-
-background:rgba(255,255,255,0.9);
-
-border-radius:14px;
-
-box-shadow:
-0 4px 12px rgba(0,0,0,0.07);
-
-}
-
-.salary-box input,
-.salary-box select{
-
-width:100%;
-
-padding:10px;
-
-border-radius:10px;
-
-border:1px solid #ccc;
-
-margin-top:6px;
-
-font-size:14px;
-
-}
-
-.salary-box textarea{
-
-height:120px;
-
-}
-
-.history{
-
-height:120px;
-
-}
-
-/* NOTIFY */
-
-#notify{
-
-margin-top:12px;
-
-text-align:center;
-
-color:#27ae60;
-
-font-weight:bold;
-
-font-size:14px;
-
-}
-
-/* PAGE NAME */
-
-.page-name{
-
-color:#0a6fd6;
-
-font-weight:bold;
-
-margin-bottom:4px;
-
-font-size:14px;
-
-}
-
-/* RESPONSIVE */
-
-@media(max-width:480px){
-
-.grid{
-
-grid-template-columns:1fr;
-
-}
-
-textarea{
-
-height:130px;
-
-}
-
-.tabbtn{
-
-padding:10px;
-
-}
-
-button{
-
-font-size:13px;
-
-padding:12px;
-
-}
-
-}
-
-@media(min-width:768px){
-
-.container{
-
-padding:18px;
-
-}
-
-textarea{
-
-height:170px;
-
-}
-
-}
-
+  :root{
+    --primary: #9B7CFA;
+    --primary-dark: #5B21B6;
+    --primary-light: #241D3E;
+    --primary-text: #D9CCFF;
+    --accent: #2DD4E0;
+    --accent-light: #10262C;
+    --navy: #242A46;
+    --heading: #FFFFFF;
+    --bg-top: #12141F;
+    --bg-bot: #0A0B12;
+    --surface: #181B2C;
+    --surface-2: #20243B;
+    --border: #2E3350;
+    --ink: #EEEFFA;
+    --muted: #9DA1C0;
+    --red: #FB7185;
+    --green: #34D399;
+    --amber: #FBBF24;
+    --radius-lg: 22px;
+    --radius-md: 15px;
+    --radius-sm: 11px;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
+    --shadow-md: 0 16px 40px rgba(0,0,0,.55);
+    --safe-t: env(safe-area-inset-top, 0px);
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-l: env(safe-area-inset-left, 0px);
+    --safe-r: env(safe-area-inset-right, 0px);
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body{ height:100%; }
+  body{
+    margin:0;
+    font-family:'Inter', system-ui, sans-serif;
+    color:var(--ink);
+    font-weight:500;
+    background:
+      radial-gradient(720px 320px at 100% -8%, rgba(45,212,224,.09), transparent 60%),
+      radial-gradient(720px 360px at -10% 0%, rgba(155,124,250,.16), transparent 55%),
+      linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 340px);
+    -webkit-font-smoothing:antialiased;
+    overscroll-behavior-y:none;
+  }
+  .app{
+    max-width:430px;
+
+    margin:0 auto;
+    min-height:100vh;
+    min-height:100dvh;
+    padding:calc(18px + var(--safe-t)) calc(16px + var(--safe-r)) calc(28px + var(--safe-b)) calc(16px + var(--safe-l));
+  }
+  .brand{ margin-bottom:16px; padding:0 2px; }
+  .brand-eyebrow{
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:4px;
+  }
+  .brand-title{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:600;
+    font-size:24px; letter-spacing:-.01em; color:var(--heading);
+  }
+  .tabbar{
+    display:flex;
+    gap:6px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:6px;
+    box-shadow:var(--shadow-sm);
+    margin-bottom:18px;
+    position:sticky;
+    top:calc(8px + var(--safe-t));
+    z-index:20;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;
+  }
+  .tabbar::-webkit-scrollbar{ display:none; }
+  .tabbtn{
+    position:relative;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    border:none; background:transparent;
+    padding:9px 8px 8px;
+    border-radius:var(--radius-md);
+    color:var(--muted);
+    font-weight:700;
+    font-size:10.5px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, transform .12s ease;
+    flex:0 0 auto;
+    min-width:66px;
+    white-space:nowrap;
+    scroll-snap-align:start;
+  }
+  .tabbtn svg{ width:18px; height:18px; stroke:currentColor; }
+  .tabbtn:active{ transform:scale(.94); }
+  .tabbtn.active{
+    background:linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color:#fff;
+    box-shadow:0 6px 16px rgba(79,70,229,.32);
+  }
+  .tab-badge{
+    position:absolute; top:1px; right:8px;
+    background:var(--red); color:#fff; font-size:9px; font-weight:800;
+    min-width:16px; height:16px; line-height:16px; border-radius:999px;
+    display:none; align-items:center; justify-content:center; padding:0 4px;
+    border:1.5px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.2);
+  }
+  .page{ display:none; animation:fade .18s ease; }
+  .page.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(5px);} to{opacity:1; transform:none;} }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-sm);
+    padding:16px;
+    margin-bottom:14px;
+  }
+  h2.title{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:600;
+    font-size:18px; margin:0 0 6px; color:var(--heading);
+  }
+  .hint{ font-size:12px; color:var(--muted); margin:0 0 14px; line-height:1.55; }
+  .section-label{
+    font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--muted); margin:16px 0 8px;
+  }
+  .editor-wrap{
+    position:relative;
+    width:100%;
+    min-height:180px;
+    border-radius:var(--radius-md);
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    overflow:hidden;
+  }
+  .editor-wrap:focus-within{ border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+  .editor-common{
+    position:absolute; inset:0; margin:0; padding:13px;
+    border:0; width:100%; height:100%;
+    font-family:'Inter', system-ui, sans-serif;
+    font-size:16px; line-height:1.6;
+    white-space:pre-wrap; word-wrap:break-word; overflow-wrap:anywhere;
+  }
+  .editor-backdrop{ background:transparent; color:var(--ink); overflow:auto; pointer-events:none; }
+  .editor-textarea{ background:transparent; color:transparent; caret-color:var(--ink); resize:none; overflow:auto; -webkit-appearance:none; }
+  .editor-textarea:focus{ outline:none; }
+  .misspell{
+    text-decoration:underline; text-decoration-color:var(--red);
+    text-decoration-style:wavy; text-decoration-thickness:1.5px;
+  }
+  .field{ margin-top:12px; }
+  .field label{ display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:6px; }
+  .field input[type=text], .field input[type=password], .field textarea{
+    width:100%; border:1px solid var(--border); background:var(--surface-2);
+    border-radius:var(--radius-sm); padding:11px 12px;
+    font-size:16px; font-family:inherit; color:var(--ink);
+  }
+  .field input[type=text]:focus, .field input[type=password]:focus, .field textarea:focus{
+    outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light);
+  }
+  .field textarea{ resize:vertical; min-height:80px; line-height:1.5; -webkit-appearance:none; }
+  .field textarea.autosize{ resize:none; overflow:hidden; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; cursor:default; }
+  .checkrow{ display:flex; gap:16px; font-size:13px; color:var(--ink); flex-wrap:wrap; }
+  .checkrow label{ display:flex; align-items:center; gap:6px; font-weight:500; }
+  .hashtag-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:9px;
+  }
+  .hashtag-btn{
+    position:relative;
+    border:1px solid var(--border);
+    background:var(--surface-2);
+    border-radius:var(--radius-md);
+    padding:14px 6px;
+    text-align:center;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+  }
+  .hashtag-btn:active{ transform:scale(.95); }
+  .hashtag-btn:hover{ border-color:var(--primary); box-shadow:var(--shadow-sm); }
+  .hashtag-btn .num{
+    font-family:'Fraunces', serif; font-weight:600; font-size:19px; color:var(--primary);
+    display:block; line-height:1;
+  }
+  .hashtag-btn .label{
+    display:block; margin-top:4px; font-size:10px; font-weight:700;
+    letter-spacing:.03em; color:var(--heading); text-transform:uppercase;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .hashtag-btn .edit-pin{
+    position:absolute; top:5px; right:6px;
+    width:20px; height:20px; border-radius:50%;
+    background:var(--primary-light); color:var(--primary);
+    display:flex; align-items:center; justify-content:center;
+    font-size:10px; line-height:1; border:none; cursor:pointer;
+  }
+  .dropzone{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    border:1.5px dashed var(--border); border-radius:var(--radius-md);
+    background:var(--surface-2); color:var(--muted); font-size:13px; font-weight:600;
+    padding:16px 12px; cursor:pointer; transition:border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .dropzone svg{ width:19px; height:19px; stroke:currentColor; flex-shrink:0; }
+  .dropzone:hover{ border-color:var(--primary); color:var(--primary-text); background:var(--primary-light); }
+  .video-preview{
+    margin-top:10px; border:1px solid var(--border); border-radius:var(--radius-md);
+    overflow:hidden; background:#000;
+  }
+  .video-preview video{ display:block; width:100%; max-height:240px; background:#000; }
+  .video-meta{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:9px 12px; background:var(--surface); font-size:12px; color:var(--muted); font-weight:600;
+  }
+  .video-meta span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .remove-video{
+    flex-shrink:0; border:none; background:#3B1620; color:var(--red);
+    width:22px; height:22px; border-radius:50%; font-size:12px; cursor:pointer;
+  }
+  /* ===== Lưới xem trước nhiều file ảnh/video (tab Share) ===== */
+  .media-list{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:10px;
+  }
+  .media-item{
+    position:relative; border:1px solid var(--border); border-radius:var(--radius-sm);
+    overflow:hidden; background:#000; aspect-ratio:1/1;
+  }
+  .media-item img, .media-item video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .media-item .media-badge{
+    position:absolute; bottom:4px; left:4px; background:rgba(0,0,0,.6); color:#fff;
+    font-size:9px; font-weight:700; letter-spacing:.02em; text-transform:uppercase;
+    padding:2px 6px; border-radius:999px;
+  }
+  .media-item .media-remove{
+    position:absolute; top:4px; right:4px; width:20px; height:20px; border-radius:50%;
+    border:none; background:rgba(0,0,0,.62); color:#fff; font-size:11px; cursor:pointer;
+  }
+  .media-count{ font-size:11.5px; color:var(--muted); font-weight:600; margin-top:8px; }
+  /* ===== Chọn nhiều file để chia sẻ (Thư mục Tải về) ===== */
+  .dl-pick-item{ position:relative; }
+  .dl-pick-item .dl-check{
+    position:absolute; top:4px; left:4px; width:20px; height:20px; border-radius:50%;
+    background:rgba(0,0,0,.55); color:#fff; font-size:12px; font-weight:800;
+    display:flex; align-items:center; justify-content:center; border:1.5px solid rgba(255,255,255,.5);
+    transition:background .12s ease, border-color .12s ease;
+  }
+  .dl-pick-item.dl-selected{ outline:2px solid var(--primary); outline-offset:-2px; }
+  .dl-pick-item.dl-selected .dl-check{ background:var(--primary); border-color:var(--primary); }
+  .btnrow{ display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .btn{
+    flex:1; border:none; padding:14px 14px; border-radius:var(--radius-sm);
+    font-weight:700; font-size:14.5px; cursor:pointer;
+    transition:transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+    min-height:46px;
+  }
+  .btn:active{ transform:scale(.97); }
+  .btn:disabled{ opacity:.55; pointer-events:none; }
+  .btn-primary{
+    background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff;
+    box-shadow:0 8px 18px rgba(79,70,229,.28);
+  }
+  .btn-dark{ background:var(--navy); color:#fff; }
+  .btn-ghost{ background:var(--primary-light); color:var(--primary-text); }
+  .btn-danger{ background:#3B1620; color:var(--red); }
+  .btn-full{ width:100%; }
+  a.btn{ display:flex; align-items:center; justify-content:center; text-decoration:none; }
+  .listbox{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md);
+    max-height:240px; overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .listbox-item{
+    padding:12px 14px; font-size:13px; border-bottom:1px solid var(--border);
+    word-break:break-all; color:var(--ink);
+  }
+  .listbox-item:last-child{ border-bottom:none; }
+  .listbox-item.picked{
+    background:var(--primary-light); border-left:3px solid var(--primary); font-weight:600;
+  }
+  .listbox-item .item-title{ display:block; font-weight:700; color:var(--heading); margin-bottom:2px; }
+  .listbox-item .item-link{ display:block; font-size:11.5px; color:var(--muted); font-weight:400; }
+  .cue-card{
+    margin-top:10px; padding:11px; border:1px solid var(--border); border-radius:var(--radius-sm);
+    background:var(--surface-2);
+  }
+  .cue-time{ font-size:11.5px; font-weight:700; color:var(--primary); }
+  .cue-orig{ font-size:11.5px; color:var(--muted); margin:4px 0 8px; line-height:1.4; word-break:break-word; }
+  .cue-orig b{ color:var(--ink); font-weight:600; }
+  .cue-input{
+    width:100%; border:1px solid var(--border); background:var(--surface-2); border-radius:var(--radius-sm);
+    padding:9px 10px; font-size:14.5px; font-family:inherit; min-height:44px; resize:vertical;
+  }
+  .cue-input:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+  #vsStatus{
+    background:var(--primary-light); color:var(--primary-text); border-radius:var(--radius-sm);
+    padding:10px 12px; font-weight:600;
+  }
+  #toast{
+    position:fixed; left:50%; bottom:calc(22px + var(--safe-b));
+    transform:translate(-50%, 20px);
+    background:var(--navy); color:#fff; padding:11px 20px; border-radius:999px;
+    font-size:13px; font-weight:600; opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease; z-index:50;
+    box-shadow:0 10px 24px rgba(0,0,0,.22); max-width:88%; text-align:center;
+  }
+  #toast.show{ opacity:1; transform:translate(-50%, 0); }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .chip{
+    background:var(--navy); color:#fff; font-size:11.5px; font-weight:700;
+    padding:7px 12px; border-radius:999px; max-width:100%;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer; border:none;
+  }
+  /* ===== TAB GROUP CHAT ===== */
+  .online-users{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .online-chip{
+    display:flex; align-items:center; gap:5px; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:999px; padding:4px 10px 4px 6px; font-size:11.5px; font-weight:600; color:var(--ink);
+  }
+  .online-dot{ width:8px; height:8px; border-radius:50%; background:var(--green); flex-shrink:0; box-shadow:0 0 0 2px rgba(22,163,74,.18); }
+  .online-avatar{ width:18px; height:18px; border-radius:50%; object-fit:cover; background:var(--border); }
+  .seen-status{ font-size:11px; color:var(--muted); text-align:right; margin-bottom:6px; font-weight:600; min-height:14px; }
+  .chat-messages{
+    display:flex; flex-direction:column; gap:10px; max-height:420px; overflow-y:auto; padding:6px 2px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .chat-empty{ text-align:center; color:var(--muted); font-size:12.5px; padding:24px 8px; }
+  .chat-msg{ display:flex; gap:8px; align-items:flex-end; }
+  .chat-msg.me{ flex-direction:row-reverse; }
+  .chat-avatar{ width:26px; height:26px; border-radius:50%; object-fit:cover; flex-shrink:0; background:var(--border); }
+  .chat-bubble-wrap{ max-width:75%; display:flex; flex-direction:column; }
+  .chat-msg.me .chat-bubble-wrap{ align-items:flex-end; }
+  .chat-name{ font-size:10.5px; font-weight:700; color:var(--primary); margin-bottom:2px; }
+  .chat-bubble{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:8px 11px;
+  }
+  .chat-msg.me .chat-bubble{ background:var(--primary); border-color:var(--primary); color:#fff; }
+  .chat-text{ font-size:14px; line-height:1.45; white-space:pre-wrap; word-break:break-word; }
+  .chat-media{ max-width:100%; border-radius:10px; display:block; margin-bottom:4px; max-height:220px; object-fit:cover; }
+  .chat-time{ font-size:9.5px; color:var(--muted); margin-top:2px; }
+  .chat-media-preview{
+    display:flex; align-items:center; gap:8px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:8px; margin-bottom:8px;
+  }
+  .chat-media-preview img, .chat-media-preview video{ width:40px; height:40px; object-fit:cover; border-radius:8px; flex-shrink:0; }
+  .media-preview-name{ flex:1; font-size:12px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .chat-inputbar{ display:flex; align-items:flex-end; gap:8px; margin-top:4px; }
+  .chat-attach-btn, .chat-send-btn{
+    flex-shrink:0; width:42px; height:42px; border-radius:50%; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; font-size:17px;
+    transition:transform .12s ease, opacity .12s ease;
+  }
+  .chat-attach-btn:active, .chat-send-btn:active{ transform:scale(.92); }
+  .chat-attach-btn{ background:var(--primary-light); color:var(--primary-text); }
+  .chat-send-btn{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; }
+  .chat-send-btn:disabled{ opacity:.5; pointer-events:none; }
+  #groupMsgInput{
+    flex:1; border:1px solid var(--border); background:var(--surface-2); border-radius:20px; padding:10px 14px;
+    font-size:15px; font-family:inherit; resize:none; max-height:100px; min-height:42px; line-height:1.4;
+  }
+  #groupMsgInput:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+  .group-user-badge{
+    display:flex; align-items:center; gap:8px; background:var(--primary-light); border-radius:var(--radius-sm);
+    padding:8px 10px; margin-bottom:10px;
+  }
+  .switch-row{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--accent-light); border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:10px 12px; margin-bottom:10px;
+  }
+  .switch-row .switch-label{ font-size:12px; font-weight:700; color:var(--ink); line-height:1.4; }
+  .switch{ position:relative; display:inline-block; width:44px; height:26px; flex-shrink:0; }
+  .switch input{ opacity:0; width:0; height:0; position:absolute; }
+  .switch .slider{
+    position:absolute; inset:0; cursor:pointer; background:#3A3F5C; border-radius:999px; transition:background .18s ease;
+  }
+  .switch .slider:before{
+    position:absolute; content:""; height:20px; width:20px; left:3px; top:3px;
+    background:#fff; border-radius:50%; transition:transform .18s ease; box-shadow:0 1px 3px rgba(0,0,0,.25);
+  }
+  .switch input:checked + .slider{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+  .switch input:checked + .slider:before{ transform:translateX(18px); }
+  .group-user-badge img{ width:28px; height:28px; border-radius:50%; object-fit:cover; }
+  .group-user-badge .name{ font-size:12.5px; font-weight:700; color:var(--heading); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* ===== Popup đăng nhập nhỏ & popup xác nhận dùng chung ===== */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(4,5,10,.72);
+    display:none; align-items:center; justify-content:center; z-index:100;
+    padding:20px; backdrop-filter:blur(2px);
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-card{
+    background:var(--surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-md);
+    width:100%; max-width:320px; padding:22px 20px 20px; position:relative;
+    animation:modalPop .18s ease;
+  }
+  @keyframes modalPop{ from{opacity:0; transform:scale(.92) translateY(6px);} to{opacity:1; transform:none;} }
+  .modal-close{
+    position:absolute; top:10px; right:10px; width:26px; height:26px; border-radius:50%;
+    border:none; background:var(--primary-light); color:var(--primary-text); font-size:13px; cursor:pointer;
+  }
+  .modal-icon{
+    width:46px; height:46px; border-radius:14px; background:linear-gradient(135deg, var(--primary), var(--primary-dark));
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; font-weight:800; margin-bottom:12px;
+  }
+  .modal-title{ font-family:'Fraunces', serif; font-style:italic; font-weight:600; font-size:17px; color:var(--heading); margin:0 0 6px; }
+  .modal-desc{ font-size:12.5px; color:var(--muted); line-height:1.55; margin:0 0 16px; }
+  .google-btn{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    width:100%; border:1px solid var(--border); background:#fff; color:#191A2E;
+    padding:12px 14px; border-radius:var(--radius-sm); font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .google-btn:active{ transform:scale(.98); }
+  .google-btn:disabled{ opacity:.6; pointer-events:none; }
+  .google-btn svg{ width:18px; height:18px; flex-shrink:0; }
+  .modal-note{ font-size:11px; color:var(--muted); margin-top:12px; line-height:1.5; text-align:center; }
+  .confirm-card{ max-width:300px; text-align:center; }
+  .confirm-icon{
+    width:44px; height:44px; border-radius:50%; background:#3B1620; color:var(--red);
+    display:flex; align-items:center; justify-content:center; font-size:20px; margin:0 auto 12px;
+  }
+  .confirm-title{ font-weight:800; font-size:15px; color:var(--heading); margin:0 0 6px; }
+  .confirm-desc{ font-size:12.5px; color:var(--muted); line-height:1.55; margin:0 0 18px; }
+  .confirm-btnrow{ display:flex; gap:8px; }
+  /* ===== Chọn đối tượng nhắn tin (cả nhóm / nhắn riêng) ===== */
+  .target-row{
+    display:flex; gap:8px; overflow-x:auto; padding:2px 2px 10px; -webkit-overflow-scrolling:touch;
+  }
+  .target-row::-webkit-scrollbar{ display:none; }
+  .target-chip{
+    flex-shrink:0; display:flex; align-items:center; gap:6px; border:1px solid var(--border);
+    background:var(--surface-2); border-radius:999px; padding:6px 12px 6px 6px; font-size:12px; font-weight:700;
+    color:var(--ink); cursor:pointer; position:relative; white-space:nowrap;
+  }
+  .target-chip.everyone{ padding-left:12px; }
+  .target-chip img{ width:20px; height:20px; border-radius:50%; object-fit:cover; background:var(--border); }
+  .target-chip.active{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border-color:transparent; }
+  .target-chip .t-dot{ width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
+  .target-chip .t-unread{
+    position:absolute; top:-3px; right:-3px; width:14px; height:14px; border-radius:50%;
+    background:var(--red); border:1.5px solid #fff;
+  }
+  .chat-header-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+  /* ===== Xem trước nhiều file đính kèm khi chat + tiến trình % upload + huỷ tải ===== */
+  .attach-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:8px; }
+  .attach-item{
+    position:relative; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden;
+    background:#000; aspect-ratio:1/1;
+  }
+  .attach-item img, .attach-item video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .attach-item .attach-remove{
+    position:absolute; top:3px; right:3px; width:18px; height:18px; border-radius:50%; border:none;
+    background:rgba(0,0,0,.62); color:#fff; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    z-index:2;
+  }
+  .attach-progress{
+    position:absolute; left:0; right:0; bottom:0; background:rgba(0,0,0,.55); color:#fff;
+    font-size:9.5px; font-weight:700; text-align:center; padding:3px 2px;
+  }
+  .attach-progress-bar{
+    position:absolute; left:0; bottom:0; height:3px; background:var(--primary); transition:width .15s ease;
+  }
+  .attach-item.attach-error{ border-color:var(--red); }
+  .attach-error-badge{
+    position:absolute; left:0; right:0; bottom:0; background:rgba(239,68,68,.85); color:#fff;
+    font-size:9px; font-weight:700; text-align:center; padding:3px 2px;
+  }
+  .attach-retry{
+    position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; border:none;
+    background:rgba(0,0,0,.62); color:#fff; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    z-index:2;
+  }
+  .chat-attachments{ display:grid; grid-template-columns:repeat(2, 1fr); gap:5px; margin-bottom:4px; }
+  .chat-attachments.single{ grid-template-columns:1fr; }
+  .chat-att-wrap{ position:relative; }
+  .chat-attachments img, .chat-attachments video{ width:100%; border-radius:9px; max-height:180px; object-fit:cover; display:block; }
+  .chat-att-download{
+    position:absolute; bottom:6px; right:6px; width:26px; height:26px; border-radius:50%;
+    background:rgba(0,0,0,.6); color:#fff; display:flex; align-items:center; justify-content:center;
+    text-decoration:none; font-size:13px; line-height:1; border:none; cursor:pointer;
+  }
+  .chat-att-download:active{ transform:scale(.92); }
+  .chat-att-download.downloading{ opacity:.6; pointer-events:none; }
+  /* ===== TAB QUẢN TRỊ (Admin) ===== */
+  #adminMap{ background:#12142a; }
+  .leaflet-popup-content{ font-family:'Inter', system-ui, sans-serif; font-size:12.5px; line-height:1.5; }
+  .admin-legend{ display:flex; gap:14px; margin-top:10px; font-size:11.5px; color:var(--muted); font-weight:600; }
+  .admin-legend span{ display:flex; align-items:center; gap:6px; }
+  .admin-dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+  /* ===== Chọn avatar ngộ nghĩnh có sẵn (popup hồ sơ) ===== */
+  .preset-avatar-grid{
+    display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; margin-top:8px;
+  }
+  .preset-avatar-btn{
+    position:relative; border:2px solid transparent; border-radius:50%; aspect-ratio:1/1;
+    display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer;
+    padding:0; overflow:hidden;
+  }
+  .preset-avatar-btn:active{ transform:scale(.92); }
+  .preset-avatar-btn.selected{ border-color:var(--primary); box-shadow:0 0 0 2px var(--primary-light); }
+  @media (max-width: 400px){
+    .brand-title{ font-size:22px; }
+    .tabbtn{ font-size:9px; }
+    .hashtag-btn{ padding:12px 4px; }
+    .hashtag-btn .num{ font-size:17px; }
+    .preset-avatar-grid{ grid-template-columns:repeat(5, 1fr); }
+  }
+  /* =========================================================
+     RESPONSIVE NÂNG CAO: MÁY TÍNH BẢNG / MÁY TÍNH ĐỂ BÀN
+     Thiết kế gốc là mobile-first (cột đơn, rộng tối đa 430px).
+     Từ đây trở xuống, các mốc breakpoint mở rộng bố cục một
+     cách có kiểm soát: tăng max-width, tăng khoảng đệm, tăng số
+     cột lưới, tăng cỡ chữ nhẹ nhàng — giữ đúng ngôn ngữ thiết kế
+     gốc (card bo tròn, tông tím-ngọc) nhưng thoáng và cân đối
+     hơn khi xem trên màn hình lớn, đúng chuẩn UI/UX quốc tế
+     (rộng rãi có kiểm soát, không kéo giãn nội dung vô hạn).
+  ========================================================= */
+  @media (min-width: 640px){
+    .app{ max-width:640px; padding-left:28px; padding-right:28px; }
+    .brand-title{ font-size:26px; }
+    .card{ padding:20px 22px; }
+    .hashtag-grid{ grid-template-columns:repeat(4, 1fr); gap:11px; }
+    .media-list{ grid-template-columns:repeat(4, 1fr); }
+    .attach-grid{ grid-template-columns:repeat(5, 1fr); }
+    .preset-avatar-grid{ grid-template-columns:repeat(6, 1fr); }
+  }
+  @media (min-width: 900px){
+    .app{ max-width:900px; padding-top:calc(28px + var(--safe-t)); }
+    .brand{ margin-bottom:22px; }
+    .brand-title{ font-size:30px; }
+    .brand-eyebrow{ font-size:12px; }
+    .tabbar{ padding:8px; gap:8px; border-radius:calc(var(--radius-lg) + 4px); overflow-x:visible; flex-wrap:wrap; justify-content:center; }
+    .tabbtn{ min-width:92px; font-size:12px; padding:12px 12px 11px; }
+    .tabbtn svg{ width:20px; height:20px; }
+    .card{ padding:26px 28px; border-radius:calc(var(--radius-lg) + 4px); margin-bottom:18px; }
+    h2.title{ font-size:21px; }
+    .hint{ font-size:13px; }
+    .hashtag-grid{ grid-template-columns:repeat(5, 1fr); gap:14px; }
+    .hashtag-btn{ padding:18px 8px; border-radius:calc(var(--radius-md) + 3px); }
+    .hashtag-btn .num{ font-size:22px; }
+    .hashtag-btn .label{ font-size:10.5px; }
+    .media-list{ grid-template-columns:repeat(6, 1fr); }
+    .attach-grid{ grid-template-columns:repeat(6, 1fr); }
+    .editor-wrap{ min-height:230px; }
+    .chat-messages{ max-height:520px; }
+    .btn{ font-size:15px; }
+    .modal-card{ max-width:400px; padding:26px 26px 24px; }
+    .confirm-card{ max-width:360px; }
+    /* Bố cục 2 cột cho các thẻ chỉ có 1 khối nội dung độc lập (Facebook/TikTok/RedNote)
+       để tận dụng không gian ngang rộng, vẫn giữ thứ tự đọc tự nhiên trên di động */
+    #page-download{ display:grid; grid-template-columns:1fr; gap:0; }
+  }
+  @media (min-width: 1180px){
+    .app{ max-width:1080px; }
+    .hashtag-grid{ grid-template-columns:repeat(6, 1fr); }
+  }
+  /* Chỉ bật hiệu ứng hover cho thiết bị có chuột thật (tránh trạng thái hover
+     bị "dính" trên cảm ứng — vấn đề UX phổ biến khi copy CSS desktop sang mobile) */
+  @media (hover:hover) and (pointer:fine){
+    .btn-primary:hover{ filter:brightness(1.06); box-shadow:0 10px 22px rgba(79,70,229,.34); }
+    .btn-dark:hover{ filter:brightness(1.15); }
+    .btn-ghost:hover{ filter:brightness(0.97); }
+    .btn-danger:hover{ filter:brightness(0.97); }
+    .hashtag-btn:hover{ transform:translateY(-2px); }
+    .tabbtn:not(.active):hover{ background:var(--primary-light); color:var(--primary-text); }
+    .target-chip:not(.active):hover{ border-color:var(--primary); }
+  }
 </style>
-
 </head>
-
 <body>
+<div class="app">
+  <div class="brand">
+    <div class="brand-eyebrow">Bộ công cụ nội dung</div>
+    <div class="brand-title">Content Studio</div>
+  </div>
+  <!-- ================= THANH TAB ================= -->
+  <div class="tabbar">
+    <button class="tabbtn active" data-tab="content">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 3.5h8l4 4V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/>
+        <path d="M14 3.5V7.5h4"/>
+        <path d="M7.5 12h7M7.5 15h7M7.5 18h4.5"/>
+      </svg>
+      Content
+    </button>
+    <button class="tabbtn" data-tab="share">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="6" cy="12" r="2.3"/><circle cx="17" cy="5.5" r="2.3"/><circle cx="17" cy="18.5" r="2.3"/>
+        <path d="M8.1 10.8 14.9 7.2M8.1 13.2 14.9 16.8"/>
+      </svg>
+      Share
+    </button>
+    <button class="tabbtn" data-tab="shoppe">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="8" width="16" height="12" rx="2"/>
+        <path d="M8 8V6a4 4 0 0 1 8 0v2"/>
+      </svg>
+      Shoppe
+    </button>
+    <button class="tabbtn" data-tab="vietsub">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="5" width="18" height="13" rx="2"/>
+        <path d="M7 21h10"/>
+        <path d="M6.5 10.5h3M6.5 13.5h5M12.5 10.5h5"/>
+      </svg>
+      Vietsub
+    </button>
+    <button class="tabbtn" data-tab="group">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19v-1a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v1"/>
+        <circle cx="9" cy="8" r="3"/>
+        <path d="M15.5 5.5a3 3 0 0 1 0 5.8"/>
+        <path d="M18 14.2a4 4 0 0 1 2.5 3.7V19"/>
+      </svg>
+      Group
+      <span id="groupBadge" class="tab-badge">0</span>
+    </button>
+    <button class="tabbtn" data-tab="download">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3.5v11"/>
+        <path d="m7.5 10.5 4.5 4.5 4.5-4.5"/>
+        <path d="M4.5 18.5h15"/>
+      </svg>
+      Tải video
+    </button>
+    <button class="tabbtn" data-tab="admin">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3.5 5 6.2v5.3c0 4.4 2.9 8.1 7 9 4.1-.9 7-4.6 7-9V6.2L12 3.5z"/>
+        <path d="m9.3 12.2 1.9 1.9 3.5-3.9"/>
+      </svg>
+      Quản trị
+    </button>
+  </div>
+  <!-- ================= TAB 1: CONTENT ================= -->
+  <section id="page-content" class="page active">
+    <div class="card">
+      <h2 class="title">Tiêu Đề Nội Dung</h2>
+      <p class="hint">Dán hoặc gõ nội dung vào ô bên dưới. Từ nghi sai chính tả tiếng Việt sẽ được gạch chân đỏ (kiểm tra dựa trên cấu trúc âm tiết + từ điển thông dụng, mang tính gợi ý).</p>
+      <div class="editor-wrap">
+        <div id="backdrop" class="editor-common editor-backdrop"></div>
+        <textarea id="contentInput" class="editor-common editor-textarea"
+          placeholder="Nhập nội dung bài viết..." spellcheck="false"></textarea>
+      </div>
+      <div class="section-label">Chọn bộ 5 hastag &amp; copy nội dung</div>
+      <div id="hashtagGrid" class="hashtag-grid"></div>
+      <div class="btnrow">
+        <button class="btn btn-ghost btn-full" id="btnClearContent">Xóa nội dung</button>
+      </div>
+    </div>
+  </section>
+  <!-- ================= TAB 2: SHARE ================= -->
+  <section id="page-share" class="page">
+    <div class="card">
+      <h2 class="title">Chia sẻ nội dung</h2>
+      <p class="hint">Nhập nội dung tin nhắn, chọn thêm ảnh hoặc video (có thể chọn nhiều file cùng lúc) nếu muốn, rồi bấm nút bên dưới để mở khung chia sẻ nhỏ của iPhone — chọn Zalo, gửi xong khung sẽ tự đóng lại.</p>
+      <div class="field" style="margin-top:0">
+        <textarea id="shareInput" placeholder="Nhập nội dung tin nhắn muốn gửi..." style="min-height:150px"></textarea>
+      </div>
+      <div class="section-label">Ảnh / Video đính kèm (tùy chọn — chọn được nhiều file cùng lúc)</div>
+      <input type="file" id="mediaInput" accept="image/*,video/*" multiple style="display:none">
+      <div id="mediaDropzone" class="dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5.5" width="13" height="13" rx="2"/>
+          <path d="m16 10.5 5-2.8v8.6l-5-2.8"/>
+        </svg>
+        <span>Chọn ảnh hoặc video (có thể chọn nhiều file)</span>
+      </div>
+      <div id="mediaList" class="media-list" style="display:none"></div>
+      <div class="btnrow">
+        <button class="btn btn-primary" id="btnShareZalo">Share Luôn Dép Lào</button>
+        <button class="btn btn-danger" id="btnClearShare">Clear</button>
+      </div>
+    </div>
+  </section>
+  <!-- ================= TAB 3: SHOPPE ================= -->
+  <section id="page-shoppe" class="page">
+    <div class="card">
+      <h2 class="title">Link Shopee</h2>
+      <p class="hint">Mỗi dòng nhập theo dạng <strong>Tiêu đề | Link</strong>. Bấm "Chia sẻ ngẫu nhiên" để copy random 1 link kèm tiêu đề mỗi lần bấm. Bấm nút bút chì trên từng link để sửa, hoặc bấm "Thêm link mới" để mở cửa sổ nhập một hoặc nhiều link cùng lúc.</p>
+      <div class="btnrow" style="margin-top:0">
+        <button class="btn btn-primary btn-full" id="btnRandomShoppe">Chia sẻ ngẫu nhiên (Copy)</button>
+      </div>
+      <div class="btnrow">
+        <button class="btn btn-dark btn-full" id="btnAddShoppeLink">➕ Thêm link mới</button>
+      </div>
+      <div class="section-label">Danh sách link (mỗi dòng: Tiêu đề | Link)</div>
+      <div class="field" style="margin-top:0">
+        <textarea id="shoppeLinksInput" style="min-height:100px"></textarea>
+      </div>
+      <div class="section-label">Xem trước</div>
+      <div id="shoppeListbox" class="listbox"></div>
+    </div>
+  </section>
+  <!-- ================= TAB 4: VIETSUB ================= -->
+  <section id="page-vietsub" class="page">
+    <div class="card">
+      <h2 class="title">Vietsub video (Trung / Anh → Việt)</h2>
+      <p class="hint">
+        Tải video lên → chọn nhận diện <strong>chữ trên hình</strong> và/hoặc <strong>giọng nói trong âm thanh</strong> → tự động dịch sang tiếng Việt → cho sửa lại trước khi ghép đè phụ đề, xuất ra .mp4.
+        <br><strong>Lưu ý:</strong> mọi xử lý chạy ngay trên trình duyệt điện thoại nên khá nặng, đặc biệt là nhận diện giọng nói (phải tải mô hình AI ~70–150MB) — nên dùng video <strong>ngắn (dưới ~60 giây)</strong>, dùng Wi-Fi, và độ phân giải vừa phải để tránh treo máy hoặc quá lâu. Bản dịch tự động có thể chưa chính xác 100%, hãy kiểm tra lại trước khi ghép.
+      </p>
+      <input type="file" id="vsVideoInput" accept="video/*" style="display:none">
+      <div id="vsDropzone" class="dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5.5" width="13" height="13" rx="2"/>
+          <path d="m16 10.5 5-2.8v8.6l-5-2.8"/>
+        </svg>
+        <span>Chọn video cần vietsub</span>
+      </div>
+      <video id="vsVideoPlayer" controls playsinline style="display:none;width:100%;margin-top:10px;border-radius:var(--radius-md);background:#000"></video>
+      <div class="field">
+        <label>Nguồn cần dịch</label>
+        <div class="checkrow">
+          <label><input type="checkbox" id="vsModeOcr" checked> Chữ hiển thị trên hình</label>
+          <label><input type="checkbox" id="vsModeAudio"> Giọng nói trong âm thanh</label>
+        </div>
+      </div>
+      <div class="field" id="vsOcrLangWrap">
+        <label>Chữ trên hình là ngôn ngữ nào</label>
+        <div class="checkrow">
+          <label><input type="checkbox" id="vsLangZh" checked> Tiếng Trung</label>
+          <label><input type="checkbox" id="vsLangEn" checked> Tiếng Anh</label>
+        </div>
+      </div>
+      <div class="field" id="vsIntervalWrap">
+        <label>Lấy mẫu khung hình mỗi (giây) — số càng nhỏ càng chính xác nhưng càng lâu</label>
+        <input type="text" id="vsInterval" value="2" inputmode="decimal">
+      </div>
+      <p class="hint" style="margin-top:6px">Giọng nói trong âm thanh dùng mô hình AI nhận diện đa ngôn ngữ, tự động phát hiện tiếng nói là ngôn ngữ gì (Trung, Anh, v.v.) rồi dịch sang tiếng Việt — không cần chọn ngôn ngữ riêng.</p>
+      <div class="btnrow">
+        <button class="btn btn-primary btn-full" id="vsBtnDetect">1. Nhận diện chữ &amp; Dịch</button>
+      </div>
+      <div id="vsStatus" style="display:none;margin-top:12px"></div>
+      <div id="vsCuesWrap" style="display:none">
+        <div class="section-label">Phụ đề tiếng Việt (chỉnh sửa nếu cần)</div>
+        <div id="vsCuesList"></div>
+        <div class="btnrow">
+          <button class="btn btn-dark btn-full" id="vsBtnBurn">2. Ghép phụ đề &amp; Xuất .mp4</button>
+        </div>
+        <div class="btnrow">
+          <button class="btn btn-ghost btn-full" id="vsBtnSrt">Tải file phụ đề .srt (dự phòng)</button>
+        </div>
+      </div>
+      <div id="vsResultWrap" style="display:none;margin-top:16px">
+        <div class="section-label">Video đã ghép phụ đề</div>
+        <video id="vsResultPlayer" controls playsinline style="width:100%;border-radius:var(--radius-md);background:#000"></video>
+        <div class="btnrow">
+          <a id="vsDownloadLink" class="btn btn-primary btn-full" download="vietsub.mp4">Tải video .mp4</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ================= TAB 5: GROUP CHAT ================= -->
+  <section id="page-group" class="page">
+    <div class="card" id="groupLoginCard">
+      <h2 class="title">Hội Nhóm Group</h2>
+      <p class="hint">Đăng nhập bằng Gmail để tham gia nhóm, xem ai đang online, gửi tin nhắn (kèm nhiều ảnh/video cùng lúc) cho cả nhóm hoặc nhắn riêng cho từng người.</p>
+      <button id="btnGoogleLogin" class="btn btn-primary btn-full">Đăng nhập bằng Google</button>
+      <div id="groupLoginError" class="hint" style="color:var(--red);display:none;margin-top:10px"></div>
+    </div>
+    <div class="card" id="groupChatCard" style="display:none">
+      <div class="chat-header-row">
+        <h2 class="title" style="margin:0">Group Chat</h2>
+        <div style="display:flex;gap:6px">
+          <button id="btnDeleteAllMsgs" class="btn btn-danger" style="flex:none;padding:8px 10px;font-size:12px;min-height:auto" title="Xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở">🗑</button>
+          <button id="btnLogout" class="btn btn-ghost" style="flex:none;padding:8px 12px;font-size:12px;min-height:auto">Đăng xuất</button>
+        </div>
+      </div>
+      <div class="switch-row">
+        <span class="switch-label">🔔 Thông báo tin nhắn (rung &amp; hiện trên màn hình)</span>
+        <label class="switch">
+          <input type="checkbox" id="notifToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="group-user-badge">
+        <img id="myAvatar" src="" alt="">
+        <span class="name" id="myName"></span>
+        <button type="button" id="btnEditProfile" class="edit-pin" style="position:static;flex-shrink:0" title="Sửa tên hiển thị / ảnh đại diện">✎</button>
+      </div>
+      <div class="section-label" style="margin-top:0">Đang tham gia</div>
+      <div id="onlineUsers" class="online-users"></div>
+      <div class="section-label">Nhắn tin đến</div>
+      <div id="targetRow" class="target-row"></div>
+      <div id="chatSeenStatus" class="seen-status"></div>
+      <div id="chatMessages" class="chat-messages">
+        <div class="chat-empty">Chưa có tin nhắn nào — hãy bắt đầu trò chuyện!</div>
+      </div>
+      <div id="chatMediaGrid" class="attach-grid" style="display:none;margin-top:10px"></div>
+      <div class="chat-inputbar">
+        <input type="file" id="groupMediaInput" accept="image/*,video/*" multiple style="display:none">
+        <button id="btnGroupAttach" class="chat-attach-btn" title="Đính kèm ảnh/video (chọn được nhiều file)">📎</button>
+        <textarea id="groupMsgInput" rows="1" placeholder="Nhập tin nhắn..."></textarea>
+        <button id="btnGroupSend" class="chat-send-btn" title="Gửi">➤</button>
+      </div>
+    </div>
+  </section>
+  <!-- ================= TAB 6: TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE) ================= -->
+  <section id="page-download" class="page">
+    <div class="card">
+      <h2 class="title">Thư mục Tải về</h2>
+      <p class="hint">
+        Vì lý do bảo mật, trình duyệt (Chrome, Cốc Cốc, Safari...) <strong>không cho phép trang web tự liệt kê</strong> các file đã có sẵn trong thư mục Tải về — bạn cần chủ động bấm chọn mỗi lần. Bấm nút bên dưới: trên Chrome/Cốc Cốc <strong>máy tính</strong> hộp thoại sẽ tự mở ngay tại thư mục Tải về (Downloads); trên điện thoại hoặc trình duyệt khác, hãy tự điều hướng tới thư mục Tải về/Downloads trong hộp thoại hiện ra. Có thể chọn <strong>nhiều ảnh/video cùng lúc</strong>, xem trước bên dưới, bấm vào từng file để chọn/bỏ chọn, rồi chia sẻ thẳng các file đã chọn về <strong>Thư viện ảnh</strong> trên iOS/Android qua khung chia sẻ của hệ điều hành.
+      </p>
+      <input type="file" id="dlFolderInput" accept="image/*,video/*" multiple style="display:none">
+      <div id="dlFolderDropzone" class="dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3.5 7.2c0-.94.76-1.7 1.7-1.7h4l1.6 2h7.5c.94 0 1.7.76 1.7 1.7v8.6c0 .94-.76 1.7-1.7 1.7H5.2c-.94 0-1.7-.76-1.7-1.7V7.2z"/>
+        </svg>
+        <span>Chọn ảnh / video từ thư mục Tải về</span>
+      </div>
+      <div id="dlFolderList" class="media-list" style="display:none"></div>
+      <div id="dlFolderCount" class="media-count" style="display:none"></div>
+      <div class="btnrow" id="dlFolderBtnRow" style="display:none">
+        <button class="btn btn-primary" id="btnDlFolderShare">Chia sẻ vào Thư viện ảnh</button>
+        <button class="btn btn-danger" id="btnDlFolderClear">Bỏ chọn hết</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="title">Facebook</h2>
+      <p class="hint">Dán link bài viết hoặc video Facebook (công khai) vào ô bên dưới rồi bấm "Tải". Video sẽ được nhúng trực tiếp để xem trước; nếu không hiện được (video riêng tư, bị chặn nhúng...) hãy dùng công cụ tải video thay thế bên dưới khung xem trước.</p>
+      <div class="field" style="margin-top:0">
+        <input type="text" id="fbLinkInput" placeholder="Dán link Facebook (bài viết/video)...">
+      </div>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn btn-primary btn-full" id="btnFbFetch">Tải</button>
+      </div>
+      <div id="fbVideoWrap" style="margin-top:12px"></div>
+      <div class="field" id="fbTitleWrap" style="display:none">
+        <label>Tiêu đề bài viết (bấm đúp để copy toàn bộ)</label>
+        <textarea id="fbTitleText" class="autosize" readonly style="min-height:50px"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="title">TikTok</h2>
+      <p class="hint">Dán link video TikTok vào ô bên dưới rồi bấm "Tải". Nếu không lấy được video, ô bên dưới sẽ hiện đường dẫn sang công cụ tải video thay thế.</p>
+      <div class="field" style="margin-top:0">
+        <input type="text" id="tkLinkInput" placeholder="Dán link TikTok...">
+      </div>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn btn-primary btn-full" id="btnTkFetch">Tải</button>
+      </div>
+      <div id="tkVideoWrap" style="margin-top:12px"></div>
+      <div class="field" id="tkTitleWrap" style="display:none">
+        <label>Tiêu đề video (bấm đúp để copy toàn bộ)</label>
+        <textarea id="tkTitleText" class="autosize" readonly style="min-height:50px"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="title">RedNote (Xiaohongshu)</h2>
+      <p class="hint">Dán nguyên nội dung chia sẻ từ app RedNote (thường có kèm chữ Trung + link rút gọn dạng <strong>http://xhslink.cn/...</strong>) vào ô bên dưới. Hệ thống sẽ thử lấy video để xem trước ngay trong trang giống như TikTok; nếu không lấy được sẽ tự động mở link trong tab trình duyệt mới.</p>
+      <div class="field" style="margin-top:0">
+        <textarea id="rnShareInput" placeholder="Dán nội dung chia sẻ RedNote vào đây..." style="min-height:90px"></textarea>
+      </div>
+      <div class="btnrow" style="margin-top:12px">
+        <button class="btn btn-primary btn-full" id="btnRnOpen">Tách link &amp; Xem trước</button>
+      </div>
+      <div id="rnVideoWrap" style="margin-top:12px"></div>
+      <div class="field" id="rnTitleWrap" style="display:none">
+        <label>Tiêu đề bài viết (bấm đúp để copy toàn bộ)</label>
+        <textarea id="rnTitleText" class="autosize" readonly style="min-height:50px"></textarea>
+      </div>
+    </div>
+  </section>
+  <!-- ================= TAB 6: QUẢN TRỊ (ADMIN) ================= -->
+  <section id="page-admin" class="page">
+    <div class="card" id="adminLoginCard">
+      <h2 class="title">Quản trị</h2>
+      <p class="hint">Đăng nhập bằng tài khoản quản trị viên được cấp quyền cấu hình trên Firebase Realtime Database, không nằm cố định trong mã nguồn — xem hướng dẫn bên dưới nếu chưa đăng nhập được.</p>
+      <div class="field" style="margin-top:0">
+        <label>Tên đăng nhập</label>
+        <input type="text" id="adminUserInput" placeholder="Tên đăng nhập" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Mật khẩu</label>
+        <input type="password" id="adminPassInput" placeholder="Mật khẩu" autocomplete="current-password">
+      </div>
+      <div id="adminLoginError" class="hint" style="color:var(--red);display:none;margin-top:8px"></div>
+      <div class="btnrow">
+        <button class="btn btn-primary btn-full" id="btnAdminLogin">Đăng nhập</button>
+      </div>
+      <p class="hint" style="margin-top:14px">
+        <strong>Cách thiết lập tài khoản quản trị trên Firebase:</strong><br>
+        1. Mở Firebase Console → chọn project → mục <strong>Realtime Database</strong>.<br>
+        2. Tạo (hoặc sửa) node <strong>groupChat/adminConfig</strong> với 2 trường:
+        <strong>username</strong> (tên đăng nhập) và <strong>password</strong> (mật khẩu).<br>
+        3. Lưu lại — trang này sẽ đọc trực tiếp 2 giá trị đó mỗi lần đăng nhập, không cần sửa mã nguồn.<br>
+        Lưu ý: đây vẫn là kiểm tra phía trình duyệt, chỉ phù hợp hạn chế truy cập nội bộ; nếu cần bảo mật chặt hơn nên chuyển sang Firebase Auth + Security Rules.
+      </p>
+    </div>
+    <div class="card" id="adminMapCard" style="display:none">
+      <div class="chat-header-row">
+        <h2 class="title" style="margin:0">Bản đồ thành viên</h2>
+        <button id="btnAdminLogout" class="btn btn-ghost" style="flex:none;padding:8px 12px;font-size:12px;min-height:auto">Đăng xuất</button>
+      </div>
+      <p class="hint" style="margin-bottom:8px">Map của những thành viên đã đồng ý chia sẻ vị trí trong nhóm chat.</p>
+      <div id="adminMap" style="width:100%;height:320px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border)"></div>
+      <div class="admin-legend">
+        <span><span class="admin-dot" style="background:var(--green)"></span>Đang online</span>
+        <span><span class="admin-dot" style="background:var(--muted)"></span>Offline (vị trí lần cuối)</span>
+      </div>
+      <div class="section-label">Danh sách thành viên (bấm để xem lịch sử vị trí)</div>
+      <div id="adminUserList" class="listbox"></div>
+      <div class="section-label" id="adminHistoryLabel">Lịch sử vị trí</div>
+      <div id="adminHistoryList" class="listbox">
+        <div class="listbox-item">Chọn 1 thành viên ở danh sách trên để xem lịch sử vị trí</div>
+      </div>
+    </div>
+  </section>
 
-<div class="container">
+  <!-- ============ POPUP ĐĂNG NHẬP GOOGLE (nhỏ gọn) ============ -->
+  <div id="loginModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" id="btnCloseLoginModal" class="modal-close">✕</button>
+      <div class="modal-icon">G</div>
+      <h3 class="modal-title">Tham gia Group Chat</h3>
+      <p class="modal-desc">Đăng nhập bằng tài khoản Gmail để vào nhóm, xem ai đang online và trò chuyện.</p>
+      <button type="button" id="btnGoogleLoginModal" class="google-btn">
+        <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l5.7-5.7C34.5 6 29.5 4 24 4c-7.5 0-14 4.2-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.1-2 13.7-5.4l-6.3-5.3C29.4 34.9 26.8 36 24 36c-5.3 0-9.7-3.1-11.3-7.5l-6.5 5C9.9 39.8 16.4 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.3 5.3C41.2 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+        Tiếp tục với Google
+      </button>
+      <div id="loginModalError" class="hint" style="color:var(--red);display:none;margin-top:12px"></div>
+      <p class="modal-note">Trên điện thoại, một cửa sổ Google nhỏ sẽ mở ra — hãy chọn tài khoản rồi quay lại đây, ứng dụng sẽ tự động vào nhóm.</p>
+    </div>
+  </div>
 
-<h2>Tool Copy Nội Dung</h2>
+  <!-- ============ POPUP HỒ SƠ NHÓM (tên hiển thị + ảnh đại diện) ============ -->
+  <div id="profileModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" id="btnCloseProfileModal" class="modal-close">✕</button>
+      <div class="modal-icon" style="padding:0;overflow:hidden;position:relative">
+        <img id="profileModalAvatarPreview" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none">
+        <span id="profileModalAvatarFallback">👤</span>
+      </div>
+      <h3 class="modal-title">Hồ sơ của bạn trong nhóm</h3>
+      <p class="modal-desc">Đặt tên hiển thị và ảnh đại diện riêng cho nhóm chat, hoặc bỏ qua để dùng mặc định theo tài khoản Gmail.</p>
+      <div class="field" style="margin-top:0">
+        <label>Tên hiển thị</label>
+        <input type="text" id="profileNameInput" maxlength="40" placeholder="Tên hiển thị trong nhóm">
+      </div>
+      <div class="field">
+        <label>Ảnh đại diện</label>
+        <input type="file" id="profileAvatarInput" accept="image/*" style="display:none">
+        <div class="dropzone" id="profileAvatarDropzone" style="padding:12px">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5.5" width="13" height="13" rx="2"/>
+            <path d="m16 10.5 5-2.8v8.6l-5-2.8"/>
+          </svg>
+          <span id="profileAvatarDropzoneLabel">Chọn ảnh đại diện mới (tùy chọn)</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Hoặc chọn 1 icon ngộ nghĩnh có sẵn</label>
+        <div id="presetAvatarGrid" class="preset-avatar-grid"></div>
+      </div>
+      <div id="profileModalError" class="hint" style="color:var(--red);display:none;margin-top:8px"></div>
+      <div class="btnrow">
+        <button type="button" class="btn btn-primary" id="btnSaveProfile">Lưu hồ sơ</button>
+        <button type="button" class="btn btn-ghost" id="btnUseDefaultProfile">Dùng mặc định Gmail</button>
+      </div>
+    </div>
+  </div>
 
-<div class="tabs">
+  <!-- ============ POPUP XIN CHIA SẺ VỊ TRÍ ============ -->
+  <div id="locationModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-icon">📍</div>
+      <h3 class="modal-title">Chia sẻ vùng làm việc?</h3>
+      <p class="modal-desc">Chia sẻ để nhận diện vùng bạn đang làm việc để thích hợp hỗ trợ; bạn có thể tắt bất cứ lúc nào bằng cách đăng xuất.</p>
+      <div id="locationModalError" class="hint" style="color:var(--red);display:none;margin-bottom:10px"></div>
+      <div class="btnrow" style="margin-top:0">
+        <button type="button" class="btn btn-primary" id="btnLocationAllow">Cho phép</button>
+        <button type="button" class="btn btn-ghost" id="btnLocationDeny">Không, cảm ơn</button>
+      </div>
+    </div>
+  </div>
 
-<button class="tabbtn active"
-onclick="openTab('tab1',this)">
-Nội dung 1
-</button>
+  <!-- ============ POPUP QUẢN LÝ LINK SHOPEE (thêm/sửa 1 hoặc nhiều link) ============ -->
+  <div id="shoppeModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" id="btnCloseShoppeModal" class="modal-close">✕</button>
+      <div class="modal-icon">🛒</div>
+      <h3 class="modal-title" id="shoppeModalTitle">Thêm link Shopee</h3>
+      <p class="modal-desc" id="shoppeModalDesc">Mỗi dòng theo dạng Tiêu đề | Link. Có thể nhập nhiều dòng cùng lúc để thêm nhiều link.</p>
+      <div class="field" style="margin-top:0">
+        <textarea id="shoppeModalTextarea" style="min-height:140px" placeholder="Tiêu đề sản phẩm | https://s.shopee.vn/..."></textarea>
+      </div>
+      <div class="btnrow">
+        <button type="button" class="btn btn-primary" id="btnSaveShoppeModal">Lưu</button>
+        <button type="button" class="btn btn-danger" id="btnDeleteShoppeModal" style="display:none">Xóa link này</button>
+      </div>
+    </div>
+  </div>
 
-<button class="tabbtn"
-onclick="openTab('tab2',this)">
-Nội dung 2
-</button>
+  <!-- ============ POPUP SỬA BỘ HASTAG (tên nhãn + 5 hastag) ============ -->
+  <div id="hashtagModalOverlay" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" id="btnCloseHashtagModal" class="modal-close">✕</button>
+      <div class="modal-icon">#</div>
+      <h3 class="modal-title">Sửa bộ hastag <span id="hashtagModalNum"></span></h3>
+      <p class="modal-desc">Đặt tên gợi nhớ cho bộ này và chỉnh sửa 5 hastag đi kèm — có thể cách nhau bằng dấu cách hoặc xuống dòng.</p>
+      <div class="field" style="margin-top:0">
+        <label>Tên nhãn hiển thị</label>
+        <input type="text" id="hashtagModalLabelInput" maxlength="40" placeholder="Vd: Tin tức mxh">
+      </div>
+      <div class="field">
+        <label>5 hastag</label>
+        <textarea id="hashtagModalTagsInput" style="min-height:110px" placeholder="#hastag1 #hastag2 #hastag3 #hastag4 #hastag5"></textarea>
+      </div>
+      <div id="hashtagModalError" class="hint" style="color:var(--red);display:none;margin-top:8px"></div>
+      <div class="btnrow">
+        <button type="button" class="btn btn-primary btn-full" id="btnSaveHashtagModal">Lưu bộ hastag</button>
+      </div>
+    </div>
+  </div>
 
-<button class="tabbtn"
-onclick="openTab('tab3',this)">
-Mail
-</button>
-
-<button class="tabbtn"
-onclick="openTab('tab4',this)">
-Trang Page
-</button>
-
+  <!-- ============ POPUP XÁC NHẬN DÙNG CHUNG (ví dụ: xóa tin nhắn) ============ -->
+  <div id="confirmModalOverlay" class="modal-overlay">
+    <div class="modal-card confirm-card">
+      <div class="confirm-icon">⚠️</div>
+      <h3 class="confirm-title" id="confirmModalTitle">Bạn có chắc chắn?</h3>
+      <p class="confirm-desc" id="confirmModalDesc"></p>
+      <div class="confirm-btnrow">
+        <button type="button" id="btnConfirmCancel" class="btn btn-ghost">Hủy</button>
+        <button type="button" id="btnConfirmOk" class="btn btn-danger">Xóa</button>
+      </div>
+    </div>
+  </div>
 </div>
-
-<!-- TAB 1 -->
-
-<div id="tab1"
-class="tabcontent active">
-
-<div style="margin-bottom:8px;">
-
-<label>
-<input type="radio"
-name="mode"
-value="single"
-checked>
-1 chuỗi
-</label>
-
-<label style="margin-left:15px;">
-<input type="radio"
-name="mode"
-value="split">
-Tách chuỗi
-</label>
-
-</div>
-
-<div class="textbox-wrap">
-
-<textarea id="content1"
-placeholder="Dán nội dung...">
-</textarea>
-
-<div class="iconbox">
-
-<button class="iconbtn"
-onclick="pasteText()">
-📋
-</button>
-
-<button class="iconbtn"
-onclick="clearText()">
-❌
-</button>
-
-</div>
-
-</div>
-
-<div class="grid">
-
-<button onclick="copyData('content1','#tintucmxh #mxh #tintuc',1)">
-1. Tin tức MXH
-</button>
-
-<button onclick="copyData('content1','#tinmoimxh #mxh #tintuc',2)">
-2. Tin Mới
-</button>
-
-<button onclick="copyData('content1','#todaynews #mxh #tintuc',3)">
-3. Today News
-</button>
-
-<button onclick="copyData('content1','#cxcn #camxucconnguoi #mxh #tintuc',4)">
-4. Cảm xúc
-</button>
-
-<button onclick="copyData('content1','#tintuc #mxh',5)">
-5. Tin tức
-</button>
-
-<button onclick="tinNong(6)">
-6. Tin Nóng
-</button>
-
-<button class="bluebtn"
-onclick="copyData('content1','#tinmoi24h #tinmoinhat24h #tintuc #mxh',7)">
-7. TinMoi24h
-</button>
-
-<button class="bluebtn"
-onclick="copyData('content1','#bacgiang #tintuc #mxh',8)">
-8. BacGiang
-</button>
-
-<button class="bluebtn"
-onclick="copyData('content1','#tinmoimxh #tintuc',9)">
-9. Tin mới MXH
-</button>
-
-<button class="bluebtn"
-onclick="copyData('content1','#tinviet #tintuc',10)">
-10. Tin Việt
-</button>
-
-</div>
-
-</div>
-
-<div id="notify"></div>
-
-</div>
-
+<div id="toast"></div>
+<!-- Thư viện OCR (nhận diện chữ trên khung hình) -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<!-- Thư viện xử lý video ngay trên trình duyệt (ghép phụ đề, xuất mp4) -->
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+<!-- Firebase (Auth + Realtime Database + Storage) cho tab Group -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<!-- Leaflet (bản đồ OpenStreetMap, không cần API key) cho tab Quản trị -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-
-/* TAB */
-
-function openTab(id,btn){
-
-document
-.querySelectorAll(".tabcontent")
-.forEach(t=>t.classList.remove("active"));
-
-document
-.querySelectorAll(".tabbtn")
-.forEach(t=>t.classList.remove("active"));
-
-document
-.getElementById(id)
-.classList.add("active");
-
-btn.classList.add("active");
-
+/* =========================================================
+   TIỆN ÍCH DÙNG CHUNG
+========================================================= */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(()=> t.classList.remove('show'), 2400);
 }
-
-/* DATE */
-
-function today(){
-
-const d=new Date();
-
-return d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
-
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(e){
+    try{
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      return true;
+    }catch(e2){ return false; }
+  }
 }
-
-/* BASIC */
-
-function copyData(id,tag,index){
-
-let text=
-document.getElementById(id).value;
-
-navigator.clipboard.writeText(
-
-text+
-"\n\nNgày đăng: "+
-today()+
-"\n"+
-tag
-
+function escapeHtml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+/* ---------- Tự động co giãn chiều cao textarea theo đúng nội dung (không thừa/thiếu
+   khoảng trống) + bấm đúp (double click) để copy toàn bộ nội dung bên trong. Dùng
+   chung cho các ô hiển thị tiêu đề chỉ đọc (Facebook / TikTok / RedNote). ---------- */
+function autoResizeTextarea(el){
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+function setAutoTitleText(el, text){
+  el.value = text || '';
+  autoResizeTextarea(el);
+}
+function enableDblClickCopy(el){
+  if(!el || el.dataset.dblclickCopyBound) return;
+  el.dataset.dblclickCopyBound = '1';
+  el.addEventListener('dblclick', async (e)=>{
+    e.preventDefault();
+    if(!el.value){ return; }
+    el.focus();
+    el.select();
+    const ok = await copyText(el.value);
+    showToast(ok ? 'Đã copy toàn bộ nội dung' : 'Copy thất bại, vui lòng thử lại');
+  });
+}
+/* Tải 1 file về máy từ 1 URL bất kỳ (kể cả URL khác domain như Firebase
+   Storage) — thuộc tính "download" trên thẻ <a> thường KHÔNG hoạt động với
+   URL khác domain (trình duyệt sẽ mở file thay vì tải về), nên ở đây tải nội
+   dung file về dưới dạng blob rồi tạo link blob CÙNG DOMAIN để tải về đúng
+   nghĩa (lưu vào máy / thư viện ảnh). Nếu vì lý do nào đó (mạng, CORS...)
+   không tải được blob, sẽ tự động mở file trong tab mới để người dùng có thể
+   tự lưu lại theo cách thủ công (vd: nhấn giữ ảnh > Lưu ảnh trên điện thoại).
+*/
+async function downloadFileFromUrl(url, filename){
+  try{
+    const resp = await fetch(url);
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const blob = await resp.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename || 'tai-ve';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=> URL.revokeObjectURL(blobUrl), 8000);
+    return true;
+  }catch(err){
+    console.error('Không tải được file về dạng blob, mở tab mới thay thế:', err);
+    window.open(url, '_blank', 'noopener');
+    return false;
+  }
+}
+/* Nén / thu nhỏ ảnh trước khi tải lên (không đụng vào video) — giúp giảm khả năng
+   tải lên thất bại do file quá nặng (ảnh chụp điện thoại hiện đại thường 5-15MB)
+   và giúp tải lên nhanh, ổn định hơn trên mạng di động. */
+function compressImageFile(file, maxDim, quality){
+  maxDim = maxDim || 1600;
+  quality = quality || 0.85;
+  return new Promise((resolve)=>{
+    if(!file || !file.type || !file.type.startsWith('image/') || file.type === 'image/gif'){
+      resolve(file);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      let { width, height } = img;
+      if(width <= maxDim && height <= maxDim){
+        URL.revokeObjectURL(url);
+        resolve(file);
+        return;
+      }
+      if(width > height){ height = Math.round(height * maxDim / width); width = maxDim; }
+      else{ width = Math.round(width * maxDim / height); height = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(blob=>{
+        URL.revokeObjectURL(url);
+        if(!blob){ resolve(file); return; }
+        const newName = file.name.replace(/\.\w+$/, '') + '.jpg';
+        const newFile = new File([blob], newName, { type: 'image/jpeg' });
+        resolve(newFile.size < file.size ? newFile : file);
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+/* Dịch mã lỗi Firebase Storage phổ biến sang câu tiếng Việt dễ hiểu, để khi
+   tải ảnh/video lên thất bại người dùng biết rõ nguyên nhân thay vì chỉ thấy
+   "thất bại" chung chung. */
+function describeStorageError(err){
+  const code = err && err.code;
+  const map = {
+    'storage/unauthorized': 'Không có quyền tải lên (kiểm tra lại đăng nhập hoặc quy tắc bảo mật Storage).',
+    'storage/canceled': 'Đã huỷ tải lên.',
+    'storage/quota-exceeded': 'Đã vượt dung lượng lưu trữ cho phép.',
+    'storage/unauthenticated': 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.',
+    'storage/retry-limit-exceeded': 'Mạng quá yếu/chập chờn, đã thử lại nhiều lần nhưng không thành công.',
+    'storage/invalid-checksum': 'File bị lỗi trong lúc truyền, vui lòng thử lại.',
+    'storage/server-file-wrong-size': 'File bị lỗi trong lúc truyền, vui lòng thử lại.'
+  };
+  if(code && map[code]) return map[code];
+  if(err && err.message) return err.message;
+  return 'Lỗi không xác định';
+}
+/* =========================================================
+   CHUYỂN TAB
+========================================================= */
+document.querySelectorAll('.tabbtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('page-' + btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab === 'group' && typeof updateUnreadDisplay === 'function'){
+      updateUnreadDisplay();
+    }
+    if(btn.dataset.tab === 'admin' && typeof adminMap !== 'undefined' && adminMap){
+      setTimeout(()=> adminMap.invalidateSize(), 60);
+    }
+  });
+});
+/* =========================================================
+   POPUP XÁC NHẬN DÙNG CHUNG (dùng lại cho nhiều tính năng: xóa tin nhắn, xóa link...)
+========================================================= */
+const confirmModalOverlay = document.getElementById('confirmModalOverlay');
+const confirmModalTitle   = document.getElementById('confirmModalTitle');
+const confirmModalDesc    = document.getElementById('confirmModalDesc');
+const btnConfirmCancel    = document.getElementById('btnConfirmCancel');
+const btnConfirmOk        = document.getElementById('btnConfirmOk');
+let confirmResolver = null;
+function showConfirmDialog(title, desc, okLabel){
+  confirmModalTitle.textContent = title;
+  confirmModalDesc.textContent = desc;
+  btnConfirmOk.textContent = okLabel || 'Xóa';
+  confirmModalOverlay.classList.add('show');
+  return new Promise(resolve=>{ confirmResolver = resolve; });
+}
+function closeConfirmDialog(result){
+  confirmModalOverlay.classList.remove('show');
+  if(confirmResolver){ confirmResolver(result); confirmResolver = null; }
+}
+btnConfirmCancel.addEventListener('click', ()=> closeConfirmDialog(false));
+btnConfirmOk.addEventListener('click', ()=> closeConfirmDialog(true));
+confirmModalOverlay.addEventListener('click', e=>{ if(e.target === confirmModalOverlay) closeConfirmDialog(false); });
+/* =========================================================
+   TAB CONTENT: kiểm tra chính tả tiếng Việt cơ bản
+========================================================= */
+const VOWELS = "aàáảãạăằắẳẵặâầấẩẫậeèéẻẽẹêềếểễệiìíỉĩịoòóỏõọôồốổỗộơờớởỡợuùúủũụưừứửữựyỳýỷỹỵ";
+const ONSETS = ["ngh","ng","nh","ph","th","tr","ch","gi","kh","qu","b","c","d","đ","g","h","k","l","m","n","p","q","r","s","t","v","x"];
+const FINALS = ["ch","ng","nh","c","m","n","p","t"];
+const syllableRegex = new RegExp(
+  "^(" + ONSETS.join("|") + ")?" +
+  "([" + VOWELS + "]{1,3})" +
+  "(" + FINALS.join("|") + ")?$", "i"
 );
-
-notify("Đã copy");
-
+const WHITELIST = new Set([
+  "shopee","zalo","facebook","tiktok","content","share","copy","hastag","hashtag",
+  "sale","freeship","voucher","live","livestream","ok","wifi","admin","app","web",
+  "google","youtube","instagram","link","boy","girl","ib","inbox","vietsub","group","gmail"
+]);
+function isValidVietnameseWord(word){
+  const lower = word.toLowerCase();
+  if(WHITELIST.has(lower)) return true;
+  if(/^\d+$/.test(word)) return true;
+  if(word === word.toUpperCase() && word.length > 1) return true;
+  return syllableRegex.test(lower);
 }
-
-function tinNong(){
-
-let text=
-document.getElementById("content1").value;
-
-navigator.clipboard.writeText(
-
-"🚨 TIN NÓNG\n\n"+
-text+
-"\n\n#tinnong #mxh"
-
-);
-
-notify("Đã copy Tin Nóng");
-
+function tokenize(text){
+  return text.match(/[A-Za-zÀ-ỹĐđ]+|[^A-Za-zÀ-ỹĐđ]+/g) || [];
 }
+function buildHighlightedHtml(text){
+  const tokens = tokenize(text);
+  let html = "";
+  let prevWasHash = false;
+  for(const tok of tokens){
+    const isWord = /[A-Za-zÀ-ỹĐđ]/.test(tok[0]);
+    if(isWord){
+      const skipCheck = prevWasHash;
+      const valid = skipCheck || isValidVietnameseWord(tok);
+      html += valid ? escapeHtml(tok) : `<span class="misspell">${escapeHtml(tok)}</span>`;
+      prevWasHash = false;
+    }else{
+      html += escapeHtml(tok);
+      prevWasHash = tok.trim().endsWith('#');
+    }
+  }
+  return html;
+}
+const contentInput = document.getElementById('contentInput');
+const backdrop = document.getElementById('backdrop');
+/* =========================================================
+   LƯU TỰ ĐỘNG VÀO localStorage — dữ liệu không mất khi tắt trình duyệt
+========================================================= */
+const LS_KEY_CONTENT = 'contentTool_contentInput';
+function saveContentInput(){
+  try{ localStorage.setItem(LS_KEY_CONTENT, contentInput.value); }catch(e){}
+}
+function loadContentInput(){
+  try{
+    const saved = localStorage.getItem(LS_KEY_CONTENT);
+    if(saved != null) contentInput.value = saved;
+  }catch(e){}
+}
+function refreshHighlight(){
+  backdrop.innerHTML = buildHighlightedHtml(contentInput.value) + "\n";
+}
+loadContentInput();
+refreshHighlight();
+contentInput.addEventListener('input', ()=>{ refreshHighlight(); saveContentInput(); });
+contentInput.addEventListener('paste', ()=> setTimeout(()=>{ refreshHighlight(); saveContentInput(); }, 0));
+contentInput.addEventListener('scroll', ()=>{
+  backdrop.scrollTop = contentInput.scrollTop;
+  backdrop.scrollLeft = contentInput.scrollLeft;
+});
+document.getElementById('btnClearContent').addEventListener('click', ()=>{
+  contentInput.value = '';
+  refreshHighlight();
+  saveContentInput();
+});
+/* =========================================================
+   LƯỚI NÚT HASTAG ĐÁNH SỐ (1..9) — có thể sửa cả TÊN NHÃN và 5 HASTAG
+   qua popup riêng (thay vì prompt() cũ chỉ sửa được hastag).
+========================================================= */
+const HASHTAG_NUMBERS = [1,2,3,4,5,6,7,8,9];
+const hashtagLabels = {
+  1:  'Tin tức mxh',
+  2:  'Tin Tức Mạng Xã Hội',
+  3:  'Tin Mới',
+  4:  'Tin Ngắn Mỗi Ngày',
+  5:  'Cảm Xúc Con Người',
+  6:  'ToDay News',
+  7:  'Tin Đường Phố',
+  8:  'TTMXH',
+  9:  'Tin Mới 24h'
+};
+const hashtagPresets = {
+  1:  ['#tintucmxh','#mxh24h','#hotnews','#xuhuongmoi','#capnhatnhanh'],
+  2:  ['#tintucmangxahoi','#mangxahoi','#newsdaily','#tinnong24h','#videohot'],
+  3:  ['#tinmoi','#tinnhanh','#capnhat24h','#newsupdate','#hottrendvn'],
+  4:  ['#tinnganmoingay','#banthinhanh','#tinthoisu','#moingaymottin','#thongtin24h'],
+  5:  ['#camxucconnguoi','#cauchuyencuocsong','#yeuthuong','#songtichcuc','#truyencamhung'],
+  6:  ['#todaynews','#breakingnews','#worldnews','#dailyupdate','#latestnews'],
+  7:  ['#tinduongpho','#duongpho24h','#thucte','#hientruong','#cuocsongquanhta'],
+  8:  ['#ttmxh','#tinxuhuong','#newsviral','#capnhatmoi','#tinhomnay'],
+  9:  ['#tinmoi24h','#24hnews','#news24','#tintuc24h','#tintucnong']
+};
+const hashtagGrid = document.getElementById('hashtagGrid');
+const LS_KEY_HASHTAGS = 'contentTool_hashtagPresets';
+const LS_KEY_HASHTAG_LABELS = 'contentTool_hashtagLabels';
+(function loadHashtagPresets(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(LS_KEY_HASHTAGS) || 'null');
+    if(saved && typeof saved === 'object'){
+      HASHTAG_NUMBERS.forEach(n=>{
+        if(Array.isArray(saved[n]) && saved[n].length) hashtagPresets[n] = saved[n];
+      });
+    }
+  }catch(e){}
+})();
+(function loadHashtagLabels(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(LS_KEY_HASHTAG_LABELS) || 'null');
+    if(saved && typeof saved === 'object'){
+      HASHTAG_NUMBERS.forEach(n=>{
+        if(typeof saved[n] === 'string' && saved[n].trim()) hashtagLabels[n] = saved[n];
+      });
+    }
+  }catch(e){}
+})();
+function saveHashtagPresets(){
+  try{ localStorage.setItem(LS_KEY_HASHTAGS, JSON.stringify(hashtagPresets)); }catch(e){}
+}
+function saveHashtagLabels(){
+  try{ localStorage.setItem(LS_KEY_HASHTAG_LABELS, JSON.stringify(hashtagLabels)); }catch(e){}
+}
+function joinHashtags(arr){ return arr.join(' '); }
+function renderHashtagGrid(){
+  hashtagGrid.innerHTML = HASHTAG_NUMBERS.map(n => `
+    <div class="hashtag-btn" data-n="${n}" title="Bấm để copy kèm 5 hastag của nút ${n}">
+      <button class="edit-pin" data-edit="${n}" title="Sửa tên nhãn &amp; 5 hastag">✎</button>
+      <span class="num">${n}</span>
+      <span class="label">${escapeHtml(hashtagLabels[n] || '')}</span>
+    </div>
+  `).join('');
+}
+renderHashtagGrid();
+/* ---------- Popup sửa bộ hastag (tên nhãn + 5 hastag cùng lúc) ---------- */
+const hashtagModalOverlay      = document.getElementById('hashtagModalOverlay');
+const btnCloseHashtagModal     = document.getElementById('btnCloseHashtagModal');
+const hashtagModalNum          = document.getElementById('hashtagModalNum');
+const hashtagModalLabelInput   = document.getElementById('hashtagModalLabelInput');
+const hashtagModalTagsInput    = document.getElementById('hashtagModalTagsInput');
+const hashtagModalError        = document.getElementById('hashtagModalError');
+const btnSaveHashtagModal      = document.getElementById('btnSaveHashtagModal');
+let hashtagEditingN = null;
+function openHashtagModal(n){
+  hashtagEditingN = n;
+  hashtagModalNum.textContent = '#' + n;
+  hashtagModalError.style.display = 'none';
+  hashtagModalLabelInput.value = hashtagLabels[n] || '';
+  hashtagModalTagsInput.value = joinHashtags(hashtagPresets[n] || []);
+  hashtagModalOverlay.classList.add('show');
+  setTimeout(()=> hashtagModalLabelInput.focus(), 60);
+}
+function closeHashtagModal(){ hashtagModalOverlay.classList.remove('show'); }
+btnCloseHashtagModal.addEventListener('click', closeHashtagModal);
+hashtagModalOverlay.addEventListener('click', e=>{ if(e.target === hashtagModalOverlay) closeHashtagModal(); });
+btnSaveHashtagModal.addEventListener('click', ()=>{
+  const n = hashtagEditingN;
+  if(n == null) return;
+  const label = hashtagModalLabelInput.value.trim();
+  if(!label){
+    hashtagModalError.textContent = 'Vui lòng nhập tên nhãn hiển thị.';
+    hashtagModalError.style.display = 'block';
+    return;
+  }
+  let list = hashtagModalTagsInput.value.trim().split(/\s+/).filter(Boolean).slice(0, 5);
+  if(list.length === 0){
+    hashtagModalError.textContent = 'Vui lòng nhập ít nhất 1 hastag.';
+    hashtagModalError.style.display = 'block';
+    return;
+  }
+  while(list.length < 5) list.push('#hashtag');
+  hashtagLabels[n] = label;
+  hashtagPresets[n] = list;
+  renderHashtagGrid();
+  saveHashtagPresets();
+  saveHashtagLabels();
+  closeHashtagModal();
+  showToast(`Đã lưu bộ hastag ${n}: ${label}`);
+});
+hashtagGrid.addEventListener('click', async (e)=>{
+  const editBtn = e.target.closest('[data-edit]');
+  if(editBtn){
+    openHashtagModal(editBtn.dataset.edit);
+    return;
+  }
+  const card = e.target.closest('.hashtag-btn');
+  if(!card) return;
+  const content = contentInput.value.trim();
+  if(!content){ showToast('Chưa có nội dung để copy'); return; }
+  const n = card.dataset.n;
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2,'0');
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const yyyy = now.getFullYear();
+  const dateStr = `${dd}/${mm}/${yyyy}`;
+  const hashtagLine = joinHashtags(hashtagPresets[n]);
+  const formatted =
+`${content}
+Ngày đăng: ${dateStr}
+${hashtagLine}`;
+  const ok = await copyText(formatted);
+  showToast(ok ? `Đã copy với 5 hastag: ${hashtagLine}` : 'Copy thất bại, vui lòng thử lại');
+});
+/* =========================================================
+   TAB SHARE
+========================================================= */
+const shareInput = document.getElementById('shareInput');
+const mediaInput = document.getElementById('mediaInput');
+const mediaDropzone = document.getElementById('mediaDropzone');
+const mediaList = document.getElementById('mediaList');
+const btnShareZalo = document.getElementById('btnShareZalo');
+let selectedFiles = []; // File[] — có thể trộn ảnh và video
+mediaDropzone.addEventListener('click', ()=> mediaInput.click());
+mediaInput.addEventListener('change', ()=>{
+  const files = Array.from(mediaInput.files || []);
+  if(files.length === 0) return;
+  selectedFiles = selectedFiles.concat(files);
+  mediaInput.value = ''; // cho phép chọn lại đúng file đó ở lần sau nếu cần
+  renderMediaList();
+});
+function renderMediaList(){
+  if(selectedFiles.length === 0){
+    mediaList.style.display = 'none';
+    mediaList.innerHTML = '';
+    return;
+  }
+  mediaList.style.display = 'grid';
+  mediaList.innerHTML = selectedFiles.map((f, i) => {
+    const url = URL.createObjectURL(f);
+    const isVideo = f.type.startsWith('video/');
+    const preview = isVideo
+      ? `<video src="${url}" muted playsinline preload="metadata"></video>`
+      : `<img src="${url}" alt="">`;
+    return `
+      <div class="media-item">
+        ${preview}
+        <span class="media-badge">${isVideo ? 'Video' : 'Ảnh'}</span>
+        <button type="button" class="media-remove" data-i="${i}" title="Bỏ file này">✕</button>
+      </div>
+    `;
+  }).join('') + `<div class="media-count" style="grid-column:1/-1">${selectedFiles.length} file đã chọn</div>`;
+  mediaList.querySelectorAll('.media-remove').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.i);
+      selectedFiles.splice(i, 1);
+      renderMediaList();
+    });
+  });
+}
+btnShareZalo.addEventListener('click', async ()=>{
+  const text = shareInput.value.trim();
+  if(!text && selectedFiles.length === 0){ showToast('Chưa có nội dung hoặc file để chia sẻ'); return; }
+  const shareData = {};
+  if(selectedFiles.length > 0) shareData.files = selectedFiles;
+  if(text) shareData.text = text;
+  const canUseNativeShare =
+    !!navigator.share &&
+    (selectedFiles.length === 0 || (navigator.canShare && navigator.canShare(shareData)));
+  if(canUseNativeShare){
+    btnShareZalo.disabled = true;
+    try{
+      await navigator.share(shareData);
+      showToast('Đã gửi qua khung chia sẻ');
+    }catch(err){
+      if(!err || err.name !== 'AbortError'){
+        showToast('Không thể mở khung chia sẻ, đã copy nội dung thay thế');
+        if(text) await copyText(text);
+      }
+    }finally{
+      btnShareZalo.disabled = false;
+    }
+    return;
+  }
+  if(text) await copyText(text);
+  showToast(selectedFiles.length > 0
+    ? 'Trình duyệt/Zalo không hỗ trợ gửi nhiều file kiểu này. Đã copy nội dung — mở Zalo và đính kèm ảnh/video thủ công.'
+    : 'Trình duyệt không hỗ trợ khung chia sẻ. Đã copy nội dung — dán vào Zalo thủ công.');
+});
+document.getElementById('btnClearShare').addEventListener('click', ()=>{
+  shareInput.value = '';
+  selectedFiles = [];
+  renderMediaList();
+  shareInput.focus();
+});
+/* =========================================================
+   TAB SHOPPE
+========================================================= */
+const shoppeLinksInput = document.getElementById('shoppeLinksInput');
+const shoppeListbox = document.getElementById('shoppeListbox');
+const DEFAULT_LINKS = [
+  'Tấm pin mặt trời loại A 185W Tấm pin mặt trời silicon đơn tinh thể công suất đầy đủ Mô-đun PV | https://s.shopee.vn/6L1mJUYpt2',
+  'Combo 20 Tấm pin năng lượng mặt trời LONGi 445W | https://s.shopee.vn/2g8TwoJxIv',
+  'Combo tấm Pin năng lượng mặt trời JinKO 440W | https://s.shopee.vn/gNPZAFUGZ',
+  'Tấm pin năng lượng mặt trời dã ngoại cắm trại EcoFlow 400W Portable Solar Panel | https://s.shopee.vn/6VLCVtE2cm',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/1BJgA6QNYT',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/7AatJ8U0Kw',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/6VLCVuv12l',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/4Va88FTIqQ',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/6py2uXcV4u',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/17ilzPGk0',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/7KuJVTHlk9',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/60Ovv1jo22',
+  'Deal Sản phẩm pin năng lượng mặt trời thi công công trình điện hộ gia đình. | https://s.shopee.vn/7pqa6P4Bgi',
+  'Deal Quạt Mini tích hợp sò lạnh | https://s.shopee.vn/1gFZahEg1a',
+  'Deal Quạt Hot | https://s.shopee.vn/AUqy7Af2tm',
+  'Voucher Thời Trang Nữ | https://s.shopee.vn/BQloEhujt',
+  'Voucher Son bóng lifter Gloss | https://s.shopee.vn/6VKpMYpN8l',
+  'Voucher Camera giám sát | https://s.shopee.vn/8V5tkKBdX3',
+  'Voucher Thẻ nhớ | https://s.shopee.vn/5L8ryXGhGf',
+  'Voucher Thẻ nhớ 32g/64g | https://s.shopee.vn/3B4NOaFoqW',
+  'Voucher Thiết bị định vị thông minh | https://s.shopee.vn/7AaWA0h2eG',
+  'Voucher Quạt tốc độ gió cao | https://s.shopee.vn/8pik98naPI',
+  'Voucher Máy sấy tóc | https://s.shopee.vn/30kxCSdqv5',
+  'Voucher Camera wwiffi | https://s.shopee.vn/qgTrrsZDR',
+  'Voucher Quạt tích điện | https://s.shopee.vn/6Ai0DjDGHA',
+  'Voucher Kính cường lực | https://s.shopee.vn/8V5v0431s4',
+  'Voucher Combo túi mũ cói đi biển | https://s.shopee.vn/8pilOiITyK',
+  'Voucher Đàm maxi hai dây tiểu thư | https://s.shopee.vn/5VSJQfiLSs',
+  'Voucher Sơ mi nam | https://s.shopee.vn/9Kf1zmdgZm',
+  'Voucher Tã quần chính hãng cho bé | https://s.shopee.vn/1qZ141epD2',
+  'Voucher Quạt tubo z 3600 | https://s.shopee.vn/2VohrHk8oA',
+  'Voucher sữa rửa mặt mát lạnh | https://s.shopee.vn/qgTsG30yI',
+  'Voucher khẩu trang chống nắng | https://s.shopee.vn/3LNoqsx5ar',
+  'Voucher Dây đeo điện thoại | https://s.shopee.vn/gN3g0v5e7',
+  'Voucher Ốp điện thoại | https://s.shopee.vn/qgTsMVs13',
+  'Voucher Áo điều hòa giải pháp mùa chống nóng mùa hè | https://s.shopee.vn/3VhO7XIs4L'
+];
+const LS_KEY_SHOPPE = 'contentTool_shoppeLinksInput';
+(function initShoppeLinks(){
+  let saved = null;
+  try{ saved = localStorage.getItem(LS_KEY_SHOPPE); }catch(e){}
+  shoppeLinksInput.value = (saved != null) ? saved : DEFAULT_LINKS.join('\n');
+})();
+function saveShoppeLinks(){
+  try{ localStorage.setItem(LS_KEY_SHOPPE, shoppeLinksInput.value); }catch(e){}
+}
+function getShoppeLinks(){
+  return shoppeLinksInput.value
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(line => {
+      const sepIndex = line.indexOf('|');
+      if(sepIndex === -1){
+        return { title: 'Sản phẩm Shopee', link: line };
+      }
+      const title = line.slice(0, sepIndex).trim() || 'Sản phẩm Shopee';
+      const link = line.slice(sepIndex + 1).trim();
+      return { title, link };
+    })
+    .filter(item => item.link);
+}
+function renderShoppeList(pickedIndex = -1){
+  const items = getShoppeLinks();
+  shoppeListbox.innerHTML = items.map((item, i) => `
+    <div class="listbox-item ${i===pickedIndex?'picked':''}" data-index="${i}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div style="min-width:0;flex:1">
+          <span class="item-title">${escapeHtml(item.title)}</span>
+          <span class="item-link">${escapeHtml(item.link)}</span>
+        </div>
+        <button type="button" class="edit-pin" data-edit-index="${i}" title="Sửa link này" style="position:static;flex-shrink:0">✎</button>
+      </div>
+    </div>
+  `).join('') || '<div class="listbox-item">Chưa có link nào</div>';
+}
+renderShoppeList();
+shoppeLinksInput.addEventListener('input', ()=>{ renderShoppeList(); saveShoppeLinks(); });
+document.getElementById('btnRandomShoppe').addEventListener('click', async ()=>{
+  const items = getShoppeLinks();
+  if(items.length === 0){ showToast('Danh sách link đang trống'); return; }
+  const idx = Math.floor(Math.random() * items.length);
+  const picked = items[idx];
+  renderShoppeList(idx);
+  const textToCopy = `${picked.title}\n${picked.link}`;
+  const ok = await copyText(textToCopy);
+  showToast(ok ? `Đã copy: ${picked.title}` : 'Copy thất bại');
+});
+/* ---------- Popup thêm/sửa link Shopee (1 hoặc nhiều link cùng lúc) ---------- */
+const shoppeModalOverlay = document.getElementById('shoppeModalOverlay');
+const btnCloseShoppeModal   = document.getElementById('btnCloseShoppeModal');
+const shoppeModalTitle      = document.getElementById('shoppeModalTitle');
+const shoppeModalDesc       = document.getElementById('shoppeModalDesc');
+const shoppeModalTextarea   = document.getElementById('shoppeModalTextarea');
+const btnSaveShoppeModal    = document.getElementById('btnSaveShoppeModal');
+const btnDeleteShoppeModal  = document.getElementById('btnDeleteShoppeModal');
+const btnAddShoppeLink      = document.getElementById('btnAddShoppeLink');
+let shoppeEditIndex = -1; // -1 = đang thêm mới (nhiều dòng), >=0 = đang sửa đúng 1 link ở vị trí này
 
-function pasteText(){
+function openShoppeModal(mode, index){
+  if(mode === 'edit'){
+    const items = getShoppeLinks();
+    const item = items[index];
+    shoppeEditIndex = index;
+    shoppeModalTitle.textContent = 'Sửa link Shopee';
+    shoppeModalDesc.textContent = 'Sửa tiêu đề hoặc link bên dưới, dạng Tiêu đề | Link, rồi bấm Lưu.';
+    shoppeModalTextarea.value = item ? `${item.title} | ${item.link}` : '';
+    btnDeleteShoppeModal.style.display = 'block';
+  }else{
+    shoppeEditIndex = -1;
+    shoppeModalTitle.textContent = 'Thêm link Shopee';
+    shoppeModalDesc.textContent = 'Mỗi dòng theo dạng Tiêu đề | Link. Có thể nhập nhiều dòng cùng lúc để thêm nhiều link.';
+    shoppeModalTextarea.value = '';
+    btnDeleteShoppeModal.style.display = 'none';
+  }
+  shoppeModalOverlay.classList.add('show');
+  setTimeout(()=> shoppeModalTextarea.focus(), 60);
+}
+function closeShoppeModal(){ shoppeModalOverlay.classList.remove('show'); }
+btnAddShoppeLink.addEventListener('click', ()=> openShoppeModal('add'));
+btnCloseShoppeModal.addEventListener('click', closeShoppeModal);
+shoppeModalOverlay.addEventListener('click', e=>{ if(e.target === shoppeModalOverlay) closeShoppeModal(); });
+shoppeListbox.addEventListener('click', e=>{
+  const editBtn = e.target.closest('[data-edit-index]');
+  if(!editBtn) return;
+  openShoppeModal('edit', Number(editBtn.dataset.editIndex));
+});
+// Vì getShoppeLinks() bỏ qua các dòng trống trong ô textarea gốc, cần map lại
+// đúng chỉ số dòng thật trong textarea ứng với 1 link đã lọc (dùng khi sửa/xóa).
+function mapShoppeIndexToRawLine(index){
+  const rawLines = shoppeLinksInput.value.split('\n');
+  const nonEmptyIdx = [];
+  rawLines.forEach((l, idx)=>{ if(l.trim()) nonEmptyIdx.push(idx); });
+  return { rawLines, targetIdx: nonEmptyIdx[index] };
+}
+btnSaveShoppeModal.addEventListener('click', ()=>{
+  const lines = shoppeModalTextarea.value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(lines.length === 0){ showToast('Chưa nhập nội dung'); return; }
+  if(shoppeEditIndex >= 0){
+    const { rawLines, targetIdx } = mapShoppeIndexToRawLine(shoppeEditIndex);
+    if(targetIdx != null){
+      rawLines[targetIdx] = lines[0];
+      shoppeLinksInput.value = rawLines.join('\n');
+    }
+  }else{
+    const existing = shoppeLinksInput.value.trim();
+    shoppeLinksInput.value = existing ? existing + '\n' + lines.join('\n') : lines.join('\n');
+  }
+  saveShoppeLinks();
+  renderShoppeList();
+  closeShoppeModal();
+  showToast(shoppeEditIndex >= 0 ? 'Đã lưu link' : `Đã thêm ${lines.length} link mới`);
+});
+btnDeleteShoppeModal.addEventListener('click', async ()=>{
+  if(shoppeEditIndex < 0) return;
+  const ok = await showConfirmDialog(
+    'Xóa link này?',
+    'Bạn có chắc chắn muốn xóa link này khỏi danh sách? Hành động này không thể hoàn tác.',
+    'Xóa'
+  );
+  if(!ok) return;
+  const { rawLines, targetIdx } = mapShoppeIndexToRawLine(shoppeEditIndex);
+  if(targetIdx != null){
+    rawLines.splice(targetIdx, 1);
+    shoppeLinksInput.value = rawLines.join('\n');
+    saveShoppeLinks();
+    renderShoppeList();
+  }
+  closeShoppeModal();
+  showToast('Đã xóa link');
+});
+/* =========================================================
+   TAB VIETSUB
+   Quy trình: chọn video -> trích khung hình theo mốc thời gian ->
+   OCR (Tesseract.js, tiếng Trung/Anh) -> gom thành các đoạn phụ đề ->
+   gọi API Claude để dịch sang tiếng Việt -> người dùng xem/sửa lại ->
+   ghép chữ tiếng Việt đè lên video bằng ffmpeg.wasm (chạy ngay trong
+   trình duyệt) -> xuất file .mp4 để tải về.
+========================================================= */
+const vsVideoInput   = document.getElementById('vsVideoInput');
+const vsDropzone     = document.getElementById('vsDropzone');
+const vsVideoPlayer  = document.getElementById('vsVideoPlayer');
+const vsModeOcr      = document.getElementById('vsModeOcr');
+const vsModeAudio    = document.getElementById('vsModeAudio');
+const vsOcrLangWrap  = document.getElementById('vsOcrLangWrap');
+const vsIntervalWrap = document.getElementById('vsIntervalWrap');
+const vsLangZh       = document.getElementById('vsLangZh');
+const vsLangEn       = document.getElementById('vsLangEn');
+const vsInterval     = document.getElementById('vsInterval');
+const vsBtnDetect    = document.getElementById('vsBtnDetect');
+const vsStatus       = document.getElementById('vsStatus');
+const vsCuesWrap     = document.getElementById('vsCuesWrap');
+const vsCuesList     = document.getElementById('vsCuesList');
+const vsBtnBurn      = document.getElementById('vsBtnBurn');
+const vsBtnSrt       = document.getElementById('vsBtnSrt');
+const vsResultWrap   = document.getElementById('vsResultWrap');
+const vsResultPlayer = document.getElementById('vsResultPlayer');
+const vsDownloadLink = document.getElementById('vsDownloadLink');
+let vsVideoFile = null;
+let vsCues = []; // { start, end, text, translated, source }
+let vsInputWritten = false; // đã ghi video vào bộ nhớ ffmpeg cho lần xử lý hiện tại chưa
+function vsUpdateModeVisibility(){
+  vsOcrLangWrap.style.display = vsModeOcr.checked ? 'block' : 'none';
+  vsIntervalWrap.style.display = vsModeOcr.checked ? 'block' : 'none';
+}
+vsModeOcr.addEventListener('change', vsUpdateModeVisibility);
+vsUpdateModeVisibility();
+vsDropzone.addEventListener('click', ()=> vsVideoInput.click());
+vsVideoInput.addEventListener('change', ()=>{
+  const file = vsVideoInput.files && vsVideoInput.files[0];
+  if(!file) return;
+  vsVideoFile = file;
+  vsVideoPlayer.src = URL.createObjectURL(file);
+  vsVideoPlayer.style.display = 'block';
+  vsCuesWrap.style.display = 'none';
+  vsResultWrap.style.display = 'none';
+  vsStatus.style.display = 'none';
+  vsCues = [];
+  vsInputWritten = false;
+});
+function vsSetStatus(msg){
+  vsStatus.style.display = 'block';
+  vsStatus.textContent = msg;
+}
+function vsWaitMeta(video){
+  return new Promise(resolve=>{
+    if(video.readyState >= 1) return resolve();
+    video.addEventListener('loadedmetadata', ()=> resolve(), { once:true });
+  });
+}
+function vsSeekTo(video, t){
+  return new Promise(resolve=>{
+    function onSeeked(){ video.removeEventListener('seeked', onSeeked); resolve(); }
+    video.addEventListener('seeked', onSeeked);
+    video.currentTime = Math.max(0, Math.min(t, (video.duration || t) - 0.05));
+  });
+}
+function vsNorm(s){ return (s || '').replace(/\s+/g,' ').trim(); }
+function vsFmtTime(t){
+  const m = Math.floor(t/60), s = Math.floor(t%60);
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+async function vsDetectOcr(duration, langs, interval){
+  const canvas = document.createElement('canvas');
+  canvas.width = vsVideoPlayer.videoWidth || 640;
+  canvas.height = vsVideoPlayer.videoHeight || 360;
+  const ctx = canvas.getContext('2d');
+  vsSetStatus('Đang tải mô hình nhận diện chữ (lần đầu sẽ hơi lâu)...');
+  const worker = await Tesseract.createWorker(langs.join('+'));
+  const raw = [];
+  const steps = Math.min(120, Math.ceil(duration / interval));
+  for(let i=0; i<steps; i++){
+    const t = i * interval;
+    await vsSeekTo(vsVideoPlayer, t);
+    ctx.drawImage(vsVideoPlayer, 0, 0, canvas.width, canvas.height);
+    vsSetStatus(`Đang nhận diện chữ trên hình: khung ${i+1}/${steps} (${Math.round(((i+1)/steps)*100)}%)`);
+    const { data } = await worker.recognize(canvas);
+    const text = (data.text || '').trim();
+    if(text) raw.push({ time: t, text });
+  }
+  await worker.terminate();
+  // Gom các khung liên tiếp có chữ giống nhau thành 1 câu phụ đề
+  const grouped = [];
+  let cur = null;
+  for(const r of raw){
+    if(cur && vsNorm(cur.text) === vsNorm(r.text)){
+      cur.end = r.time + interval;
+    }else{
+      if(cur) grouped.push(cur);
+      cur = { start: r.time, end: r.time + interval, text: r.text, source: 'ocr' };
+    }
+  }
+  if(cur) grouped.push(cur);
+  return grouped;
+}
+let vsWhisperPipe = null;
+async function vsEnsureWhisper(){
+  if(vsWhisperPipe) return vsWhisperPipe;
+  vsSetStatus('Đang tải mô hình nhận diện giọng nói (lần đầu khá lâu, ~70-150MB)...');
+  const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js');
+  env.allowLocalModels = false;
+  vsWhisperPipe = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', {
+    progress_callback: (p)=>{
+      if(p && p.status === 'progress' && typeof p.progress === 'number'){
+        vsSetStatus(`Đang tải mô hình giọng nói: ${Math.round(p.progress)}%`);
+      }
+    }
+  });
+  return vsWhisperPipe;
+}
+async function vsWriteInputIfNeeded(ff){
+  if(vsInputWritten) return;
+  const { fetchFile } = FFmpegUtil;
+  await ff.writeFile('input.mp4', await fetchFile(vsVideoFile));
+  vsInputWritten = true;
+}
+async function vsDetectAudioSpeech(){
+  vsSetStatus('Đang tách âm thanh từ video...');
+  const ff = await vsEnsureFFmpeg();
+  await vsWriteInputIfNeeded(ff);
+  await ff.exec(['-i', 'input.mp4', '-vn', '-ac', '1', '-ar', '16000', '-f', 'wav', 'audio.wav']);
+  const wavBytes = await ff.readFile('audio.wav');
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const audioCtx = new AudioCtx({ sampleRate: 16000 });
+  const arrayBuf = wavBytes.buffer.slice(wavBytes.byteOffset, wavBytes.byteOffset + wavBytes.byteLength);
+  const audioBuffer = await audioCtx.decodeAudioData(arrayBuf);
+  const channelData = audioBuffer.getChannelData(0);
+  const transcriber = await vsEnsureWhisper();
+  vsSetStatus('Đang nhận diện giọng nói trong video...');
+  const output = await transcriber(channelData, {
+    chunk_length_s: 30,
+    stride_length_s: 5,
+    return_timestamps: true,
+  });
+  const chunks = (output && output.chunks) || [];
+  return chunks
+    .map(ch => {
+      const ts = ch.timestamp || [0, 0];
+      const start = ts[0] || 0;
+      const end = (ts[1] != null ? ts[1] : start + 3);
+      const text = (ch.text || '').trim();
+      return { start, end, text, source: 'audio' };
+    })
+    .filter(c => c.text);
+}
+async function vsRunDetect(){
+  if(!vsVideoFile){ showToast('Chưa chọn video'); return; }
+  const doOcr = vsModeOcr.checked;
+  const doAudio = vsModeAudio.checked;
+  if(!doOcr && !doAudio){ showToast('Chọn ít nhất 1 nguồn cần dịch'); return; }
+  const langs = [];
+  if(vsLangZh.checked) langs.push('chi_sim');
+  if(vsLangEn.checked) langs.push('eng');
+  if(doOcr && langs.length === 0){ showToast('Chọn ít nhất 1 ngôn ngữ cho chữ trên hình'); return; }
+  const interval = Math.max(0.5, parseFloat(vsInterval.value) || 2);
+  vsBtnDetect.disabled = true;
+  vsCuesWrap.style.display = 'none';
+  vsResultWrap.style.display = 'none';
+  try{
+    await vsWaitMeta(vsVideoPlayer);
+    const duration = vsVideoPlayer.duration;
+    if(!duration || !isFinite(duration)){
+      showToast('Không đọc được thời lượng video');
+      return;
+    }
+    let ocrCues = [];
+    let audioCues = [];
+    if(doOcr){
+      ocrCues = await vsDetectOcr(duration, langs, interval);
+    }
+    if(doAudio){
+      audioCues = await vsDetectAudioSpeech();
+    }
+    let allCues = [...ocrCues, ...audioCues].sort((a,b)=> a.start - b.start);
+    if(allCues.length === 0){
+      vsSetStatus('Không tìm thấy chữ hoặc giọng nói nào. Thử đổi tuỳ chọn hoặc video khác.');
+      return;
+    }
+    // Giới hạn tổng số câu để việc dịch + ghép phụ đề không quá nặng cho điện thoại
+    allCues = allCues.slice(0, 60);
+    vsSetStatus(`Tìm thấy ${allCues.length} đoạn. Đang dịch sang tiếng Việt...`);
+    try{
+      const translations = await vsTranslateCues(allCues);
+      allCues.forEach((c,i)=>{ c.translated = translations[i] || ''; });
+      vsSetStatus(`Hoàn tất! ${allCues.length} đoạn phụ đề đã dịch — kiểm tra/sửa lại bên dưới rồi ghép vào video.`);
+    }catch(err){
+      console.error(err);
+      allCues.forEach(c=>{ c.translated = ''; });
+      vsSetStatus(`Nhận diện xong ${allCues.length} đoạn, nhưng dịch tự động thất bại — hãy tự nhập tiếng Việt cho từng đoạn bên dưới.`);
+    }
+    vsCues = allCues;
+    vsRenderCues();
+    vsCuesWrap.style.display = 'block';
+  }catch(err){
+    console.error(err);
+    showToast('Nhận diện thất bại, thử lại với video ngắn hơn hoặc bỏ bớt tuỳ chọn.');
+  }finally{
+    vsBtnDetect.disabled = false;
+  }
+}
+async function vsTranslateCues(cues){
+  const list = cues.map((c,i)=> `${i+1}. ${c.text}`).join('\n');
+  const prompt = `Đây là các đoạn chữ trích xuất từ video (có thể tiếng Trung hoặc tiếng Anh, có thể lẫn lỗi do nhận diện tự động). Hãy dịch từng đoạn sang tiếng Việt tự nhiên, ngắn gọn, phù hợp làm phụ đề video. Chỉ trả lời bằng một mảng JSON các chuỗi tiếng Việt, đúng thứ tự, không thêm chú thích hay markdown:\n\n${list}`;
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1000,
+      messages: [{ role: "user", content: prompt }]
+    })
+  });
+  const data = await response.json();
+  const text = (data.content || []).map(b => b.text || '').join('').trim();
+  const clean = text.replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
+  const arr = JSON.parse(clean);
+  if(!Array.isArray(arr)) throw new Error('Kết quả dịch không hợp lệ');
+  return arr;
+}
+function vsRenderCues(){
+  vsCuesList.innerHTML = vsCues.map((c,i)=> `
+    <div class="cue-card">
+      <div class="cue-time">${vsFmtTime(c.start)} – ${vsFmtTime(c.end)} <span style="color:var(--muted);font-weight:600">· ${c.source === 'audio' ? 'giọng nói' : 'chữ trên hình'}</span></div>
+      <div class="cue-orig"><b>Gốc:</b> ${escapeHtml(c.text)}</div>
+      <textarea data-i="${i}" class="cue-input" placeholder="Nhập bản dịch tiếng Việt...">${escapeHtml(c.translated || '')}</textarea>
+    </div>
+  `).join('');
+  vsCuesList.querySelectorAll('.cue-input').forEach(ta=>{
+    ta.addEventListener('input', (e)=>{
+      const i = Number(e.target.dataset.i);
+      vsCues[i].translated = e.target.value;
+    });
+  });
+}
+vsBtnDetect.addEventListener('click', vsRunDetect);
+// Xuất file .srt dự phòng — dùng được ngay trong CapCut hoặc trình dựng video khác
+function vsToSrtTime(t){
+  const h = Math.floor(t/3600);
+  const m = Math.floor((t%3600)/60);
+  const s = Math.floor(t%60);
+  const ms = Math.round((t - Math.floor(t)) * 1000);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+}
+function vsBuildSrt(){
+  return vsCues.map((c,i)=> `${i+1}\n${vsToSrtTime(c.start)} --> ${vsToSrtTime(c.end)}\n${c.translated || c.text}\n`).join('\n');
+}
+vsBtnSrt.addEventListener('click', ()=>{
+  if(vsCues.length === 0){ showToast('Chưa có phụ đề'); return; }
+  const blob = new Blob([vsBuildSrt()], { type:'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'vietsub.srt';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=> URL.revokeObjectURL(url), 4000);
+  showToast('Đã tải file .srt');
+});
+// Ghép phụ đề đè lên video bằng ffmpeg.wasm, xuất .mp4
+let vsFFmpeg = null;
+function vsEscapeDrawtext(text){
+  return text
+    .replace(/\\/g, '\\\\\\\\')
+    .replace(/:/g, '\\:')
+    .replace(/'/g, "\u2019")
+    .replace(/%/g, '\\%')
+    .replace(/\n/g, ' ');
+}
+async function vsEnsureFFmpeg(){
+  if(vsFFmpeg) return vsFFmpeg;
+  const { FFmpeg } = FFmpegWASM;
+  const { toBlobURL } = FFmpegUtil;
+  const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+  const ff = new FFmpeg();
+  ff.on('log', ({ message }) => vsSetStatus(message.slice(0, 90)));
+  await ff.load({
+    coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+    wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+  });
+  vsFFmpeg = ff;
+  return ff;
+}
+vsBtnBurn.addEventListener('click', async ()=>{
+  if(!vsVideoFile || vsCues.length === 0){ showToast('Chưa có video hoặc phụ đề'); return; }
+  const drawtexts = vsCues
+    .filter(c => (c.translated || '').trim())
+    .map(c => {
+      const t = vsEscapeDrawtext(c.translated.trim());
+      return `drawtext=fontfile=font.ttf:text='${t}':fontcolor=white:fontsize=h/18:borderw=3:bordercolor=black:x=(w-text_w)/2:y=h-h/8:enable='between(t,${c.start.toFixed(2)},${c.end.toFixed(2)})'`;
+    });
+  if(drawtexts.length === 0){ showToast('Chưa có nội dung tiếng Việt để ghép vào video'); return; }
+  vsBtnBurn.disabled = true;
+  try{
+    vsSetStatus('Đang tải bộ xử lý video (lần đầu sẽ hơi lâu, ~vài chục MB)...');
+    const ff = await vsEnsureFFmpeg();
+    vsSetStatus('Đang nạp video vào bộ xử lý...');
+    await vsWriteInputIfNeeded(ff);
+    vsSetStatus('Đang tải font tiếng Việt (có dấu)...');
+    const fontResp = await fetch('https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts/hinted/ttf/NotoSans/NotoSans-Bold.ttf');
+    const fontBuf = new Uint8Array(await fontResp.arrayBuffer());
+    await ff.writeFile('font.ttf', fontBuf);
+    const filter = drawtexts.join(',');
+    vsSetStatus('Đang ghép phụ đề vào video — có thể mất vài phút tuỳ độ dài video...');
+    await ff.exec(['-i', 'input.mp4', '-vf', filter, '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-c:a', 'copy', 'output.mp4']);
+    vsSetStatus('Đang xuất file...');
+    const data = await ff.readFile('output.mp4');
+    const blob = new Blob([data.buffer], { type: 'video/mp4' });
+    const url = URL.createObjectURL(blob);
+    vsResultPlayer.src = url;
+    vsDownloadLink.href = url;
+    vsResultWrap.style.display = 'block';
+    vsSetStatus('Hoàn tất! Xem trước và tải video bên dưới.');
+    showToast('Đã ghép phụ đề xong');
+  }catch(err){
+    console.error(err);
+    vsSetStatus('Ghép phụ đề thất bại: ' + (err && err.message ? err.message : 'lỗi không xác định'));
+    showToast('Thất bại — thử video ngắn hơn, hoặc dùng file .srt dự phòng ở trên.');
+  }finally{
+    vsBtnBurn.disabled = false;
+  }
+});
+/* =========================================================
+   TAB GROUP: Chat nhóm realtime bằng Firebase
+   - Đăng nhập Google qua popup nhỏ, có phương án dự phòng chuyển
+     sang redirect khi popup không hoạt động được trên trình duyệt
+     di động (Safari/Chrome iOS, WebView Android...) — đây là lý do
+     phổ biến khiến "đăng nhập xong nhưng không vào được chat" trên
+     điện thoại.
+   - Sau khi đăng nhập thành công, cho phép đặt TÊN HIỂN THỊ và ẢNH
+     ĐẠI DIỆN riêng cho nhóm (lưu ở groupChat/userProfiles/{uid}),
+     hoặc bấm "Dùng mặc định Gmail" để lấy tên/ảnh từ tài khoản Google.
+     Có thể mở lại bất cứ lúc nào bằng nút ✎ cạnh tên trong khung chat.
+   - Danh sách "đang tham gia" (Realtime Database + onDisconnect)
+   - Nhắn tin: gửi lên CẢ NHÓM (mặc định) hoặc chọn 1 người để
+     NHẮN RIÊNG (1-1), có thể gửi kèm NHIỀU ảnh/video CÙNG LÚC
+     (upload song song, hiển thị % từng file, có thể huỷ từng file)
+     cùng với nội dung chữ. Ảnh/video gửi lên đều có nút tải về cho
+     mọi người trong nhóm.
+   - Badge số tin/cuộc trò chuyện chưa đọc trên nút tab Group.
+   - Nút xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở, có popup
+     xác nhận trước khi xóa.
+   - Sau khi đăng nhập/thiết lập hồ sơ xong, hỏi người dùng có đồng ý
+     chia sẻ vị trí hay không (CHỈ HỎI 1 LẦN MỖI LẦN ĐĂNG NHẬP nếu
+     trước đó chưa từng đồng ý — hễ đã đồng ý 1 lần thì từ nay không
+     hỏi lại nữa, tự động chia sẻ ngầm); nếu đồng ý sẽ liên tục cập
+     nhật vị trí hiện tại lên groupChat/userLocations/{uid} (vị trí
+     mới nhất) VÀ ghi thêm vào groupChat/userLocationHistory/{uid}
+     (lịch sử các vị trí theo thời gian, có throttle để không ghi
+     quá dày) để tab Quản trị hiển thị trên bản đồ và xem lại lịch sử
+     (xem thêm phần "CHIA SẺ VỊ TRÍ" bên dưới).
+========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyDIo90Fw0iGUVp5WXXw9tjIm1VkxTChc9k",
+  authDomain: "tintucmxh-groupchat.firebaseapp.com",
+  databaseURL: "https://tintucmxh-groupchat-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tintucmxh-groupchat",
+  storageBucket: "tintucmxh-groupchat.firebasestorage.app",
+  messagingSenderId: "1092111729472",
+  appId: "1:1092111729472:web:1cc0788db76c79bde9f0a5",
+  measurementId: "G-K2P8F34F0T"
+};
+firebase.initializeApp(firebaseConfig);
+const gAuth = firebase.auth();
+const gDb = firebase.database();
+const gStorage = firebase.storage();
+const messagesRef = gDb.ref('groupChat/messages');
+const presenceListRef = gDb.ref('groupChat/presence');
 
-navigator.clipboard.readText()
-.then(t=>{
+const groupLoginCard   = document.getElementById('groupLoginCard');
+const groupChatCard    = document.getElementById('groupChatCard');
+const groupLoginError  = document.getElementById('groupLoginError');
+const btnGoogleLogin   = document.getElementById('btnGoogleLogin');
+const btnLogout        = document.getElementById('btnLogout');
+const btnDeleteAllMsgs = document.getElementById('btnDeleteAllMsgs');
+const myAvatarEl       = document.getElementById('myAvatar');
+const myNameEl         = document.getElementById('myName');
+const onlineUsersEl    = document.getElementById('onlineUsers');
+const targetRowEl      = document.getElementById('targetRow');
+const chatMessagesEl   = document.getElementById('chatMessages');
+const chatSeenStatusEl = document.getElementById('chatSeenStatus');
+const groupMsgInput    = document.getElementById('groupMsgInput');
+const btnGroupSend     = document.getElementById('btnGroupSend');
+const btnGroupAttach   = document.getElementById('btnGroupAttach');
+const groupMediaInput  = document.getElementById('groupMediaInput');
+const chatMediaGrid    = document.getElementById('chatMediaGrid');
+const groupBadge       = document.getElementById('groupBadge');
+const btnEditProfile   = document.getElementById('btnEditProfile');
+const notifToggle      = document.getElementById('notifToggle');
 
-document
-.getElementById("content1")
-.value=t;
+const loginModalOverlay  = document.getElementById('loginModalOverlay');
+const btnCloseLoginModal = document.getElementById('btnCloseLoginModal');
+const btnGoogleLoginModal= document.getElementById('btnGoogleLoginModal');
+const loginModalError    = document.getElementById('loginModalError');
 
+/* =========================================================
+   THÔNG BÁO TIN NHẮN: RUNG MÁY + HIỆN THÔNG BÁO TRÊN MÀN HÌNH
+   Bật/tắt bằng nút gạt "Thông báo tin nhắn". Khi bật:
+   - Rung máy (Vibration API) mỗi khi có tin nhắn MỚI gửi đến (không phải do
+     chính mình gửi, không tính lịch sử tin nhắn cũ lúc mới đăng nhập).
+   - Hiện thông báo hệ thống kiểu Messenger (Notification API) với tên người
+     gửi + nội dung rút gọn, trừ khi đang mở đúng ngay cuộc trò chuyện đó và
+     tab đang hiển thị (vì lúc đó đã thấy tin nhắn ngay trong khung chat rồi).
+   LƯU Ý THỰC TẾ VỀ NỀN TẢNG (không phải lỗi của trang):
+   - Rung máy: Android (Chrome, Edge, Samsung Internet...) hỗ trợ tốt. Safari
+     trên iPhone/iPad KHÔNG hỗ trợ Vibration API ở bất kỳ hình thức nào —
+     đây là giới hạn của Safari/iOS, không cách nào bật được từ JavaScript.
+   - Thông báo trên màn hình: Android hỗ trợ tốt ngay trên tab trình duyệt.
+     Trên iPhone/iPad, Safari CHỈ hỗ trợ Notification API khi trang đã được
+     "Thêm vào Màn hình chính" (cài như PWA) và chạy từ iOS 16.4 trở lên —
+     mở bằng tab Safari thường sẽ không xin được quyền thông báo.
+========================================================= */
+let notifEnabled = false;          // người dùng đã bật nút gạt hay chưa (lưu trong localStorage)
+let notifPermissionGranted = false;// trình duyệt đã cấp quyền Notification hay chưa
+const LS_KEY_NOTIF = 'contentTool_notifEnabled';
+function loadNotifPref(){
+  try{ notifEnabled = localStorage.getItem(LS_KEY_NOTIF) === '1'; }catch(e){}
+  notifPermissionGranted = ('Notification' in window) && Notification.permission === 'granted';
+  if(notifToggle) notifToggle.checked = notifEnabled;
+}
+function triggerVibration(){
+  if(navigator.vibrate){
+    try{ navigator.vibrate([200, 100, 200]); }catch(e){}
+  }
+}
+// Không hiện thông báo hệ thống nếu người dùng đang mở đúng cuộc trò chuyện đó
+// và tab đang hiển thị trước mắt — vì tin nhắn đã hiện sẵn trong khung chat rồi.
+function isConversationCurrentlyVisible(isPrivate, fromUid){
+  if(document.hidden) return false;
+  const onGroupTab = document.getElementById('page-group').classList.contains('active');
+  if(!onGroupTab) return false;
+  if(isPrivate) return !!(activeTarget && activeTarget.uid === fromUid);
+  return !activeTarget;
+}
+function handleIncomingMessage({ name, text, attachments, photoURL, isPrivate, fromUid }){
+  if(!notifEnabled) return;
+  if(!currentUser || fromUid === currentUser.uid) return; // an toàn: không tự thông báo tin nhắn của chính mình
+  triggerVibration();
+  if(isConversationCurrentlyVisible(isPrivate, fromUid)) return;
+  const bodyText = text || (attachments && attachments.length ? `Đã gửi ${attachments.length} ảnh/video` : 'Tin nhắn mới');
+  if(notifPermissionGranted && 'Notification' in window){
+    try{
+      const n = new Notification(name || 'Ẩn danh', {
+        body: bodyText,
+        icon: photoURL || undefined,
+        tag: isPrivate ? ('dm-' + fromUid) : 'group-chat'
+      });
+      n.onclick = ()=>{ window.focus(); n.close(); };
+    }catch(err){ console.error('Không hiện được thông báo:', err); }
+  }
+}
+if(notifToggle){
+  notifToggle.addEventListener('change', async ()=>{
+    if(notifToggle.checked){
+      notifEnabled = true;
+      try{ localStorage.setItem(LS_KEY_NOTIF, '1'); }catch(e){}
+      if('Notification' in window){
+        try{
+          const perm = await Notification.requestPermission();
+          notifPermissionGranted = perm === 'granted';
+          showToast(notifPermissionGranted
+            ? 'Đã bật thông báo tin nhắn'
+            : 'Trình duyệt đang chặn thông báo trên màn hình — vẫn bật rung khi có tin nhắn (nếu máy hỗ trợ). Vào cài đặt trình duyệt để cấp lại quyền nếu muốn xem thông báo.');
+        }catch(err){ console.error(err); }
+      }else{
+        showToast('Đã bật rung khi có tin nhắn — trình duyệt này không hỗ trợ hiện thông báo trên màn hình.');
+      }
+    }else{
+      notifEnabled = false;
+      try{ localStorage.setItem(LS_KEY_NOTIF, '0'); }catch(e){}
+      showToast('Đã tắt thông báo tin nhắn');
+    }
+  });
+}
+loadNotifPref();
+
+/* ---------- Popup hồ sơ nhóm: tên hiển thị + ảnh đại diện riêng ---------- */
+const profileModalOverlay      = document.getElementById('profileModalOverlay');
+const btnCloseProfileModal     = document.getElementById('btnCloseProfileModal');
+const profileNameInput         = document.getElementById('profileNameInput');
+const profileAvatarInput       = document.getElementById('profileAvatarInput');
+const profileAvatarDropzone    = document.getElementById('profileAvatarDropzone');
+const profileAvatarDropzoneLabel = document.getElementById('profileAvatarDropzoneLabel');
+const profileModalAvatarPreview  = document.getElementById('profileModalAvatarPreview');
+const profileModalAvatarFallback = document.getElementById('profileModalAvatarFallback');
+const profileModalError        = document.getElementById('profileModalError');
+const btnSaveProfile           = document.getElementById('btnSaveProfile');
+const btnUseDefaultProfile     = document.getElementById('btnUseDefaultProfile');
+const presetAvatarGrid         = document.getElementById('presetAvatarGrid');
+
+/* ---------- Bộ icon avatar ngộ nghĩnh có sẵn để chọn nhanh ----------
+   Mỗi icon là 1 emoji đặt trên nền màu tròn, được vẽ thành ảnh SVG dạng
+   data URI (không cần tải lên Storage) nên chọn xong là dùng ngay, không
+   tốn dung lượng lưu trữ và hiển thị y hệt ảnh đại diện bình thường ở
+   mọi nơi trong app (khung chat, danh sách online, bản đồ quản trị...). */
+const PRESET_AVATARS = [
+  { emoji:'🐶', bg:'#FDE68A' }, { emoji:'🐱', bg:'#FBCFE8' }, { emoji:'🐻', bg:'#DDD6FE' },
+  { emoji:'🐼', bg:'#BFDBFE' }, { emoji:'🦊', bg:'#FED7AA' }, { emoji:'🐯', bg:'#FCA5A5' },
+  { emoji:'🦁', bg:'#FDE68A' }, { emoji:'🐨', bg:'#D1D5DB' }, { emoji:'🐵', bg:'#FED7AA' },
+  { emoji:'🐸', bg:'#BBF7D0' }, { emoji:'🐷', bg:'#FBCFE8' }, { emoji:'🐰', bg:'#E9D5FF' },
+  { emoji:'🦄', bg:'#FBCFE8' }, { emoji:'🐔', bg:'#FEF08A' }, { emoji:'🐙', bg:'#C4B5FD' },
+  { emoji:'🦉', bg:'#FDBA74' }, { emoji:'🐢', bg:'#A7F3D0' }, { emoji:'🦋', bg:'#93C5FD' }
+];
+function makePresetAvatarDataUrl(emoji, bg){
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">`
+    + `<circle cx="48" cy="48" r="48" fill="${bg}"/>`
+    + `<text x="48" y="58" font-size="46" text-anchor="middle" dominant-baseline="middle">${emoji}</text>`
+    + `</svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+let profileSelectedPresetUrl = null; // dataURL của icon ngộ nghĩnh đang được chọn trong popup (nếu có)
+function renderPresetAvatarGrid(){
+  presetAvatarGrid.innerHTML = PRESET_AVATARS.map((a, i)=>{
+    const url = makePresetAvatarDataUrl(a.emoji, a.bg);
+    const isSelected = profileSelectedPresetUrl === url;
+    return `<button type="button" class="preset-avatar-btn ${isSelected?'selected':''}" data-preset-i="${i}" style="background:${a.bg}" title="Dùng icon ${a.emoji}">${a.emoji}</button>`;
+  }).join('');
+}
+presetAvatarGrid.addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-preset-i]');
+  if(!btn) return;
+  const a = PRESET_AVATARS[Number(btn.dataset.presetI)];
+  const url = makePresetAvatarDataUrl(a.emoji, a.bg);
+  profileSelectedPresetUrl = url;
+  profileAvatarFile = null; // ưu tiên icon vừa chọn, bỏ ảnh file (nếu trước đó có chọn)
+  profileAvatarDropzoneLabel.textContent = 'Chọn ảnh đại diện mới (tùy chọn)';
+  profileModalAvatarPreview.src = url;
+  profileModalAvatarPreview.style.display = 'block';
+  profileModalAvatarFallback.style.display = 'none';
+  renderPresetAvatarGrid();
 });
 
+let currentUser = null;
+let presenceRef = null;
+let connectedRef = null;
+let allMessages = [];          // tin nhắn của cuộc trò chuyện đang mở (nhóm chung hoặc riêng)
+let lastReadTimestamp = 0;     // mốc đã đọc của cuộc trò chuyện đang mở
+
+let activeTarget = null;       // null = Cả nhóm; hoặc {uid, name, photoURL} = đang nhắn riêng với ai
+let activeThreadRef = null;    // ref tin nhắn riêng đang lắng nghe (chỉ dùng khi activeTarget != null)
+let activeReadRef = null;      // ref "đã đọc" của cuộc trò chuyện riêng đang mở
+
+let publicMessages = [];       // luôn lắng nghe song song để tính badge kể cả khi đang xem 1 cuộc riêng
+let publicLastRead = 0;
+let publicReadRef = null;
+
+let onlinePresenceData = {};   // {uid: {name, photoURL, lastSeen}}
+let privateThreadsRef = null;
+let privateThreadsData = {};   // {otherUid: {name, photoURL, lastMessage, lastTimestamp, lastSenderUid}}
+let privateReadsAllRef = null;
+let privateReadsData = {};     // {otherUid: lastReadTimestamp}
+
+let groupMediaFiles = [];      // File[] — nhiều file được chọn cùng lúc, gửi song song
+let uploadProgressMap = {};    // {index: percent} — % tải lên của từng file trong lượt gửi hiện tại
+let uploadTasksMap = {};       // {index: firebase UploadTask} — cho phép huỷ tải lên từng file đang gửi
+let uploadErrorMap = {};       // {index: message} — lỗi tải lên riêng cho từng file (nếu có), cho phép thử lại
+
+let userProfile = null;        // {name, photoURL} — hồ sơ hiển thị đang dùng trong nhóm (tùy chỉnh hoặc mặc định Gmail)
+let userProfileRef = null;     // ref groupChat/userProfiles/{uid}
+let profileAvatarFile = null;  // ảnh đại diện mới chọn trong popup hồ sơ (chưa lưu, đã nén nếu là ảnh)
+let profileAvatarUploadTask = null; // UploadTask đang chạy khi lưu hồ sơ (cho phép huỷ)
+
+/* ---------- Popup đăng nhập Google nhỏ gọn ---------- */
+function openLoginModal(){
+  loginModalError.style.display = 'none';
+  loginModalOverlay.classList.add('show');
+}
+function closeLoginModal(){ loginModalOverlay.classList.remove('show'); }
+btnGoogleLogin.addEventListener('click', openLoginModal);
+btnCloseLoginModal.addEventListener('click', closeLoginModal);
+loginModalOverlay.addEventListener('click', e=>{ if(e.target === loginModalOverlay) closeLoginModal(); });
+
+/* ---------- Popup hồ sơ nhóm: mở/đóng, chọn ảnh, lưu hoặc dùng mặc định ---------- */
+function getDefaultProfile(user){
+  return { name: user.displayName || user.email || 'Ẩn danh', photoURL: user.photoURL || '' };
+}
+function applyUserProfile(profile){
+  userProfile = profile;
+  myAvatarEl.src = profile.photoURL || '';
+  myNameEl.textContent = profile.name || 'Ẩn danh';
+  if(presenceRef){
+    presenceRef.update({ name: profile.name || 'Ẩn danh', photoURL: profile.photoURL || '' }).catch(()=>{});
+  }
+}
+function openProfileModal(){
+  profileAvatarFile = null;
+  profileSelectedPresetUrl = null;
+  if(profileAvatarUploadTask){ try{ profileAvatarUploadTask.cancel(); }catch(e){} profileAvatarUploadTask = null; }
+  profileModalError.style.display = 'none';
+  profileAvatarDropzoneLabel.textContent = 'Chọn ảnh đại diện mới (tùy chọn)';
+  profileNameInput.value = (userProfile && userProfile.name) || (currentUser ? getDefaultProfile(currentUser).name : '');
+  const previewUrl = (userProfile && userProfile.photoURL) || '';
+  if(previewUrl){
+    profileModalAvatarPreview.src = previewUrl;
+    profileModalAvatarPreview.style.display = 'block';
+    profileModalAvatarFallback.style.display = 'none';
+  }else{
+    profileModalAvatarPreview.style.display = 'none';
+    profileModalAvatarFallback.style.display = 'block';
+  }
+  renderPresetAvatarGrid();
+  profileModalOverlay.classList.add('show');
+}
+function closeProfileModal(){ profileModalOverlay.classList.remove('show'); }
+btnEditProfile.addEventListener('click', openProfileModal);
+btnCloseProfileModal.addEventListener('click', closeProfileModal);
+profileModalOverlay.addEventListener('click', e=>{ if(e.target === profileModalOverlay) closeProfileModal(); });
+profileAvatarDropzone.addEventListener('click', ()=> profileAvatarInput.click());
+profileAvatarInput.addEventListener('change', async ()=>{
+  const file = profileAvatarInput.files && profileAvatarInput.files[0];
+  profileAvatarInput.value = ''; // cho phép chọn lại đúng file đó lần sau
+  if(!file) return;
+  profileSelectedPresetUrl = null; // chọn ảnh thật thì bỏ icon ngộ nghĩnh (nếu trước đó có chọn)
+  renderPresetAvatarGrid();
+  profileAvatarDropzoneLabel.textContent = 'Đang xử lý ảnh...';
+  // Nén ảnh trước để tránh tải lên thất bại vì file quá nặng (ảnh chụp điện thoại)
+  const compressed = await compressImageFile(file, 800, 0.85);
+  profileAvatarFile = compressed;
+  profileAvatarDropzoneLabel.textContent = 'Đã chọn: ' + compressed.name;
+  const url = URL.createObjectURL(compressed);
+  profileModalAvatarPreview.src = url;
+  profileModalAvatarPreview.style.display = 'block';
+  profileModalAvatarFallback.style.display = 'none';
+});
+btnUseDefaultProfile.addEventListener('click', async ()=>{
+  if(!currentUser || !userProfileRef) return;
+  btnUseDefaultProfile.disabled = true;
+  try{
+    const def = getDefaultProfile(currentUser);
+    await userProfileRef.set(def);
+    applyUserProfile(def);
+    closeProfileModal();
+    showToast('Đã dùng tên và ảnh mặc định từ Gmail');
+  }catch(err){
+    console.error(err);
+    profileModalError.textContent = 'Không lưu được: ' + describeStorageError(err);
+    profileModalError.style.display = 'block';
+  }finally{
+    btnUseDefaultProfile.disabled = false;
+  }
+});
+btnSaveProfile.addEventListener('click', async ()=>{
+  if(!currentUser || !userProfileRef) return;
+  const name = profileNameInput.value.trim() || getDefaultProfile(currentUser).name;
+  btnSaveProfile.disabled = true;
+  btnUseDefaultProfile.disabled = true;
+  profileModalError.style.display = 'none';
+  try{
+    let photoURL = (userProfile && userProfile.photoURL) || currentUser.photoURL || '';
+    if(profileSelectedPresetUrl){
+      // Đã chọn 1 icon ngộ nghĩnh có sẵn -> dùng thẳng data URL, không cần tải lên Storage
+      photoURL = profileSelectedPresetUrl;
+    }else if(profileAvatarFile){
+      const safeName = profileAvatarFile.name.replace(/[^\w.\-]+/g, '_');
+      const path = `group_avatars/${currentUser.uid}/${Date.now()}_${safeName}`;
+      photoURL = await new Promise((resolve, reject)=>{
+        const task = gStorage.ref().child(path).put(profileAvatarFile, {
+          contentType: profileAvatarFile.type || 'image/jpeg'
+        });
+        profileAvatarUploadTask = task;
+        task.on('state_changed',
+          snap=>{
+            const pct = snap.totalBytes ? Math.round((snap.bytesTransferred / snap.totalBytes) * 100) : 0;
+            profileAvatarDropzoneLabel.textContent = `Đang tải ảnh lên: ${pct}%`;
+          },
+          err=>{ profileAvatarUploadTask = null; reject(err); },
+          async ()=>{
+            profileAvatarUploadTask = null;
+            try{
+              const url = await task.snapshot.ref.getDownloadURL();
+              resolve(url);
+            }catch(e){ reject(e); }
+          }
+        );
+      });
+    }
+    const profile = { name, photoURL };
+    await userProfileRef.set(profile);
+    applyUserProfile(profile);
+    closeProfileModal();
+    showToast('Đã lưu hồ sơ');
+  }catch(err){
+    console.error(err);
+    profileModalError.textContent = 'Lưu hồ sơ thất bại: ' + describeStorageError(err);
+    profileModalError.style.display = 'block';
+    profileAvatarDropzoneLabel.textContent = profileAvatarFile ? ('Đã chọn: ' + profileAvatarFile.name) : 'Chọn ảnh đại diện mới (tùy chọn)';
+  }finally{
+    btnSaveProfile.disabled = false;
+    btnUseDefaultProfile.disabled = false;
+  }
+});
+
+/* ---------- CHIA SẺ VỊ TRÍ ----------
+   Quy tắc hỏi quyền vị trí: MỖI LẦN ĐĂNG NHẬP chỉ hỏi 1 lần.
+   - Nếu người dùng CHƯA TỪNG đồng ý (kể cả trước đó đã bấm "Không,
+     cảm ơn" ở lần đăng nhập trước), sẽ hiện lại popup hỏi vào lần
+     đăng nhập tiếp theo (không ghi nhớ việc từ chối).
+   - Nếu người dùng ĐÃ TỪNG đồng ý và lấy vị trí thành công ít nhất
+     1 lần, từ đó về sau sẽ KHÔNG hỏi lại nữa — tự động chia sẻ vị
+     trí ngầm mỗi khi đăng nhập.
+   Sau khi đồng ý: dùng navigator.geolocation.watchPosition để liên
+   tục cập nhật VỊ TRÍ HIỆN TẠI lên groupChat/userLocations/{uid}
+   (giữ lại vĩnh viễn làm "vị trí lần cuối" cho tab Quản trị xem khi
+   offline), đồng thời ghi thêm từng mốc vào
+   groupChat/userLocationHistory/{uid} (có throttle theo thời gian
+   để tránh ghi quá dày) để tab Quản trị có thể xem lại lịch sử di
+   chuyển của từng tài khoản. */
+const locationModalOverlay = document.getElementById('locationModalOverlay');
+const locationModalError   = document.getElementById('locationModalError');
+const btnLocationAllow     = document.getElementById('btnLocationAllow');
+const btnLocationDeny      = document.getElementById('btnLocationDeny');
+const LS_KEY_LOCATION_GRANTED = 'contentTool_locationGranted';
+const HISTORY_PUSH_INTERVAL_MS = 5 * 60 * 1000; // ghi thêm 1 mốc lịch sử tối đa mỗi 5 phút
+let locationWatchId = null;
+let lastHistoryPushTime = 0;
+
+function openLocationModal(){
+  locationModalError.style.display = 'none';
+  locationModalOverlay.classList.add('show');
+}
+function closeLocationModal(){ locationModalOverlay.classList.remove('show'); }
+function maybeAskLocationPermission(){
+  if(!navigator.geolocation) return;
+  if(locationWatchId != null) return; // đã đang chia sẻ rồi thì không hỏi lại
+  let granted = false;
+  try{ granted = localStorage.getItem(LS_KEY_LOCATION_GRANTED) === '1'; }catch(e){}
+  if(granted){
+    // Đã từng đồng ý ở lần đăng nhập trước -> tự động chia sẻ lại, không hỏi nữa
+    startSharingLocation();
+    return;
+  }
+  // Chưa từng đồng ý (hoặc lần đăng nhập trước đã từ chối) -> hỏi lại đúng 1 lần cho lần đăng nhập này
+  openLocationModal();
+}
+btnLocationDeny.addEventListener('click', ()=>{
+  closeLocationModal();
+  // Không lưu lại việc từ chối -> lần đăng nhập kế tiếp sẽ hỏi lại
+});
+btnLocationAllow.addEventListener('click', ()=>{
+  closeLocationModal();
+  startSharingLocation(err=>{
+    showToast('Không lấy được vị trí: ' + (err && err.message ? err.message : 'trình duyệt từ chối quyền truy cập vị trí'));
+  });
+});
+function startSharingLocation(onError){
+  if(!currentUser || !navigator.geolocation) return;
+  if(locationWatchId != null) return; // đã đang theo dõi rồi
+  let firstSuccessHandled = false;
+  locationWatchId = navigator.geolocation.watchPosition(
+    pos=>{
+      if(!currentUser) return;
+      if(!firstSuccessHandled){
+        firstSuccessHandled = true;
+        // Lấy vị trí thành công lần đầu -> ghi nhớ đã đồng ý, từ nay không hỏi lại nữa
+        try{ localStorage.setItem(LS_KEY_LOCATION_GRANTED, '1'); }catch(e){}
+      }
+      const p = userProfile || getDefaultProfile(currentUser);
+      const uid = currentUser.uid;
+      // Cập nhật vị trí hiện tại (luôn ghi đè, dùng làm "vị trí lần cuối")
+      gDb.ref('groupChat/userLocations/' + uid).set({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        accuracy: pos.coords.accuracy || null,
+        name: p.name || 'Ẩn danh',
+        photoURL: p.photoURL || '',
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      }).catch(err=> console.error('Không cập nhật được vị trí:', err));
+      // Ghi thêm 1 mốc vào lịch sử vị trí, có throttle để không ghi quá dày
+      const now = Date.now();
+      if(now - lastHistoryPushTime > HISTORY_PUSH_INTERVAL_MS){
+        lastHistoryPushTime = now;
+        gDb.ref('groupChat/userLocationHistory/' + uid).push({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          accuracy: pos.coords.accuracy || null,
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        }).catch(err=> console.error('Không ghi được lịch sử vị trí:', err));
+      }
+    },
+    err=>{
+      console.error('Lỗi lấy vị trí:', err);
+      locationWatchId = null;
+      if(typeof onError === 'function') onError(err);
+    },
+    { enableHighAccuracy:false, maximumAge:15000, timeout:20000 }
+  );
+}
+function stopSharingLocation(){
+  if(locationWatchId != null){
+    navigator.geolocation.clearWatch(locationWatchId);
+    locationWatchId = null;
+  }
 }
 
-function clearText(){
+/* ---------- Đăng nhập Google: chống lỗi "đăng nhập xong nhưng
+   không vào được chat" trên trình duyệt di động ----------
+   Nguyên nhân phổ biến nhất là trình duyệt di động (đặc biệt Safari
+   trên iOS, hoặc WebView trong app) chặn IndexedDB/localStorage của
+   khung popup vì lý do chống theo dõi, khiến Firebase không lưu lại
+   được phiên đăng nhập dù popup Google đã thành công. Cách khắc phục:
+   1) Luôn set persistence tường minh trước khi đăng nhập, có phương
+      án dự phòng (LOCAL -> SESSION -> NONE) nếu bước trước bị chặn.
+   2) Nếu signInWithPopup lỗi kiểu bị chặn/không hỗ trợ trên di động,
+      tự động chuyển sang signInWithRedirect và xử lý kết quả bằng
+      getRedirectResult() ngay khi trang tải lại. */
+const persistenceReady = (async ()=>{
+  try{ await gAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL); }
+  catch(e1){
+    try{ await gAuth.setPersistence(firebase.auth.Auth.Persistence.SESSION); }
+    catch(e2){
+      try{ await gAuth.setPersistence(firebase.auth.Auth.Persistence.NONE); }
+      catch(e3){ console.error('Không thiết lập được persistence cho đăng nhập:', e3); }
+    }
+  }
+})();
+function isMobileUA(){
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+}
+async function doGoogleSignIn(){
+  await persistenceReady;
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  btnGoogleLoginModal.disabled = true;
+  loginModalError.style.display = 'none';
+  try{
+    await gAuth.signInWithPopup(provider);
+    closeLoginModal();
+  }catch(err){
+    console.error('Lỗi đăng nhập (popup):', err);
+    const code = err && err.code;
+    const fallbackCodes = [
+      'auth/popup-blocked',
+      'auth/operation-not-supported-in-this-environment',
+      'auth/web-storage-unsupported',
+      'auth/popup-closed-by-user',
+      'auth/cancelled-popup-request'
+    ];
+    if(isMobileUA() && fallbackCodes.includes(code)){
+      try{
+        await gAuth.signInWithRedirect(provider);
+        return; // trang sẽ chuyển hướng sang Google rồi quay lại — xử lý ở getRedirectResult() bên dưới
+      }catch(err2){
+        console.error('Lỗi đăng nhập (redirect):', err2);
+        loginModalError.textContent = 'Đăng nhập thất bại: ' + (err2 && err2.message ? err2.message : 'vui lòng thử lại');
+        loginModalError.style.display = 'block';
+      }
+    }else{
+      loginModalError.textContent = 'Đăng nhập thất bại: ' + (err && err.message ? err.message : 'vui lòng thử lại');
+      loginModalError.style.display = 'block';
+    }
+  }finally{
+    btnGoogleLoginModal.disabled = false;
+  }
+}
+btnGoogleLoginModal.addEventListener('click', doGoogleSignIn);
+// Xử lý kết quả khi quay lại từ luồng redirect (trường hợp dự phòng ở trên)
+gAuth.getRedirectResult().catch(err=>{
+  console.error('Lỗi xử lý kết quả đăng nhập redirect:', err);
+  if(err && err.code){
+    groupLoginError.textContent = 'Đăng nhập thất bại: ' + (err.message || '');
+    groupLoginError.style.display = 'block';
+  }
+});
 
-document
-.getElementById("content1")
-.value="";
+btnLogout.addEventListener('click', ()=> gAuth.signOut());
 
+gAuth.onAuthStateChanged(user=>{
+  teardownPresence();
+  stopSharingLocation();
+  messagesRef.off('value');
+  if(publicReadRef) publicReadRef.off('value');
+  if(activeThreadRef){ activeThreadRef.off('value'); activeThreadRef = null; }
+  if(activeReadRef){ activeReadRef.off('value'); activeReadRef = null; }
+  if(activeClearedRef){ activeClearedRef.off('value'); activeClearedRef = null; }
+  if(privateThreadsRef) privateThreadsRef.off('value');
+  if(privateReadsAllRef) privateReadsAllRef.off('value');
+
+  currentUser = user;
+  activeTarget = null;
+  activeThreadRawMessages = []; activeClearedAt = 0;
+  publicMessages = []; publicLastRead = 0;
+  privateThreadsData = {}; privateReadsData = {};
+  groupMediaFiles = []; uploadProgressMap = {}; uploadTasksMap = {}; uploadErrorMap = {};
+  userProfile = null; userProfileRef = null; profileAvatarFile = null;
+  lastHistoryPushTime = 0;
+
+  if(user){
+    groupLoginCard.style.display = 'none';
+    groupChatCard.style.display = 'block';
+    closeLoginModal();
+    setupPublicListeners();
+    setupPrivateThreadsListener(user.uid);
+    setupPrivateReadsAllListener(user.uid);
+    subscribeActiveThread();
+    renderTargetRow();
+    renderGroupMediaGrid();
+
+    // Đọc hồ sơ đã tùy chỉnh trước đó (nếu có); nếu chưa từng đặt, dùng mặc định
+    // Gmail và mời người dùng tùy chỉnh tên/ảnh ngay sau khi đăng nhập lần đầu.
+    userProfileRef = gDb.ref('groupChat/userProfiles/' + user.uid);
+    userProfileRef.once('value').then(snap=>{
+      const saved = snap.val();
+      if(saved && (saved.name || saved.photoURL)){
+        applyUserProfile(saved);
+      }else{
+        applyUserProfile(getDefaultProfile(user));
+        openProfileModal();
+      }
+      setupPresence(user);
+      maybeAskLocationPermission();
+    }).catch(err=>{
+      console.error('Không đọc được hồ sơ nhóm:', err);
+      applyUserProfile(getDefaultProfile(user));
+      setupPresence(user);
+      maybeAskLocationPermission();
+    });
+  }else{
+    groupLoginCard.style.display = 'block';
+    groupChatCard.style.display = 'none';
+    onlineUsersEl.innerHTML = '';
+    targetRowEl.innerHTML = '';
+    chatMessagesEl.innerHTML = '<div class="chat-empty">Chưa có tin nhắn nào — hãy bắt đầu trò chuyện!</div>';
+    groupBadge.style.display = 'none';
+    allMessages = [];
+    lastReadTimestamp = 0;
+  }
+});
+
+function setupPresence(user){
+  const uid = user.uid;
+  presenceRef = gDb.ref('groupChat/presence/' + uid);
+  connectedRef = gDb.ref('.info/connected');
+  connectedRef.on('value', snap=>{
+    if(snap.val() === true){
+      presenceRef.onDisconnect().remove();
+      const p = userProfile || getDefaultProfile(user);
+      presenceRef.set({
+        name: p.name || 'Ẩn danh',
+        photoURL: p.photoURL || '',
+        lastSeen: firebase.database.ServerValue.TIMESTAMP
+      });
+    }
+  });
+  presenceListRef.on('value', snap=>{
+    renderOnlineUsers(snap.val() || {});
+  });
+}
+function teardownPresence(){
+  if(connectedRef){ connectedRef.off('value'); connectedRef = null; }
+  presenceListRef.off('value');
+  if(presenceRef){
+    presenceRef.onDisconnect().cancel();
+    presenceRef.remove();
+    presenceRef = null;
+  }
+  onlinePresenceData = {};
+}
+function renderOnlineUsers(data){
+  onlinePresenceData = data || {};
+  const uids = Object.keys(onlinePresenceData);
+  if(uids.length === 0){ onlineUsersEl.innerHTML = '<div class="hint" style="margin:0">Chưa có ai đang tham gia</div>'; }
+  else{
+    onlineUsersEl.innerHTML = uids.map(uid=>{
+      const u = onlinePresenceData[uid];
+      const isMe = currentUser && uid === currentUser.uid;
+      return `<div class="online-chip">
+        <span class="online-dot"></span>
+        <img class="online-avatar" src="${u.photoURL || ''}" onerror="this.style.display='none'">
+        <span>${escapeHtml(u.name || 'Ẩn danh')}${isMe ? ' (Bạn)' : ''}</span>
+      </div>`;
+    }).join('');
+  }
+  renderTargetRow();
 }
 
-function notify(msg){
+/* ---------- Chọn đối tượng nhắn tin: Cả nhóm / Nhắn riêng 1-1 ---------- */
+function pairKey(a, b){ return [a, b].sort().join('_'); }
 
-document
-.getElementById("notify")
-.innerText=msg;
+function renderTargetRow(){
+  if(!currentUser) return;
+  const others = {};
+  Object.keys(onlinePresenceData).forEach(uid=>{
+    if(uid === currentUser.uid) return;
+    const u = onlinePresenceData[uid];
+    others[uid] = { uid, name: u.name, photoURL: u.photoURL, online: true };
+  });
+  Object.keys(privateThreadsData).forEach(uid=>{
+    if(uid === currentUser.uid) return;
+    if(!others[uid]){
+      const t = privateThreadsData[uid];
+      others[uid] = { uid, name: t.name, photoURL: t.photoURL, online: false };
+    }
+  });
+  const list = Object.values(others).sort((a,b)=>{
+    const ta = (privateThreadsData[a.uid] && privateThreadsData[a.uid].lastTimestamp) || 0;
+    const tb = (privateThreadsData[b.uid] && privateThreadsData[b.uid].lastTimestamp) || 0;
+    return tb - ta;
+  });
 
-setTimeout(()=>{
-
-document
-.getElementById("notify")
-.innerText="";
-
-},2000);
-
+  let html = `<div class="target-chip everyone ${!activeTarget ? 'active' : ''}" data-target="">🌐 Cả nhóm</div>`;
+  html += list.map(u=>{
+    const isActive = activeTarget && activeTarget.uid === u.uid;
+    const t = privateThreadsData[u.uid];
+    const hasUnread = t && t.lastSenderUid !== currentUser.uid &&
+      (t.lastTimestamp || 0) > (privateReadsData[u.uid] || 0);
+    return `<div class="target-chip ${isActive?'active':''}" data-target="${u.uid}" data-name="${escapeHtml(u.name||'Ẩn danh')}" data-photo="${escapeHtml(u.photoURL||'')}">
+      ${u.online ? '<span class="t-dot"></span>' : ''}
+      <img src="${u.photoURL||''}" onerror="this.style.display='none'">
+      <span>${escapeHtml(u.name || 'Ẩn danh')}</span>
+      ${hasUnread ? '<span class="t-unread"></span>' : ''}
+    </div>`;
+  }).join('');
+  targetRowEl.innerHTML = html;
+  if(list.length === 0){
+    targetRowEl.insertAdjacentHTML('beforeend', '<div class="hint" style="margin:0;white-space:normal">Chưa có ai khác để nhắn riêng — mọi người cần online ít nhất 1 lần.</div>');
+  }
+}
+targetRowEl.addEventListener('click', e=>{
+  const chip = e.target.closest('.target-chip');
+  if(!chip) return;
+  const uid = chip.dataset.target;
+  if(!uid){
+    selectTarget(null);
+  }else{
+    selectTarget({ uid, name: chip.dataset.name, photoURL: chip.dataset.photo });
+  }
+});
+function selectTarget(target){
+  activeTarget = target;
+  cancelAllPendingUploads();
+  groupMediaFiles = []; uploadProgressMap = {}; uploadErrorMap = {};
+  renderGroupMediaGrid();
+  renderTargetRow();
+  subscribeActiveThread();
 }
 
+/* ---------- Lắng nghe nhóm chung (luôn bật, phục vụ cả hiển thị lẫn tính badge) ---------- */
+let publicMessagesLoaded = false; // đánh dấu đã tải xong lượt đầu (lịch sử cũ), để không rung/thông báo nhầm khi mới đăng nhập
+let publicKnownIds = new Set();
+function setupPublicListeners(){
+  publicMessagesLoaded = false;
+  publicKnownIds = new Set();
+  messagesRef.limitToLast(200).on('value', snap=>{
+    const val = snap.val() || {};
+    publicMessages = Object.keys(val)
+      .map(k => ({ id:k, ...val[k] }))
+      .sort((a,b)=> (a.timestamp||0) - (b.timestamp||0));
+    if(publicMessagesLoaded){
+      publicMessages.forEach(m=>{
+        if(!publicKnownIds.has(m.id)){
+          handleIncomingMessage({
+            name: m.name, text: m.text, attachments: m.attachments,
+            photoURL: m.photoURL, isPrivate: false, fromUid: m.uid
+          });
+        }
+      });
+    }
+    publicKnownIds = new Set(publicMessages.map(m=>m.id));
+    publicMessagesLoaded = true;
+    if(!activeTarget){ allMessages = publicMessages; renderMessages(); }
+    updateUnreadDisplay();
+  });
+  publicReadRef = gDb.ref('groupChat/reads/' + currentUser.uid);
+  publicReadRef.on('value', snap=>{
+    publicLastRead = (snap.val() && snap.val().lastRead) || 0;
+    if(!activeTarget) lastReadTimestamp = publicLastRead;
+    updateUnreadDisplay();
+  });
+}
+/* ---------- Danh sách các cuộc nhắn riêng đã từng có (kể cả khi người kia offline) ----------
+   Node này luôn được lắng nghe (không chỉ khi đang mở đúng cuộc trò chuyện đó), nên tiện dùng
+   để phát hiện tin nhắn riêng MỚI gửi đến (dù đang xem nhóm chung hay cuộc trò chuyện khác) và
+   rung/thông báo tương ứng — so sánh lastTimestamp mới nhất với lần lưu trước đó cho từng người. */
+let privateThreadsLoaded = false;
+let prevPrivateThreadTimestamps = {}; // {otherUid: lastTimestamp đã biết trước đó}
+function setupPrivateThreadsListener(uid){
+  privateThreadsLoaded = false;
+  prevPrivateThreadTimestamps = {};
+  privateThreadsRef = gDb.ref('groupChat/privateThreads/' + uid);
+  privateThreadsRef.on('value', snap=>{
+    const newData = snap.val() || {};
+    if(privateThreadsLoaded){
+      Object.keys(newData).forEach(otherUid=>{
+        const t = newData[otherUid];
+        if(!t || t.lastSenderUid === currentUser.uid) return;
+        const prevTs = prevPrivateThreadTimestamps[otherUid] || 0;
+        if((t.lastTimestamp || 0) > prevTs){
+          handleIncomingMessage({
+            name: t.name, text: t.lastMessage, attachments: null,
+            photoURL: t.photoURL, isPrivate: true, fromUid: otherUid
+          });
+        }
+      });
+    }
+    prevPrivateThreadTimestamps = {};
+    Object.keys(newData).forEach(otherUid=>{
+      prevPrivateThreadTimestamps[otherUid] = (newData[otherUid] && newData[otherUid].lastTimestamp) || 0;
+    });
+    privateThreadsLoaded = true;
+    privateThreadsData = newData;
+    renderTargetRow();
+    updateUnreadDisplay();
+  });
+}
+function setupPrivateReadsAllListener(uid){
+  privateReadsAllRef = gDb.ref('groupChat/privateReads/' + uid);
+  privateReadsAllRef.on('value', snap=>{
+    const val = snap.val() || {};
+    privateReadsData = {};
+    Object.keys(val).forEach(otherUid=>{ privateReadsData[otherUid] = (val[otherUid] && val[otherUid].lastRead) || 0; });
+    renderTargetRow();
+    updateUnreadDisplay();
+  });
+}
+/* ---------- Chuyển đổi cuộc trò chuyện đang xem: Cả nhóm <-> 1 người cụ thể ----------
+   Tin nhắn riêng (1-1) vẫn được lưu chung 1 node cho cả 2 người (để cả 2 đều nhận được
+   tin nhắn mới), nhưng việc "xóa tin nhắn" trong 1 cuộc trò chuyện riêng KHÔNG xóa dữ
+   liệu gốc đó — chỉ ghi lại 1 mốc thời gian "đã xóa phía tôi" riêng cho từng người ở
+   groupChat/privateClearedAt/{uid}/{otherUid}. Khi hiển thị, chỉ những tin nhắn có
+   thời gian SAU mốc đó của CHÍNH MÌNH mới được hiện ra — nên xóa xong chỉ mất trên máy
+   của người bấm xóa, người còn lại vẫn thấy đầy đủ lịch sử như cũ. */
+let activeThreadRawMessages = []; // tin nhắn gốc (chưa lọc theo mốc xóa riêng) của cuộc trò chuyện riêng đang mở
+let activeClearedAt = 0;          // mốc "đã xóa phía tôi" của CHÍNH MÌNH cho cuộc trò chuyện riêng đang mở
+let activeClearedRef = null;      // ref lắng nghe mốc xóa riêng ở trên
+
+function renderActiveThreadMessages(){
+  if(activeTarget){
+    allMessages = activeThreadRawMessages.filter(m => (m.timestamp||0) > activeClearedAt);
+  }else{
+    allMessages = publicMessages;
+  }
+  renderMessages();
+  updateUnreadDisplay();
+}
+
+function subscribeActiveThread(){
+  if(activeThreadRef){ activeThreadRef.off('value'); activeThreadRef = null; }
+  if(activeReadRef){ activeReadRef.off('value'); activeReadRef = null; }
+  if(activeClearedRef){ activeClearedRef.off('value'); activeClearedRef = null; }
+  activeThreadRawMessages = [];
+  activeClearedAt = 0;
+  if(!activeTarget){
+    lastReadTimestamp = publicLastRead;
+    renderActiveThreadMessages();
+    return;
+  }
+  const key = pairKey(currentUser.uid, activeTarget.uid);
+  activeThreadRef = gDb.ref('groupChat/privateMessages/' + key);
+  activeThreadRef.limitToLast(200).on('value', snap=>{
+    const val = snap.val() || {};
+    activeThreadRawMessages = Object.keys(val)
+      .map(k => ({ id:k, ...val[k] }))
+      .sort((a,b)=> (a.timestamp||0) - (b.timestamp||0));
+    renderActiveThreadMessages();
+  });
+  activeReadRef = gDb.ref('groupChat/privateReads/' + currentUser.uid + '/' + activeTarget.uid);
+  activeReadRef.on('value', snap=>{
+    lastReadTimestamp = (snap.val() && snap.val().lastRead) || 0;
+    updateUnreadDisplay();
+  });
+  activeClearedRef = gDb.ref('groupChat/privateClearedAt/' + currentUser.uid + '/' + activeTarget.uid);
+  activeClearedRef.on('value', snap=>{
+    activeClearedAt = snap.val() || 0;
+    renderActiveThreadMessages();
+  });
+}
+function markAsRead(){
+  if(!currentUser) return;
+  if(activeTarget){
+    gDb.ref('groupChat/privateReads/' + currentUser.uid + '/' + activeTarget.uid).set({ lastRead: firebase.database.ServerValue.TIMESTAMP });
+  }else{
+    gDb.ref('groupChat/reads/' + currentUser.uid).set({ lastRead: firebase.database.ServerValue.TIMESTAMP });
+  }
+}
+
+/* ---------- Ghép ảnh/video đính kèm + nút tải về máy cho mọi người trong nhóm ----------
+   Nút tải về dùng downloadFileFromUrl() (fetch -> blob -> link cùng domain) thay vì chỉ
+   dựa vào thuộc tính "download" trên thẻ <a> (không hoạt động với URL Firebase Storage
+   khác domain trên nhiều trình duyệt/điện thoại), để đảm bảo file thực sự được lưu vào
+   máy / thư viện ảnh thay vì chỉ mở xem online. */
+function buildAttachmentsHtml(m, msgId){
+  const atts = [];
+  if(Array.isArray(m.attachments)) atts.push(...m.attachments);
+  if(m.mediaURL) atts.push({ url: m.mediaURL, type: m.mediaType });
+  if(atts.length === 0) return '';
+  const cls = atts.length === 1 ? 'chat-attachments single' : 'chat-attachments';
+  return `<div class="${cls}">${atts.map((a, i) => `
+    <div class="chat-att-wrap">
+      ${a.type === 'video'
+        ? `<video src="${escapeHtml(a.url)}" controls playsinline></video>`
+        : `<img src="${escapeHtml(a.url)}" alt="">`}
+      <button type="button" class="chat-att-download" data-dl-url="${escapeHtml(a.url)}" data-dl-name="${escapeHtml((msgId||'anh') + '_' + i + (a.type === 'video' ? '.mp4' : '.jpg'))}" title="Tải về máy">⬇</button>
+    </div>
+  `).join('')}</div>`;
+}
+function renderMessages(){
+  if(allMessages.length === 0){
+    const emptyMsg = activeTarget
+      ? `Chưa có tin nhắn riêng nào với ${escapeHtml(activeTarget.name || 'Ẩn danh')} — hãy bắt đầu trò chuyện!`
+      : 'Chưa có tin nhắn nào — hãy bắt đầu trò chuyện!';
+    chatMessagesEl.innerHTML = `<div class="chat-empty">${emptyMsg}</div>`;
+    return;
+  }
+  chatMessagesEl.innerHTML = allMessages.map(m=>{
+    const isMe = currentUser && m.uid === currentUser.uid;
+    const time = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}) : '';
+    return `<div class="chat-msg ${isMe ? 'me' : 'other'}">
+      ${!isMe ? `<img class="chat-avatar" src="${m.photoURL || ''}" onerror="this.style.display='none'">` : ''}
+      <div class="chat-bubble-wrap">
+        ${!isMe ? `<div class="chat-name">${escapeHtml(m.name || 'Ẩn danh')}</div>` : ''}
+        <div class="chat-bubble">
+          ${buildAttachmentsHtml(m, m.id)}
+          ${m.text ? `<div class="chat-text">${escapeHtml(m.text)}</div>` : ''}
+        </div>
+        <div class="chat-time">${time}</div>
+      </div>
+    </div>`;
+  }).join('');
+  chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+}
+// Bấm nút tải về trên ảnh/video trong khung chat — tải thật sự về máy (blob),
+// có báo trạng thái đang tải để người dùng biết đang chờ.
+chatMessagesEl.addEventListener('click', async (e)=>{
+  const btn = e.target.closest('[data-dl-url]');
+  if(!btn) return;
+  if(btn.classList.contains('downloading')) return;
+  const url = btn.dataset.dlUrl;
+  const filename = btn.dataset.dlName;
+  const originalHtml = btn.innerHTML;
+  btn.classList.add('downloading');
+  btn.innerHTML = '…';
+  try{
+    const ok = await downloadFileFromUrl(url, filename);
+    showToast(ok ? 'Đã tải về máy' : 'Đã mở file — bấm giữ để lưu về máy');
+  }finally{
+    btn.classList.remove('downloading');
+    btn.innerHTML = originalHtml;
+  }
+});
+function updateUnreadDisplay(){
+  if(!currentUser) return;
+  const onGroupTab = document.getElementById('page-group').classList.contains('active');
+  const activeUnread = allMessages.filter(m => m.uid !== currentUser.uid && (m.timestamp||0) > lastReadTimestamp);
+
+  if(onGroupTab){
+    chatSeenStatusEl.textContent = 'Đã xem';
+    if(activeUnread.length > 0) markAsRead();
+  }else{
+    chatSeenStatusEl.textContent = '';
+  }
+
+  // Tổng số chưa đọc hiển thị trên badge của tab Group = tin chưa đọc ở nhóm chung
+  // (nếu không đang mở đúng nhóm chung) + số cuộc nhắn riêng đang có tin chưa đọc
+  let total = 0;
+  const viewingPublic = onGroupTab && !activeTarget;
+  if(!viewingPublic){
+    total += publicMessages.filter(m => m.uid !== currentUser.uid && (m.timestamp||0) > publicLastRead).length;
+  }
+  Object.keys(privateThreadsData).forEach(uid=>{
+    const t = privateThreadsData[uid];
+    if(!t || t.lastSenderUid === currentUser.uid) return;
+    const isOpenNow = onGroupTab && activeTarget && activeTarget.uid === uid;
+    if(isOpenNow) return;
+    const read = privateReadsData[uid] || 0;
+    if((t.lastTimestamp || 0) > read) total += 1;
+  });
+
+  if(total > 0){
+    groupBadge.style.display = 'flex';
+    groupBadge.textContent = total > 99 ? '99+' : String(total);
+  }else{
+    groupBadge.style.display = 'none';
+  }
+}
+
+/* ---------- Xóa toàn bộ tin nhắn của cuộc trò chuyện đang mở (có xác nhận) ----------
+   - Cuộc trò chuyện RIÊNG (1-1): chỉ ẩn tin nhắn cũ TRÊN MÁY CỦA NGƯỜI BẤM XÓA (ghi mốc
+     thời gian ở groupChat/privateClearedAt/{uid}/{otherUid}) — dữ liệu tin nhắn gốc và
+     bản xem của người còn lại HOÀN TOÀN không bị ảnh hưởng.
+   - NHÓM CHUNG: vẫn xóa toàn bộ cho mọi thành viên như trước (đây là kênh công khai
+     dùng chung, không có khái niệm "xóa phía tôi"). */
+btnDeleteAllMsgs.addEventListener('click', async ()=>{
+  if(!currentUser) return;
+  if(activeTarget){
+    const ok = await showConfirmDialog(
+      'Xóa tin nhắn phía bạn?',
+      `Toàn bộ tin nhắn hiện có trong cuộc trò chuyện riêng với ${activeTarget.name || 'Ẩn danh'} sẽ biến mất TRÊN MÁY BẠN. ${activeTarget.name || 'Người còn lại'} vẫn thấy đầy đủ tin nhắn cũ như bình thường, không bị ảnh hưởng.`,
+      'Xóa phía tôi'
+    );
+    if(!ok) return;
+    try{
+      await gDb.ref('groupChat/privateClearedAt/' + currentUser.uid + '/' + activeTarget.uid)
+        .set(firebase.database.ServerValue.TIMESTAMP);
+      showToast('Đã xóa tin nhắn phía bạn');
+      selectTarget(null); // cuộc trò chuyện riêng giờ trống phía mình -> đóng lại, quay về nhóm chung
+    }catch(err){
+      console.error(err);
+      showToast('Xóa thất bại: ' + describeStorageError(err));
+    }
+    return;
+  }
+  const ok = await showConfirmDialog(
+    'Xóa toàn bộ tin nhắn?',
+    'Bạn có chắc chắn muốn xóa toàn bộ tin nhắn trong TOÀN BỘ nhóm chung? Hành động này không thể hoàn tác và áp dụng cho mọi thành viên.',
+    'Xóa tất cả'
+  );
+  if(!ok) return;
+  try{
+    await messagesRef.remove();
+    showToast('Đã xóa toàn bộ tin nhắn');
+  }catch(err){
+    console.error(err);
+    showToast('Xóa thất bại: ' + describeStorageError(err));
+  }
+});
+
+/* ---------- Đính kèm & gửi nhiều file song song, kèm % tiến trình + huỷ từng file ---------- */
+btnGroupAttach.addEventListener('click', ()=> groupMediaInput.click());
+groupMediaInput.addEventListener('change', async ()=>{
+  const files = Array.from(groupMediaInput.files || []);
+  groupMediaInput.value = ''; // cho phép chọn lại đúng file đó ở lần sau nếu cần
+  if(files.length === 0) return;
+  // Nén ảnh trước khi thêm vào danh sách để giảm khả năng tải lên thất bại
+  // (video giữ nguyên vì nén video phía trình duyệt không khả thi/quá nặng)
+  const processed = await Promise.all(files.map(f => compressImageFile(f, 1600, 0.85)));
+  groupMediaFiles = groupMediaFiles.concat(processed);
+  renderGroupMediaGrid();
+});
+function renderGroupMediaGrid(){
+  if(groupMediaFiles.length === 0){
+    chatMediaGrid.style.display = 'none';
+    chatMediaGrid.innerHTML = '';
+    return;
+  }
+  chatMediaGrid.style.display = 'grid';
+  chatMediaGrid.innerHTML = groupMediaFiles.map((f, i)=>{
+    const url = URL.createObjectURL(f);
+    const isVideo = f.type.startsWith('video/');
+    const pct = uploadProgressMap[i];
+    const uploading = pct != null;
+    const errorMsg = uploadErrorMap[i];
+    let overlay;
+    if(uploading){
+      overlay = `<div class="attach-progress-bar" style="width:${pct}%"></div><div class="attach-progress">${pct}%</div><button type="button" class="attach-remove" data-cancel="${i}" title="Huỷ tải lên">✕</button>`;
+    }else if(errorMsg){
+      overlay = `<button type="button" class="attach-retry" data-retry="${i}" title="Thử tải lại">↻</button><button type="button" class="attach-remove" data-remove="${i}">✕</button><div class="attach-error-badge">Lỗi, bấm ↻</div>`;
+    }else{
+      overlay = `<button type="button" class="attach-remove" data-remove="${i}">✕</button>`;
+    }
+    return `<div class="attach-item ${errorMsg ? 'attach-error' : ''}">
+      ${isVideo ? `<video src="${url}" muted playsinline preload="metadata"></video>` : `<img src="${url}" alt="">`}
+      ${overlay}
+    </div>`;
+  }).join('');
+  chatMediaGrid.querySelectorAll('[data-remove]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.remove);
+      groupMediaFiles.splice(i, 1);
+      delete uploadErrorMap[i];
+      renderGroupMediaGrid();
+    });
+  });
+  chatMediaGrid.querySelectorAll('[data-cancel]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.cancel);
+      if(uploadTasksMap[i]){
+        try{ uploadTasksMap[i].cancel(); }catch(e){}
+      }
+    });
+  });
+  chatMediaGrid.querySelectorAll('[data-retry]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const i = Number(btn.dataset.retry);
+      delete uploadErrorMap[i];
+      sendGroupMessage(); // gửi lại — chỉ những file còn lỗi/chưa gửi sẽ được xử lý lại
+    });
+  });
+}
+function cancelAllPendingUploads(){
+  Object.values(uploadTasksMap).forEach(task=>{ try{ task.cancel(); }catch(e){} });
+  uploadTasksMap = {};
+}
+// Tải 1 file lên Storage, báo % tiến trình theo thời gian thực qua state_changed,
+// lưu lại UploadTask để có thể huỷ giữa chừng qua nút ✕ trên từng file.
+function uploadOneFile(file, uid, index){
+  const isVideo = file.type.startsWith('video/');
+  const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+  const path = `group_uploads/${uid}/${Date.now()}_${index}_${safeName}`;
+  const task = gStorage.ref().child(path).put(file, {
+    contentType: file.type || 'application/octet-stream'
+  });
+  uploadTasksMap[index] = task;
+  return new Promise((resolve, reject)=>{
+    task.on('state_changed',
+      snap=>{
+        const pct = snap.totalBytes ? Math.round((snap.bytesTransferred / snap.totalBytes) * 100) : 0;
+        uploadProgressMap[index] = pct;
+        renderGroupMediaGrid();
+      },
+      err=>{
+        delete uploadTasksMap[index];
+        if(err && err.code === 'storage/canceled'){
+          reject(Object.assign(new Error('CANCELED'), { canceled:true }));
+        }else{
+          reject(err);
+        }
+      },
+      async ()=>{
+        delete uploadTasksMap[index];
+        try{
+          const url = await task.snapshot.ref.getDownloadURL();
+          resolve({ url, type: isVideo ? 'video' : 'image' });
+        }catch(e){ reject(e); }
+      }
+    );
+  });
+}
+groupMsgInput.addEventListener('keydown', e=>{
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendGroupMessage();
+  }
+});
+btnGroupSend.addEventListener('click', ()=> sendGroupMessage());
+async function sendGroupMessage(){
+  if(!currentUser) return;
+  const text = groupMsgInput.value.trim();
+  const files = groupMediaFiles.slice();
+  if(!text && files.length === 0) return;
+  btnGroupSend.disabled = true;
+  btnGroupAttach.disabled = true;
+  uploadProgressMap = {};
+  uploadErrorMap = {};
+  files.forEach((f,i)=>{ uploadProgressMap[i] = 0; });
+  renderGroupMediaGrid();
+  try{
+    // Tải TẤT CẢ file lên Firebase Storage song song cùng lúc (không chờ tuần tự),
+    // mỗi file tự cập nhật % riêng và có thể bị huỷ riêng lẻ; file lỗi/huỷ không
+    // chặn các file còn lại — dùng allSettled thay vì all để tránh 1 file lỗi làm
+    // mất hết những file đã tải lên thành công. URL tải về của mỗi file (từ
+    // Firebase Storage) sẽ được lưu kèm tin nhắn trên Realtime Database, nên
+    // TOÀN BỘ thành viên trong nhóm đều thấy được ảnh/video ngay khi tin nhắn tới.
+    const results = await Promise.allSettled(files.map((f, i) => uploadOneFile(f, currentUser.uid, i)));
+    const attachments = [];
+    const remainingFiles = [];
+    let canceledCount = 0, failedCount = 0;
+    results.forEach((r, i)=>{
+      if(r.status === 'fulfilled'){
+        attachments.push(r.value);
+      }else if(r.reason && r.reason.canceled){
+        canceledCount++;
+      }else{
+        failedCount++;
+        remainingFiles.push(files[i]);
+        uploadErrorMap[remainingFiles.length - 1] = describeStorageError(r.reason);
+      }
+    });
+
+    if(!text && attachments.length === 0){
+      groupMediaFiles = remainingFiles;
+      uploadProgressMap = {};
+      renderGroupMediaGrid();
+      if(canceledCount > 0) showToast('Đã huỷ tải lên');
+      if(failedCount > 0) showToast(`Tải lên thất bại: ${describeStorageError(results.find(r=>r.status==='rejected' && !r.reason.canceled)?.reason)}`);
+      return;
+    }
+
+    const p = userProfile || getDefaultProfile(currentUser);
+    const baseMsg = {
+      uid: currentUser.uid,
+      name: p.name || 'Ẩn danh',
+      photoURL: p.photoURL || '',
+      text: text,
+      attachments: attachments,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    if(activeTarget){
+      const key = pairKey(currentUser.uid, activeTarget.uid);
+      const newMsgKey = gDb.ref('groupChat/privateMessages/' + key).push().key;
+      const preview = text || (attachments.length ? `[${attachments.length} tệp đính kèm]` : '');
+      const updates = {};
+      updates['groupChat/privateMessages/' + key + '/' + newMsgKey] = { ...baseMsg, toUid: activeTarget.uid };
+      updates['groupChat/privateThreads/' + currentUser.uid + '/' + activeTarget.uid] = {
+        name: activeTarget.name || 'Ẩn danh', photoURL: activeTarget.photoURL || '',
+        lastMessage: preview, lastTimestamp: firebase.database.ServerValue.TIMESTAMP, lastSenderUid: currentUser.uid
+      };
+      updates['groupChat/privateThreads/' + activeTarget.uid + '/' + currentUser.uid] = {
+        name: baseMsg.name, photoURL: baseMsg.photoURL,
+        lastMessage: preview, lastTimestamp: firebase.database.ServerValue.TIMESTAMP, lastSenderUid: currentUser.uid
+      };
+      await gDb.ref().update(updates);
+    }else{
+      await messagesRef.push(baseMsg);
+    }
+
+    groupMsgInput.value = '';
+    groupMediaFiles = remainingFiles;
+    uploadProgressMap = {};
+    renderGroupMediaGrid();
+
+    if(canceledCount > 0) showToast(`Đã gửi — ${canceledCount} tệp bị huỷ tải lên`);
+    else if(failedCount > 0) showToast(`Đã gửi — ${failedCount} tệp tải lên thất bại, có thể bấm ↻ để thử lại`);
+  }catch(err){
+    console.error(err);
+    showToast('Gửi thất bại: ' + describeStorageError(err));
+  }finally{
+    btnGroupSend.disabled = false;
+    btnGroupAttach.disabled = false;
+  }
+}
+
+/* =========================================================
+   TAB QUẢN TRỊ (ADMIN)
+   - Đăng nhập bằng tài khoản quản trị viên được CẤU HÌNH TRÊN
+     FIREBASE (không hardcode trong mã nguồn nữa). Khi bấm "Đăng
+     nhập", trang sẽ đọc node groupChat/adminConfig (gồm 2 trường
+     "username" và "password") trên Realtime Database rồi so khớp
+     với ô nhập. Cách tạo/sửa tài khoản quản trị: vào Firebase
+     Console → Realtime Database → tạo/sửa node groupChat/adminConfig
+     với 2 trường username, password.
+     LƯU Ý BẢO MẬT: đây vẫn là xác thực phía trình duyệt (client-side)
+     — giá trị mật khẩu vẫn được tải về và so sánh ngay trên máy
+     người dùng, nên chỉ phù hợp để hạn chế truy cập thông thường
+     trong nội bộ nhóm, KHÔNG đủ an toàn để bảo vệ dữ liệu nhạy cảm.
+     Nếu cần bảo mật chặt hơn, nên chuyển sang xác thực quản trị
+     viên bằng Firebase Auth (ví dụ: gán custom claim "admin" cho 1
+     tài khoản Gmail cụ thể) kết hợp Firebase Security Rules để
+     chặn đọc dữ liệu vị trí từ phía server thay vì chỉ ẩn ở giao diện.
+   - Sau khi đăng nhập, hiển thị bản đồ (Leaflet + OpenStreetMap,
+     không cần API key) với các chấm vị trí của mọi thành viên đã
+     từng đồng ý chia sẻ vị trí trong groupChat/userLocations/{uid}:
+     chấm XANH nếu đang online (groupChat/presence/{uid} tồn tại),
+     chấm XÁM nếu offline (hiển thị vị trí + thời gian lần cuối).
+   - Bấm vào 1 thành viên trong danh sách sẽ tải và hiển thị LỊCH SỬ
+     VỊ TRÍ của tài khoản đó (từ groupChat/userLocationHistory/{uid}),
+     mỗi dòng trong danh sách lịch sử có thể bấm vào để mở/định tâm
+     vị trí đó ngay trên bản đồ.
+========================================================= */
+const ADMIN_CONFIG_PATH = 'groupChat/userProfiles'; // node Firebase chứa {username, password}
+const LS_KEY_ADMIN_SESSION = 'contentTool_adminLoggedIn';
+
+const adminLoginCard   = document.getElementById('adminLoginCard');
+const adminMapCard     = document.getElementById('adminMapCard');
+const adminUserInput   = document.getElementById('adminUserInput');
+const adminPassInput   = document.getElementById('adminPassInput');
+const adminLoginError  = document.getElementById('adminLoginError');
+const btnAdminLogin    = document.getElementById('btnAdminLogin');
+const btnAdminLogout   = document.getElementById('btnAdminLogout');
+const adminUserListEl  = document.getElementById('adminUserList');
+const adminHistoryListEl  = document.getElementById('adminHistoryList');
+const adminHistoryLabelEl = document.getElementById('adminHistoryLabel');
+
+let adminMap = null;
+let adminMarkers = {};          // {uid: L.marker}
+let adminLocationsData = {};    // groupChat/userLocations
+let adminPresenceData = {};     // groupChat/presence
+let adminLocationsRef = null;
+let adminPresenceRefForMap = null;
+let adminHistoryRef = null;     // ref lịch sử vị trí của thành viên đang được chọn xem
+let adminSelectedUid = null;    // uid thành viên đang được chọn để xem lịch sử vị trí
+let adminHistoryMarker = null;  // marker tạm dùng để đánh dấu 1 điểm lịch sử khi bấm vào danh sách
+
+function showAdminMapView(){
+  adminLoginCard.style.display = 'none';
+  adminMapCard.style.display = 'block';
+  initAdminMap();
+  subscribeAdminData();
+}
+function showAdminLoginView(){
+  adminLoginCard.style.display = 'block';
+  adminMapCard.style.display = 'none';
+  unsubscribeAdminData();
+}
+btnAdminLogin.addEventListener('click', async ()=>{
+  const u = adminUserInput.value.trim();
+  const p = adminPassInput.value;
+  if(!u || !p){
+    adminLoginError.textContent = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
+    adminLoginError.style.display = 'block';
+    return;
+  }
+  btnAdminLogin.disabled = true;
+  adminLoginError.style.display = 'none';
+  try{
+    const snap = await gDb.ref(ADMIN_CONFIG_PATH).once('value');
+    const cfg = snap.val();
+    if(!cfg || !cfg.username || !cfg.password){
+      adminLoginError.textContent = 'Chưa cấu hình tài khoản quản trị trên Firebase. Vào Firebase Console → Realtime Database → tạo node "' + ADMIN_CONFIG_PATH + '" gồm 2 trường "username" và "password" rồi thử lại.';
+      adminLoginError.style.display = 'block';
+      return;
+    }
+    if(u === String(cfg.username) && p === String(cfg.password)){
+      try{ sessionStorage.setItem(LS_KEY_ADMIN_SESSION, '1'); }catch(e){}
+      showAdminMapView();
+    }else{
+      adminLoginError.textContent = 'Sai tên đăng nhập hoặc mật khẩu.';
+      adminLoginError.style.display = 'block';
+    }
+  }catch(err){
+    console.error(err);
+    adminLoginError.textContent = 'Không đọc được cấu hình quản trị từ Firebase: ' + describeStorageError(err);
+    adminLoginError.style.display = 'block';
+  }finally{
+    btnAdminLogin.disabled = false;
+  }
+});
+adminPassInput.addEventListener('keydown', e=>{
+  if(e.key === 'Enter') btnAdminLogin.click();
+});
+btnAdminLogout.addEventListener('click', ()=>{
+  try{ sessionStorage.removeItem(LS_KEY_ADMIN_SESSION); }catch(e){}
+  adminUserInput.value = '';
+  adminPassInput.value = '';
+  showAdminLoginView();
+});
+(function initAdminAutoLogin(){
+  try{
+    if(sessionStorage.getItem(LS_KEY_ADMIN_SESSION) === '1') showAdminMapView();
+  }catch(e){}
+})();
+
+function initAdminMap(){
+  if(adminMap){ setTimeout(()=> adminMap.invalidateSize(), 60); return; }
+  adminMap = L.map('adminMap').setView([16.0471, 108.2062], 5); // mặc định trung tâm Việt Nam
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(adminMap);
+  setTimeout(()=> adminMap.invalidateSize(), 100);
+}
+function subscribeAdminData(){
+  adminLocationsRef = gDb.ref('groupChat/userLocations');
+  adminLocationsRef.on('value', snap=>{
+    adminLocationsData = snap.val() || {};
+    renderAdminMarkers();
+  });
+  adminPresenceRefForMap = gDb.ref('groupChat/presence');
+  adminPresenceRefForMap.on('value', snap=>{
+    adminPresenceData = snap.val() || {};
+    renderAdminMarkers();
+  });
+}
+function unsubscribeAdminData(){
+  if(adminLocationsRef){ adminLocationsRef.off('value'); adminLocationsRef = null; }
+  if(adminPresenceRefForMap){ adminPresenceRefForMap.off('value'); adminPresenceRefForMap = null; }
+  unsubscribeAdminHistory();
+}
+function fmtAdminTime(ts){
+  if(!ts) return 'Không rõ thời điểm';
+  return new Date(ts).toLocaleString('vi-VN');
+}
+function renderAdminMarkers(){
+  if(!adminMap) return;
+  const uids = Object.keys(adminLocationsData);
+  // Xóa marker của những user không còn dữ liệu vị trí
+  Object.keys(adminMarkers).forEach(uid=>{
+    if(!adminLocationsData[uid]){ adminMap.removeLayer(adminMarkers[uid]); delete adminMarkers[uid]; }
+  });
+  const bounds = [];
+  uids.forEach(uid=>{
+    const loc = adminLocationsData[uid];
+    if(!loc || typeof loc.lat !== 'number' || typeof loc.lng !== 'number') return;
+    const isOnline = !!adminPresenceData[uid];
+    const color = isOnline ? '#16a34a' : '#8b8da6';
+    const icon = L.divIcon({
+      className: '',
+      html: `<div style="width:16px;height:16px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>`,
+      iconSize: [16,16], iconAnchor: [8,8]
+    });
+    const statusHtml = isOnline
+      ? 'Đang online'
+      : 'Offline · vị trí lần cuối: ' + fmtAdminTime(loc.timestamp);
+    const popupHtml = `<b>${escapeHtml(loc.name || 'Ẩn danh')}</b><br>${statusHtml}`;
+    if(adminMarkers[uid]){
+      adminMarkers[uid].setLatLng([loc.lat, loc.lng]);
+      adminMarkers[uid].setIcon(icon);
+      adminMarkers[uid].setPopupContent(popupHtml);
+    }else{
+      adminMarkers[uid] = L.marker([loc.lat, loc.lng], { icon }).addTo(adminMap).bindPopup(popupHtml);
+    }
+    bounds.push([loc.lat, loc.lng]);
+  });
+  if(bounds.length > 0){
+    try{ adminMap.fitBounds(bounds, { padding: [30,30], maxZoom: 14 }); }catch(e){}
+  }
+  renderAdminUserList();
+}
+function renderAdminUserList(){
+  const uids = Object.keys(adminLocationsData);
+  if(uids.length === 0){
+    adminUserListEl.innerHTML = '<div class="listbox-item">Chưa có thành viên nào chia sẻ vị trí</div>';
+    return;
+  }
+  // Online lên trước, mới nhất lên trước
+  const sorted = uids.slice().sort((a,b)=>{
+    const onlineA = !!adminPresenceData[a], onlineB = !!adminPresenceData[b];
+    if(onlineA !== onlineB) return onlineA ? -1 : 1;
+    return (adminLocationsData[b].timestamp||0) - (adminLocationsData[a].timestamp||0);
+  });
+  adminUserListEl.innerHTML = sorted.map(uid=>{
+    const loc = adminLocationsData[uid];
+    const isOnline = !!adminPresenceData[uid];
+    const isSelected = uid === adminSelectedUid;
+    return `<div class="listbox-item ${isSelected ? 'picked' : ''}" data-focus-uid="${uid}" style="cursor:pointer">
+      <span class="item-title">${escapeHtml(loc.name || 'Ẩn danh')} ${isOnline ? '🟢' : '⚪'}</span>
+      <span class="item-link">${isOnline ? 'Đang online' : 'Offline · lần cuối: ' + fmtAdminTime(loc.timestamp)}</span>
+    </div>`;
+  }).join('');
+  adminUserListEl.querySelectorAll('[data-focus-uid]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const uid = el.dataset.focusUid;
+      const marker = adminMarkers[uid];
+      if(marker && adminMap){
+        adminMap.setView(marker.getLatLng(), 15);
+        marker.openPopup();
+      }
+      const loc = adminLocationsData[uid];
+      loadAdminHistory(uid, loc && loc.name);
+    });
+  });
+}
+/* ---------- Lịch sử vị trí của 1 thành viên (chọn từ danh sách bên trên) ---------- */
+function unsubscribeAdminHistory(){
+  if(adminHistoryRef){ adminHistoryRef.off('value'); adminHistoryRef = null; }
+  adminSelectedUid = null;
+  if(adminHistoryMarker && adminMap){ adminMap.removeLayer(adminHistoryMarker); adminHistoryMarker = null; }
+}
+function loadAdminHistory(uid, name){
+  if(adminHistoryRef){ adminHistoryRef.off('value'); adminHistoryRef = null; }
+  adminSelectedUid = uid;
+  renderAdminUserList(); // để tô sáng dòng đang được chọn
+  adminHistoryLabelEl.textContent = 'Lịch sử vị trí của ' + (name || 'Ẩn danh');
+  adminHistoryListEl.innerHTML = '<div class="listbox-item">Đang tải lịch sử vị trí...</div>';
+  adminHistoryRef = gDb.ref('groupChat/userLocationHistory/' + uid).limitToLast(100);
+  adminHistoryRef.on('value', snap=>{
+    const val = snap.val() || {};
+    const list = Object.keys(val)
+      .map(k => ({ id:k, ...val[k] }))
+      .filter(h => typeof h.lat === 'number' && typeof h.lng === 'number')
+      .sort((a,b)=> (b.timestamp||0) - (a.timestamp||0));
+    renderAdminHistoryList(list, name);
+  });
+}
+function renderAdminHistoryList(list, name){
+  if(list.length === 0){
+    adminHistoryListEl.innerHTML = `<div class="listbox-item">Chưa có lịch sử vị trí nào cho ${escapeHtml(name || 'Ẩn danh')}</div>`;
+    return;
+  }
+  adminHistoryListEl.innerHTML = list.map(h => `
+    <div class="listbox-item" data-hist-lat="${h.lat}" data-hist-lng="${h.lng}" data-hist-time="${h.timestamp || ''}" style="cursor:pointer">
+      <span class="item-title">${fmtAdminTime(h.timestamp)}</span>
+      <span class="item-link">${h.lat.toFixed(5)}, ${h.lng.toFixed(5)}</span>
+    </div>
+  `).join('');
+  adminHistoryListEl.querySelectorAll('[data-hist-lat]').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const lat = parseFloat(row.dataset.histLat);
+      const lng = parseFloat(row.dataset.histLng);
+      const ts = row.dataset.histTime ? Number(row.dataset.histTime) : null;
+      if(!adminMap) return;
+      adminMap.setView([lat, lng], 16);
+      if(adminHistoryMarker){ adminMap.removeLayer(adminHistoryMarker); }
+      const icon = L.divIcon({
+        className: '',
+        html: `<div style="width:14px;height:14px;border-radius:50%;background:#f59e0b;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>`,
+        iconSize: [14,14], iconAnchor: [7,7]
+      });
+      adminHistoryMarker = L.marker([lat, lng], { icon }).addTo(adminMap)
+        .bindPopup(`<b>${escapeHtml(name || 'Ẩn danh')}</b><br>Vị trí lúc: ${fmtAdminTime(ts)}`)
+        .openPopup();
+    });
+  });
+}
+
+/* =========================================================
+   TAB TẢI VIDEO (FACEBOOK / TIKTOK / REDNOTE)
+   - Facebook: nhúng video trực tiếp bằng iframe công khai
+     (facebook.com/plugins/video.php) — cách này KHÔNG cần gọi
+     fetch() sang facebook.com nên không bị chặn bởi CORS như khi
+     dùng endpoint oEmbed cũ (đây chính là lý do video cũ không
+     hiển thị được). Vẫn thử lấy thêm tiêu đề qua oEmbed ở chế độ
+     "cố gắng hết sức" — nếu bị chặn/lỗi thì bỏ qua, không ảnh
+     hưởng tới khung video đã nhúng.
+   - TikTok: dán link -> gọi 1 dịch vụ công khai để lấy link video
+     xem trực tiếp (không watermark) + tiêu đề. Nếu lấy thất bại vì
+     bất kỳ lý do gì, tự động hiện đường dẫn sang công cụ tải video
+     thay thế (tikdownload.to).
+   - RedNote (Xiaohongshu): người dùng thường copy nguyên khối text
+     chia sẻ từ app (chữ Trung + link rút gọn dạng http://xhslink.cn/...).
+     Hệ thống tách đúng URL, rồi CỐ GẮNG lấy trực tiếp link video gốc
+     từ trang RedNote (qua 1 CORS proxy công khai) để xem trước ngay
+     trong trang, giống cách làm với TikTok. Đây là cách làm không
+     chính thức nên có thể ngừng hoạt động bất cứ lúc nào nếu RedNote
+     đổi cấu trúc trang hoặc chặn proxy — hễ thất bại ở bất kỳ bước
+     nào, hệ thống tự động chuyển sang MỞ LINK TRONG TAB MỚI.
+========================================================= */
+function extractFirstUrl(text){
+  const m = (text || '').match(/https?:\/\/[^\s"'<>]+/i);
+  return m ? m[0] : null;
+}
+function renderDownloaderFallback(wrapEl, fallbackUrl, message){
+  wrapEl.innerHTML = `
+    <div class="hint" style="margin:0 0 10px;color:var(--red)">${escapeHtml(message)}</div>
+    <a class="btn btn-ghost btn-full" href="${escapeHtml(fallbackUrl)}" target="_blank" rel="noopener noreferrer">Mở công cụ tải video thay thế</a>
+  `;
+}
+
+/* ---------- Facebook ---------- */
+const fbLinkInput = document.getElementById('fbLinkInput');
+const btnFbFetch  = document.getElementById('btnFbFetch');
+const fbVideoWrap = document.getElementById('fbVideoWrap');
+const fbTitleWrap = document.getElementById('fbTitleWrap');
+const fbTitleText = document.getElementById('fbTitleText');
+enableDblClickCopy(fbTitleText);
+// Nhúng video Facebook bằng iframe công khai plugins/video.php — không cần fetch()
+// sang facebook.com nên không bị CORS chặn, hiển thị ổn định hơn nhiều so với cách
+// dựa vào oEmbed JSON trước đây (oEmbed hay bị trình duyệt chặn hoặc bị Facebook
+// giới hạn theo loại link).
+function buildFbEmbedIframe(link){
+  const src = 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(link) + '&show_text=false&width=560&height=314';
+  return `<div style="position:relative;width:100%;padding-bottom:75%;background:#000;border-radius:var(--radius-md);overflow:hidden">
+    <iframe src="${src}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+  </div>`;
+}
+btnFbFetch.addEventListener('click', async ()=>{
+  const link = fbLinkInput.value.trim();
+  if(!link){ showToast('Chưa nhập link Facebook'); return; }
+  if(!/^https?:\/\//i.test(link)){ showToast('Link không hợp lệ, cần bắt đầu bằng http(s)://'); return; }
+  btnFbFetch.disabled = true;
+  fbTitleWrap.style.display = 'none';
+  fbTitleText.value = '';
+  fbVideoWrap.innerHTML = buildFbEmbedIframe(link) + `
+    <p class="hint" style="margin:10px 0 0">Nếu khung video phía trên không hiện được (video ở chế độ riêng tư, sai định dạng link, hoặc Facebook chặn nhúng), dùng công cụ tải video thay thế bên dưới:</p>
+    <a class="btn btn-ghost btn-full" style="margin-top:10px" href="https://x2download.com/en/home" target="_blank" rel="noopener noreferrer">Mở công cụ tải video thay thế</a>
+  `;
+  // Cố gắng lấy thêm tiêu đề bài viết qua oEmbed — không bắt buộc, nếu lỗi/bị
+  // chặn CORS thì bỏ qua lặng lẽ, khung video ở trên không phụ thuộc bước này.
+  try{
+    const resp = await fetch('https://www.facebook.com/plugins/video/oembed.json/?url=' + encodeURIComponent(link));
+    if(resp.ok){
+      const data = await resp.json();
+      if(data && data.title){
+        fbTitleWrap.style.display = 'block';
+        setAutoTitleText(fbTitleText, data.title);
+      }
+    }
+  }catch(err){
+    console.error('Không lấy được tiêu đề Facebook (bỏ qua, khung video vẫn hiển thị bình thường):', err);
+  }finally{
+    btnFbFetch.disabled = false;
+  }
+});
+
+/* ---------- TikTok ---------- */
+const tkLinkInput = document.getElementById('tkLinkInput');
+const btnTkFetch  = document.getElementById('btnTkFetch');
+const tkVideoWrap = document.getElementById('tkVideoWrap');
+const tkTitleWrap = document.getElementById('tkTitleWrap');
+const tkTitleText = document.getElementById('tkTitleText');
+enableDblClickCopy(tkTitleText);
+btnTkFetch.addEventListener('click', async ()=>{
+  const link = tkLinkInput.value.trim();
+  if(!link){ showToast('Chưa nhập link TikTok'); return; }
+  btnTkFetch.disabled = true;
+  tkTitleWrap.style.display = 'none';
+  tkVideoWrap.innerHTML = '<div class="hint" style="margin:0">Đang lấy video, vui lòng chờ...</div>';
+  try{
+    // Dịch vụ công khai thường dùng để lấy link video TikTok không watermark + tiêu đề
+    const resp = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(link));
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const playUrl = data && data.data && (data.data.play || data.data.hdplay || data.data.wmplay);
+    if(!playUrl) throw new Error((data && data.msg) || 'Không lấy được link video');
+    tkVideoWrap.innerHTML = `<video controls playsinline style="width:100%;border-radius:var(--radius-md);background:#000" src="${escapeHtml(playUrl)}"></video>`;
+    const title = data.data.title;
+    if(title){
+      tkTitleWrap.style.display = 'block';
+      setAutoTitleText(tkTitleText, title);
+    }
+  }catch(err){
+    console.error('Lỗi lấy video TikTok:', err);
+    renderDownloaderFallback(
+      tkVideoWrap,
+      'https://tikdownload.to',
+      'Không tự lấy được video (link riêng tư, sai định dạng, hoặc dịch vụ đang bận). Bạn có thể dùng công cụ tải video thay thế bên dưới:'
+    );
+  }finally{
+    btnTkFetch.disabled = false;
+  }
+});
+
+/* ---------- RedNote (Xiaohongshu) ---------- */
+const rnShareInput = document.getElementById('rnShareInput');
+const btnRnOpen    = document.getElementById('btnRnOpen');
+btnRnOpen.addEventListener('click', ()=>{
+  const text = rnShareInput.value.trim();
+  if(!text){ showToast('Chưa dán nội dung chia sẻ RedNote'); return; }
+  const url = extractFirstUrl(text);
+  if(!url){ showToast('Không tìm thấy đường link trong nội dung đã dán'); return; }
+  window.open(url, '_blank', 'noopener');
+});
+
+/* =========================================================
+   THƯ MỤC TẢI VỀ: chọn nhiều ảnh/video từ thư mục Tải về của máy,
+   xem trước, chọn/bỏ chọn từng file, rồi chia sẻ các file đã chọn
+   thẳng vào Thư viện ảnh (Photos/Gallery) trên điện thoại qua khung
+   chia sẻ gốc của hệ điều hành (Web Share API).
+   -------------------------------------------------------------
+   GIỚI HẠN THỰC TẾ (không phải lỗi của trang):
+   - KHÔNG có API web nào cho phép trang tự động "liệt kê" file có
+     sẵn trong thư mục Tải về mà không cần người dùng thao tác — đây
+     là giới hạn bảo mật/riêng tư áp dụng cho MỌI trình duyệt. Người
+     dùng luôn phải chủ động mở hộp thoại chọn file.
+   - Trên máy tính, các trình duyệt nền Chromium (Chrome, Cốc Cốc,
+     Edge...) hỗ trợ File System Access API (window.showOpenFilePicker)
+     kèm gợi ý "startIn: downloads" giúp hộp thoại tự mở ngay tại
+     thư mục Tải về — đây là điểm khác biệt hiển thị giữa các trình
+     duyệt mà người dùng hay thấy. Safari, Firefox và hầu hết trình
+     duyệt di động không hỗ trợ API này nên sẽ tự động dùng
+     <input type="file"> thông thường, người dùng tự bấm vào mục
+     "Tải về/Downloads" trong hộp thoại hệ điều hành hiện ra.
+   - Chia sẻ nhiều file cùng lúc dùng navigator.share({files:[...]}) —
+     được Chrome/Android và Safari/iOS (15+) hỗ trợ tốt, cho phép
+     chọn thẳng "Lưu vào Ảnh" ở khung chia sẻ hệ thống. Trình duyệt
+     không hỗ trợ sẽ được báo để lưu thủ công (bấm giữ ảnh > Lưu ảnh).
+========================================================= */
+const dlFolderInput    = document.getElementById('dlFolderInput');
+const dlFolderDropzone = document.getElementById('dlFolderDropzone');
+const dlFolderList     = document.getElementById('dlFolderList');
+const dlFolderCount    = document.getElementById('dlFolderCount');
+const dlFolderBtnRow   = document.getElementById('dlFolderBtnRow');
+const btnDlFolderShare = document.getElementById('btnDlFolderShare');
+const btnDlFolderClear = document.getElementById('btnDlFolderClear');
+let dlFolderFiles = [];              // File[] — toàn bộ file đã thêm vào danh sách xem trước
+let dlFolderSelected = new Set();    // chỉ số các file đang được CHỌN để chia sẻ
+
+async function openDownloadsPicker(){
+  if(window.showOpenFilePicker){
+    try{
+      const handles = await window.showOpenFilePicker({
+        multiple: true,
+        startIn: 'downloads',
+        types: [{
+          description: 'Ảnh/Video',
+          accept: {
+            'image/*': ['.png','.jpg','.jpeg','.webp','.gif','.heic'],
+            'video/*': ['.mp4','.mov','.webm','.mkv']
+          }
+        }]
+      });
+      const files = await Promise.all(handles.map(h => h.getFile()));
+      addDlFolderFiles(files);
+      return;
+    }catch(err){
+      if(err && err.name === 'AbortError') return; // người dùng tự bấm huỷ hộp thoại
+      console.error('File System Access API lỗi, chuyển sang input file thường:', err);
+    }
+  }
+  // Trình duyệt không hỗ trợ mở thẳng thư mục Tải về (Safari, Firefox, di động...)
+  // -> dùng input file thường, người dùng tự điều hướng tới Tải về/Downloads.
+  dlFolderInput.click();
+}
+dlFolderDropzone.addEventListener('click', openDownloadsPicker);
+dlFolderInput.addEventListener('change', ()=>{
+  const files = Array.from(dlFolderInput.files || []);
+  dlFolderInput.value = ''; // cho phép chọn lại đúng file đó ở lần sau nếu cần
+  if(files.length) addDlFolderFiles(files);
+});
+function addDlFolderFiles(files){
+  const startIdx = dlFolderFiles.length;
+  dlFolderFiles = dlFolderFiles.concat(files);
+  files.forEach((_, i)=> dlFolderSelected.add(startIdx + i)); // mặc định chọn sẵn file vừa thêm
+  renderDlFolderList();
+  showToast(`Đã thêm ${files.length} file — bấm vào từng ảnh/video để chọn hoặc bỏ chọn`);
+}
+function renderDlFolderList(){
+  if(dlFolderFiles.length === 0){
+    dlFolderList.style.display = 'none';
+    dlFolderList.innerHTML = '';
+    dlFolderCount.style.display = 'none';
+    dlFolderBtnRow.style.display = 'none';
+    return;
+  }
+  dlFolderList.style.display = 'grid';
+  dlFolderList.innerHTML = dlFolderFiles.map((f, i) => {
+    const url = URL.createObjectURL(f);
+    const isVideo = f.type.startsWith('video/');
+    const selected = dlFolderSelected.has(i);
+    const preview = isVideo
+      ? `<video src="${url}" muted playsinline preload="metadata"></video>`
+      : `<img src="${url}" alt="">`;
+    return `
+      <div class="media-item dl-pick-item ${selected ? 'dl-selected' : ''}" data-i="${i}" style="cursor:pointer">
+        ${preview}
+        <span class="media-badge">${isVideo ? 'Video' : 'Ảnh'}</span>
+        <span class="dl-check">${selected ? '✓' : ''}</span>
+        <button type="button" class="media-remove" data-remove-i="${i}" title="Bỏ khỏi danh sách">✕</button>
+      </div>
+    `;
+  }).join('');
+  const selectedCount = dlFolderSelected.size;
+  dlFolderCount.style.display = 'block';
+  dlFolderCount.textContent = `${dlFolderFiles.length} file trong danh sách — đã chọn ${selectedCount} file để chia sẻ (bấm vào ảnh/video để chọn/bỏ chọn)`;
+  dlFolderBtnRow.style.display = 'flex';
+  dlFolderList.querySelectorAll('.dl-pick-item').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if(e.target.closest('[data-remove-i]')) return;
+      const i = Number(el.dataset.i);
+      if(dlFolderSelected.has(i)) dlFolderSelected.delete(i); else dlFolderSelected.add(i);
+      renderDlFolderList();
+    });
+  });
+  dlFolderList.querySelectorAll('[data-remove-i]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const i = Number(btn.dataset.removeI);
+      dlFolderFiles.splice(i, 1);
+      dlFolderSelected = new Set(Array.from(dlFolderSelected)
+        .filter(x => x !== i)
+        .map(x => x > i ? x - 1 : x));
+      renderDlFolderList();
+    });
+  });
+}
+btnDlFolderClear.addEventListener('click', ()=>{
+  dlFolderFiles = [];
+  dlFolderSelected = new Set();
+  renderDlFolderList();
+});
+btnDlFolderShare.addEventListener('click', async ()=>{
+  const files = dlFolderFiles.filter((_, i) => dlFolderSelected.has(i));
+  if(files.length === 0){ showToast('Chưa chọn file nào để chia sẻ'); return; }
+  const shareData = { files };
+  const canShare = !!navigator.share && (!navigator.canShare || navigator.canShare(shareData));
+  if(canShare){
+    btnDlFolderShare.disabled = true;
+    try{
+      await navigator.share(shareData);
+      showToast('Đã mở khung chia sẻ — chọn "Lưu vào Ảnh" / "Lưu vào thư viện" để lưu về Thư viện ảnh');
+    }catch(err){
+      if(!err || err.name !== 'AbortError'){
+        console.error(err);
+        showToast('Không mở được khung chia sẻ trên trình duyệt này.');
+      }
+    }finally{
+      btnDlFolderShare.disabled = false;
+    }
+  }else{
+    showToast('Trình duyệt này chưa hỗ trợ chia sẻ nhiều file cùng lúc — hãy bấm giữ từng ảnh/video ở trên rồi chọn "Lưu ảnh" để lưu thủ công.');
+  }
+});
 </script>
-
 </body>
 </html>
