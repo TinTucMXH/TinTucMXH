@@ -279,6 +279,14 @@
   }
   .listbox-item .item-title{ display:block; font-weight:700; color:var(--heading); margin-bottom:2px; }
   .listbox-item .item-link{ display:block; font-size:11.5px; color:var(--muted); font-weight:400; }
+  /* ===== Nhóm Auto Comment: badge trạng thái + nút hành động theo từng dòng ===== */
+  .ac-status{ font-size:10px; font-weight:800; padding:2px 8px; border-radius:999px; display:inline-block; white-space:nowrap; }
+  .ac-status.pending{ background:var(--surface-2); color:var(--muted); }
+  .ac-status.ready{ background:var(--primary-light); color:var(--primary-text); }
+  .ac-status.done{ background:#123821; color:var(--green); }
+  .ac-status.canceled{ background:var(--red-bg); color:var(--red); }
+  .ac-item-actions{ display:flex; flex-direction:column; gap:4px; flex-shrink:0; }
+  .ac-item-actions .btn{ padding:6px 9px; font-size:10.5px; min-height:auto; flex:none; white-space:nowrap; }
   .cue-card{
     margin-top:10px; padding:11px; border:1px solid var(--border); border-radius:var(--radius-sm);
     background:var(--surface-2);
@@ -722,6 +730,46 @@
       <div class="section-label">Xem trước</div>
       <div id="shoppeListbox" class="listbox"></div>
     </div>
+    <div class="card">
+      <h2 class="title">Nhóm Auto Comment (hàng đợi bình luận)</h2>
+      <p class="hint">
+        Chuẩn bị sẵn nội dung bình luận (random 1 link Shopee trong danh sách ở trên) cho từng bài viết Facebook, cách nhau theo khoảng thời gian bạn đặt. Đến giờ, công cụ tự <strong>copy sẵn nội dung vào clipboard</strong> và <strong>mở bài viết đó trong tab mới</strong> — bạn chỉ cần dán (Ctrl+V) rồi bấm Đăng. Bạn vẫn là người bấm gửi bình luận thật trên Facebook — công cụ không tự đăng nhập, không tự điền/gửi thay bạn, nên không vi phạm điều khoản Facebook về tự động hoá tài khoản.
+      </p>
+      <div class="field" style="margin-top:0">
+        <label>Link các bài viết Facebook cần bình luận (mỗi dòng 1 link)</label>
+        <textarea id="acFbLinksInput" style="min-height:90px" placeholder="https://www.facebook.com/...&#10;https://www.facebook.com/..."></textarea>
+      </div>
+      <div class="field">
+        <label>Mẫu nội dung bình luận — {title} và {link} sẽ tự thay bằng 1 link Shopee ngẫu nhiên ở danh sách trên</label>
+        <textarea id="acTemplateInput" style="min-height:60px"></textarea>
+      </div>
+      <div class="field">
+        <label>Khoảng cách giữa mỗi bình luận (giây) — chọn ngẫu nhiên trong khoảng để tự nhiên hơn</label>
+        <div class="checkrow">
+          <input type="text" id="acDelayMin" inputmode="numeric" style="width:76px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink);border-radius:var(--radius-sm);padding:8px 10px" value="60">
+          <span style="align-self:center;color:var(--muted)">đến</span>
+          <input type="text" id="acDelayMax" inputmode="numeric" style="width:76px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink);border-radius:var(--radius-sm);padding:8px 10px" value="180">
+          <span style="align-self:center;color:var(--muted)">giây</span>
+        </div>
+      </div>
+      <div class="switch-row" id="acNotifRow">
+        <span class="switch-label">🔔 Báo khi đến lượt (thông báo &amp; rung — cần tab này vẫn đang mở)</span>
+        <label class="switch">
+          <input type="checkbox" id="acNotifToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint" style="margin-top:6px">
+        <strong>Lưu ý quan trọng:</strong> mọi trang web (kể cả trang này) chỉ chạy được khi tab/trình duyệt còn mở — không có cách nào để 1 trang web tự hoạt động sau khi bạn đã tắt hẳn trình duyệt, đây là giới hạn chung của mọi trang web. Hàng đợi vẫn chạy khi bạn chuyển sang tab khác hoặc thu nhỏ cửa sổ (miễn tab này chưa đóng), và lịch trình được lưu lại trên máy — nếu bạn đóng rồi mở lại tab, các lượt đã quá giờ trong lúc đóng sẽ sẵn sàng ngay khi mở lại.
+      </p>
+      <div class="btnrow">
+        <button class="btn btn-primary" id="btnAcStart">▶ Bắt đầu hàng đợi</button>
+        <button class="btn btn-ghost" id="btnAcPause">⏸ Tạm dừng</button>
+        <button class="btn btn-danger" id="btnAcCancelAll">Hủy toàn bộ</button>
+      </div>
+      <div class="section-label">Tiến trình thực thi</div>
+      <div id="acQueueList" class="listbox"></div>
+    </div>
   </section>
   <!-- ================= TAB 4: VIETSUB ================= -->
   <section id="page-vietsub" class="page">
@@ -917,6 +965,36 @@
       <div class="section-label" id="adminHistoryLabel">Lịch sử vị trí</div>
       <div id="adminHistoryList" class="listbox">
         <div class="listbox-item">Chọn 1 thành viên ở danh sách trên để xem lịch sử vị trí</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="title">Nhật ký cập nhật phiên bản</h2>
+      <p class="hint">Danh sách các lần chỉnh sửa mã nguồn của công cụ, mới nhất lên trên.</p>
+      <div class="listbox">
+        <div class="listbox-item">
+          <span class="item-title">v1.5 <span style="font-weight:400;color:var(--muted)">— mới nhất</span></span>
+          <span class="item-link">Thêm nhóm "Auto Comment" ở tab Shoppe (hàng đợi nhắc bình luận Shopee lên Facebook — công cụ tự copy nội dung & mở bài viết đúng giờ, người dùng tự bấm Đăng, không tự động hoá tài khoản); thêm mục Nhật ký cập nhật phiên bản này.</span>
+        </div>
+        <div class="listbox-item">
+          <span class="item-title">v1.4</span>
+          <span class="item-link">Thêm tự động tìm tiêu đề khi thêm link Shopee (Auto Title) — tra cứu qua thẻ OG, chạy nền không làm treo trang, tự dùng câu dự phòng nếu không tìm được.</span>
+        </div>
+        <div class="listbox-item">
+          <span class="item-title">v1.3</span>
+          <span class="item-link">Sửa màu chữ ô nhập chat khó đọc (nền trắng, chữ đen); thêm cửa sổ chat riêng nổi kéo-thả được kiểu Messenger, tự đóng khi xóa hết tin nhắn.</span>
+        </div>
+        <div class="listbox-item">
+          <span class="item-title">v1.2</span>
+          <span class="item-link">Chuyển giao diện sang tông tối, chữ nổi bật hơn; gỡ bỏ tính năng thư viện tải về hoạt động chưa ổn định.</span>
+        </div>
+        <div class="listbox-item">
+          <span class="item-title">v1.1</span>
+          <span class="item-link">Cho phép sửa cả tên nhãn hastag qua popup (không chỉ 5 hastag); bố cục tự co giãn phù hợp máy tính bảng/PC.</span>
+        </div>
+        <div class="listbox-item">
+          <span class="item-title">v1.0</span>
+          <span class="item-link">Bản khởi tạo: Content, Share, Shoppe, Vietsub, Group Chat, Tải video, Quản trị.</span>
+        </div>
       </div>
     </div>
   </section>
@@ -1779,6 +1857,300 @@ btnDeleteShoppeModal.addEventListener('click', async ()=>{
   closeShoppeModal();
   showToast('Đã xóa link');
 });
+
+/* =========================================================
+   NHÓM AUTO COMMENT: hàng đợi NHẮC bình luận Shopee lên các bài viết
+   Facebook đã chọn, cách nhau theo khoảng delay ngẫu nhiên.
+   -------------------------------------------------------------
+   CÁCH HOẠT ĐỘNG (đọc kỹ để hiểu đúng giới hạn, không phải lỗi):
+   - Công cụ KHÔNG tự đăng nhập, KHÔNG tự điền/gửi bình luận thay bạn
+     trên facebook.com — hành động cuối cùng (dán & bấm Đăng) luôn do
+     CHÍNH BẠN thực hiện. Facebook cấm tự động hoá hành động trên tài
+     khoản; đây là cách hỗ trợ mà không vi phạm điều khoản đó.
+   - Đến đúng giờ đã đặt: tự COPY sẵn nội dung bình luận (random 1 link
+     Shopee trong danh sách phía trên) vào clipboard, MỞ bài viết
+     Facebook tương ứng trong tab mới, kèm thông báo/rung nếu bạn bật.
+     Bạn chỉ cần dán (Ctrl+V) rồi bấm Đăng.
+   - Hàng đợi chỉ chạy khi TAB NÀY còn mở (không cần đang xem, có thể
+     thu nhỏ/chuyển tab khác) — không trang web nào chạy được sau khi
+     trình duyệt đã tắt hẳn, đây là giới hạn chung của mọi trang web.
+   - Lịch trình lưu vào localStorage: đóng rồi mở lại tab, những lượt
+     đã quá giờ trong lúc đóng sẽ sẵn sàng (copy & mở bài viết) ngay.
+========================================================= */
+const acFbLinksInput  = document.getElementById('acFbLinksInput');
+const acTemplateInput = document.getElementById('acTemplateInput');
+const acDelayMin      = document.getElementById('acDelayMin');
+const acDelayMax      = document.getElementById('acDelayMax');
+const acNotifToggle   = document.getElementById('acNotifToggle');
+const btnAcStart      = document.getElementById('btnAcStart');
+const btnAcPause      = document.getElementById('btnAcPause');
+const btnAcCancelAll  = document.getElementById('btnAcCancelAll');
+const acQueueList     = document.getElementById('acQueueList');
+
+const DEFAULT_AC_TEMPLATE = '{title}\n👉 {link}';
+const LS_KEY_AC_SETTINGS = 'contentTool_acSettings';
+const LS_KEY_AC_QUEUE    = 'contentTool_acQueue';
+const LS_KEY_AC_NOTIF    = 'contentTool_acNotif';
+
+let acQueue = [];        // [{id, fbLink, scheduledAt, status:'pending'|'firing'|'ready'|'done'|'canceled', commentText}]
+let acRunning = false;   // hàng đợi đang chạy (chưa tạm dừng)
+let acTickInterval = null;
+let acNotifPermissionGranted = false;
+
+function loadAcSettings(){
+  let saved = null;
+  try{ saved = JSON.parse(localStorage.getItem(LS_KEY_AC_SETTINGS) || 'null'); }catch(e){}
+  acFbLinksInput.value = (saved && saved.fbLinks) || '';
+  acTemplateInput.value = (saved && saved.template) || DEFAULT_AC_TEMPLATE;
+  acDelayMin.value = (saved && saved.delayMin) || 60;
+  acDelayMax.value = (saved && saved.delayMax) || 180;
+  try{ acNotifToggle.checked = localStorage.getItem(LS_KEY_AC_NOTIF) !== '0'; }catch(e){}
+}
+function saveAcSettings(){
+  try{
+    localStorage.setItem(LS_KEY_AC_SETTINGS, JSON.stringify({
+      fbLinks: acFbLinksInput.value,
+      template: acTemplateInput.value,
+      delayMin: acDelayMin.value,
+      delayMax: acDelayMax.value
+    }));
+  }catch(e){}
+}
+function loadAcQueue(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(LS_KEY_AC_QUEUE) || 'null');
+    // Mục còn kẹt ở trạng thái "firing" (do tab bị đóng giữa chừng lúc đang xử lý)
+    // được đưa về "pending" để tự thử lại ở lượt tick kế tiếp.
+    acQueue = Array.isArray(saved) ? saved.map(i => i.status === 'firing' ? { ...i, status: 'pending' } : i) : [];
+  }catch(e){ acQueue = []; }
+}
+function saveAcQueue(){
+  try{ localStorage.setItem(LS_KEY_AC_QUEUE, JSON.stringify(acQueue)); }catch(e){}
+}
+
+function fmtAcTime(ts){
+  return new Date(ts).toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+}
+function truncateMiddle(s, max){
+  if(!s || s.length <= max) return s || '';
+  return s.slice(0, max - 1) + '…';
+}
+function pickRandomShoppeItem(){
+  const items = getShoppeLinks();
+  if(items.length === 0) return null;
+  return items[Math.floor(Math.random() * items.length)];
+}
+function buildAcComment(){
+  const picked = pickRandomShoppeItem();
+  if(!picked) return null;
+  const template = acTemplateInput.value.trim() || DEFAULT_AC_TEMPLATE;
+  return template.replace(/\{title\}/g, picked.title).replace(/\{link\}/g, picked.link);
+}
+
+function renderAcQueue(){
+  if(acQueue.length === 0){
+    acQueueList.innerHTML = '<div class="listbox-item">Chưa có tiến trình nào — nhập link bài viết rồi bấm "Bắt đầu hàng đợi".</div>';
+    return;
+  }
+  acQueueList.innerHTML = acQueue.map((item, i)=>{
+    let statusHtml, actionsHtml;
+    if(item.status === 'pending'){
+      statusHtml = `<span class="ac-status pending">⏳ Chờ đến ${fmtAcTime(item.scheduledAt)}</span>`;
+      actionsHtml = `<button type="button" class="btn btn-danger" data-ac-cancel="${item.id}">Hủy</button>`;
+    }else if(item.status === 'firing'){
+      statusHtml = `<span class="ac-status ready">⏳ Đang copy &amp; mở bài viết...</span>`;
+      actionsHtml = '';
+    }else if(item.status === 'ready'){
+      statusHtml = `<span class="ac-status ready">✅ Đã copy — dán vào Facebook</span>`;
+      actionsHtml = `
+        <button type="button" class="btn btn-ghost" data-ac-reopen="${item.id}">Mở lại</button>
+        <button type="button" class="btn btn-primary" data-ac-done="${item.id}">Đã đăng</button>
+        <button type="button" class="btn btn-danger" data-ac-cancel="${item.id}">Hủy</button>
+      `;
+    }else if(item.status === 'done'){
+      statusHtml = `<span class="ac-status done">☑️ Đã đánh dấu đã đăng</span>`;
+      actionsHtml = `<button type="button" class="btn btn-ghost" data-ac-remove="${item.id}">Xóa</button>`;
+    }else{
+      statusHtml = `<span class="ac-status canceled">✕ Đã hủy</span>`;
+      actionsHtml = `<button type="button" class="btn btn-ghost" data-ac-remove="${item.id}">Xóa</button>`;
+    }
+    return `
+      <div class="listbox-item">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+          <div style="min-width:0;flex:1">
+            <span class="item-title">Bài ${i+1}: ${escapeHtml(truncateMiddle(item.fbLink, 46))}</span>
+            <div style="margin:4px 0">${statusHtml}</div>
+            ${item.commentText ? `<div style="font-size:11.5px;color:var(--ink);white-space:pre-wrap;line-height:1.5">${escapeHtml(item.commentText)}</div>` : ''}
+          </div>
+          <div class="ac-item-actions">${actionsHtml}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function fireAcItem(item){
+  const text = buildAcComment();
+  if(!text){
+    showToast('Danh sách link Shopee đang trống — không có nội dung để bình luận');
+    item.status = 'canceled';
+    saveAcQueue(); renderAcQueue();
+    return;
+  }
+  item.commentText = text;
+  await copyText(text);
+  window.open(item.fbLink, '_blank', 'noopener');
+  if(acNotifToggle.checked){
+    triggerVibration();
+    if(acNotifPermissionGranted && 'Notification' in window){
+      try{
+        const n = new Notification('Đến lượt bình luận Shopee', {
+          body: 'Đã copy nội dung — dán vào bài viết Facebook vừa mở rồi bấm Đăng.'
+        });
+        n.onclick = ()=>{ window.focus(); n.close(); };
+      }catch(e){}
+    }
+  }
+  item.status = 'ready';
+  showToast('Đã copy bình luận & mở bài viết — dán (Ctrl+V) rồi bấm Đăng trên Facebook');
+  saveAcQueue();
+  renderAcQueue();
+}
+
+function tickAcQueue(){
+  if(!acRunning) return;
+  const now = Date.now();
+  let changed = false;
+  acQueue.forEach(item=>{
+    if(item.status === 'pending' && now >= item.scheduledAt){
+      item.status = 'firing'; // đánh dấu ngay để tránh bị kích hoạt trùng ở lượt tick kế tiếp
+      changed = true;
+      fireAcItem(item);
+    }
+  });
+  if(changed){ saveAcQueue(); renderAcQueue(); }
+}
+function startAcTicker(){
+  if(acTickInterval) return;
+  acTickInterval = setInterval(tickAcQueue, 1000);
+}
+function stopAcTicker(){
+  if(acTickInterval){ clearInterval(acTickInterval); acTickInterval = null; }
+}
+
+btnAcStart.addEventListener('click', async ()=>{
+  const links = acFbLinksInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(links.length === 0){ showToast('Chưa nhập link bài viết Facebook nào'); return; }
+  if(getShoppeLinks().length === 0){ showToast('Danh sách link Shopee ở trên đang trống'); return; }
+  const min = Math.max(1, parseInt(acDelayMin.value, 10) || 60);
+  const max = Math.max(min, parseInt(acDelayMax.value, 10) || 180);
+  saveAcSettings();
+
+  if(acNotifToggle.checked && 'Notification' in window && Notification.permission === 'default'){
+    try{ await Notification.requestPermission(); }catch(e){}
+  }
+  acNotifPermissionGranted = ('Notification' in window) && Notification.permission === 'granted';
+
+  // Chỉ thêm các link CHƯA có trong hàng đợi đang chờ/sẵn sàng, tránh nhân đôi
+  // khi bấm "Bắt đầu" nhiều lần liên tiếp.
+  const existingActiveLinks = new Set(acQueue.filter(i => i.status === 'pending' || i.status === 'firing' || i.status === 'ready').map(i => i.fbLink));
+  let cursor = Date.now();
+  let addedCount = 0;
+  links.forEach(link=>{
+    if(existingActiveLinks.has(link)) return;
+    const delaySec = min + Math.random() * (max - min);
+    cursor += delaySec * 1000;
+    acQueue.push({
+      id: 'ac_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+      fbLink: link,
+      scheduledAt: cursor,
+      status: 'pending',
+      commentText: ''
+    });
+    addedCount++;
+  });
+  acRunning = true;
+  btnAcPause.textContent = '⏸ Tạm dừng';
+  saveAcQueue();
+  renderAcQueue();
+  startAcTicker();
+  showToast(addedCount > 0
+    ? `Đã thêm ${addedCount} bài vào hàng đợi — công cụ sẽ tự copy & mở bài viết đúng giờ, bạn dán và bấm Đăng.`
+    : 'Các bài viết này đã có sẵn trong hàng đợi rồi.');
+});
+
+btnAcPause.addEventListener('click', ()=>{
+  if(acRunning){
+    acRunning = false;
+    stopAcTicker();
+    btnAcPause.textContent = '▶ Tiếp tục';
+    showToast('Đã tạm dừng hàng đợi');
+  }else{
+    acRunning = true;
+    startAcTicker();
+    btnAcPause.textContent = '⏸ Tạm dừng';
+    showToast('Đã tiếp tục hàng đợi');
+  }
+});
+
+btnAcCancelAll.addEventListener('click', async ()=>{
+  const activeItems = acQueue.filter(i => i.status === 'pending' || i.status === 'firing' || i.status === 'ready');
+  if(activeItems.length === 0){ showToast('Không có tiến trình nào đang chạy'); return; }
+  const ok = await showConfirmDialog(
+    'Hủy toàn bộ hàng đợi?',
+    'Mọi tiến trình đang chờ/sẵn sàng sẽ bị hủy. Các mục đã đánh dấu "Đã đăng" vẫn giữ lại trong danh sách.',
+    'Hủy tất cả'
+  );
+  if(!ok) return;
+  acQueue.forEach(item=>{
+    if(item.status === 'pending' || item.status === 'firing' || item.status === 'ready') item.status = 'canceled';
+  });
+  saveAcQueue();
+  renderAcQueue();
+  showToast('Đã hủy toàn bộ hàng đợi');
+});
+
+acQueueList.addEventListener('click', async (e)=>{
+  const cancelBtn = e.target.closest('[data-ac-cancel]');
+  const doneBtn   = e.target.closest('[data-ac-done]');
+  const reopenBtn = e.target.closest('[data-ac-reopen]');
+  const removeBtn = e.target.closest('[data-ac-remove]');
+  if(cancelBtn){
+    const item = acQueue.find(i => i.id === cancelBtn.dataset.acCancel);
+    if(item){ item.status = 'canceled'; saveAcQueue(); renderAcQueue(); showToast('Đã hủy tiến trình này'); }
+  }else if(doneBtn){
+    const item = acQueue.find(i => i.id === doneBtn.dataset.acDone);
+    if(item){ item.status = 'done'; saveAcQueue(); renderAcQueue(); showToast('Đã đánh dấu hoàn thành'); }
+  }else if(reopenBtn){
+    const item = acQueue.find(i => i.id === reopenBtn.dataset.acReopen);
+    if(item){
+      await copyText(item.commentText);
+      window.open(item.fbLink, '_blank', 'noopener');
+      showToast('Đã copy lại nội dung & mở bài viết');
+    }
+  }else if(removeBtn){
+    acQueue = acQueue.filter(i => i.id !== removeBtn.dataset.acRemove);
+    saveAcQueue(); renderAcQueue();
+  }
+});
+
+acFbLinksInput.addEventListener('input', saveAcSettings);
+acTemplateInput.addEventListener('input', saveAcSettings);
+acDelayMin.addEventListener('input', saveAcSettings);
+acDelayMax.addEventListener('input', saveAcSettings);
+acNotifToggle.addEventListener('change', ()=>{
+  try{ localStorage.setItem(LS_KEY_AC_NOTIF, acNotifToggle.checked ? '1' : '0'); }catch(e){}
+});
+
+loadAcSettings();
+loadAcQueue();
+renderAcQueue();
+if(acQueue.some(i => i.status === 'pending')){
+  acRunning = true;
+  acNotifPermissionGranted = ('Notification' in window) && Notification.permission === 'granted';
+  startAcTicker();
+}
+
 /* =========================================================
    TAB VIETSUB
    Quy trình: chọn video -> trích khung hình theo mốc thời gian ->
