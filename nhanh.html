@@ -8,29 +8,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --primary: #9B7CFA;
-    --primary-dark: #5B21B6;
-    --primary-light: #241D3E;
-    --primary-text: #D9CCFF;
-    --accent: #2DD4E0;
-    --accent-light: #10262C;
+    --primary: #6D4AFF;
+    --primary-dark: #4C1D95;
+    --primary-light: #F1EDFF;
+    --primary-text: #5B21B6;
+    --accent: #0891B2;
+    --accent-light: #E3F8FA;
     --navy: #242A46;
-    --heading: #FFFFFF;
-    --bg-top: #12141F;
-    --bg-bot: #0A0B12;
-    --surface: #181B2C;
-    --surface-2: #20243B;
-    --border: #2E3350;
-    --ink: #EEEFFA;
-    --muted: #9DA1C0;
-    --red: #FB7185;
-    --green: #34D399;
-    --amber: #FBBF24;
+    --heading: #14162B;
+    --bg-top: #FAFAFD;
+    --bg-bot: #EFF0F7;
+    --surface: #FFFFFF;
+    --surface-2: #F4F5FA;
+    --border: #E3E4EE;
+    --ink: #20223D;
+    --muted: #676C8C;
+    --red: #E11D48;
+    --red-bg: #FDE7EC;
+    --green: #059669;
+    --green-bg: #DCFCE9;
+    --amber: #D97706;
     --radius-lg: 22px;
     --radius-md: 15px;
     --radius-sm: 11px;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
-    --shadow-md: 0 16px 40px rgba(0,0,0,.55);
+    --shadow-sm: 0 1px 3px rgba(16,24,40,.08);
+    --shadow-md: 0 20px 45px rgba(16,24,40,.16);
     --safe-t: env(safe-area-inset-top, 0px);
     --safe-b: env(safe-area-inset-bottom, 0px);
     --safe-l: env(safe-area-inset-left, 0px);
@@ -719,6 +721,7 @@
     <div class="card">
       <h2 class="title">Link Shopee</h2>
       <p class="hint">Mỗi dòng nhập theo dạng <strong>Tiêu đề | Link</strong>. Bấm "Chia sẻ ngẫu nhiên" để copy random 1 link kèm tiêu đề mỗi lần bấm. Bấm nút bút chì trên từng link để sửa, hoặc bấm "Thêm link mới" để mở cửa sổ nhập một hoặc nhiều link cùng lúc.</p>
+      <div id="shoppeSyncStatus" class="hint" style="margin-top:-8px;color:var(--muted)"></div>
       <div class="btnrow" style="margin-top:0">
         <button class="btn btn-primary btn-full" id="btnRandomShoppe">Chia sẻ ngẫu nhiên (Copy)</button>
       </div>
@@ -1726,8 +1729,61 @@ const LS_KEY_SHOPPE = 'contentTool_shoppeLinksInput';
   try{ saved = localStorage.getItem(LS_KEY_SHOPPE); }catch(e){}
   shoppeLinksInput.value = (saved != null) ? saved : DEFAULT_LINKS.join('\n');
 })();
+function updateShoppeSyncStatus(user){
+  const el = document.getElementById('shoppeSyncStatus');
+  if(!el) return;
+  if(user){
+    el.textContent = `🔗 Đang đồng bộ theo tài khoản Google (${user.email || user.displayName || 'đã đăng nhập'}) — sửa ở máy nào, đăng nhập cùng tài khoản ở máy khác sẽ thấy y hệt.`;
+  }else{
+    el.textContent = '📱 Chưa đăng nhập Google (ở tab Group) — danh sách chỉ lưu trên máy này. Đăng nhập ở tab Group để đồng bộ nhiều máy.';
+  }
+}
+updateShoppeSyncStatus(null);
 function saveShoppeLinks(){
   try{ localStorage.setItem(LS_KEY_SHOPPE, shoppeLinksInput.value); }catch(e){}
+  syncShoppeLinksToAccountDebounced();
+}
+/* ---------- Đồng bộ danh sách link Shopee theo tài khoản Google ----------
+   Ngoài lưu trên máy (localStorage, dùng ngay cả khi chưa đăng nhập), nếu đang
+   đăng nhập Google (dùng chung phiên đăng nhập với tab Group), danh sách link
+   còn được lưu thêm vào groupChat/userShoppeLinks/{uid} trên Firebase — sửa ở
+   máy nào cũng tự đồng bộ, đăng nhập máy khác cùng tài khoản sẽ tải lại đúng
+   bản đã chỉnh sửa gần nhất. Gộp nhiều lần gõ liên tiếp thành 1 lần ghi (debounce
+   800ms) để không tốn quá nhiều lượt ghi lên Firebase.
+   Biến `currentUser`/`gDb` được khai báo ở phần code tab Group phía dưới trong
+   cùng 1 <script> — an toàn để dùng ở đây vì hàm này chỉ CHẠY khi người dùng
+   tương tác (gõ/sửa/xóa link), tức là sau khi toàn bộ script đã chạy xong lượt
+   đầu, không phải lúc trang vừa tải. */
+let shoppeAccountSyncTimer = null;
+function syncShoppeLinksToAccountDebounced(){
+  if(typeof currentUser === 'undefined' || !currentUser) return; // chưa đăng nhập -> chỉ lưu máy
+  clearTimeout(shoppeAccountSyncTimer);
+  shoppeAccountSyncTimer = setTimeout(syncShoppeLinksToAccountNow, 800);
+}
+function syncShoppeLinksToAccountNow(){
+  if(typeof currentUser === 'undefined' || !currentUser) return;
+  gDb.ref('groupChat/userShoppeLinks/' + currentUser.uid).set({
+    text: shoppeLinksInput.value,
+    updatedAt: firebase.database.ServerValue.TIMESTAMP
+  }).catch(err=> console.error('Không đồng bộ được danh sách Shopee lên tài khoản Google:', err));
+}
+/* Tải lại danh sách link Shopee đã lưu theo tài khoản Google (nếu có) khi đăng
+   nhập; nếu tài khoản chưa từng lưu gì, đẩy danh sách hiện có trên máy lên làm
+   bản đầu tiên cho tài khoản đó. */
+function loadShoppeLinksForAccount(uid){
+  gDb.ref('groupChat/userShoppeLinks/' + uid).once('value').then(snap=>{
+    const saved = snap.val();
+    if(saved && typeof saved.text === 'string' && saved.text.trim()){
+      shoppeLinksInput.value = saved.text;
+      try{ localStorage.setItem(LS_KEY_SHOPPE, shoppeLinksInput.value); }catch(e){}
+      renderShoppeList();
+      showToast('Đã tải danh sách link Shopee đã lưu theo tài khoản Google');
+    }else{
+      syncShoppeLinksToAccountNow();
+    }
+  }).catch(err=>{
+    console.error('Không tải được danh sách Shopee theo tài khoản Google:', err);
+  });
 }
 function getShoppeLinks(){
   return shoppeLinksInput.value
@@ -3195,6 +3251,8 @@ gAuth.onAuthStateChanged(user=>{
     setupPrivateReadsAllListener(user.uid);
     renderTargetRow();
     renderGroupMediaGrid();
+    updateShoppeSyncStatus(user);
+    loadShoppeLinksForAccount(user.uid); // nạp lại danh sách link Shopee đã lưu theo tài khoản này
 
     // Đọc hồ sơ đã tùy chỉnh trước đó (nếu có); nếu chưa từng đặt, dùng mặc định
     // Gmail và mời người dùng tùy chỉnh tên/ảnh ngay sau khi đăng nhập lần đầu.
@@ -3216,6 +3274,7 @@ gAuth.onAuthStateChanged(user=>{
       maybeAskLocationPermission();
     });
   }else{
+    updateShoppeSyncStatus(null);
     groupLoginCard.style.display = 'block';
     groupChatCard.style.display = 'none';
     onlineUsersEl.innerHTML = '';
