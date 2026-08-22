@@ -374,6 +374,44 @@
   }
   .switch input:checked + .slider{ background:linear-gradient(135deg, var(--primary), var(--primary-dark)); }
   .switch input:checked + .slider:before{ transform:translateX(18px); }
+  /* ===== Tab YouTube: chế độ chỉ phát âm thanh + màn hình khoá tối tiết kiệm pin ===== */
+  .yt-player-wrap{
+    margin-top:14px; width:100%; aspect-ratio:16/9; background:#000;
+    border-radius:var(--radius-md); overflow:hidden; transition:height .2s ease, opacity .2s ease;
+  }
+  .yt-player-wrap.audio-only{
+    aspect-ratio:auto; height:2px; opacity:0; pointer-events:none; margin-top:0;
+  }
+  .yt-compact-bar{
+    display:flex; align-items:center; gap:10px; background:var(--navy); color:#fff;
+    border-radius:var(--radius-md); padding:10px 12px; margin-top:14px;
+  }
+  .yt-compact-bar img{ width:44px; height:44px; border-radius:8px; object-fit:cover; flex-shrink:0; background:#333; }
+  .yt-compact-info{ min-width:0; flex:1; }
+  .yt-compact-title{ font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .yt-compact-sub{ font-size:11px; color:#c7c7de; margin-top:2px; }
+  .yt-compact-playpause{
+    flex-shrink:0; width:38px; height:38px; border-radius:50%; border:none;
+    background:rgba(255,255,255,.14); color:#fff; font-size:16px; cursor:pointer;
+  }
+  .yt-lock-overlay{
+    position:fixed; inset:0; background:#000; z-index:200;
+    display:none; flex-direction:column; align-items:center; justify-content:center; padding:24px;
+  }
+  .yt-lock-overlay.show{ display:flex; }
+  .yt-lock-content{ display:flex; flex-direction:column; align-items:center; max-width:340px; width:100%; }
+  .yt-lock-content img{
+    width:180px; height:180px; border-radius:20px; object-fit:cover; background:#111;
+    box-shadow:0 20px 50px rgba(0,0,0,.6);
+  }
+  .yt-lock-title{ color:#fff; font-weight:700; font-size:15px; text-align:center; margin-top:18px; line-height:1.4; }
+  .yt-lock-controls{ display:flex; align-items:center; gap:22px; margin-top:26px; }
+  .yt-lock-btn{
+    border:none; background:rgba(255,255,255,.08); color:#fff; width:52px; height:52px; border-radius:50%;
+    font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .yt-lock-btn-main{ width:66px; height:66px; font-size:26px; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+  .yt-lock-note{ color:#8a8aa3; text-align:center; margin-top:16px; font-size:11.5px; line-height:1.5; }
   .group-user-badge img{ width:28px; height:28px; border-radius:50%; object-fit:cover; }
   .group-user-badge .name{ font-size:12.5px; font-weight:700; color:var(--navy); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   /* ===== Popup đăng nhập nhỏ & popup xác nhận dùng chung ===== */
@@ -791,8 +829,26 @@
       <div class="btnrow" style="margin-top:12px">
         <button class="btn btn-primary btn-full" id="btnYtLoad">Tải</button>
       </div>
-      <div id="ytPlayerWrap" style="margin-top:14px;width:100%;aspect-ratio:16/9;background:#000;border-radius:var(--radius-md);overflow:hidden">
+      <div class="switch-row">
+        <span class="switch-label">🎧 Chỉ phát âm thanh (ẩn khung video, tiết kiệm pin)</span>
+        <label class="switch">
+          <input type="checkbox" id="ytAudioOnlyToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="btnrow" style="margin-top:0">
+        <button type="button" class="btn btn-dark btn-full" id="btnYtLockScreen">🔒 Khóa màn hình tối (tiết kiệm pin)</button>
+      </div>
+      <div id="ytPlayerWrap" class="yt-player-wrap">
         <div id="ytPlayerEl" style="width:100%;height:100%"></div>
+      </div>
+      <div id="ytCompactBar" class="yt-compact-bar" style="display:none">
+        <img id="ytCompactThumb" src="" alt="">
+        <div class="yt-compact-info">
+          <div class="yt-compact-title" id="ytCompactTitle">—</div>
+          <div class="yt-compact-sub">Chỉ phát âm thanh — đã ẩn khung video</div>
+        </div>
+        <button type="button" class="yt-compact-playpause" id="btnYtCompactPlayPause" title="Phát/Tạm dừng">⏸</button>
       </div>
       <div class="field" id="ytNowTitleWrap" style="display:none">
         <label>Đang phát</label>
@@ -954,6 +1010,21 @@
         <button type="button" id="btnConfirmCancel" class="btn btn-ghost">Hủy</button>
         <button type="button" id="btnConfirmOk" class="btn btn-danger">Xóa</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ============ MÀN HÌNH KHOÁ TỐI (tab YouTube — tiết kiệm pin, chỉ nghe âm thanh) ============ -->
+  <div id="ytLockOverlay" class="yt-lock-overlay">
+    <div class="yt-lock-content">
+      <img id="ytLockThumb" src="" alt="">
+      <div class="yt-lock-title" id="ytLockTitle">—</div>
+      <div class="yt-lock-controls">
+        <button type="button" id="btnYtLockPrev" class="yt-lock-btn" title="Video trước">⏮</button>
+        <button type="button" id="btnYtLockPlayPause" class="yt-lock-btn yt-lock-btn-main" title="Phát/Tạm dừng">⏸</button>
+        <button type="button" id="btnYtLockNext" class="yt-lock-btn" title="Video tiếp theo">⏭</button>
+      </div>
+      <button type="button" id="btnYtUnlock" class="btn btn-ghost" style="margin-top:26px">🔓 Mở khoá</button>
+      <p class="yt-lock-note">Màn hình tối giúp giảm độ sáng hiển thị và bớt phần giao diện cần vẽ lại — góp phần tiết kiệm pin (đặc biệt với màn hình OLED). Video/âm thanh vẫn tiếp tục phát bình thường trong lúc khoá.</p>
     </div>
   </div>
 </div>
@@ -3462,6 +3533,20 @@ const ytPlaylistWrap = document.getElementById('ytPlaylistWrap');
 const ytHistoryWrap    = document.getElementById('ytHistoryWrap');
 const ytHistoryBtnRow  = document.getElementById('ytHistoryBtnRow');
 const btnYtClearHistory = document.getElementById('btnYtClearHistory');
+const ytPlayerWrapEl  = document.getElementById('ytPlayerWrap');
+const ytAudioOnlyToggle = document.getElementById('ytAudioOnlyToggle');
+const ytCompactBar     = document.getElementById('ytCompactBar');
+const ytCompactThumb   = document.getElementById('ytCompactThumb');
+const ytCompactTitle   = document.getElementById('ytCompactTitle');
+const btnYtCompactPlayPause = document.getElementById('btnYtCompactPlayPause');
+const btnYtLockScreen  = document.getElementById('btnYtLockScreen');
+const ytLockOverlay    = document.getElementById('ytLockOverlay');
+const ytLockThumb      = document.getElementById('ytLockThumb');
+const ytLockTitle      = document.getElementById('ytLockTitle');
+const btnYtUnlock      = document.getElementById('btnYtUnlock');
+const btnYtLockPlayPause = document.getElementById('btnYtLockPlayPause');
+const btnYtLockPrev    = document.getElementById('btnYtLockPrev');
+const btnYtLockNext    = document.getElementById('btnYtLockNext');
 let ytPlayer = null;
 let ytApiReadyPromise = null;
 let ytLastResumedVideoId = null; // videoId đã được thử tua tới vị trí lưu trong phiên hiện tại (tránh tua lặp lại)
@@ -3537,6 +3622,7 @@ function onYtPlayerStateChange(e){
   if(e.data === YT.PlayerState.PLAYING){
     if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
     startYtSaveTimer();
+    updateYtPlayPauseIcons(true);
     // Video này lần đầu chuyển sang PLAYING trong phiên hiện tại -> nếu có lưu vị trí xem
     // dở từ trước (và chưa gần hết video) thì tự tua tới đó, kiểu "xem tiếp".
     if(videoId && videoId !== ytLastResumedVideoId){
@@ -3551,14 +3637,22 @@ function onYtPlayerStateChange(e){
     if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
     saveCurrentYtPosition();
     stopYtSaveTimer();
+    updateYtPlayPauseIcons(false);
   }else if(e.data === YT.PlayerState.ENDED){
     if(videoId) upsertYtHistoryEntry(videoId, { position: 0 });
     renderYtHistory();
     stopYtSaveTimer();
+    updateYtPlayPauseIcons(false);
   }else if(e.data === YT.PlayerState.CUED){
     buildYtPlaylistUiIfAny();
   }
   highlightCurrentYtPlaylistItem();
+  if(ytLockOverlay.classList.contains('show')) updateYtLockScreenInfo();
+}
+function updateYtPlayPauseIcons(isPlaying){
+  const icon = isPlaying ? '⏸' : '▶';
+  if(btnYtCompactPlayPause) btnYtCompactPlayPause.textContent = icon;
+  if(btnYtLockPlayPause) btnYtLockPlayPause.textContent = icon;
 }
 function updateYtNowPlaying(){
   if(!ytPlayer || !ytPlayer.getVideoData) return;
@@ -3566,6 +3660,8 @@ function updateYtNowPlaying(){
   const title = data && data.title;
   ytNowTitleWrap.style.display = title ? 'block' : 'none';
   if(title) ytNowTitleText.textContent = title;
+  if(ytCompactTitle) ytCompactTitle.textContent = title || 'Đang phát video YouTube';
+  if(ytCompactThumb && data && data.video_id) ytCompactThumb.src = `https://i.ytimg.com/vi/${data.video_id}/hqdefault.jpg`;
   if('mediaSession' in navigator){
     navigator.mediaSession.metadata = new MediaMetadata({
       title: title || 'Đang phát video YouTube',
@@ -3757,6 +3853,76 @@ btnYtClearHistory.addEventListener('click', async ()=>{
 });
 loadYtHistory();
 renderYtHistory();
+
+/* ---------- Chỉ phát âm thanh (ẩn khung video) — giảm phần cần vẽ lại trên màn hình -----------
+   YouTube không cho lấy luồng "chỉ âm thanh" riêng qua trình nhúng công khai (không có API/khoá
+   truy cập cho việc đó), nên cách khả thi để giảm tải hiển thị + tiết kiệm pin ngay trên trình
+   duyệt là: thu nhỏ khung video xuống gần như 0 (ẩn đi bằng CSS, không dùng display:none để
+   video không bị dừng phát) và thay bằng 1 thanh "đang phát" gọn, tối giản để vẽ. */
+const LS_KEY_YT_AUDIO_ONLY = 'contentTool_ytAudioOnly';
+let ytAudioOnlyMode = false;
+function loadYtAudioOnlyPref(){
+  try{ ytAudioOnlyMode = localStorage.getItem(LS_KEY_YT_AUDIO_ONLY) === '1'; }catch(e){}
+  if(ytAudioOnlyToggle) ytAudioOnlyToggle.checked = ytAudioOnlyMode;
+  applyYtAudioOnlyMode();
+}
+function applyYtAudioOnlyMode(){
+  if(ytAudioOnlyMode){
+    ytPlayerWrapEl.classList.add('audio-only');
+    ytCompactBar.style.display = 'flex';
+  }else{
+    ytPlayerWrapEl.classList.remove('audio-only');
+    ytCompactBar.style.display = 'none';
+  }
+}
+if(ytAudioOnlyToggle){
+  ytAudioOnlyToggle.addEventListener('change', ()=>{
+    ytAudioOnlyMode = ytAudioOnlyToggle.checked;
+    try{ localStorage.setItem(LS_KEY_YT_AUDIO_ONLY, ytAudioOnlyMode ? '1' : '0'); }catch(e){}
+    applyYtAudioOnlyMode();
+    showToast(ytAudioOnlyMode ? 'Đã ẩn video — chỉ phát âm thanh để tiết kiệm pin' : 'Đã hiện lại khung video');
+  });
+}
+if(btnYtCompactPlayPause){
+  btnYtCompactPlayPause.addEventListener('click', ()=>{
+    if(!ytPlayer || !ytPlayer.getPlayerState) return;
+    if(ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+    else ytPlayer.playVideo();
+  });
+}
+loadYtAudioOnlyPref();
+
+/* ---------- Khoá màn hình tối (tiết kiệm pin) ----------
+   Phủ 1 lớp gần như toàn màu đen lên hết trang, chỉ còn ảnh nhỏ + tiêu đề + nút điều khiển —
+   giảm mạnh diện tích sáng/diện tích cần vẽ lại trên màn hình (đặc biệt tiết kiệm pin thật sự
+   với màn OLED vì điểm ảnh đen gần như không tiêu thụ điện). Video/âm thanh YouTube vẫn tiếp
+   tục phát bình thường phía sau lớp phủ này, chỉ là không hiển thị khung hình động nữa. */
+function openYtLockScreen(){
+  if(!ytPlayer){ showToast('Chưa có video nào đang phát để khoá màn hình'); return; }
+  updateYtLockScreenInfo();
+  ytLockOverlay.classList.add('show');
+}
+function closeYtLockScreen(){ ytLockOverlay.classList.remove('show'); }
+function updateYtLockScreenInfo(){
+  if(!ytPlayer || !ytPlayer.getVideoData) return;
+  const data = ytPlayer.getVideoData();
+  ytLockTitle.textContent = (data && data.title) || 'Đang phát video YouTube';
+  if(data && data.video_id) ytLockThumb.src = `https://i.ytimg.com/vi/${data.video_id}/hqdefault.jpg`;
+  if(ytPlayer.getPlayerState){
+    updateYtPlayPauseIcons(ytPlayer.getPlayerState() === YT.PlayerState.PLAYING);
+  }
+}
+if(btnYtLockScreen) btnYtLockScreen.addEventListener('click', openYtLockScreen);
+if(btnYtUnlock) btnYtUnlock.addEventListener('click', closeYtLockScreen);
+if(btnYtLockPlayPause){
+  btnYtLockPlayPause.addEventListener('click', ()=>{
+    if(!ytPlayer || !ytPlayer.getPlayerState) return;
+    if(ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+    else ytPlayer.playVideo();
+  });
+}
+if(btnYtLockPrev) btnYtLockPrev.addEventListener('click', ()=>{ if(ytPlayer && ytPlayer.previousVideo) ytPlayer.previousVideo(); });
+if(btnYtLockNext) btnYtLockNext.addEventListener('click', ()=>{ if(ytPlayer && ytPlayer.nextVideo) ytPlayer.nextVideo(); });
 </script>
 </body>
 </html>
