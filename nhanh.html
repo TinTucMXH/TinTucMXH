@@ -804,6 +804,14 @@
         Trên <strong>iPhone/iPad (Safari)</strong>: Apple giới hạn khá chặt — video/âm thanh thường sẽ TẠM DỪNG khi khoá màn hình hoặc rời khỏi Safari. Đây là giới hạn của hệ điều hành iOS, không có cách nào bật được chỉ bằng JavaScript từ một trang web thường.
       </p>
       <div id="ytPlaylistWrap" style="display:none;margin-top:10px"></div>
+      <div class="section-label" style="margin-top:18px;display:flex;align-items:center;justify-content:space-between">
+        <span>Lịch sử đã xem</span>
+      </div>
+      <p class="hint" style="margin-top:0">Vị trí phát của từng video được tự lưu lại trên máy này — mở lại video cũ (dán link hoặc bấm vào lịch sử bên dưới) sẽ tự tiếp tục từ chỗ đã dừng.</p>
+      <div id="ytHistoryWrap"></div>
+      <div class="btnrow" id="ytHistoryBtnRow" style="display:none">
+        <button type="button" class="btn btn-danger btn-full" id="btnYtClearHistory">Xóa lịch sử</button>
+      </div>
     </div>
   </section>
   <!-- ================= TAB 6: QUẢN TRỊ (ADMIN) ================= -->
@@ -3451,8 +3459,12 @@ const btnYtLoad      = document.getElementById('btnYtLoad');
 const ytNowTitleWrap = document.getElementById('ytNowTitleWrap');
 const ytNowTitleText = document.getElementById('ytNowTitleText');
 const ytPlaylistWrap = document.getElementById('ytPlaylistWrap');
+const ytHistoryWrap    = document.getElementById('ytHistoryWrap');
+const ytHistoryBtnRow  = document.getElementById('ytHistoryBtnRow');
+const btnYtClearHistory = document.getElementById('btnYtClearHistory');
 let ytPlayer = null;
 let ytApiReadyPromise = null;
+let ytLastResumedVideoId = null; // videoId đã được thử tua tới vị trí lưu trong phiên hiện tại (tránh tua lặp lại)
 
 function ensureYoutubeApiReady(){
   if(window.YT && window.YT.Player) return Promise.resolve();
@@ -3520,11 +3532,32 @@ function onYtPlayerReady(){
 }
 function onYtPlayerStateChange(e){
   updateYtNowPlaying();
-  if('mediaSession' in navigator){
-    if(e.data === YT.PlayerState.PLAYING) navigator.mediaSession.playbackState = 'playing';
-    else if(e.data === YT.PlayerState.PAUSED) navigator.mediaSession.playbackState = 'paused';
+  const data = ytPlayer && ytPlayer.getVideoData ? ytPlayer.getVideoData() : null;
+  const videoId = data && data.video_id;
+  if(e.data === YT.PlayerState.PLAYING){
+    if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+    startYtSaveTimer();
+    // Video này lần đầu chuyển sang PLAYING trong phiên hiện tại -> nếu có lưu vị trí xem
+    // dở từ trước (và chưa gần hết video) thì tự tua tới đó, kiểu "xem tiếp".
+    if(videoId && videoId !== ytLastResumedVideoId){
+      ytLastResumedVideoId = videoId;
+      const h = ytHistoryData[videoId];
+      if(h && h.position > 5 && (!h.duration || h.position < h.duration - 5)){
+        ytPlayer.seekTo(h.position, true);
+        showToast(`Tiếp tục xem từ ${formatYtDuration(h.position)}`);
+      }
+    }
+  }else if(e.data === YT.PlayerState.PAUSED){
+    if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
+    saveCurrentYtPosition();
+    stopYtSaveTimer();
+  }else if(e.data === YT.PlayerState.ENDED){
+    if(videoId) upsertYtHistoryEntry(videoId, { position: 0 });
+    renderYtHistory();
+    stopYtSaveTimer();
+  }else if(e.data === YT.PlayerState.CUED){
+    buildYtPlaylistUiIfAny();
   }
-  if(e.data === YT.PlayerState.CUED) buildYtPlaylistUiIfAny();
   highlightCurrentYtPlaylistItem();
 }
 function updateYtNowPlaying(){
@@ -3599,6 +3632,131 @@ function highlightCurrentYtPlaylistItem(){
     el.classList.toggle('picked', Number(el.dataset.ytIndex) === idx);
   });
 }
+
+/* ---------- Lịch sử phát & nhớ vị trí phát (lưu trên máy này, theo từng video) ----------
+   Mỗi vài giây trong lúc phát, và mỗi khi tạm dừng, vị trí hiện tại được lưu vào localStorage
+   theo videoId. Lần sau mở lại đúng video đó (dán link hoặc bấm vào lịch sử), trang tự tua
+   tới vị trí đã lưu (trừ khi đã xem gần hết). Video xem xong (kết thúc) sẽ reset về đầu. */
+const LS_KEY_YT_HISTORY = 'contentTool_ytHistory';
+const YT_HISTORY_LIMIT = 30;      // chỉ giữ lại 30 video gần nhất để không phình localStorage
+const YT_SAVE_INTERVAL_MS = 5000; // lưu vị trí mỗi 5 giây trong lúc đang phát
+let ytHistoryData = {};  // { videoId: { title, author, thumb, position, duration, updatedAt } }
+let ytSaveTimer = null;
+
+function loadYtHistory(){
+  try{ ytHistoryData = JSON.parse(localStorage.getItem(LS_KEY_YT_HISTORY) || '{}') || {}; }
+  catch(e){ ytHistoryData = {}; }
+}
+function saveYtHistoryToStorage(){
+  try{ localStorage.setItem(LS_KEY_YT_HISTORY, JSON.stringify(ytHistoryData)); }catch(e){}
+}
+function formatYtDuration(sec){
+  sec = Math.max(0, Math.round(sec || 0));
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  const mm = h > 0 ? String(m).padStart(2, '0') : String(m);
+  const ss = String(s).padStart(2, '0');
+  return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+}
+function upsertYtHistoryEntry(videoId, patch){
+  if(!videoId) return;
+  const existing = ytHistoryData[videoId] || {};
+  ytHistoryData[videoId] = { ...existing, ...patch, updatedAt: Date.now() };
+  const ids = Object.keys(ytHistoryData).sort((a,b)=> (ytHistoryData[b].updatedAt||0) - (ytHistoryData[a].updatedAt||0));
+  if(ids.length > YT_HISTORY_LIMIT){
+    ids.slice(YT_HISTORY_LIMIT).forEach(id=> delete ytHistoryData[id]);
+  }
+  saveYtHistoryToStorage();
+}
+function startYtSaveTimer(){
+  stopYtSaveTimer();
+  ytSaveTimer = setInterval(saveCurrentYtPosition, YT_SAVE_INTERVAL_MS);
+}
+function stopYtSaveTimer(){
+  if(ytSaveTimer){ clearInterval(ytSaveTimer); ytSaveTimer = null; }
+}
+function saveCurrentYtPosition(){
+  if(!ytPlayer || !ytPlayer.getCurrentTime || !ytPlayer.getVideoData) return;
+  const data = ytPlayer.getVideoData();
+  const videoId = data && data.video_id;
+  if(!videoId) return;
+  const position = ytPlayer.getCurrentTime();
+  const duration = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
+  upsertYtHistoryEntry(videoId, {
+    title: data.title || (ytHistoryData[videoId] && ytHistoryData[videoId].title) || '',
+    author: data.author || (ytHistoryData[videoId] && ytHistoryData[videoId].author) || '',
+    thumb: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+    position, duration
+  });
+  renderYtHistory();
+}
+// Lưu lại ngay vị trí đang xem khi rời tab / khoá màn hình — đáng tin cậy hơn trên di động
+// so với sự kiện beforeunload (thường không kịp chạy trên trình duyệt di động).
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) saveCurrentYtPosition(); });
+window.addEventListener('pagehide', saveCurrentYtPosition);
+function renderYtHistory(){
+  const ids = Object.keys(ytHistoryData).sort((a,b)=> (ytHistoryData[b].updatedAt||0) - (ytHistoryData[a].updatedAt||0));
+  if(ids.length === 0){
+    ytHistoryWrap.innerHTML = '<div class="hint" style="margin:0">Chưa có video nào trong lịch sử.</div>';
+    ytHistoryBtnRow.style.display = 'none';
+    return;
+  }
+  ytHistoryBtnRow.style.display = 'flex';
+  ytHistoryWrap.innerHTML = '<div class="listbox" style="max-height:300px">' +
+    ids.map(id=>{
+      const h = ytHistoryData[id];
+      return `
+        <div class="listbox-item" data-yt-history-id="${escapeHtml(id)}" style="display:flex;gap:10px;align-items:center;cursor:pointer">
+          ${h.thumb ? `<img src="${escapeHtml(h.thumb)}" style="width:64px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0" alt="">` : ''}
+          <div style="min-width:0;flex:1">
+            <span class="item-title" style="display:block">${escapeHtml(h.title || id)}</span>
+            <span class="item-link">${escapeHtml(h.author || '')}${h.author ? ' · ' : ''}đã xem ${formatYtDuration(h.position)}${h.duration ? ' / ' + formatYtDuration(h.duration) : ''}</span>
+          </div>
+        </div>
+      `;
+    }).join('') + '</div>';
+  ytHistoryWrap.querySelectorAll('[data-yt-history-id]').forEach(el=>{
+    el.addEventListener('click', ()=> playYtVideoFromHistory(el.dataset.ytHistoryId));
+  });
+}
+async function playYtVideoFromHistory(videoId){
+  ytLinkInput.value = 'https://www.youtube.com/watch?v=' + videoId;
+  btnYtLoad.disabled = true;
+  ytNowTitleWrap.style.display = 'none';
+  ytPlaylistWrap.style.display = 'none';
+  ytPlaylistWrap.innerHTML = '';
+  try{
+    await ensureYoutubeApiReady();
+    if(ytPlayer){
+      ytPlayer.loadVideoById(videoId); // vị trí đã lưu sẽ tự tua tới trong onYtPlayerStateChange khi bắt đầu PLAYING
+    }else{
+      ytPlayer = new YT.Player('ytPlayerEl', {
+        width: '100%', height: '100%',
+        videoId,
+        playerVars: { playsinline: 1, rel: 0 },
+        events: { onReady: onYtPlayerReady, onStateChange: onYtPlayerStateChange }
+      });
+    }
+  }catch(err){
+    console.error('Lỗi phát video từ lịch sử:', err);
+    showToast('Không phát được video này');
+  }finally{
+    btnYtLoad.disabled = false;
+  }
+}
+btnYtClearHistory.addEventListener('click', async ()=>{
+  const ok = await showConfirmDialog(
+    'Xóa lịch sử xem?',
+    'Toàn bộ lịch sử xem và vị trí phát đã lưu trên máy này sẽ bị xoá. Hành động này không thể hoàn tác.',
+    'Xóa lịch sử'
+  );
+  if(!ok) return;
+  ytHistoryData = {};
+  saveYtHistoryToStorage();
+  renderYtHistory();
+  showToast('Đã xóa lịch sử xem');
+});
+loadYtHistory();
+renderYtHistory();
 </script>
 </body>
 </html>
