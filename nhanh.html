@@ -863,7 +863,8 @@
       <div class="section-label" style="margin-top:18px;display:flex;align-items:center;justify-content:space-between">
         <span>Lịch sử đã xem</span>
       </div>
-      <p class="hint" style="margin-top:0">Vị trí phát của từng video được tự lưu lại trên máy này — mở lại video cũ (dán link hoặc bấm vào lịch sử bên dưới) sẽ tự tiếp tục từ chỗ đã dừng.</p>
+      <p class="hint" style="margin-top:0">Vị trí phát của từng video được tự lưu lại — mở lại video cũ (dán link hoặc bấm vào lịch sử bên dưới) sẽ tự tiếp tục từ chỗ đã dừng.</p>
+      <div id="ytHistorySyncHint" class="hint" style="margin-top:0"></div>
       <div id="ytHistoryWrap"></div>
       <div class="btnrow" id="ytHistoryBtnRow" style="display:none">
         <button type="button" class="btn btn-danger btn-full" id="btnYtClearHistory">Xóa lịch sử</button>
@@ -3161,7 +3162,7 @@ async function sendGroupMessage(){
      mỗi dòng trong danh sách lịch sử có thể bấm vào để mở/định tâm
      vị trí đó ngay trên bản đồ.
 ========================================================= */
-const ADMIN_CONFIG_PATH = 'groupChat/userProfiles'; // node Firebase chứa {username, password}
+const ADMIN_CONFIG_PATH = 'groupChat/adminConfig'; // node Firebase chứa {username, password}
 const LS_KEY_ADMIN_SESSION = 'contentTool_adminLoggedIn';
 
 const adminLoginCard   = document.getElementById('adminLoginCard');
@@ -3533,6 +3534,7 @@ const ytPlaylistWrap = document.getElementById('ytPlaylistWrap');
 const ytHistoryWrap    = document.getElementById('ytHistoryWrap');
 const ytHistoryBtnRow  = document.getElementById('ytHistoryBtnRow');
 const btnYtClearHistory = document.getElementById('btnYtClearHistory');
+const ytHistorySyncHint = document.getElementById('ytHistorySyncHint');
 const ytPlayerWrapEl  = document.getElementById('ytPlayerWrap');
 const ytAudioOnlyToggle = document.getElementById('ytAudioOnlyToggle');
 const ytCompactBar     = document.getElementById('ytCompactBar');
@@ -3613,7 +3615,7 @@ btnYtLoad.addEventListener('click', async ()=>{
 });
 function onYtPlayerReady(){
   setupYtMediaSessionHandlers();
-  setTimeout(buildYtPlaylistUiIfAny, 400); // đợi player nạp xong metadata playlist (nếu có)
+  buildYtPlaylistUiIfAny(); // tự thử lại nhiều lần bên trong nếu player chưa kịp nạp xong metadata playlist
 }
 function onYtPlayerStateChange(e){
   updateYtNowPlaying();
@@ -3679,10 +3681,19 @@ function setupYtMediaSessionHandlers(){
   try{ navigator.mediaSession.setActionHandler('previoustrack', ()=> ytPlayer.previousVideo()); }catch(e){}
   try{ navigator.mediaSession.setActionHandler('nexttrack', ()=> ytPlayer.nextVideo()); }catch(e){}
 }
-async function buildYtPlaylistUiIfAny(){
+async function buildYtPlaylistUiIfAny(retriesLeft){
+  if(retriesLeft === undefined) retriesLeft = 8;
   if(!ytPlayer || !ytPlayer.getPlaylist) return;
   const list = ytPlayer.getPlaylist();
-  if(!list || list.length === 0){ ytPlaylistWrap.style.display = 'none'; return; }
+  if((!list || list.length === 0)){
+    if(retriesLeft > 0){
+      // Player chưa kịp nạp xong metadata playlist -> thử lại sau 1 nhịp thay vì bỏ cuộc luôn
+      setTimeout(()=> buildYtPlaylistUiIfAny(retriesLeft - 1), 400);
+    }else{
+      ytPlaylistWrap.style.display = 'none';
+    }
+    return;
+  }
   const limited = list.slice(0, 50); // giới hạn để tránh gọi oEmbed quá nhiều với playlist rất dài
   ytPlaylistWrap.style.display = 'block';
   ytPlaylistWrap.innerHTML = '<div class="hint" style="margin:0 0 8px">Đang tải danh sách video...</div>';
@@ -3734,10 +3745,11 @@ function highlightCurrentYtPlaylistItem(){
    theo videoId. Lần sau mở lại đúng video đó (dán link hoặc bấm vào lịch sử), trang tự tua
    tới vị trí đã lưu (trừ khi đã xem gần hết). Video xem xong (kết thúc) sẽ reset về đầu. */
 const LS_KEY_YT_HISTORY = 'contentTool_ytHistory';
-const YT_HISTORY_LIMIT = 30;      // chỉ giữ lại 30 video gần nhất để không phình localStorage
+const YT_HISTORY_LIMIT = 30;      // chỉ giữ lại 30 video gần nhất (cả khi lưu máy lẫn lưu tài khoản)
 const YT_SAVE_INTERVAL_MS = 5000; // lưu vị trí mỗi 5 giây trong lúc đang phát
 let ytHistoryData = {};  // { videoId: { title, author, thumb, position, duration, updatedAt } }
 let ytSaveTimer = null;
+let ytHistoryCloudUid = null; // uid tài khoản Google đang đăng nhập -> lịch sử đồng bộ theo tài khoản này thay vì theo máy
 
 function loadYtHistory(){
   try{ ytHistoryData = JSON.parse(localStorage.getItem(LS_KEY_YT_HISTORY) || '{}') || {}; }
@@ -3756,12 +3768,67 @@ function formatYtDuration(sec){
 function upsertYtHistoryEntry(videoId, patch){
   if(!videoId) return;
   const existing = ytHistoryData[videoId] || {};
-  ytHistoryData[videoId] = { ...existing, ...patch, updatedAt: Date.now() };
+  const entry = { ...existing, ...patch, updatedAt: Date.now() };
+  ytHistoryData[videoId] = entry;
   const ids = Object.keys(ytHistoryData).sort((a,b)=> (ytHistoryData[b].updatedAt||0) - (ytHistoryData[a].updatedAt||0));
-  if(ids.length > YT_HISTORY_LIMIT){
-    ids.slice(YT_HISTORY_LIMIT).forEach(id=> delete ytHistoryData[id]);
+  const toRemove = ids.length > YT_HISTORY_LIMIT ? ids.slice(YT_HISTORY_LIMIT) : [];
+  toRemove.forEach(id=> delete ytHistoryData[id]);
+  if(ytHistoryCloudUid){
+    // Đã đăng nhập Google -> lưu lịch sử theo tài khoản (đồng bộ được trên nhiều thiết bị)
+    const updates = {};
+    updates[videoId] = entry;
+    toRemove.forEach(id=>{ updates[id] = null; });
+    gDb.ref('groupChat/ytHistory/' + ytHistoryCloudUid).update(updates)
+      .catch(err=> console.error('Không lưu được lịch sử lên tài khoản Google:', err));
+  }else{
+    saveYtHistoryToStorage();
   }
-  saveYtHistoryToStorage();
+}
+/* Đồng bộ lịch sử theo tài khoản Google đã đăng nhập ở tab Group (dùng chung 1 lượt đăng nhập
+   cho cả app). Khi đăng nhập: đọc lịch sử đã lưu trên tài khoản, gộp thêm lịch sử đang có sẵn
+   trên máy (nếu mới hơn) rồi chuyển hẳn sang lắng nghe/lưu theo tài khoản. Khi đăng xuất: quay
+   lại đọc/lưu theo máy (localStorage) như trước. */
+let ytHistoryCloudRef = null;
+gAuth.onAuthStateChanged(async (user)=>{
+  if(ytHistoryCloudRef){ ytHistoryCloudRef.off('value'); ytHistoryCloudRef = null; }
+  if(user){
+    const localSnapshot = { ...ytHistoryData };
+    ytHistoryCloudUid = user.uid;
+    try{
+      const snap = await gDb.ref('groupChat/ytHistory/' + user.uid).once('value');
+      const cloudData = snap.val() || {};
+      const updates = {};
+      Object.keys(localSnapshot).forEach(vid=>{
+        const l = localSnapshot[vid], c = cloudData[vid];
+        if(!c || (l.updatedAt || 0) > (c.updatedAt || 0)) updates[vid] = l;
+      });
+      if(Object.keys(updates).length > 0){
+        await gDb.ref('groupChat/ytHistory/' + user.uid).update(updates);
+      }
+    }catch(err){
+      console.error('Không gộp được lịch sử trên máy lên tài khoản Google:', err);
+    }
+    ytHistoryCloudRef = gDb.ref('groupChat/ytHistory/' + user.uid);
+    ytHistoryCloudRef.on('value', snap=>{
+      ytHistoryData = snap.val() || {};
+      renderYtHistory();
+    });
+  }else{
+    ytHistoryCloudUid = null;
+    loadYtHistory();
+    renderYtHistory();
+  }
+  updateYtHistorySyncHint();
+});
+function updateYtHistorySyncHint(){
+  if(!ytHistorySyncHint) return;
+  if(ytHistoryCloudUid){
+    ytHistorySyncHint.innerHTML = '<span style="color:var(--green);font-weight:700">✓ Đang đồng bộ lịch sử theo tài khoản Google</span>';
+  }else{
+    ytHistorySyncHint.innerHTML = 'Lịch sử đang lưu trên máy này. <button type="button" id="btnYtHistoryLogin" class="edit-pin" style="position:static;display:inline-flex;width:auto;padding:0 10px;border-radius:999px;font-size:11px">Đăng nhập Google để đồng bộ</button>';
+    const loginBtn = document.getElementById('btnYtHistoryLogin');
+    if(loginBtn) loginBtn.addEventListener('click', ()=>{ if(typeof openLoginModal === 'function') openLoginModal(); });
+  }
 }
 function startYtSaveTimer(){
   stopYtSaveTimer();
@@ -3842,17 +3909,25 @@ async function playYtVideoFromHistory(videoId){
 btnYtClearHistory.addEventListener('click', async ()=>{
   const ok = await showConfirmDialog(
     'Xóa lịch sử xem?',
-    'Toàn bộ lịch sử xem và vị trí phát đã lưu trên máy này sẽ bị xoá. Hành động này không thể hoàn tác.',
+    ytHistoryCloudUid
+      ? 'Toàn bộ lịch sử xem và vị trí phát đã đồng bộ trên tài khoản Google này sẽ bị xoá (trên mọi thiết bị). Hành động này không thể hoàn tác.'
+      : 'Toàn bộ lịch sử xem và vị trí phát đã lưu trên máy này sẽ bị xoá. Hành động này không thể hoàn tác.',
     'Xóa lịch sử'
   );
   if(!ok) return;
   ytHistoryData = {};
-  saveYtHistoryToStorage();
+  if(ytHistoryCloudUid){
+    try{ await gDb.ref('groupChat/ytHistory/' + ytHistoryCloudUid).remove(); }
+    catch(err){ console.error('Không xóa được lịch sử trên tài khoản Google:', err); }
+  }else{
+    saveYtHistoryToStorage();
+  }
   renderYtHistory();
   showToast('Đã xóa lịch sử xem');
 });
 loadYtHistory();
 renderYtHistory();
+updateYtHistorySyncHint();
 
 /* ---------- Chỉ phát âm thanh (ẩn khung video) — giảm phần cần vẽ lại trên màn hình -----------
    YouTube không cho lấy luồng "chỉ âm thanh" riêng qua trình nhúng công khai (không có API/khoá
