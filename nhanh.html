@@ -888,9 +888,10 @@
         <div id="ytNowTitleText" class="hint" style="margin:0;color:var(--ink);font-weight:700"></div>
       </div>
       <p class="hint" style="margin-top:14px">
-        <strong>Về việc phát âm thanh khi tắt màn hình / chuyển sang app khác:</strong><br>
+        <strong>Về việc phát khi tắt màn hình / chuyển sang app khác (đa nhiệm):</strong><br>
         Trên <strong>Android (Chrome)</strong>: âm thanh thường vẫn tiếp tục phát khi bạn khoá màn hình hoặc chuyển sang app khác — có thể điều khiển phát / tạm dừng / chuyển bài ngay trên thanh thông báo (nhờ Media Session đã tích hợp sẵn ở trang này).<br>
-        Trên <strong>iPhone/iPad (Safari)</strong>: Apple giới hạn khá chặt — video/âm thanh thường sẽ TẠM DỪNG khi khoá màn hình hoặc rời khỏi Safari. Đây là giới hạn của hệ điều hành iOS, không có cách nào bật được chỉ bằng JavaScript từ một trang web thường.
+        Trên <strong>iPhone/iPad (Safari)</strong>: Apple giới hạn khá chặt — video/âm thanh thường sẽ TẠM DỪNG khi khoá màn hình hoặc rời khỏi Safari. Đây là giới hạn của hệ điều hành iOS, không có cách nào bật được chỉ bằng JavaScript từ một trang web thường. Bạn có thể bấm nút <strong>Picture-in-Picture</strong> ngay trong khung phát YouTube (nếu trình duyệt hiện nút này) để video nổi lên và tiếp tục phát khi chuyển sang app khác.<br>
+        <strong>Về mạng yếu / chập chờn:</strong> biểu tượng ⏳ trên thanh phát nghĩa là đang tải bộ đệm chứ không phải bị treo — ứng dụng sẽ tự phát tiếp khi đủ dữ liệu. Nếu 1 video trong playlist bị lỗi (riêng tư, đã gỡ, mạng quá yếu), trang sẽ tự thông báo và chuyển sang video kế tiếp thay vì đứng yên.
       </p>
       <div id="ytPlaylistWrap" style="display:none;margin-top:10px"></div>
       <div class="section-label" style="margin-top:18px;display:flex;align-items:center;justify-content:space-between">
@@ -1678,13 +1679,13 @@ function openShoppeModal(mode, index){
     const item = items[index];
     shoppeEditIndex = index;
     shoppeModalTitle.textContent = 'Sửa link Shopee';
-    shoppeModalDesc.textContent = 'Sửa tiêu đề hoặc link bên dưới, dạng Tiêu đề | Link, rồi bấm Lưu.';
+    shoppeModalDesc.textContent = 'Sửa tiêu đề hoặc link bên dưới, dạng Tiêu đề | Link, rồi bấm Lưu. Nếu chỉ để lại link (bỏ phần tiêu đề), hệ thống sẽ tự tìm tên sản phẩm giúp bạn.';
     shoppeModalTextarea.value = item ? `${item.title} | ${item.link}` : '';
     btnDeleteShoppeModal.style.display = 'block';
   }else{
     shoppeEditIndex = -1;
     shoppeModalTitle.textContent = 'Thêm link Shopee';
-    shoppeModalDesc.textContent = 'Mỗi dòng theo dạng Tiêu đề | Link. Có thể nhập nhiều dòng cùng lúc để thêm nhiều link.';
+    shoppeModalDesc.textContent = 'Dán link (mỗi dòng 1 link) — hệ thống sẽ tự tìm tên sản phẩm giúp bạn, có thể dán nhiều dòng cùng lúc để thêm nhiều link. Hoặc nhập theo dạng Tiêu đề | Link nếu muốn tự đặt tên.';
     shoppeModalTextarea.value = '';
     btnDeleteShoppeModal.style.display = 'none';
   }
@@ -1708,23 +1709,76 @@ function mapShoppeIndexToRawLine(index){
   rawLines.forEach((l, idx)=>{ if(l.trim()) nonEmptyIdx.push(idx); });
   return { rawLines, targetIdx: nonEmptyIdx[index] };
 }
-btnSaveShoppeModal.addEventListener('click', ()=>{
+/* Tự động tìm tên sản phẩm từ 1 link Shopee (khi người dùng chỉ dán link, không tự đặt tiêu
+   đề) — đọc thẻ <title> của trang qua 1 dịch vụ proxy công khai (để vượt giới hạn CORS, vì
+   Shopee không cho gọi thẳng từ JS trình duyệt). Đây là best-effort: nếu dịch vụ proxy chậm/
+   lỗi/link riêng tư thì bỏ qua lặng lẽ, link vẫn được thêm bình thường với tên mặc định
+   "Sản phẩm Shopee" như trước đây — không chặn việc lưu link. */
+async function fetchPageTitle(url){
+  try{
+    const resp = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url));
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const html = data && data.contents;
+    if(!html) throw new Error('Không có nội dung trang');
+    const match = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+    if(!match) throw new Error('Không tìm thấy tiêu đề trang');
+    let title = match[1].replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
+    title = title.replace(/\s*[|\-–]\s*Shopee.*$/i, '').trim(); // bỏ đuôi "| Shopee Việt Nam" nếu có
+    return title || null;
+  }catch(err){
+    console.error('Không tự tìm được tên sản phẩm cho', url, err);
+    return null;
+  }
+}
+btnSaveShoppeModal.addEventListener('click', async ()=>{
   const lines = shoppeModalTextarea.value.split('\n').map(s=>s.trim()).filter(Boolean);
   if(lines.length === 0){ showToast('Chưa nhập nội dung'); return; }
-  if(shoppeEditIndex >= 0){
-    const { rawLines, targetIdx } = mapShoppeIndexToRawLine(shoppeEditIndex);
-    if(targetIdx != null){
-      rawLines[targetIdx] = lines[0];
-      shoppeLinksInput.value = rawLines.join('\n');
+  const originalLabel = btnSaveShoppeModal.textContent;
+  btnSaveShoppeModal.disabled = true;
+  try{
+    if(shoppeEditIndex >= 0){
+      // Sửa đúng 1 link — nếu chỉ để lại link (không có "|") thì tự tìm tên sản phẩm giúp
+      let finalLine = lines[0];
+      if(!finalLine.includes('|')){
+        btnSaveShoppeModal.textContent = 'Đang tìm tên sản phẩm...';
+        const title = await fetchPageTitle(finalLine);
+        if(title) finalLine = `${title} | ${finalLine}`;
+      }
+      const { rawLines, targetIdx } = mapShoppeIndexToRawLine(shoppeEditIndex);
+      if(targetIdx != null){
+        rawLines[targetIdx] = finalLine;
+        shoppeLinksInput.value = rawLines.join('\n');
+      }
+      saveShoppeLinks();
+      renderShoppeList();
+      closeShoppeModal();
+      showToast('Đã lưu link');
+    }else{
+      // Thêm mới — hỗ trợ nhiều dòng/nhiều link cùng lúc; dòng nào chỉ có link (không có "|")
+      // sẽ được tự tìm tên sản phẩm song song (Promise.all) cho nhanh, dòng đã có sẵn dạng
+      // "Tiêu đề | Link" thì giữ nguyên như người dùng nhập.
+      const bareCount = lines.filter(l => !l.includes('|')).length;
+      if(bareCount > 0) btnSaveShoppeModal.textContent = `Đang tìm tên ${bareCount} sản phẩm...`;
+      const finalLines = await Promise.all(lines.map(async (line)=>{
+        if(line.includes('|')) return line;
+        const title = await fetchPageTitle(line);
+        return title ? `${title} | ${line}` : line;
+      }));
+      const existing = shoppeLinksInput.value.trim();
+      shoppeLinksInput.value = existing ? existing + '\n' + finalLines.join('\n') : finalLines.join('\n');
+      saveShoppeLinks();
+      renderShoppeList();
+      closeShoppeModal();
+      showToast(`Đã thêm ${finalLines.length} link mới`);
     }
-  }else{
-    const existing = shoppeLinksInput.value.trim();
-    shoppeLinksInput.value = existing ? existing + '\n' + lines.join('\n') : lines.join('\n');
+  }catch(err){
+    console.error('Lỗi khi lưu link Shopee:', err);
+    showToast('Có lỗi khi lưu link, vui lòng thử lại');
+  }finally{
+    btnSaveShoppeModal.disabled = false;
+    btnSaveShoppeModal.textContent = originalLabel;
   }
-  saveShoppeLinks();
-  renderShoppeList();
-  closeShoppeModal();
-  showToast(shoppeEditIndex >= 0 ? 'Đã lưu link' : `Đã thêm ${lines.length} link mới`);
 });
 btnDeleteShoppeModal.addEventListener('click', async ()=>{
   if(shoppeEditIndex < 0) return;
@@ -3690,11 +3744,31 @@ let ytLastResumedVideoId = null; // videoId đã được thử tua tới vị t
 function ensureYoutubeApiReady(){
   if(window.YT && window.YT.Player) return Promise.resolve();
   if(ytApiReadyPromise) return ytApiReadyPromise;
-  ytApiReadyPromise = new Promise(resolve=>{
+  ytApiReadyPromise = new Promise((resolve, reject)=>{
     const prevCb = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = ()=>{ if(typeof prevCb === 'function') prevCb(); resolve(); };
+    let settled = false;
+    const timeoutId = setTimeout(()=>{
+      if(settled) return;
+      settled = true;
+      ytApiReadyPromise = null; // cho phép thử lại ở lần bấm "Tải" tiếp theo thay vì kẹt mãi
+      reject(new Error('Hết thời gian chờ tải trình phát YouTube (mạng quá chậm hoặc bị chặn)'));
+    }, 15000);
+    window.onYouTubeIframeAPIReady = ()=>{
+      if(settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
+      if(typeof prevCb === 'function') prevCb();
+      resolve();
+    };
     const tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
+    tag.onerror = ()=>{
+      if(settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
+      ytApiReadyPromise = null;
+      reject(new Error('Không tải được trình phát YouTube — kiểm tra lại kết nối mạng'));
+    };
     document.head.appendChild(tag);
   });
   return ytApiReadyPromise;
@@ -3737,12 +3811,12 @@ btnYtLoad.addEventListener('click', async ()=>{
         width: '100%', height: '100%',
         videoId: playlistId ? undefined : videoId,
         playerVars,
-        events: { onReady: onYtPlayerReady, onStateChange: onYtPlayerStateChange }
+        events: { onReady: onYtPlayerReady, onStateChange: onYtPlayerStateChange, onError: onYtPlayerError }
       });
     }
   }catch(err){
     console.error('Lỗi tải trình phát YouTube:', err);
-    showToast('Không tải được trình phát YouTube, vui lòng thử lại');
+    showToast((err && err.message) || 'Không tải được trình phát YouTube, vui lòng thử lại');
   }finally{
     btnYtLoad.disabled = false;
   }
@@ -3758,35 +3832,71 @@ function onYtPlayerStateChange(e){
   if(e.data === YT.PlayerState.PLAYING){
     if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
     startYtSaveTimer();
-    updateYtPlayPauseIcons(true);
+    updateYtPlayPauseIcons('playing');
     // Video này lần đầu chuyển sang PLAYING trong phiên hiện tại -> nếu có lưu vị trí xem
     // dở từ trước (và chưa gần hết video) thì tự tua tới đó, kiểu "xem tiếp".
     if(videoId && videoId !== ytLastResumedVideoId){
       ytLastResumedVideoId = videoId;
       const h = ytHistoryData[videoId];
       if(h && h.position > 5 && (!h.duration || h.position < h.duration - 5)){
-        ytPlayer.seekTo(h.position, true);
-        showToast(`Tiếp tục xem từ ${formatYtDuration(h.position)}`);
+        try{
+          ytPlayer.seekTo(h.position, true);
+          showToast(`Tiếp tục xem từ ${formatYtDuration(h.position)}`);
+        }catch(err){ console.error('Không tua được tới vị trí đã lưu:', err); }
       }
     }
   }else if(e.data === YT.PlayerState.PAUSED){
     if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
     saveCurrentYtPosition();
     stopYtSaveTimer();
-    updateYtPlayPauseIcons(false);
+    updateYtPlayPauseIcons('paused');
+  }else if(e.data === YT.PlayerState.BUFFERING){
+    // Đang tải bộ đệm (thường do mạng yếu/chập chờn) — chỉ đổi biểu tượng để người dùng biết
+    // ứng dụng KHÔNG bị treo, chỉ đang chờ dữ liệu; không can thiệp gì thêm, để trình phát tự
+    // xử lý lại khi mạng ổn định trở lại (đây là cơ chế có sẵn của YouTube player).
+    updateYtPlayPauseIcons('buffering');
   }else if(e.data === YT.PlayerState.ENDED){
     if(videoId) upsertYtHistoryEntry(videoId, { position: 0 });
     renderYtHistory();
     stopYtSaveTimer();
-    updateYtPlayPauseIcons(false);
+    updateYtPlayPauseIcons('paused');
   }else if(e.data === YT.PlayerState.CUED){
     buildYtPlaylistUiIfAny();
   }
   highlightCurrentYtPlaylistItem();
   if(ytLockOverlay.classList.contains('show')) updateYtLockScreenInfo();
 }
-function updateYtPlayPauseIcons(isPlaying){
-  const icon = isPlaying ? '⏸' : '▶';
+// Lỗi phát video (video bị gỡ/riêng tư, chủ video chặn nhúng, lỗi mạng khiến trình phát HTML5
+// không tải được...) — hiện thông báo rõ ràng cho người dùng thay vì để ứng dụng như bị "treo"
+// tại video đó, và tự động bỏ qua sang video kế tiếp nếu đang phát playlist.
+function onYtPlayerError(e){
+  const codeMessages = {
+    2: 'Đường link video không hợp lệ.',
+    5: 'Trình duyệt không phát được video này.',
+    100: 'Video không tồn tại hoặc đã bị gỡ.',
+    101: 'Chủ video không cho phép phát trên trang khác.',
+    150: 'Chủ video không cho phép phát trên trang khác.'
+  };
+  const msg = codeMessages[e.data] || 'Không phát được video này (có thể do mạng yếu).';
+  console.error('Lỗi phát video YouTube, mã lỗi:', e.data);
+  stopYtSaveTimer();
+  const list = ytPlayer && ytPlayer.getPlaylist ? ytPlayer.getPlaylist() : null;
+  const hasNext = list && list.length > 1;
+  showToast(msg + (hasNext ? ' Đang chuyển sang video tiếp theo...' : ''));
+  if(hasNext){
+    setTimeout(()=>{ try{ ytPlayer.nextVideo(); }catch(err){ console.error(err); } }, 1200);
+  }
+}
+// Mất/có mạng trở lại trong lúc đang xem — chỉ báo cho người dùng biết lý do video có thể
+// bị gián đoạn, KHÔNG tự ý dừng/tải lại trình phát (để tránh làm gián đoạn thêm).
+window.addEventListener('offline', ()=>{
+  showToast('Mất kết nối mạng — video YouTube có thể bị gián đoạn cho tới khi có mạng trở lại');
+});
+window.addEventListener('online', ()=>{
+  showToast('Đã có mạng trở lại');
+});
+function updateYtPlayPauseIcons(state){
+  const icon = state === 'playing' ? '⏸' : (state === 'buffering' ? '⏳' : '▶');
   if(btnYtCompactPlayPause) btnYtCompactPlayPause.textContent = icon;
   if(btnYtLockPlayPause) btnYtLockPlayPause.textContent = icon;
 }
@@ -4030,7 +4140,7 @@ async function playYtVideoFromHistory(videoId){
         width: '100%', height: '100%',
         videoId,
         playerVars: { playsinline: 1, rel: 0 },
-        events: { onReady: onYtPlayerReady, onStateChange: onYtPlayerStateChange }
+        events: { onReady: onYtPlayerReady, onStateChange: onYtPlayerStateChange, onError: onYtPlayerError }
       });
     }
   }catch(err){
@@ -4118,7 +4228,8 @@ function updateYtLockScreenInfo(){
   ytLockTitle.textContent = (data && data.title) || 'Đang phát video YouTube';
   if(data && data.video_id) ytLockThumb.src = `https://i.ytimg.com/vi/${data.video_id}/hqdefault.jpg`;
   if(ytPlayer.getPlayerState){
-    updateYtPlayPauseIcons(ytPlayer.getPlayerState() === YT.PlayerState.PLAYING);
+    const st = ytPlayer.getPlayerState();
+    updateYtPlayPauseIcons(st === YT.PlayerState.PLAYING ? 'playing' : (st === YT.PlayerState.BUFFERING ? 'buffering' : 'paused'));
   }
 }
 if(btnYtLockScreen) btnYtLockScreen.addEventListener('click', openYtLockScreen);
